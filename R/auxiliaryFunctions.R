@@ -12,7 +12,7 @@
 #'
 #' @examples
 autoCorrelationTestNetDist <- function(dep.var, ans) {
-  # give error if no deps in ans
+  # give error if no deps in ans obj
   if (is.null(ans$deps))
     stop("ans object does not have simulations stored; use returnDeps = T in estimation")
 

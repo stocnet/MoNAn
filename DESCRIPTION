@@ -1,0 +1,14 @@
+Package: MoNAn
+Type: Package
+Title: What the Package Does (Title Case)
+Version: 0.0.0.9000
+Author: Who wrote it
+Maintainer: The package maintainer <yourself@somewhere.net>
+Description: More about what it does (maybe more than one line)
+    Use four spaces when indenting paragraphs within the Description.
+Depends: R (>= 4.2.2)
+License: What license is it under?
+Encoding: UTF-8
+LazyData: true
+Imports: snow (>= 0.4-4), snowfall (>= 1.84-6.2)
+RoxygenNote: 7.2.3

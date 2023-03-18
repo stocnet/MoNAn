@@ -274,17 +274,7 @@ runPhase2 <- function(dep.var,
   if (parallel && require(snowfall) && cpus > 1) {
     sfInit(parallel = T, cpus = cpus)
     # TODO. Replace this long command with sfLibrary("NetDist") once the package is packaged
-    sfExport(
-      list = c(
-        "runSubphase2",
-        "simulateStatisticVectors",
-        "simulateNSteps",
-        "simulateOneStep",
-        "updateWeightedCache",
-        "multinomialProposal",
-        "getNetworkStatistics"
-      )
-    )
+    sfLibrary(MoNAn)
 
   } else
     parallel <- F
@@ -433,15 +423,7 @@ runPhase3 <- function(dep.var,
 
     sfInit(parallel = T, cpus = cpus)
     # TODO. Replace this long command with sfLibrary("NetDist") once the package is packaged
-    sfExport(
-      list = c(
-        "simulateStatisticVectors",
-        "simulateNSteps",
-        "simulateOneStep",
-        "updateWeightedCache",
-        "getNetworkStatistics"
-      )
-    )
+    sfLibrary(MoNAn)
 
     statsA <-
       sfLapply(iterationsPerCPU, function(nIt)

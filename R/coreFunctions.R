@@ -344,10 +344,10 @@ createWeightedCache <-
 }
 
 
-# estimateDistributionNetwork
+# estimateMobilityNetwork
 #' Title
 #'
-#' @aliases estimateMobilityNetwork
+#' @aliases estimateDistributionNetwork
 #' @param dep.var
 #' @param state
 #' @param cache
@@ -378,7 +378,7 @@ createWeightedCache <-
 #' @export
 #'
 #' @examples
-estimateDistributionNetwork <-
+estimateMobilityNetwork <-
   function(dep.var,
            state,
            cache,
@@ -529,8 +529,8 @@ estimateDistributionNetwork <-
 }
 
 
-# estimateMobilityNetwork
-estimateMobilityNetwork <- estimateDistributionNetwork
+# estimateDistributionNetwork
+estimateDistributionNetwork <- estimateMobilityNetwork
 
 
 # simulateDistributionNetworks

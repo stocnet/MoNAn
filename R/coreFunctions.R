@@ -533,9 +533,10 @@ estimateMobilityNetwork <-
 estimateDistributionNetwork <- estimateMobilityNetwork
 
 
-# simulateDistributionNetworks
+# simulateMobilityNetworks
 #' Title
 #'
+#' @aliases simulateDistributionNetworks
 #' @param cache
 #' @param state
 #' @param effects
@@ -550,7 +551,7 @@ estimateDistributionNetwork <- estimateMobilityNetwork
 #' @export
 #'
 #' @examples
-simulateDistributionNetworks <-
+simulateMobilityNetworks <-
   function(cache,
            state,
            effects,
@@ -605,3 +606,7 @@ simulateDistributionNetworks <-
     class(simulatedList) <- "sims.NetDist"
     return(simulatedList)
 }
+
+
+# simulateDistributionNetworks
+simulateDistributionNetworks <- simulateMobilityNetworks

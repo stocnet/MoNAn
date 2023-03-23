@@ -662,8 +662,8 @@ loopsNegExp <-
 }
 
 
-# min_reciprocity_per
-min_reciprocity_per <-
+# min_reciprocity
+min_reciprocity <-
   function(dep.var = 1,
            state,
            cache,

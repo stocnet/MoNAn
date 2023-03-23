@@ -269,6 +269,16 @@ createProcessState <- function(elements) {
 
 
 # createWeightedCache
+#' Title
+#'
+#' @param processState 
+#' @param cacheObjectNames 
+#' @param ressourceCovariates 
+#'
+#' @return
+#' @export
+#'
+#' @examples
 createWeightedCache <-
   function(processState,
            cacheObjectNames,
@@ -337,7 +347,7 @@ createWeightedCache <-
 # estimateDistributionNetwork
 #' Title
 #'
-#'
+#' @aliases estimateMobilityNetwork
 #' @param dep.var
 #' @param state
 #' @param cache

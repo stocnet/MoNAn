@@ -519,6 +519,10 @@ estimateDistributionNetwork <-
 }
 
 
+# estimateMobilityNetwork
+estimateMobilityNetwork <- estimateDistributionNetwork
+
+
 # simulateDistributionNetworks
 #' Title
 #'

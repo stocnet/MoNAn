@@ -19,7 +19,7 @@ autoCorrelationTestNetDist <- function(dep.var, ans) {
   # get number of simulated nets - 1
   nSims <- length(ans$deps) - 1
 
-  # loop through all of them to see how many ressources are re-allocated
+  # loop through all of them to see how many resources are re-allocated
   means <- c()
   for (i in 1:nSims) {
     means[i] <-

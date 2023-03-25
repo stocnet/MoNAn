@@ -273,7 +273,7 @@ createProcessState <- function(elements) {
 #'
 #' @param processState 
 #' @param cacheObjectNames 
-#' @param ressourceCovariates 
+#' @param resourceCovariates 
 #'
 #' @return
 #' @export
@@ -282,7 +282,7 @@ createProcessState <- function(elements) {
 createWeightedCache <-
   function(processState,
            cacheObjectNames,
-           ressourceCovariates = NULL) {
+           resourceCovariates = NULL) {
     cache <- list()
 
     for (name in cacheObjectNames) {
@@ -301,11 +301,11 @@ createWeightedCache <-
         # create valued network from edge list
         m <- matrix(0, nActors1, nActors2)
 
-        # create weighted ressource networks
-        m.ressource <-
-          lapply(ressourceCovariates, function(v)
+        # create weighted resource networks
+        m.resource <-
+          lapply(resourceCovariates, function(v)
             matrix(0, nrow = nActors1, ncol = nActors2))
-        names(m.ressource) <- ressourceCovariates
+        names(m.resource) <- resourceCovariates
 
         for (i in 1:processState[[name]]$size[1]) {
           sender <- processState[[name]]$data[i, 1]
@@ -313,16 +313,16 @@ createWeightedCache <-
           v <- m[sender, receiver]
           m[sender, receiver] <- v + 1
 
-          # cache network * ressource covariate matrices
-          for (ressCovar in ressourceCovariates) {
-            v <- m.ressource[[ressCovar]] [sender, receiver]
-            m.ressource[[ressCovar]][sender, receiver] <- v +
+          # cache network * resource covariate matrices
+          for (ressCovar in resourceCovariates) {
+            v <- m.resource[[ressCovar]] [sender, receiver]
+            m.resource[[ressCovar]][sender, receiver] <- v +
               processState[[ressCovar]]$data[i]
           }
 
         }
         cache[[name]]$valuedNetwork <- m
-        cache[[name]]$ressourceNetworks <- m.ressource
+        cache[[name]]$resourceNetworks <- m.resource
 
         # edge ids
         edgeSet <- processState[[processState[[name]]$nodeSet[3]]]$ids

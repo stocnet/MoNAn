@@ -57,7 +57,7 @@ binary_transitivity <-
 # crowding_out_by_resource_inflow
 crowding_out_by_resource_inflow <-
   function(dep.var = 1,
-           ressource.attribute.index,
+           resource.attribute.index,
            state,
            cache,
            i,
@@ -66,7 +66,7 @@ crowding_out_by_resource_inflow <-
            update,
            getTargetContribution = F) {
     # proportion needs binary coding with only 0 and 1
-    if (!all(state[[ressource.attribute.index]]$data %in% c(0, 1))) {
+    if (!all(state[[resource.attribute.index]]$data %in% c(0, 1))) {
       stop(
         "effect crowding_out_by_resource_inflow only defined for binary covariates coded 0 1"
       )
@@ -81,15 +81,15 @@ crowding_out_by_resource_inflow <-
 
       # get the diagonal value
       loops <-
-        cache[[dep.var]]$valuedNetwork[j, j] - cache[[dep.var]]$ressourceNetworks[[ressource.attribute.index]][j, j]
+        cache[[dep.var]]$valuedNetwork[j, j] - cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][j, j]
 
       # get the number of X'ers that move in to the node
 
-      in.ressources <-
-        sum(cache[[dep.var]]$ressourceNetworks[[ressource.attribute.index]][, j]) -
-        cache[[dep.var]]$ressourceNetworks[[ressource.attribute.index]][j, j]
+      in.resources <-
+        sum(cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][, j]) -
+        cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][j, j]
 
-      return(loops * in.ressources)
+      return(loops * in.resources)
     }
 
     # get the change statistics
@@ -98,22 +98,22 @@ crowding_out_by_resource_inflow <-
     # both need to know the proportion before
 
     inflow.res.before <-
-      sum(cache[[dep.var]]$ressourceNetworks[[ressource.attribute.index]][, j]) -
-      cache[[dep.var]]$ressourceNetworks[[ressource.attribute.index]][j, j]
+      sum(cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][, j]) -
+      cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][j, j]
 
     # first if a loop is formed
     if (i == j) {
-      return(inflow.res.before * update * (1 - state[[ressource.attribute.index]]$data[edge]))
+      return(inflow.res.before * update * (1 - state[[resource.attribute.index]]$data[edge]))
     }
 
     # now if no loop is formed and the inflow number changes
     loops <-
-      cache[[dep.var]]$valuedNetwork[j, j] - cache[[dep.var]]$ressourceNetworks[[ressource.attribute.index]][j, j]
+      cache[[dep.var]]$valuedNetwork[j, j] - cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][j, j]
 
     inflow.res.after <-
-      sum(cache[[dep.var]]$ressourceNetworks[[ressource.attribute.index]][, j]) -
-      cache[[dep.var]]$ressourceNetworks[[ressource.attribute.index]][j, j] +
-      update * state[[ressource.attribute.index]]$data[edge]
+      sum(cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][, j]) -
+      cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][j, j] +
+      update * state[[resource.attribute.index]]$data[edge]
 
     change <- inflow.res.after - inflow.res.before
     return(change * loops)
@@ -123,7 +123,7 @@ crowding_out_by_resource_inflow <-
 # crowding_out_prop_covar_bin
 crowding_out_prop_covar_bin <-
   function(dep.var = 1,
-           ressource.attribute.index,
+           resource.attribute.index,
            state,
            cache,
            i,
@@ -132,7 +132,7 @@ crowding_out_prop_covar_bin <-
            update,
            getTargetContribution = F) {
     # proportion needs binary coding with only 0 and 1
-    if (!all(state[[ressource.attribute.index]]$data %in% c(0, 1))) {
+    if (!all(state[[resource.attribute.index]]$data %in% c(0, 1))) {
       stop("effect crowding_out_prop_covar_bin only defined for binary covariates coded 0 1")
     }
 
@@ -145,7 +145,7 @@ crowding_out_prop_covar_bin <-
 
       # get the diagonal value
       loops <-
-        cache[[dep.var]]$valuedNetwork[i, j] - cache[[dep.var]]$ressourceNetworks[[ressource.attribute.index]][i, j]
+        cache[[dep.var]]$valuedNetwork[i, j] - cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][i, j]
 
       # get the proportion of X'ers that move in to the node
       # if nobody comes in, the prop equals 0.5
@@ -153,8 +153,8 @@ crowding_out_prop_covar_bin <-
         prop <- 0.5
       } else {
         prop <-
-          (sum(cache[[dep.var]]$ressourceNetworks[[ressource.attribute.index]][, j]) -
-             cache[[dep.var]]$ressourceNetworks[[ressource.attribute.index]][i, j]) /
+          (sum(cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][, j]) -
+             cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][i, j]) /
           (sum(cache[[dep.var]]$valuedNetwork[, j]) - cache[[dep.var]]$valuedNetwork[i, j])
       }
 
@@ -170,15 +170,15 @@ crowding_out_prop_covar_bin <-
       propBefore <- 0.5
     } else {
       propBefore <-
-        (sum(cache[[dep.var]]$ressourceNetworks[[ressource.attribute.index]][, j]) -
-           cache[[dep.var]]$ressourceNetworks[[ressource.attribute.index]][j, j]) /
+        (sum(cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][, j]) -
+           cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][j, j]) /
         (sum(cache[[dep.var]]$valuedNetwork[, j]) - cache[[dep.var]]$valuedNetwork[j, j])
     }
 
     # first if a loop is formed
     if (i == j) {
       # if the res is of attribute == 1, then there are no change stats
-      if (state[[ressource.attribute.index]]$data[edge] == 1) {
+      if (state[[resource.attribute.index]]$data[edge] == 1) {
         return(0)
       }
       # if the res attribute == 0, the change stat is the proportion
@@ -188,7 +188,7 @@ crowding_out_prop_covar_bin <-
     # now if no loop is formed and the proportion changes
     # number of loops of type 0 people in target occ
     loops <-
-      cache[[dep.var]]$valuedNetwork[j, j] - cache[[dep.var]]$ressourceNetworks[[ressource.attribute.index]][j, j]
+      cache[[dep.var]]$valuedNetwork[j, j] - cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][j, j]
 
     # if the last one leaves, the proportion after becomes 0
 
@@ -196,9 +196,9 @@ crowding_out_prop_covar_bin <-
       propAfter <- 0.5
     } else {
       propAfter <-
-        ((sum(cache[[dep.var]]$ressourceNetworks[[ressource.attribute.index]][, j]) +
-            update * state[[ressource.attribute.index]]$data[edge]) -
-           cache[[dep.var]]$ressourceNetworks[[ressource.attribute.index]][j, j]) /
+        ((sum(cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][, j]) +
+            update * state[[resource.attribute.index]]$data[edge]) -
+           cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][j, j]) /
         ((sum(cache[[dep.var]]$valuedNetwork[, j]) + update) - cache[[dep.var]]$valuedNetwork[j, j])
     }
 
@@ -229,11 +229,11 @@ dyadic_covariate <-
 }
 
 
-# dyadic_covariate_ressource_attribute
-dyadic_covariate_ressource_attribute <-
+# dyadic_covariate_resource_attribute
+dyadic_covariate_resource_attribute <-
   function(dep.var = 1,
            attribute.index,
-           ressource.attribute.index,
+           resource.attribute.index,
            state,
            cache,
            i,
@@ -245,9 +245,9 @@ dyadic_covariate_ressource_attribute <-
       return(0)
 
     if (getTargetContribution)
-      return(cache[[dep.var]]$ressourceNetworks[[ressource.attribute.index]][i, j] * state[[attribute.index]]$data[i, j])
+      return(cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][i, j] * state[[attribute.index]]$data[i, j])
 
-    return(update * state[[ressource.attribute.index]]$data[edge] * state[[attribute.index]]$data[i, j])
+    return(update * state[[resource.attribute.index]]$data[edge] * state[[attribute.index]]$data[i, j])
 
 }
 
@@ -270,9 +270,9 @@ dyadic_covariate_tie_weights_sigmoid <-
       stop("Alpha parameter in sigmoid tie weights function must be positive")
 
     if (getTargetContribution) {
-      nRessources <- cache[[dep.var]]$valuedNetwork[i, j]
+      nResources <- cache[[dep.var]]$valuedNetwork[i, j]
       v <- 0
-      for (zz in 0:nRessources) {
+      for (zz in 0:nResources) {
         v <- v + zz / (zz + alpha)
       }
       return(v * state[[attribute.index]]$data[i, j])
@@ -294,7 +294,7 @@ dyadic_covariate_tie_weights_sigmoid <-
 # in_proportion_exponent_covar_bin
 in_proportion_exponent_covar_bin <-
   function(dep.var = 1,
-           ressource.attribute.index,
+           resource.attribute.index,
            state,
            cache,
            i,
@@ -303,7 +303,7 @@ in_proportion_exponent_covar_bin <-
            update,
            getTargetContribution = F,
            exponent = 2) {
-    if (!all(state[[ressource.attribute.index]]$data %in% c(0, 1))) {
+    if (!all(state[[resource.attribute.index]]$data %in% c(0, 1))) {
       stop("effect in_proportion_exponent_covar only defined for binary covariates coded 0 1")
     }
 
@@ -314,7 +314,7 @@ in_proportion_exponent_covar_bin <-
       }
       # calculate proportion that have covar = 1
       prop <-
-        (sum(cache[[dep.var]]$ressourceNetworks[[ressource.attribute.index]][, j]) /
+        (sum(cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][, j]) /
            sum(cache[[dep.var]]$valuedNetwork[, j]))
       # divide by number of rows, as target stats goes through each dyad
       return(prop ^ exponent  / length(cache[[dep.var]]$valuedNetwork[, j]))
@@ -325,17 +325,17 @@ in_proportion_exponent_covar_bin <-
       oldProp <- 0
     } else {
       oldProp <-
-        (sum(cache[[dep.var]]$ressourceNetworks[[ressource.attribute.index]][, j]) /
+        (sum(cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][, j]) /
            sum(cache[[dep.var]]$valuedNetwork[, j])) ^ exponent
     }
 
-    # if a ressource is the last to leave a node, then the new proportion must be 0, not NaN
+    # if a resource is the last to leave a node, then the new proportion must be 0, not NaN
     if ((sum(cache[[dep.var]]$valuedNetwork[, j]) + update) == 0) {
       newProp <- 0
     } else {
       newProp <-
-        ((sum(cache[[dep.var]]$ressourceNetworks[[ressource.attribute.index]][, j]) +
-            update * state[[ressource.attribute.index]]$data[edge]) /
+        ((sum(cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][, j]) +
+            update * state[[resource.attribute.index]]$data[edge]) /
            (sum(cache[[dep.var]]$valuedNetwork[, j]) + update)) ^
         exponent
     }
@@ -394,7 +394,7 @@ in_weights_exponent <-
 # in_weights_exponent_covar
 in_weights_exponent_covar <-
   function(dep.var = 1,
-           ressource.attribute.index,
+           resource.attribute.index,
            state,
            cache,
            i,
@@ -408,14 +408,14 @@ in_weights_exponent_covar <-
 
     # a target contribution is calculated even for unconnected i-j pairs
     if (getTargetContribution)
-      return(sum(cache[[dep.var]]$ressourceNetworks[[ressource.attribute.index]][, j]) ^
+      return(sum(cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][, j]) ^
                exponent /
-               length(cache[[dep.var]]$ressourceNetworks[[ressource.attribute.index]][, j]))
+               length(cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][, j]))
 
     v <-
-      (sum(cache[[dep.var]]$ressourceNetworks[[ressource.attribute.index]][, j]) + update * state[[ressource.attribute.index]]$data[edge]) ^
+      (sum(cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][, j]) + update * state[[resource.attribute.index]]$data[edge]) ^
       exponent -
-      (sum(cache[[dep.var]]$ressourceNetworks[[ressource.attribute.index]][, j])) ^
+      (sum(cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][, j])) ^
       exponent
 
     return(v)
@@ -456,13 +456,13 @@ loops_GW <- function(dep.var = 1,
 
   if (getTargetContribution) {
     if (i == j) {
-      nRessources <- cache[[dep.var]]$valuedNetwork[i, i]
+      nResources <- cache[[dep.var]]$valuedNetwork[i, i]
 
-      if (nRessources == 0)
+      if (nResources == 0)
         return(0)
 
       v <- list()
-      for (turn in 1:nRessources) {
+      for (turn in 1:nResources) {
         ind_cont <- 0
         for (k in 1:turn) {
           ind_cont <- ind_cont + (1 / (alpha) ^ (k))
@@ -529,7 +529,7 @@ loops_node_covar <-
 # loops_resource_covar_node_covar
 loops_resource_covar_node_covar <-
   function(dep.var = 1,
-           ressource.attribute.index,
+           resource.attribute.index,
            attribute.index,
            state,
            cache,
@@ -538,21 +538,21 @@ loops_resource_covar_node_covar <-
            edge,
            update,
            getTargetContribution = F) {
-    # the count in the ressource network on the diagonal times the node covar value
+    # the count in the resource network on the diagonal times the node covar value
     if (getTargetContribution)
-      return ((cache[[dep.var]]$ressourceNetworks[[ressource.attribute.index]][i, j] * (i == j)) * state[[attribute.index]]$data[i])
+      return ((cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][i, j] * (i == j)) * state[[attribute.index]]$data[i])
 
-    # for loops; the ressource attribute; times the node attribute
+    # for loops; the resource attribute; times the node attribute
     if (i == j)
-      return(update * state[[ressource.attribute.index]]$data[edge] * state[[attribute.index]]$data[j])
+      return(update * state[[resource.attribute.index]]$data[edge] * state[[attribute.index]]$data[j])
     return(0)
 }
 
 
-# loops_ressource_covar
-loops_ressource_covar <-
+# loops_resource_covar
+loops_resource_covar <-
   function(dep.var = 1,
-           ressource.attribute.index,
+           resource.attribute.index,
            state,
            cache,
            i,
@@ -565,10 +565,10 @@ loops_ressource_covar <-
     }
 
     if (getTargetContribution) {
-      return(cache[[dep.var]]$ressourceNetworks[[ressource.attribute.index]][i, j])
+      return(cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][i, j])
     }
 
-    return(update * state[[ressource.attribute.index]]$data[edge])
+    return(update * state[[resource.attribute.index]]$data[edge])
 }
 
 
@@ -588,9 +588,9 @@ loops_weight_sigmoid <-
 
     if (getTargetContribution) {
       if (i == j) {
-        nRessources <- cache[[dep.var]]$valuedNetwork[i, i]
+        nResources <- cache[[dep.var]]$valuedNetwork[i, i]
         v <- 0
-        for (zz in 0:nRessources)
+        for (zz in 0:nResources)
           v <- v + zz / (zz + alpha)
         return(v)
       }
@@ -690,10 +690,10 @@ min_reciprocity <-
 }
 
 
-# min_reciprocity_ressource_covar
-min_reciprocity_ressource_covar <-
+# min_reciprocity_resource_covar
+min_reciprocity_resource_covar <-
   function(dep.var = 1,
-           ressource.attribute.index,
+           resource.attribute.index,
            state,
            cache,
            i,
@@ -705,17 +705,17 @@ min_reciprocity_ressource_covar <-
       return(0)
 
     if (getTargetContribution)
-      return (min(cache[[dep.var]]$ressourceNetworks[[ressource.attribute.index]][i, j],
-                  cache[[dep.var]]$ressourceNetworks[[ressource.attribute.index]][j, i]) / 2)
+      return (min(cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][i, j],
+                  cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][j, i]) / 2)
 
     # simplified version that assumes that update are 1 or -1 and the network is an integer network
     if (update > 0 &&
-        (cache[[dep.var]]$ressourceNetworks[[ressource.attribute.index]][i, j] <
-         cache[[dep.var]]$ressourceNetworks[[ressource.attribute.index]][j, i]))
+        (cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][i, j] <
+         cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][j, i]))
       return(1)
     if (update < 0 &&
-        (cache[[dep.var]]$ressourceNetworks[[ressource.attribute.index]][i, j] <=
-         cache[[dep.var]]$ressourceNetworks[[ressource.attribute.index]][j, i]))
+        (cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][i, j] <=
+         cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][j, i]))
       return(-1)
     return(0)
 }
@@ -868,10 +868,10 @@ present_relations <-
 }
 
 
-# ressource_covar_to_node_covar
-ressource_covar_to_node_covar <-
+# resource_covar_to_node_covar
+resource_covar_to_node_covar <-
   function(dep.var = 1,
-           ressource.attribute.index,
+           resource.attribute.index,
            attribute.index,
            state,
            cache,
@@ -888,10 +888,10 @@ ressource_covar_to_node_covar <-
 
     if (getTargetContribution) {
       return(state[[attribute.index]]$data[j] *
-               cache[[dep.var]]$ressourceNetworks[[ressource.attribute.index]][i, j])
+               cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][i, j])
     }
 
-    return(update * state[[ressource.attribute.index]]$data[edge] * state[[attribute.index]]$data[j])
+    return(update * state[[resource.attribute.index]]$data[edge] * state[[attribute.index]]$data[j])
 }
 
 
@@ -948,7 +948,7 @@ sim_covariate <-
 # staying_by_prop_bin_inflow
 staying_by_prop_bin_inflow <-
   function(dep.var = 1,
-           ressource.attribute.index,
+           resource.attribute.index,
            state,
            cache,
            i,
@@ -957,7 +957,7 @@ staying_by_prop_bin_inflow <-
            update,
            getTargetContribution = F) {
     # proportion needs binary coding with only 0 and 1
-    if (!all(state[[ressource.attribute.index]]$data %in% c(0, 1))) {
+    if (!all(state[[resource.attribute.index]]$data %in% c(0, 1))) {
       stop("effect staying_by_prop_bin_inflow only defined for binary covariates coded 0 1")
     }
 
@@ -977,8 +977,8 @@ staying_by_prop_bin_inflow <-
         prop <- 0.5
       } else {
         prop <-
-          (sum(cache[[dep.var]]$ressourceNetworks[[ressource.attribute.index]][, j]) -
-             cache[[dep.var]]$ressourceNetworks[[ressource.attribute.index]][j, j]) /
+          (sum(cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][, j]) -
+             cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][j, j]) /
           (sum(cache[[dep.var]]$valuedNetwork[, j]) - cache[[dep.var]]$valuedNetwork[j, j])
       }
 
@@ -994,8 +994,8 @@ staying_by_prop_bin_inflow <-
       propBefore <- 0.5
     } else {
       propBefore <-
-        (sum(cache[[dep.var]]$ressourceNetworks[[ressource.attribute.index]][, j]) -
-           cache[[dep.var]]$ressourceNetworks[[ressource.attribute.index]][j, j]) /
+        (sum(cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][, j]) -
+           cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][j, j]) /
         (sum(cache[[dep.var]]$valuedNetwork[, j]) - cache[[dep.var]]$valuedNetwork[j, j])
     }
 
@@ -1015,9 +1015,9 @@ staying_by_prop_bin_inflow <-
       propAfter <- 0.5
     } else {
       propAfter <-
-        ((sum(cache[[dep.var]]$ressourceNetworks[[ressource.attribute.index]][, j]) +
-            update * state[[ressource.attribute.index]]$data[edge]) -
-           cache[[dep.var]]$ressourceNetworks[[ressource.attribute.index]][j, j]) /
+        ((sum(cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][, j]) +
+            update * state[[resource.attribute.index]]$data[edge]) -
+           cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][j, j]) /
         ((sum(cache[[dep.var]]$valuedNetwork[, j]) + update) - cache[[dep.var]]$valuedNetwork[j, j])
     }
 
@@ -1029,7 +1029,7 @@ staying_by_prop_bin_inflow <-
 # staying_by_resource_inflow
 staying_by_resource_inflow <-
   function(dep.var = 1,
-           ressource.attribute.index,
+           resource.attribute.index,
            state,
            cache,
            i,
@@ -1038,7 +1038,7 @@ staying_by_resource_inflow <-
            update,
            getTargetContribution = F) {
     # proportion needs binary coding with only 0 and 1
-    if (!all(state[[ressource.attribute.index]]$data %in% c(0, 1))) {
+    if (!all(state[[resource.attribute.index]]$data %in% c(0, 1))) {
       stop("effect staying_by_resource_inflow only defined for binary covariates coded 0 1")
     }
 
@@ -1054,11 +1054,11 @@ staying_by_resource_inflow <-
 
       # get the number of X'ers that move in to the node
 
-      in.ressources <-
-        sum(cache[[dep.var]]$ressourceNetworks[[ressource.attribute.index]][, j]) -
-        cache[[dep.var]]$ressourceNetworks[[ressource.attribute.index]][j, j]
+      in.resources <-
+        sum(cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][, j]) -
+        cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][j, j]
 
-      return(loops * in.ressources)
+      return(loops * in.resources)
     }
 
     # get the change statistics
@@ -1067,8 +1067,8 @@ staying_by_resource_inflow <-
     # both need to know the proportion before
 
     inflow.res.before <-
-      sum(cache[[dep.var]]$ressourceNetworks[[ressource.attribute.index]][, j]) -
-      cache[[dep.var]]$ressourceNetworks[[ressource.attribute.index]][j, j]
+      sum(cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][, j]) -
+      cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][j, j]
 
     # first if a loop is formed
     if (i == j) {
@@ -1079,9 +1079,9 @@ staying_by_resource_inflow <-
     loops <- cache[[dep.var]]$valuedNetwork[j, j]
 
     inflow.res.after <-
-      sum(cache[[dep.var]]$ressourceNetworks[[ressource.attribute.index]][, j]) -
-      cache[[dep.var]]$ressourceNetworks[[ressource.attribute.index]][j, j] +
-      update * state[[ressource.attribute.index]]$data[edge]
+      sum(cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][, j]) -
+      cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][j, j] +
+      update * state[[resource.attribute.index]]$data[edge]
 
     change <- inflow.res.after - inflow.res.before
     return(change * loops)
@@ -1129,9 +1129,9 @@ tie_weights_sigmoid <-
       stop("Alpha parameter in sigmoid tie weights function must be positive")
 
     if (getTargetContribution) {
-      nRessources <- cache[[dep.var]]$valuedNetwork[i, j]
+      nResources <- cache[[dep.var]]$valuedNetwork[i, j]
       v <- 0
-      for (zz in 0:nRessources)
+      for (zz in 0:nResources)
         v <- v + zz / (zz + alpha)
       return(v)
     }

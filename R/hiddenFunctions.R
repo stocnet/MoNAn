@@ -115,7 +115,7 @@ getMultinomialStatistics <-
         updateWeightedCache(
           cache = reducedCache[[dep.var]],
           state = state,
-          ressourceID = number,
+          resourceID = number,
           dep.var = dep.var,
           sender = transferUnderAnalysis[1],
           receiver = transferUnderAnalysis[2],
@@ -615,13 +615,13 @@ simulateOneStep <-
            receiverFixed = F,
            multinomialProposal = F,
            debug = F) {
-    ressourceName <- state[[dep.var]]$nodeSet[3]
+    resourceName <- state[[dep.var]]$nodeSet[3]
     nodeName <- state[[dep.var]]$nodeSet[1]
-    ressourceSet <-
-      which(state[[ressourceName]]$considerWhenSampling)
+    resourceSet <-
+      which(state[[resourceName]]$considerWhenSampling)
 
     # sample edges to swap
-    randomEdge <- sample(ressourceSet, size = 1)
+    randomEdge <- sample(resourceSet, size = 1)
     i <- state[[dep.var]]$data[randomEdge, 1]
     j <- state[[dep.var]]$data[randomEdge, 2]
 
@@ -637,7 +637,7 @@ simulateOneStep <-
       if (debug)
         print(paste("Proposed multinomial change from", i, j))
 
-      # remove ressource from process state
+      # remove resource from process state
       effectFunctions <- effects$effectFormulas
       statisticsDrop <-
         unlist(lapply(effectFunctions, function(f)
@@ -658,7 +658,7 @@ simulateOneStep <-
           cache[[dep.var]],
           i,
           j,
-          ressourceID = randomEdge,
+          resourceID = randomEdge,
           state = state,
           dep.var = dep.var,
           update = -1
@@ -694,7 +694,7 @@ simulateOneStep <-
           cacheNew[[dep.var]],
           sender = i,
           receiver = l,
-          ressourceID = randomEdge,
+          resourceID = randomEdge,
           state = state,
           dep.var = dep.var,
           update = 1
@@ -741,7 +741,7 @@ simulateOneStep <-
           cache[[dep.var]],
           i,
           j,
-          ressourceID = randomEdge,
+          resourceID = randomEdge,
           state = state,
           dep.var = dep.var,
           update = -1
@@ -772,7 +772,7 @@ simulateOneStep <-
             cacheNew[[dep.var]],
             sender = k,
             receiver = l,
-            ressourceID = randomEdge,
+            resourceID = randomEdge,
             state = state,
             dep.var = dep.var,
             update = 1
@@ -882,7 +882,7 @@ simulateStatisticVectors <- function(dep.var,
 updateWeightedCache <- function(cache,
                                 sender,
                                 receiver,
-                                ressourceID = NULL,
+                                resourceID = NULL,
                                 state = NULL,
                                 dep.var = NULL,
                                 # refers to the element of the cache to be updated
@@ -891,12 +891,12 @@ updateWeightedCache <- function(cache,
   if (debug)
     print(paste("update cache for s-r-u", sender, receiver, update))
 
-  # Updates of weighted ressource caches
-  ressourceCovariates <- names(cache$ressourceNetworks)
-  for (ressCovar in ressourceCovariates) {
-    v <- cache$ressourceNetworks[[ressCovar]][sender, receiver]
-    cache$ressourceNetworks[[ressCovar]][sender, receiver] <-
-      v + update * state[[ressCovar]]$data[ressourceID]
+  # Updates of weighted resource caches
+  resourceCovariates <- names(cache$resourceNetworks)
+  for (ressCovar in resourceCovariates) {
+    v <- cache$resourceNetworks[[ressCovar]][sender, receiver]
+    cache$resourceNetworks[[ressCovar]][sender, receiver] <-
+      v + update * state[[ressCovar]]$data[resourceID]
   }
 
 

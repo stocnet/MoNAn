@@ -89,7 +89,7 @@ createEffectsObject <-
 
     effectslist <- list(effectFormulas = effects,
                         name = unlist(effectNames))
-    class(effectslist) <- "effectsList.tssm"
+    class(effectslist) <- "effectsList.monan"
     effectslist
 }
 
@@ -122,7 +122,7 @@ createNetwork <-
       nodeSet = nodeSet,
       size = dim(m)
     )
-    class(l) <- "network.tssm"
+    class(l) <- "network.monan"
     l
   }
 
@@ -164,7 +164,7 @@ createNodeSet <-
       ids = ids,
       considerWhenSampling = considerWhenSampling
     )
-    class(l) <- "nodeSet.tssm"
+    class(l) <- "nodeSet.monan"
     l
 }
 
@@ -204,7 +204,7 @@ createNodeVariable <-
       l[["sim"]] <-
       1 - abs(outer(values, values, "-")) / (range(values)[2] - range(values)[1])
 
-    class(l) <- "nodeVar.tssm"
+    class(l) <- "nodeVar.monan"
     l
 }
 
@@ -234,18 +234,18 @@ createProcessState <- function(elements) {
     if (!(
       class(e) %in% c(
         "edgelist.netdist",
-        "nodeSet.tssm",
-        "nodeVar.tssm",
-        "network.tssm"
+        "nodeSet.monan",
+        "nodeVar.monan",
+        "network.monan"
       )
     ))
       stop(paste("Unknown element of class", class(e)))
 
     # TODO CLEANUP from here. What is necessary, hat should be extended?
 
-    if (class(e) == "nodeSet.tssm")
+    if (class(e) == "nodeSet.monan")
       nodeSetIDs <- c(nodeSetIDs, i)
-    if (class(e) %in% c("network.tssm", "nodeVar.tssm")) {
+    if (class(e) %in% c("network.monan", "nodeVar.monan")) {
       linkedElementIDs <- c(linkedElementIDs, i)
       sizes <- c(sizes, e$size)
     }
@@ -263,7 +263,7 @@ createProcessState <- function(elements) {
   # check if all elements in 'linkedElementIDs' have a corresponding node set
   # TODO implement
 
-  class(elements) <- "processState.tssm"
+  class(elements) <- "processState.monan"
   elements
 }
 
@@ -286,7 +286,7 @@ createWeightedCache <-
     cache <- list()
 
     for (name in cacheObjectNames) {
-      if (!(class(processState[[name]]) %in% c("network.tssm", "edgelist.netdist")))
+      if (!(class(processState[[name]]) %in% c("network.monan", "edgelist.netdist")))
         stop(paste(name, "is not a network or edgelist."))
 
       nodeSet1 <- processState[[processState[[name]]$nodeSet[1]]]$ids
@@ -295,7 +295,7 @@ createWeightedCache <-
       nActors2 <- length(nodeSet2)
 
       cache[[name]] <- list()
-      if (class(processState[[name]]) == "network.tssm")
+      if (class(processState[[name]]) == "network.monan")
         cache[[name]]$valuedNetwork <-  processState[[name]]$data
       if (class(processState[[name]]) == "edgelist.netdist") {
         # create valued network from edge list

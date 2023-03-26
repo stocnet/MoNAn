@@ -4,14 +4,14 @@
 \alias{createWeightedCache}
 \title{Title}
 \usage{
-createWeightedCache(processState, cacheObjectNames, ressourceCovariates = NULL)
+createWeightedCache(processState, cacheObjectNames, resourceCovariates = NULL)
 }
 \arguments{
 \item{processState}{}
 
 \item{cacheObjectNames}{}
 
-\item{ressourceCovariates}{}
+\item{resourceCovariates}{}
 }
 \description{
 Title

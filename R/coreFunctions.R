@@ -34,7 +34,7 @@ createEdgelist <-
     l <- list(data = el,
               nodeSet = nodeSet,
               size = dim(el))
-    class(l) <- "edgelist.netdist"
+    class(l) <- "edgelist.monan"
     l
 }
 
@@ -233,7 +233,7 @@ createProcessState <- function(elements) {
     e <- elements[[i]]
     if (!(
       class(e) %in% c(
-        "edgelist.netdist",
+        "edgelist.monan",
         "nodeSet.monan",
         "nodeVar.monan",
         "network.monan"
@@ -286,7 +286,7 @@ createWeightedCache <-
     cache <- list()
 
     for (name in cacheObjectNames) {
-      if (!(class(processState[[name]]) %in% c("network.monan", "edgelist.netdist")))
+      if (!(class(processState[[name]]) %in% c("network.monan", "edgelist.monan")))
         stop(paste(name, "is not a network or edgelist."))
 
       nodeSet1 <- processState[[processState[[name]]$nodeSet[1]]]$ids
@@ -297,7 +297,7 @@ createWeightedCache <-
       cache[[name]] <- list()
       if (class(processState[[name]]) == "network.monan")
         cache[[name]]$valuedNetwork <-  processState[[name]]$data
-      if (class(processState[[name]]) == "edgelist.netdist") {
+      if (class(processState[[name]]) == "edgelist.monan") {
         # create valued network from edge list
         m <- matrix(0, nActors1, nActors2)
 
@@ -522,7 +522,7 @@ estimateMobilityNetwork <-
       )
     }
 
-    class(result) <- "result.netdist"
+    class(result) <- "result.monan"
 
     return(result)
 
@@ -603,7 +603,7 @@ simulateMobilityNetworks <-
       if (runif(1) < 0.02)
         cat("<o_><")
     }
-    class(simulatedList) <- "sims.NetDist"
+    class(simulatedList) <- "sims.monan"
     return(simulatedList)
 }
 

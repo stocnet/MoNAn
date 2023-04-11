@@ -1,1 +1,6 @@
 exportPattern("^[[:alpha:]]+")
+
+S3method(print, result.monan)
+S3method(plot, traces.monan)
+S3method(plot, gof.Stats.monan)
+S3method(print, scoretest.monan)

@@ -24,7 +24,7 @@ Column1,Function Name,Description,Core / Effect / Hidden / Auxiliary / gof-param
 22,extractTracesMoNAn,Makes trace-plots from phase 3 simulations,Auxiliary,"former ""extractTracesNetDist"""
 23,getCovarianceMatrix,see name,Hidden,
 24,getIndividualEstimates,get non-partial initial estimates,Hidden,uses mlogit
-25,getInitialEstimates,get initial estimates, option to specify partial,Auxiliary,
+25,getInitialEstimates,get initial estimates (option to specify partial),Auxiliary,
 26,getMultinomialEstimates,get partial initial estimates,Hidden,uses mlogit
 27,getMultinomialStatistics,function used in estimation,Hidden,
 28,getNetworkStatistics,function used in estimation,Hidden,

@@ -23,6 +23,7 @@ Column1,Function Name,Description,Core / Effect / Hidden / Auxiliary / gof-param
 21,extractResultsConsistencyMlogit,Function used for testing package,,Do not include in package
 22,extractTraces,Makes trace-plots from phase 3 simulations,Auxiliary,"former ""extractTracesNetDist"""
 23,getCovarianceMatrix,see name,Hidden,
+, getIndegree,,gof-param,
 24,getIndividualEstimates,get non-partial initial estimates,Hidden,uses mlogit
 25,getInitialEstimates,get initial estimates (option to specify partial),Auxiliary,
 26,getMultinomialEstimates,get partial initial estimates,Hidden,uses mlogit

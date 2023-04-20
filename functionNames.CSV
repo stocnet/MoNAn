@@ -1,0 +1,70 @@
+Column1,Function Name,Description,Core / Effect / Hidden / Auxiliary / gof-param,Notes
+1,alter_covariate,Effect Modelling Popularity depending on alter attribute,Effect,
+2,as.nodeVariable,"forwards to ""createNodeVariable""",Core,Perhaps superfluous
+3,autoCorrelationTestMoNAn,tests the mixing of the chain used in phase 3,Auxiliary,"former ""autoCorrelationTestNetDist"""
+4,binarizeNetwork,Dichotomizes network,Hidden,
+5,binary_transitivity,Effect Modelling transitivity of the dichotomised network,Effect,
+6,createEdgelist,"takes data and creates an edgelist for the ""state"" object",Core,
+7,createEffectsObject,used to specify the model,Core,
+8,createNetwork,"takes data and creates a network for the ""state"" object",Core,
+9,createNodeSet,"takes data and creates a nodeset for the ""state"" object",Core,
+10,createNodeVariable,"takes data and creates a variable on onw of the node sets for the ""state"" object",Core,
+11,createProcessState,Bundles all relevant data together for estimation,Core,
+12,createWeightedCache,Generates the cache that sppeds up simuation and estimation,Core,
+13,crowding_out_by_resource_inflow,Effect modeling replacement,Effect,
+14,crowding_out_prop_covar_bin,Effect modeling replacement,Effect,
+15,dyadic_covariate,Effect modelling impact of dyadic variable,Effect,
+16,dyadic_covariate_resource_attribute,Effect modelling impact of dyadic variable * resource attribute,Effect,"former ""dyadic_covariate_ressource_attribute"""
+17,dyadic_covariate_tie_weights_sigmoid,Effect modelling impact of dyadic variable * concentration,Effect,
+18,estimateDistributionNetwork,Function to estimate it all,Core,
+,estimateMobilityNetwork,(see estimateDistributionNetwork),Core,
+19,estimateFromDataEffects,Function used for testing package,,Do not include in package
+20,extractResultsConsistencyDN,Function used for testing package,,Do not include in package
+21,extractResultsConsistencyMlogit,Function used for testing package,,Do not include in package
+22,extractTracesMoNAn,Makes trace-plots from phase 3 simulations,Auxiliary,"former ""extractTracesNetDist"""
+23,getCovarianceMatrix,see name,Hidden,
+24,getIndividualEstimates,get non-partial initial estimates,Hidden,uses mlogit
+25,getInitialEstimates,get initial estimates, option to specify partial,Auxiliary,
+26,getMultinomialEstimates,get partial initial estimates,Hidden,uses mlogit
+27,getMultinomialStatistics,function used in estimation,Hidden,
+28,getNetworkStatistics,function used in estimation,Hidden,
+29,getTieWeights,function used in gof,gof-param,
+30,gofDistributionNetwork,Calculate gof of an ans object,Auxiliary,
+31,in_proportion_exponent_covar_bin,Effects modelling whether people with attribute = 1 flock into soecific nodes,Effect,
+32,in_ties_loops,Effects modelling correlation between indegree and loops,Effect,
+33,in_weights_exponent,Effects modelling indegree concentration,Effect,
+34,in_weights_exponent_covar,Effects modelling indegree concentration by resource covars,Effect,
+35,loops,Effects modelling staying,Effect,
+36,loops_GW,Effects modelling staying with GW,Effect,
+37,loops_node_covar,Effects modelling staying by node covar,Effect,
+38,loops_resource_covar_node_covar,Effects modelling staying by node and resource covar,Effect,
+39,loops_resource_covar,Effects modelling staying by resource covar,Effect,"former ""loops_ressource_covar"""
+40,loops_weight_sigmoid,Effects modelling staying by other nonlinear function,Effect,
+41,loopsNegExp,Effects modelling staying by other nonlinear function,Effect,
+42,min_reciprocity,Effects modelling reciprocity by min,Effect,"former ""min_reciprocity_per"""
+43,min_reciprocity_resource_covar,Effects modelling reciprocity by min weighted by resource covar,Effect,"former ""min_reciprocity_ressource_covar"""
+44,min_transitivity,Effects modelling balabced clustering,Effect,
+45,netflow_transitivity,Effects modelling flow-based transitivity,Effect,
+46,plot.gof.Stats.monan,Plot gof results,Auxiliary,"former ""plot.gof.Stats.netDist"""
+47,plot.traces.monan,plot traces from Phase 3,Auxiliary,"former ""plot.traces.netdist"""
+48,present_relations,Effect modelling number fo non-0 entries in the data,Effect,
+49,print.result.monan,Print results,Auxiliary,"former ""print.result.netdist"""
+50,print.scoretest.monan,print score-test results,Auxiliary,"former ""print.scoretest.netdist"""
+51,resource_covar_to_node_covar,Effect modelling match of vars on node and resource level,Effect,"former ""ressource_covar_to_node_covar"""
+52,runPhase1,Internal functions for estimation,Hidden,
+53,runPhase2,Internal functions for estimation,Hidden,
+54,runPhase3,Internal functions for estimation,Hidden,
+55,runSubphase2,Internal functions for estimation,Hidden,
+56,same_covariate,Effect modelling homophily of locations,Effect,
+57,scoreTestMoNAn,Calculating score test for inclusion of new effects,Auxiliary,"former ""scoreTestNetDist"""
+58,sim_covariate,Effect modelling homophily of locations,Effect,
+59,simulateDistributionNetworks,Simulate from parameters and data,Core,
+,simulateMobilityNetworks,(see simulateDistributionNetworks),Core,
+60,simulateNSteps,Internal functions for estimation / simulation,Hidden,
+61,simulateOneStep,Internal functions for estimation / simulation,Hidden,
+62,simulateStatisticVectors,Internal functions for estimation / simulation,Hidden,
+63,staying_by_prop_bin_inflow,Effect modelling replacement,Effect,
+64,staying_by_resource_inflow,Effect modelling replacement,Effect,
+65,tie_weights_exponent,Effect modelling non-linear shape on tie weights,Effect,
+66,tie_weights_sigmoid,Effect modelling non-linear shape on tie weights,Effect,
+67,updateWeightedCache,Internal functions for estimation / simulation,Hidden,

@@ -23,13 +23,13 @@ Column1,Function Name,Description,Core / Effect / Hidden / Auxiliary / gof-param
 21,extractResultsConsistencyMlogit,Function used for testing package,,Do not include in package
 22,extractTraces,Makes trace-plots from phase 3 simulations,Auxiliary,"former ""extractTracesNetDist"""
 23,getCovarianceMatrix,see name,Hidden,
-, getIndegree,,gof-param,
+, getIndegree,,gof-param, as defined in the Illustration-Script
 24,getIndividualEstimates,get non-partial initial estimates,Hidden,uses mlogit
 25,getInitialEstimates,get initial estimates (option to specify partial),Auxiliary,
 26,getMultinomialEstimates,get partial initial estimates,Hidden,uses mlogit
 27,getMultinomialStatistics,function used in estimation,Hidden,
 28,getNetworkStatistics,function used in estimation,Hidden,
-29,getTieWeights,function used in gof,gof-param,
+29,getTieWeights,function used in gof,gof-param, as defined in the Illustration-Script
 30,gofDistributionNetwork,Calculate gof of an ans object,Auxiliary,
 31,in_proportion_exponent_covar_bin,Effects modelling whether people with attribute = 1 flock into soecific nodes,Effect,
 32,in_ties_loops,Effects modelling correlation between indegree and loops,Effect,

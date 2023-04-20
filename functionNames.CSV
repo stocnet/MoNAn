@@ -1,7 +1,7 @@
 Column1,Function Name,Description,Core / Effect / Hidden / Auxiliary / gof-param,Notes
 1,alter_covariate,Effect Modelling Popularity depending on alter attribute,Effect,
 2,as.nodeVariable,"forwards to ""createNodeVariable""",Core,Perhaps superfluous
-3,autoCorrelationTestMoNAn,tests the mixing of the chain used in phase 3,Auxiliary,"former ""autoCorrelationTestNetDist"""
+3,autoCorrelationTest,tests the mixing of the chain used in phase 3,Auxiliary,"former ""autoCorrelationTestNetDist"""
 4,binarizeNetwork,Dichotomizes network,Hidden,
 5,binary_transitivity,Effect Modelling transitivity of the dichotomised network,Effect,
 6,createEdgelist,"takes data and creates an edgelist for the ""state"" object",Core,
@@ -21,7 +21,7 @@ Column1,Function Name,Description,Core / Effect / Hidden / Auxiliary / gof-param
 19,estimateFromDataEffects,Function used for testing package,,Do not include in package
 20,extractResultsConsistencyDN,Function used for testing package,,Do not include in package
 21,extractResultsConsistencyMlogit,Function used for testing package,,Do not include in package
-22,extractTracesMoNAn,Makes trace-plots from phase 3 simulations,Auxiliary,"former ""extractTracesNetDist"""
+22,extractTraces,Makes trace-plots from phase 3 simulations,Auxiliary,"former ""extractTracesNetDist"""
 23,getCovarianceMatrix,see name,Hidden,
 24,getIndividualEstimates,get non-partial initial estimates,Hidden,uses mlogit
 25,getInitialEstimates,get initial estimates (option to specify partial),Auxiliary,
@@ -56,7 +56,7 @@ Column1,Function Name,Description,Core / Effect / Hidden / Auxiliary / gof-param
 54,runPhase3,Internal functions for estimation,Hidden,
 55,runSubphase2,Internal functions for estimation,Hidden,
 56,same_covariate,Effect modelling homophily of locations,Effect,
-57,scoreTestMoNAn,Calculating score test for inclusion of new effects,Auxiliary,"former ""scoreTestNetDist"""
+57,scoreTest,Calculating score test for inclusion of new effects,Auxiliary,"former ""scoreTestNetDist"""
 58,sim_covariate,Effect modelling homophily of locations,Effect,
 59,simulateDistributionNetworks,Simulate from parameters and data,Core,
 ,simulateMobilityNetworks,(see simulateDistributionNetworks),Core,

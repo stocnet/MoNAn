@@ -1,5 +1,20 @@
-exportPattern("^[[:alpha:]]+")
+# functions to be exported
+export(
+  
+  # core functions
+  as.nodeVariable, createEdgelist, createEffectsObject, createNetwork, 
+  createNodeSet, createNodeVariable, createProcessState, createWeightedCache,
+  estimateMobilityNetwork, estimateDistributionNetwork, 
+  simulateMobilityNetworks, simulateDistributionNetworks,
+  
+  # auxiliary functions
+  autoCorrelationTest, extractTraces, getInitialEstimates, gofDistributionNetwork,
+  plot.gof.stats.monan, plot.traces.monan, print.result.monan, 
+  print.scoretest.monan, scoreTest
+)
 
+
+# S3 methods
 S3method(print, result.monan)
 S3method(plot, traces.monan)
 S3method(plot, gof.stats.monan)

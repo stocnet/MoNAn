@@ -1,7 +1,7 @@
 ########## auxiliaryFunctions
 
 
-# autoCorrelationTestMoNAn
+# autoCorrelationTest
 #' Title
 #'
 #' @param dep.var
@@ -11,7 +11,7 @@
 #' @export
 #'
 #' @examples
-autoCorrelationTestMoNAn <- function(dep.var, ans) {
+autoCorrelationTest <- function(dep.var, ans) {
   # give error if no deps in ans obj
   if (is.null(ans$deps))
     stop("ans object does not have simulations stored; use returnDeps = T in estimation")
@@ -30,7 +30,7 @@ autoCorrelationTestMoNAn <- function(dep.var, ans) {
 }
 
 
-# extractTracesMoNAn
+# extractTraces
 #' Title
 #'
 #' @param dep.var
@@ -41,7 +41,7 @@ autoCorrelationTestMoNAn <- function(dep.var, ans) {
 #' @export
 #'
 #' @examples
-extractTracesMoNAn <- function(dep.var, ans, effects) {
+extractTraces <- function(dep.var, ans, effects) {
   # give error if no deps in ans
   if (is.null(ans$deps))
     stop("ans object does not have simulated states stored; use returnDeps = T in estimation")
@@ -247,7 +247,7 @@ print.scoretest.monan <- function(x, ...) {
 }
 
 
-# scoreTestMoNAn
+# scoreTest
 #' Title
 #'
 #' @param dep.var
@@ -258,7 +258,7 @@ print.scoretest.monan <- function(x, ...) {
 #' @export
 #'
 #' @examples
-scoreTestMoNAn <- function(dep.var, ans, effects) {
+scoreTest <- function(dep.var, ans, effects) {
   # give error if no deps in ans
   if (is.null(ans$deps))
     stop("ans object does not have simulated states stored; use returnDeps = T in estimation")

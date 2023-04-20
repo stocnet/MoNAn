@@ -140,12 +140,12 @@ gofDistributionNetwork <-
     simStats <- gofStats
     simStats[[1]] <- NULL
     gofRes <- list(observed = gofStats[[1]], simulated = simStats)
-    class(gofRes) <- "gof.Stats.monan"
+    class(gofRes) <- "gof.stats.monan"
     return(gofRes)
 }
 
 
-# plot.gof.Stats.monan
+# plot.gof.stats.monan
 #' Title
 #'
 #' @param gofObject
@@ -155,7 +155,7 @@ gofDistributionNetwork <-
 #' @export
 #'
 #' @examples
-plot.gof.Stats.monan <- function(gofObject, lvls = NULL) {
+plot.gof.stats.monan <- function(gofObject, lvls = NULL) {
   if (is.null(lvls))
     lvls <- 1:length(gofObject$observed)
   simStats <- Reduce(rbind, gofObject$simulated)

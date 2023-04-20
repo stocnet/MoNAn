@@ -45,7 +45,7 @@ Column1,Function Name,Description,Core / Effect / Hidden / Auxiliary / gof-param
 43,min_reciprocity_resource_covar,Effects modelling reciprocity by min weighted by resource covar,Effect,"former ""min_reciprocity_ressource_covar"""
 44,min_transitivity,Effects modelling balabced clustering,Effect,
 45,netflow_transitivity,Effects modelling flow-based transitivity,Effect,
-46,plot.gof.Stats.monan,Plot gof results,Auxiliary,"former ""plot.gof.Stats.netDist"""
+46,plot.gof.stats.monan,Plot gof results,Auxiliary,"former ""plot.gof.Stats.netDist"""
 47,plot.traces.monan,plot traces from Phase 3,Auxiliary,"former ""plot.traces.netdist"""
 48,present_relations,Effect modelling number fo non-0 entries in the data,Effect,
 49,print.result.monan,Print results,Auxiliary,"former ""print.result.netdist"""

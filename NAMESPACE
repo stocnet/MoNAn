@@ -10,7 +10,10 @@ export(
   # auxiliary functions
   autoCorrelationTest, extractTraces, getInitialEstimates, gofDistributionNetwork,
   plot.gof.stats.monan, plot.traces.monan, print.result.monan, 
-  print.scoretest.monan, scoreTest
+  print.scoretest.monan, scoreTest,
+  
+  # gof param functions
+  getIndegree, getTieWeights
 )
 
 

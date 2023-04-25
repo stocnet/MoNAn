@@ -2,6 +2,17 @@
 
 
 # getIndegree
+#' Title
+#'
+#' @param cache 
+#' @param dep.var 
+#' @param lvls 
+#' @param ... 
+#'
+#' @return
+#' @export
+#'
+#' @examples
 getIndegree <- function(cache, dep.var, lvls, ...){
   m <- cache[[dep.var]]$valuedNetwork
   v <- cbind(lvls, 0)
@@ -12,6 +23,17 @@ getIndegree <- function(cache, dep.var, lvls, ...){
 
 
 # getTieWeights
+#' Title
+#'
+#' @param cache 
+#' @param dep.var 
+#' @param lvls 
+#' @param ... 
+#'
+#' @return
+#' @export
+#'
+#' @examples
 getTieWeights <- function(cache, dep.var, lvls, ...) {
   m <- cache[[dep.var]]$valuedNetwork
   if (is.null(lvls))

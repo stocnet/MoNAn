@@ -12,3 +12,19 @@ createProcessState(elements)
 \description{
 Title
 }
+\examples{
+# Create a process state out of the example data objects:
+exampleState <- createProcessState(list(
+
+transfers = createEdgelist(mobilityEdgelist, nodeSet = c("micro_class", "micro_class", "people") ),
+
+people = createNodeSet(1:nrow(mobilityEdgelist)),
+micro_class = createNodeSet(1:length(nodeVarCat)),
+
+nodeVarCat = createNodeVariable(nodeVarCat, nodeSet = "micro_class"),
+nodeVarCont = createNodeVariable(nodeVarCont, nodeSet = "micro_class", addSim = TRUE),
+
+resVarCat = createNodeVariable(resVarCat, nodeSet = "people")
+
+))
+}

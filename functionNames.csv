@@ -4,7 +4,7 @@ Column1,Function Name,Description,Core / Effect / Hidden / Auxiliary / gof-param
 3,autoCorrelationTest,tests the mixing of the chain used in phase 3,Auxiliary,,,"former ""autoCorrelationTestNetDist"""
 4,binarizeNetwork,Dichotomizes network,Hidden,,,
 5,binary_transitivity,Effect Modelling transitivity of the dichotomised network,Effect,,,
-6,createEdgelist,"takes data and creates an edgelist for the ""state"" object",Core,,,
+6,createEdgelist,"takes data and creates an edgelist for the ""state"" object",Core,,x,
 7,createEffectsObject,used to specify the model,Core,,,
 8,createNetwork,"takes data and creates a network for the ""state"" object",Core,,,
 9,createNodeSet,"takes data and creates a nodeset for the ""state"" object",Core,,,

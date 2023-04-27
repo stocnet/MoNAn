@@ -16,7 +16,7 @@ as.nodeVariable <- function(values) {
 
 
 # createEdgelist
-#' Title
+#' Create an edgelist object
 #'
 #' @param el
 #' @param nodeSet
@@ -24,7 +24,11 @@ as.nodeVariable <- function(values) {
 #' @return
 #' @export
 #'
+#' @seealso \code{\link{createProcessState}}
+#' 
 #' @examples
+#' # create an object of class edgelist.monan
+#' transfers = createEdgelist(mobilityEdgelist, nodeSet = c("micro_class", "micro_class", "people"))
 createEdgelist <-
   function(el, nodeSet = c("actors", "actors", "edges")) {
     if (dim(el)[2] != 2)

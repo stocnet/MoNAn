@@ -2,7 +2,7 @@
 % Please edit documentation in R/coreFunctions.R
 \name{createEdgelist}
 \alias{createEdgelist}
-\title{Title}
+\title{Create an edgelist object}
 \usage{
 createEdgelist(el, nodeSet = c("actors", "actors", "edges"))
 }
@@ -10,5 +10,12 @@ createEdgelist(el, nodeSet = c("actors", "actors", "edges"))
 \item{nodeSet}{}
 }
 \description{
-Title
+Create an edgelist object
+}
+\examples{
+# create an object of class edgelist.monan
+transfers = createEdgelist(mobilityEdgelist, nodeSet = c("micro_class", "micro_class", "people"))
+}
+\seealso{
+\code{\link{createProcessState}}, \code{\link{createNodeVariable}}
 }

@@ -17,5 +17,5 @@ Create an edgelist object
 transfers = createEdgelist(mobilityEdgelist, nodeSet = c("micro_class", "micro_class", "people"))
 }
 \seealso{
-\code{\link{createProcessState}}, \code{\link{createNodeVariable}}
+\code{\link{createProcessState}}
 }

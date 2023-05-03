@@ -12,3 +12,10 @@ autoCorrelationTest(dep.var, ans)
 \description{
 Title
 }
+\examples{
+# regression diagnostics
+autoCorrelationTest(dependentVariable, resDN)
+}
+\seealso{
+\code{\link{estimateMobilityNetwork}}
+}

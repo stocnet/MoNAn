@@ -12,3 +12,11 @@ extractTraces(dep.var, ans, effects)
 \description{
 Title
 }
+\examples{
+# regression diagnostics
+traces <- extractTraces(dependentVariable, resDN, exampleEffects)
+plot(traces)
+}
+\seealso{
+\code{\link{estimateMobilityNetwork}}, \code{\link{createEffectsObject}}
+}

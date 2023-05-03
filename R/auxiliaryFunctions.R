@@ -9,8 +9,12 @@
 #'
 #' @return
 #' @export
+#' 
+#' @seealso \code{\link{estimateMobilityNetwork}}
 #'
 #' @examples
+#' # regression diagnostics
+#' autoCorrelationTest(dependentVariable, resDN)
 autoCorrelationTest <- function(dep.var, ans) {
   # give error if no deps in ans obj
   if (is.null(ans$deps))
@@ -39,8 +43,13 @@ autoCorrelationTest <- function(dep.var, ans) {
 #'
 #' @return
 #' @export
+#' 
+#' @seealso \code{\link{estimateMobilityNetwork}}, \code{\link{createEffectsObject}}
 #'
 #' @examples
+#' # regression diagnostics
+#' traces <- extractTraces(dependentVariable, resDN, exampleEffects)
+#' plot(traces)
 extractTraces <- function(dep.var, ans, effects) {
   # give error if no deps in ans
   if (is.null(ans$deps))
@@ -106,8 +115,17 @@ getInitialEstimates <-
 #'
 #' @return
 #' @export
+#' 
+#' @seealso \code{\link{estimateMobilityNetwork}}, \code{\link{getIndegree}}, 
+#' \code{\link{getTieWeights}}
 #'
 #' @examples
+#' # goodness of fit
+#' gof.indegree.1 <- gofDistributionNetwork(ans = resDN, simulations = resDN$deps, gofFunction = getIndegree, lvls = 1:100)
+#' plot(gof.indegree.1)
+#' 
+#' gof.tie.weights.1 <- gofDistributionNetwork(ans = resDN, simulations = resDN$deps, gofFunction = getTieWeights, lvls = 1:30)
+#' plot(gof.tie.weights.1)
 gofDistributionNetwork <-
   function(ans,
            simulations,
@@ -256,8 +274,21 @@ print.scoretest.monan <- function(x, ...) {
 #'
 #' @return
 #' @export
+#' 
+#' @seealso \code{\link{createEffectsObject}}, \code{\link{estimateMobilityNetwork}}
 #'
 #' @examples
+#' # test whether other effects should be included
+#' exampleEffects2 <- createEffectsObject(
+#'   list(
+#'     list('loops'),
+#'     list('min_reciprocity'),
+#'     list('loops_resource_covar', resource.attribute.index = "resVarCat"),
+#'     list('min_transitivity')
+#'   )
+#' )
+#' 
+#' test_ME.2 <- scoreTest(dependentVariable, resDN, exampleEffects2)
 scoreTest <- function(dep.var, ans, effects) {
   # give error if no deps in ans
   if (is.null(ans$deps))

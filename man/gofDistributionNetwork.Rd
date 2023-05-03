@@ -18,3 +18,15 @@ gofDistributionNetwork(
 \description{
 Title
 }
+\examples{
+# goodness of fit
+gof.indegree.1 <- gofDistributionNetwork(ans = resDN, simulations = resDN$deps, gofFunction = getIndegree, lvls = 1:100)
+plot(gof.indegree.1)
+
+gof.tie.weights.1 <- gofDistributionNetwork(ans = resDN, simulations = resDN$deps, gofFunction = getTieWeights, lvls = 1:30)
+plot(gof.tie.weights.1)
+}
+\seealso{
+\code{\link{estimateMobilityNetwork}}, \code{\link{getIndegree}}, 
+\code{\link{getTieWeights}}
+}

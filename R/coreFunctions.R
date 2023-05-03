@@ -325,6 +325,8 @@ createProcessState <- function(elements) {
 #'
 #' @return
 #' @export
+#' 
+#' @seealso \code{\link{createProcessState}}
 #'
 #' @examples
 #' # define dependent variable and create cache object
@@ -428,8 +430,25 @@ createWeightedCache <-
 #'
 #' @return
 #' @export
+#' 
+#' @seealso \code{\link{createProcessState}}, \code{\link{createWeightedCache}}, 
+#' \code{\link{createEffectsObject}}
 #'
 #' @examples
+#' # estimate mobility network
+#' resDN <- estimateMobilityNetwork(dependentVariable, 
+#' exampleState, exampleCache, exampleEffects,
+#' initialParameters = NULL,
+#' burnInN1 = 200, iterationsN1 = 50, thinningN1 = 2000, gainN1 = 0.1,
+#' burnInN2 = 2000, nsubN2 = 4, initGain = 0.25, thinningN2 = 2000, 
+#' initialIterationsN2 = 25,
+#' iterationsN3 = 500, burnInN3 = 2000, thinningN3 = 2000,
+#' parallel = T, cpus = 4,
+#' allowLoops = T,
+#' verbose = T,
+#' returnDeps = T,
+#' multinomialProposal = T,
+#' fish = F)
 estimateMobilityNetwork <-
   function(dep.var,
            state,

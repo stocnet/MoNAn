@@ -12,3 +12,19 @@ scoreTest(dep.var, ans, effects)
 \description{
 Title
 }
+\examples{
+# test whether other effects should be included
+exampleEffects2 <- createEffectsObject(
+  list(
+    list('loops'),
+    list('min_reciprocity'),
+    list('loops_resource_covar', resource.attribute.index = "resVarCat"),
+    list('min_transitivity')
+  )
+)
+
+test_ME.2 <- scoreTest(dependentVariable, resDN, exampleEffects2)
+}
+\seealso{
+\code{\link{createEffectsObject}}, \code{\link{estimateMobilityNetwork}}
+}

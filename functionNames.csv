@@ -2,7 +2,7 @@ Column1,Function Name,Description,Core / Effect / Hidden / Auxiliary / gof-param
 1,alter_covariate,Effect Modelling Popularity depending on alter attribute,Effect,,,
 2,as.nodeVariable,"forwards to ""createNodeVariable""",Core,,,Perhaps superfluous
 3,autoCorrelationTest,tests the mixing of the chain used in phase 3,Auxiliary,,x,"former ""autoCorrelationTestNetDist"""
-4,binarizeNetwork,Dichotomizes network,Hidden,,not needed,
+4,binarizeNetwork,Dichotomizes network,Hidden,not needed,not needed,
 5,binary_transitivity,Effect Modelling transitivity of the dichotomised network,Effect,,,
 6,createEdgelist,"takes data and creates an edgelist for the ""state"" object",Core,,x,
 7,createEffectsObject,used to specify the model,Core,,x,
@@ -21,13 +21,13 @@ Column1,Function Name,Description,Core / Effect / Hidden / Auxiliary / gof-param
 20,extractResultsConsistencyDN,Function used for testing package,,,,Do not include in package
 21,extractResultsConsistencyMlogit,Function used for testing package,,,,Do not include in package
 22,extractTraces,Makes trace-plots from phase 3 simulations,Auxiliary,,x,"former ""extractTracesNetDist"""
-23,getCovarianceMatrix,see name,Hidden,,-,
+23,getCovarianceMatrix,see name,Hidden,not needed,not needed,
 , getIndegree,,gof-param,,, as defined in the Illustration-Script
-24,getIndividualEstimates,get non-partial initial estimates,Hidden,,,uses mlogit
+24,getIndividualEstimates,get non-partial initial estimates,Hidden,not needed,not needed,uses mlogit
 25,getInitialEstimates,get initial estimates (option to specify partial),Auxiliary,,,
-26,getMultinomialEstimates,get partial initial estimates,Hidden,,,uses mlogit
-27,getMultinomialStatistics,function used in estimation,Hidden,,,
-28,getNetworkStatistics,function used in estimation,Hidden,,,
+26,getMultinomialEstimates,get partial initial estimates,Hidden,not needed,not needed,uses mlogit
+27,getMultinomialStatistics,function used in estimation,Hidden,not needed,not needed,
+28,getNetworkStatistics,function used in estimation,Hidden,not needed,not needed,
 29,getTieWeights,function used in gof,gof-param,,, as defined in the Illustration-Script
 30,gofDistributionNetwork,Calculate gof of an ans object,Auxiliary,,x,
 31,in_proportion_exponent_covar_bin,Effects modelling whether people with attribute = 1 flock into soecific nodes,Effect,,,
@@ -51,19 +51,19 @@ Column1,Function Name,Description,Core / Effect / Hidden / Auxiliary / gof-param
 49,print.result.monan,Print results,Auxiliary,,,"former ""print.result.netdist"""
 50,print.scoretest.monan,print score-test results,Auxiliary,,,"former ""print.scoretest.netdist"""
 51,resource_covar_to_node_covar,Effect modelling match of vars on node and resource level,Effect,,,"former ""ressource_covar_to_node_covar"""
-52,runPhase1,Internal functions for estimation,Hidden,,,
-53,runPhase2,Internal functions for estimation,Hidden,,,
-54,runPhase3,Internal functions for estimation,Hidden,,,
-55,runSubphase2,Internal functions for estimation,Hidden,,,
+52,runPhase1,Internal functions for estimation,Hidden,not needed,not needed,
+53,runPhase2,Internal functions for estimation,Hidden,not needed,not needed,
+54,runPhase3,Internal functions for estimation,Hidden,not needed,not needed,
+55,runSubphase2,Internal functions for estimation,Hidden,not needed,not needed,
 56,same_covariate,Effect modelling homophily of locations,Effect,,,
 57,scoreTest,Calculating score test for inclusion of new effects,Auxiliary,,x,"former ""scoreTestNetDist"""
 58,sim_covariate,Effect modelling homophily of locations,Effect,,,
 59,simulateMobilityNetworks,Simulate from parameters and data,Core,,,"also applicable as ""simulateDistributionNetworks"""
-60,simulateNSteps,Internal functions for estimation / simulation,Hidden,,,
-61,simulateOneStep,Internal functions for estimation / simulation,Hidden,,,
-62,simulateStatisticVectors,Internal functions for estimation / simulation,Hidden,,,
+60,simulateNSteps,Internal functions for estimation / simulation,Hidden,not needed,not needed,
+61,simulateOneStep,Internal functions for estimation / simulation,Hidden,not needed,not needed,
+62,simulateStatisticVectors,Internal functions for estimation / simulation,Hidden,not needed,not needed,
 63,staying_by_prop_bin_inflow,Effect modelling replacement,Effect,,,
 64,staying_by_resource_inflow,Effect modelling replacement,Effect,,,
 65,tie_weights_exponent,Effect modelling non-linear shape on tie weights,Effect,,,
 66,tie_weights_sigmoid,Effect modelling non-linear shape on tie weights,Effect,,,
-67,updateWeightedCache,Internal functions for estimation / simulation,Hidden,,,
+67,updateWeightedCache,Internal functions for estimation / simulation,Hidden,not needed,not needed,

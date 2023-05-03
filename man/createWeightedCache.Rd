@@ -16,3 +16,9 @@ createWeightedCache(processState, cacheObjectNames, resourceCovariates = NULL)
 \description{
 Title
 }
+\examples{
+# define dependent variable and create cache object
+dependentVariable <- "transfers"
+
+exampleCache <- createWeightedCache(exampleState, dependentVariable, resourceCovariates = c("resVarCat"))
+}

@@ -12,3 +12,13 @@ createEffectsObject(effectInit, checkProcessState = NULL)
 \description{
 Title
 }
+\examples{
+# create an effects object
+exampleEffects <- createEffectsObject(
+list(
+  list('loops'),
+  list('min_reciprocity'),
+  list('loops_resource_covar', resource.attribute.index = "resVarCat")
+)
+)
+}

@@ -53,6 +53,14 @@ createEdgelist <-
 #' @export
 #'
 #' @examples
+#' # create an effects object
+#' exampleEffects <- createEffectsObject(
+#' list(
+#'   list('loops'),
+#'   list('min_reciprocity'),
+#'   list('loops_resource_covar', resource.attribute.index = "resVarCat")
+#' )
+#' )
 createEffectsObject <-
   function(effectInit, checkProcessState = NULL) {
     # TODO add default parameters to effect names
@@ -319,6 +327,10 @@ createProcessState <- function(elements) {
 #' @export
 #'
 #' @examples
+#' # define dependent variable and create cache object
+#' dependentVariable <- "transfers"
+#' 
+#' exampleCache <- createWeightedCache(exampleState, dependentVariable, resourceCovariates = c("resVarCat"))
 createWeightedCache <-
   function(processState,
            cacheObjectNames,

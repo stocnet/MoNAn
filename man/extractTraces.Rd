@@ -2,14 +2,21 @@
 % Please edit documentation in R/auxiliaryFunctions.R
 \name{extractTraces}
 \alias{extractTraces}
+\alias{plot.traces.monan}
 \title{Title}
 \usage{
 extractTraces(dep.var, ans, effects)
+
+\method{plot}{traces.monan}(xx, ...)
 }
 \arguments{
 \item{effects}{}
+
+\item{...}{}
 }
 \description{
+Title
+
 Title
 }
 \examples{

@@ -2,6 +2,7 @@
 % Please edit documentation in R/auxiliaryFunctions.R
 \name{gofDistributionNetwork}
 \alias{gofDistributionNetwork}
+\alias{plot.gof.stats.monan}
 \title{Title}
 \usage{
 gofDistributionNetwork(
@@ -11,11 +12,15 @@ gofDistributionNetwork(
   dep.var = NULL,
   lvls = NULL
 )
+
+\method{plot}{gof.stats.monan}(gofObject, lvls = NULL)
 }
 \arguments{
 \item{lvls}{}
 }
 \description{
+Title
+
 Title
 }
 \examples{

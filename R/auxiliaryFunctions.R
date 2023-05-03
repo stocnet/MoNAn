@@ -166,6 +166,7 @@ gofDistributionNetwork <-
 # plot.gof.stats.monan
 #' Title
 #'
+#' @rdname gofDistributionNetwork
 #' @param gofObject
 #' @param lvls
 #'
@@ -185,6 +186,7 @@ plot.gof.stats.monan <- function(gofObject, lvls = NULL) {
 # plot.traces.monan
 #' Title
 #'
+#' @rdname extractTraces
 #' @param xx
 #' @param ...
 #'

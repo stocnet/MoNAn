@@ -1,9 +1,9 @@
 Column1,Function Name,Description,Core / Effect / Hidden / Auxiliary / gof-param,Documentation provided,Example provided,Notes
-1,alter_covariate,Effect Modelling Popularity depending on alter attribute,Effect,,,
+1,alter_covariate,Effect Modelling Popularity depending on alter attribute,Effect,not needed,not needed,
 2,as.nodeVariable,"forwards to ""createNodeVariable""",Core,,,Perhaps superfluous
 3,autoCorrelationTest,tests the mixing of the chain used in phase 3,Auxiliary,,x,"former ""autoCorrelationTestNetDist"""
 4,binarizeNetwork,Dichotomizes network,Hidden,not needed,not needed,
-5,binary_transitivity,Effect Modelling transitivity of the dichotomised network,Effect,,,
+5,binary_transitivity,Effect Modelling transitivity of the dichotomised network,Effect,not needed,not needed,
 6,createEdgelist,"takes data and creates an edgelist for the ""state"" object",Core,,x,
 7,createEffectsObject,used to specify the model,Core,,x,
 8,createNetwork,"takes data and creates a network for the ""state"" object",Core,,,
@@ -11,11 +11,11 @@ Column1,Function Name,Description,Core / Effect / Hidden / Auxiliary / gof-param
 10,createNodeVariable,"takes data and creates a variable on onw of the node sets for the ""state"" object",Core,,x,
 11,createProcessState,Bundles all relevant data together for estimation,Core,,x,
 12,createWeightedCache,Generates the cache that sppeds up simuation and estimation,Core,,x,
-13,crowding_out_by_resource_inflow,Effect modeling replacement,Effect,,,
-14,crowding_out_prop_covar_bin,Effect modeling replacement,Effect,,,
-15,dyadic_covariate,Effect modelling impact of dyadic variable,Effect,,,
-16,dyadic_covariate_resource_attribute,Effect modelling impact of dyadic variable * resource attribute,Effect,,,"former ""dyadic_covariate_ressource_attribute"""
-17,dyadic_covariate_tie_weights_sigmoid,Effect modelling impact of dyadic variable * concentration,Effect,,,
+13,crowding_out_by_resource_inflow,Effect modeling replacement,Effect,not needed,not needed,
+14,crowding_out_prop_covar_bin,Effect modeling replacement,Effect,not needed,not needed,
+15,dyadic_covariate,Effect modelling impact of dyadic variable,Effect,not needed,not needed,
+16,dyadic_covariate_resource_attribute,Effect modelling impact of dyadic variable * resource attribute,Effect,not needed,not needed,"former ""dyadic_covariate_ressource_attribute"""
+17,dyadic_covariate_tie_weights_sigmoid,Effect modelling impact of dyadic variable * concentration,Effect,not needed,not needed,
 18,estimateMobilityNetwork,Function to estimate it all,Core,,x,"also applicable as ""estimateDistributionNetwork"""
 19,estimateFromDataEffects,Function used for testing package,,,,Do not include in package
 20,extractResultsConsistencyDN,Function used for testing package,,,,Do not include in package
@@ -30,40 +30,40 @@ Column1,Function Name,Description,Core / Effect / Hidden / Auxiliary / gof-param
 28,getNetworkStatistics,function used in estimation,Hidden,not needed,not needed,
 29,getTieWeights,function used in gof,gof-param,,, as defined in the Illustration-Script
 30,gofDistributionNetwork,Calculate gof of an ans object,Auxiliary,,x,
-31,in_proportion_exponent_covar_bin,Effects modelling whether people with attribute = 1 flock into soecific nodes,Effect,,,
-32,in_ties_loops,Effects modelling correlation between indegree and loops,Effect,,,
-33,in_weights_exponent,Effects modelling indegree concentration,Effect,,,
-34,in_weights_exponent_covar,Effects modelling indegree concentration by resource covars,Effect,,,
-35,loops,Effects modelling staying,Effect,,,
-36,loops_GW,Effects modelling staying with GW,Effect,,,
-37,loops_node_covar,Effects modelling staying by node covar,Effect,,,
-38,loops_resource_covar_node_covar,Effects modelling staying by node and resource covar,Effect,,,
-39,loops_resource_covar,Effects modelling staying by resource covar,Effect,,,"former ""loops_ressource_covar"""
-40,loops_weight_sigmoid,Effects modelling staying by other nonlinear function,Effect,,,
-41,loopsNegExp,Effects modelling staying by other nonlinear function,Effect,,,
-42,min_reciprocity,Effects modelling reciprocity by min,Effect,,,"former ""min_reciprocity_per"""
-43,min_reciprocity_resource_covar,Effects modelling reciprocity by min weighted by resource covar,Effect,,,"former ""min_reciprocity_ressource_covar"""
-44,min_transitivity,Effects modelling balabced clustering,Effect,,,
-45,netflow_transitivity,Effects modelling flow-based transitivity,Effect,,,
+31,in_proportion_exponent_covar_bin,Effects modelling whether people with attribute = 1 flock into soecific nodes,Effect,not needed,not needed,
+32,in_ties_loops,Effects modelling correlation between indegree and loops,Effect,not needed,not needed,
+33,in_weights_exponent,Effects modelling indegree concentration,Effect,not needed,not needed,
+34,in_weights_exponent_covar,Effects modelling indegree concentration by resource covars,Effect,not needed,not needed,
+35,loops,Effects modelling staying,Effect,not needed,not needed,
+36,loops_GW,Effects modelling staying with GW,Effect,not needed,not needed,
+37,loops_node_covar,Effects modelling staying by node covar,Effect,not needed,not needed,
+38,loops_resource_covar_node_covar,Effects modelling staying by node and resource covar,Effect,not needed,not needed,
+39,loops_resource_covar,Effects modelling staying by resource covar,Effect,not needed,not needed,"former ""loops_ressource_covar"""
+40,loops_weight_sigmoid,Effects modelling staying by other nonlinear function,Effect,not needed,not needed,
+41,loopsNegExp,Effects modelling staying by other nonlinear function,Effect,not needed,not needed,
+42,min_reciprocity,Effects modelling reciprocity by min,Effect,not needed,not needed,"former ""min_reciprocity_per"""
+43,min_reciprocity_resource_covar,Effects modelling reciprocity by min weighted by resource covar,Effect,not needed,not needed,"former ""min_reciprocity_ressource_covar"""
+44,min_transitivity,Effects modelling balabced clustering,Effect,not needed,not needed,
+45,netflow_transitivity,Effects modelling flow-based transitivity,Effect,not needed,not needed,
 46,plot.gof.stats.monan,Plot gof results,Auxiliary,,,"former ""plot.gof.Stats.netDist"""
 47,plot.traces.monan,plot traces from Phase 3,Auxiliary,,,"former ""plot.traces.netdist"""
-48,present_relations,Effect modelling number fo non-0 entries in the data,Effect,,,
+48,present_relations,Effect modelling number fo non-0 entries in the data,Effect,not needed,not needed,
 49,print.result.monan,Print results,Auxiliary,,,"former ""print.result.netdist"""
 50,print.scoretest.monan,print score-test results,Auxiliary,,,"former ""print.scoretest.netdist"""
-51,resource_covar_to_node_covar,Effect modelling match of vars on node and resource level,Effect,,,"former ""ressource_covar_to_node_covar"""
+51,resource_covar_to_node_covar,Effect modelling match of vars on node and resource level,Effect,not needed,not needed,"former ""ressource_covar_to_node_covar"""
 52,runPhase1,Internal functions for estimation,Hidden,not needed,not needed,
 53,runPhase2,Internal functions for estimation,Hidden,not needed,not needed,
 54,runPhase3,Internal functions for estimation,Hidden,not needed,not needed,
 55,runSubphase2,Internal functions for estimation,Hidden,not needed,not needed,
-56,same_covariate,Effect modelling homophily of locations,Effect,,,
+56,same_covariate,Effect modelling homophily of locations,Effect,not needed,not needed,
 57,scoreTest,Calculating score test for inclusion of new effects,Auxiliary,,x,"former ""scoreTestNetDist"""
-58,sim_covariate,Effect modelling homophily of locations,Effect,,,
+58,sim_covariate,Effect modelling homophily of locations,Effect,not needed,not needed,
 59,simulateMobilityNetworks,Simulate from parameters and data,Core,,,"also applicable as ""simulateDistributionNetworks"""
 60,simulateNSteps,Internal functions for estimation / simulation,Hidden,not needed,not needed,
 61,simulateOneStep,Internal functions for estimation / simulation,Hidden,not needed,not needed,
 62,simulateStatisticVectors,Internal functions for estimation / simulation,Hidden,not needed,not needed,
-63,staying_by_prop_bin_inflow,Effect modelling replacement,Effect,,,
-64,staying_by_resource_inflow,Effect modelling replacement,Effect,,,
-65,tie_weights_exponent,Effect modelling non-linear shape on tie weights,Effect,,,
-66,tie_weights_sigmoid,Effect modelling non-linear shape on tie weights,Effect,,,
+63,staying_by_prop_bin_inflow,Effect modelling replacement,Effect,not needed,not needed,
+64,staying_by_resource_inflow,Effect modelling replacement,Effect,not needed,not needed,
+65,tie_weights_exponent,Effect modelling non-linear shape on tie weights,Effect,not needed,not needed,
+66,tie_weights_sigmoid,Effect modelling non-linear shape on tie weights,Effect,not needed,not needed,
 67,updateWeightedCache,Internal functions for estimation / simulation,Hidden,not needed,not needed,

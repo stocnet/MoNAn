@@ -16,7 +16,7 @@ Column1,Function Name,Description,Core / Effect / Hidden / Auxiliary / gof-param
 15,dyadic_covariate,Effect modelling impact of dyadic variable,Effect,,,
 16,dyadic_covariate_resource_attribute,Effect modelling impact of dyadic variable * resource attribute,Effect,,,"former ""dyadic_covariate_ressource_attribute"""
 17,dyadic_covariate_tie_weights_sigmoid,Effect modelling impact of dyadic variable * concentration,Effect,,,
-18,estimateMobilityNetwork,Function to estimate it all,Core,,x,also applicable as "estimateDistributionNetwork"
+18,estimateMobilityNetwork,Function to estimate it all,Core,,x,"also applicable as ""estimateDistributionNetwork"""
 19,estimateFromDataEffects,Function used for testing package,,,,Do not include in package
 20,extractResultsConsistencyDN,Function used for testing package,,,,Do not include in package
 21,extractResultsConsistencyMlogit,Function used for testing package,,,,Do not include in package

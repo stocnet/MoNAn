@@ -14,7 +14,7 @@ Create an edgelist object
 }
 \examples{
 # create an object of class edgelist.monan
-transfers = createEdgelist(mobilityEdgelist, nodeSet = c("micro_class", "micro_class", "people"))
+transfers_EL <- createEdgelist(mobilityEdgelist, nodeSet = c("location", "location", "people"))
 }
 \seealso{
 \code{\link{createProcessState}}

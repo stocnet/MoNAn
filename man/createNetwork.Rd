@@ -17,3 +17,6 @@ createNetwork(
 \description{
 Title
 }
+\seealso{
+\code{\link{createProcessState}}
+}

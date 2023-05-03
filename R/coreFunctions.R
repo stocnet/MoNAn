@@ -28,7 +28,7 @@ as.nodeVariable <- function(values) {
 #' 
 #' @examples
 #' # create an object of class edgelist.monan
-#' transfers = createEdgelist(mobilityEdgelist, nodeSet = c("micro_class", "micro_class", "people"))
+#' transfers_EL <- createEdgelist(mobilityEdgelist, nodeSet = c("location", "location", "people"))
 createEdgelist <-
   function(el, nodeSet = c("actors", "actors", "edges")) {
     if (dim(el)[2] != 2)
@@ -108,6 +108,8 @@ createEffectsObject <-
 #'
 #' @return
 #' @export
+#' 
+#' @seealso \code{\link{createProcessState}}
 #'
 #' @examples
 createNetwork <-
@@ -140,8 +142,13 @@ createNetwork <-
 #'
 #' @return
 #' @export
+#' 
+#' @seealso \code{\link{createProcessState}}
 #'
 #' @examples
+#' # create an object of class nodeSet.monan
+#' people_NS <- createNodeSet(1:nrow(mobilityEdgelist))
+#' location_NS <- createNodeSet(1:length(nodeVarCat))
 createNodeSet <-
   function(x = NULL,
            isPresent = NULL,
@@ -184,8 +191,14 @@ createNodeSet <-
 #'
 #' @return
 #' @export
+#' 
+#' @seealso \code{\link{createProcessState}}
 #'
 #' @examples
+#' # create an object of class nodeVar.monan
+#' nodeVarCat_NV <- createNodeVariable(nodeVarCat, nodeSet = "location")
+#' nodeVarCont_NV <- createNodeVariable(nodeVarCont, nodeSet = "location", addSim = TRUE)
+#' resVarCat_NV <- createNodeVariable(resVarCat, nodeSet = "people")
 createNodeVariable <-
   function(values,
            range = NULL,
@@ -220,21 +233,30 @@ createNodeVariable <-
 #'
 #' @return
 #' @export
+#' 
+#' @seealso \code{\link{createEdgelist}}, \code{\link{createNodeSet}}, 
+#' \code{\link{createNodeVariable}}, \code{\link{createNetwork}}
 #'
 #' @examples
 #' # Create a process state out of the example data objects:
+#' # create objects (which are later combined to the process state)
+#' transfers_EL <- createEdgelist(mobilityEdgelist, nodeSet = c("location", "location", "people"))
+#' people_NS <- createNodeSet(1:nrow(mobilityEdgelist))
+#' location_NS <- createNodeSet(1:length(nodeVarCat))
+#' nodeVarCat_NV <- createNodeVariable(nodeVarCat, nodeSet = "location")
+#' nodeVarCont_NV <- createNodeVariable(nodeVarCont, nodeSet = "location", addSim = TRUE)
+#' resVarCat_NV <- createNodeVariable(resVarCat, nodeSet = "people")
+#' 
+#' # combine created objects to the process state
 #' exampleState <- createProcessState(list(
-#' 
-#' transfers = createEdgelist(mobilityEdgelist, nodeSet = c("micro_class", "micro_class", "people") ),
-#' 
-#' people = createNodeSet(1:nrow(mobilityEdgelist)),
-#' micro_class = createNodeSet(1:length(nodeVarCat)),
-#' 
-#' nodeVarCat = createNodeVariable(nodeVarCat, nodeSet = "micro_class"),
-#' nodeVarCont = createNodeVariable(nodeVarCont, nodeSet = "micro_class", addSim = TRUE),
-#' 
-#' resVarCat = createNodeVariable(resVarCat, nodeSet = "people")
-#' 
+#'   
+#'   transfers = transfers_EL,
+#'   people = people_NS,
+#'   location = location_NS,
+#'   nodeVarCat = nodeVarCat_NV,
+#'   nodeVarCont = nodeVarCont_NV,
+#'   resVarCat = resVarCat_NV
+#'   
 #' ))
 createProcessState <- function(elements) {
   if (!is.list(elements))

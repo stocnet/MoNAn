@@ -14,17 +14,27 @@ Title
 }
 \examples{
 # Create a process state out of the example data objects:
+# create objects (which are later combined to the process state)
+transfers_EL <- createEdgelist(mobilityEdgelist, nodeSet = c("location", "location", "people"))
+people_NS <- createNodeSet(1:nrow(mobilityEdgelist))
+location_NS <- createNodeSet(1:length(nodeVarCat))
+nodeVarCat_NV <- createNodeVariable(nodeVarCat, nodeSet = "location")
+nodeVarCont_NV <- createNodeVariable(nodeVarCont, nodeSet = "location", addSim = TRUE)
+resVarCat_NV <- createNodeVariable(resVarCat, nodeSet = "people")
+
+# combine created objects to the process state
 exampleState <- createProcessState(list(
-
-transfers = createEdgelist(mobilityEdgelist, nodeSet = c("micro_class", "micro_class", "people") ),
-
-people = createNodeSet(1:nrow(mobilityEdgelist)),
-micro_class = createNodeSet(1:length(nodeVarCat)),
-
-nodeVarCat = createNodeVariable(nodeVarCat, nodeSet = "micro_class"),
-nodeVarCont = createNodeVariable(nodeVarCont, nodeSet = "micro_class", addSim = TRUE),
-
-resVarCat = createNodeVariable(resVarCat, nodeSet = "people")
-
+  
+  transfers = transfers_EL,
+  people = people_NS,
+  location = location_NS,
+  nodeVarCat = nodeVarCat_NV,
+  nodeVarCont = nodeVarCont_NV,
+  resVarCat = resVarCat_NV
+  
 ))
+}
+\seealso{
+\code{\link{createEdgelist}}, \code{\link{createNodeSet}}, 
+\code{\link{createNodeVariable}}, \code{\link{createNetwork}}
 }

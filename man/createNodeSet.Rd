@@ -12,3 +12,11 @@ createNodeSet(x = NULL, isPresent = NULL, considerWhenSampling = NULL)
 \description{
 Title
 }
+\examples{
+# create an object of class nodeSet.monan
+people_NS <- createNodeSet(1:nrow(mobilityEdgelist))
+location_NS <- createNodeSet(1:length(nodeVarCat))
+}
+\seealso{
+\code{\link{createProcessState}}
+}

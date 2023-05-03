@@ -1,8 +1,8 @@
 Column1,Function Name,Description,Core / Effect / Hidden / Auxiliary / gof-param,Documentation provided,Example provided,Notes
 1,alter_covariate,Effect Modelling Popularity depending on alter attribute,Effect,,,
 2,as.nodeVariable,"forwards to ""createNodeVariable""",Core,,,Perhaps superfluous
-3,autoCorrelationTest,tests the mixing of the chain used in phase 3,Auxiliary,,,"former ""autoCorrelationTestNetDist"""
-4,binarizeNetwork,Dichotomizes network,Hidden,,,
+3,autoCorrelationTest,tests the mixing of the chain used in phase 3,Auxiliary,,x,"former ""autoCorrelationTestNetDist"""
+4,binarizeNetwork,Dichotomizes network,Hidden,,not needed,
 5,binary_transitivity,Effect Modelling transitivity of the dichotomised network,Effect,,,
 6,createEdgelist,"takes data and creates an edgelist for the ""state"" object",Core,,x,
 7,createEffectsObject,used to specify the model,Core,,x,
@@ -16,13 +16,12 @@ Column1,Function Name,Description,Core / Effect / Hidden / Auxiliary / gof-param
 15,dyadic_covariate,Effect modelling impact of dyadic variable,Effect,,,
 16,dyadic_covariate_resource_attribute,Effect modelling impact of dyadic variable * resource attribute,Effect,,,"former ""dyadic_covariate_ressource_attribute"""
 17,dyadic_covariate_tie_weights_sigmoid,Effect modelling impact of dyadic variable * concentration,Effect,,,
-18,estimateDistributionNetwork,Function to estimate it all,Core,,,
-,estimateMobilityNetwork,(see estimateDistributionNetwork),Core,,,
+18,estimateMobilityNetwork,Function to estimate it all,Core,,x,also applicable as "estimateDistributionNetwork"
 19,estimateFromDataEffects,Function used for testing package,,,,Do not include in package
 20,extractResultsConsistencyDN,Function used for testing package,,,,Do not include in package
 21,extractResultsConsistencyMlogit,Function used for testing package,,,,Do not include in package
-22,extractTraces,Makes trace-plots from phase 3 simulations,Auxiliary,,,"former ""extractTracesNetDist"""
-23,getCovarianceMatrix,see name,Hidden,,,
+22,extractTraces,Makes trace-plots from phase 3 simulations,Auxiliary,,x,"former ""extractTracesNetDist"""
+23,getCovarianceMatrix,see name,Hidden,,-,
 , getIndegree,,gof-param,,, as defined in the Illustration-Script
 24,getIndividualEstimates,get non-partial initial estimates,Hidden,,,uses mlogit
 25,getInitialEstimates,get initial estimates (option to specify partial),Auxiliary,,,
@@ -30,7 +29,7 @@ Column1,Function Name,Description,Core / Effect / Hidden / Auxiliary / gof-param
 27,getMultinomialStatistics,function used in estimation,Hidden,,,
 28,getNetworkStatistics,function used in estimation,Hidden,,,
 29,getTieWeights,function used in gof,gof-param,,, as defined in the Illustration-Script
-30,gofDistributionNetwork,Calculate gof of an ans object,Auxiliary,,,
+30,gofDistributionNetwork,Calculate gof of an ans object,Auxiliary,,x,
 31,in_proportion_exponent_covar_bin,Effects modelling whether people with attribute = 1 flock into soecific nodes,Effect,,,
 32,in_ties_loops,Effects modelling correlation between indegree and loops,Effect,,,
 33,in_weights_exponent,Effects modelling indegree concentration,Effect,,,
@@ -57,10 +56,9 @@ Column1,Function Name,Description,Core / Effect / Hidden / Auxiliary / gof-param
 54,runPhase3,Internal functions for estimation,Hidden,,,
 55,runSubphase2,Internal functions for estimation,Hidden,,,
 56,same_covariate,Effect modelling homophily of locations,Effect,,,
-57,scoreTest,Calculating score test for inclusion of new effects,Auxiliary,,,"former ""scoreTestNetDist"""
+57,scoreTest,Calculating score test for inclusion of new effects,Auxiliary,,x,"former ""scoreTestNetDist"""
 58,sim_covariate,Effect modelling homophily of locations,Effect,,,
-59,simulateDistributionNetworks,Simulate from parameters and data,Core,,,
-,simulateMobilityNetworks,(see simulateDistributionNetworks),Core,,,
+59,simulateMobilityNetworks,Simulate from parameters and data,Core,,,also applicable as "simulateDistributionNetworks"
 60,simulateNSteps,Internal functions for estimation / simulation,Hidden,,,
 61,simulateOneStep,Internal functions for estimation / simulation,Hidden,,,
 62,simulateStatisticVectors,Internal functions for estimation / simulation,Hidden,,,

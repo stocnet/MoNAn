@@ -1,4 +1,4 @@
-#' MoNAn: A package to estimate distribution networks.
+#' MoNAn: A package to estimate mobility networks.
 #'
 #'
 #'

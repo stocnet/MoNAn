@@ -3,7 +3,7 @@
 \docType{package}
 \name{MoNAn}
 \alias{MoNAn}
-\title{MoNAn: A package to estimate distribution networks.}
+\title{MoNAn: A package to estimate mobility networks.}
 \section{MoNAn functions}{
 
 }

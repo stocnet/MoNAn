@@ -2,8 +2,8 @@ Package: MoNAn
 Type: Package
 Title: What the Package Does (Title Case)
 Version: 0.0.0.9000
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
+Date: 2023-05-05
+Authors@R: person("Per", "Block", role = c("cre", "aut"), email = "block@soziologie.uzh.ch")
 Description: More about what it does (maybe more than one line)
     Use four spaces when indenting paragraphs within the Description.
 Depends: R (>= 4.2.2)

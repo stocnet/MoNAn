@@ -25,5 +25,5 @@ nodeVarCont_NV <- createNodeVariable(nodeVarCont, nodeSet = "location", addSim =
 resVarCat_NV <- createNodeVariable(resVarCat, nodeSet = "people")
 }
 \seealso{
-\code{\link{createProcessState}}
+\code{\link[=createProcessState]{createProcessState()}}
 }

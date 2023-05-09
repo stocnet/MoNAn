@@ -10,7 +10,7 @@
 #' @return
 #' @export
 #' 
-#' @seealso \code{\link{estimateMobilityNetwork}}
+#' @seealso [estimateMobilityNetwork()]
 #'
 #' @examples
 #' # regression diagnostics
@@ -44,7 +44,7 @@ autoCorrelationTest <- function(dep.var, ans) {
 #' @return
 #' @export
 #' 
-#' @seealso \code{\link{estimateMobilityNetwork}}, \code{\link{createEffectsObject}}
+#' @seealso [estimateMobilityNetwork()], [createEffectsObject()]
 #'
 #' @examples
 #' # regression diagnostics
@@ -116,8 +116,8 @@ getInitialEstimates <-
 #' @return
 #' @export
 #' 
-#' @seealso \code{\link{estimateMobilityNetwork}}, \code{\link{getIndegree}}, 
-#' \code{\link{getTieWeights}}
+#' @seealso [estimateMobilityNetwork()], [getIndegree()], 
+#' [getTieWeights()]
 #'
 #' @examples
 #' # goodness of fit
@@ -277,7 +277,7 @@ print.scoretest.monan <- function(x, ...) {
 #' @return
 #' @export
 #' 
-#' @seealso \code{\link{createEffectsObject}}, \code{\link{estimateMobilityNetwork}}
+#' @seealso [createEffectsObject()], [estimateMobilityNetwork()]
 #'
 #' @examples
 #' # test whether other effects should be included

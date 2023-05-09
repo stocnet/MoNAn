@@ -35,6 +35,6 @@ exampleState <- createProcessState(list(
 ))
 }
 \seealso{
-\code{\link{createEdgelist}}, \code{\link{createNodeSet}}, 
-\code{\link{createNodeVariable}}, \code{\link{createNetwork}}
+\code{\link[=createEdgelist]{createEdgelist()}}, \code{\link[=createNodeSet]{createNodeSet()}},
+\code{\link[=createNodeVariable]{createNodeVariable()}}, \code{\link[=createNetwork]{createNetwork()}}
 }

@@ -17,5 +17,5 @@ Title
 autoCorrelationTest(dependentVariable, resDN)
 }
 \seealso{
-\code{\link{estimateMobilityNetwork}}
+\code{\link[=estimateMobilityNetwork]{estimateMobilityNetwork()}}
 }

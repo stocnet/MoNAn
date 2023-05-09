@@ -18,5 +18,5 @@ createNetwork(
 Title
 }
 \seealso{
-\code{\link{createProcessState}}
+\code{\link[=createProcessState]{createProcessState()}}
 }

@@ -26,5 +26,5 @@ exampleEffects2 <- createEffectsObject(
 test_ME.2 <- scoreTest(dependentVariable, resDN, exampleEffects2)
 }
 \seealso{
-\code{\link{createEffectsObject}}, \code{\link{estimateMobilityNetwork}}
+\code{\link[=createEffectsObject]{createEffectsObject()}}, \code{\link[=estimateMobilityNetwork]{estimateMobilityNetwork()}}
 }

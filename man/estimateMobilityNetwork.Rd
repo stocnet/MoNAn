@@ -56,6 +56,6 @@ multinomialProposal = T,
 fish = F)
 }
 \seealso{
-\code{\link{createProcessState}}, \code{\link{createWeightedCache}}, 
-\code{\link{createEffectsObject}}
+\code{\link[=createProcessState]{createProcessState()}}, \code{\link[=createWeightedCache]{createWeightedCache()}},
+\code{\link[=createEffectsObject]{createEffectsObject()}}
 }

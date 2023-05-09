@@ -24,7 +24,7 @@ as.nodeVariable <- function(values) {
 #' @return
 #' @export
 #'
-#' @seealso \code{\link{createProcessState}}
+#' @seealso [createProcessState()]
 #' 
 #' @examples
 #' # create an object of class edgelist.monan
@@ -117,7 +117,7 @@ createEffectsObject <-
 #' @return
 #' @export
 #' 
-#' @seealso \code{\link{createProcessState}}
+#' @seealso [createProcessState()]
 #'
 #' @examples
 createNetwork <-
@@ -151,7 +151,7 @@ createNetwork <-
 #' @return
 #' @export
 #' 
-#' @seealso \code{\link{createProcessState}}
+#' @seealso [createProcessState()]
 #'
 #' @examples
 #' # create an object of class nodeSet.monan
@@ -200,7 +200,7 @@ createNodeSet <-
 #' @return
 #' @export
 #' 
-#' @seealso \code{\link{createProcessState}}
+#' @seealso [createProcessState()]
 #'
 #' @examples
 #' # create an object of class nodeVar.monan
@@ -242,8 +242,8 @@ createNodeVariable <-
 #' @return
 #' @export
 #' 
-#' @seealso \code{\link{createEdgelist}}, \code{\link{createNodeSet}}, 
-#' \code{\link{createNodeVariable}}, \code{\link{createNetwork}}
+#' @seealso [createEdgelist()], [createNodeSet()], 
+#' [createNodeVariable()], [createNetwork()]
 #'
 #' @examples
 #' # Create a process state out of the example data objects:
@@ -326,7 +326,7 @@ createProcessState <- function(elements) {
 #' @return
 #' @export
 #' 
-#' @seealso \code{\link{createProcessState}}
+#' @seealso [createProcessState()]
 #'
 #' @examples
 #' # define dependent variable and create cache object
@@ -431,8 +431,8 @@ createWeightedCache <-
 #' @return
 #' @export
 #' 
-#' @seealso \code{\link{createProcessState}}, \code{\link{createWeightedCache}}, 
-#' \code{\link{createEffectsObject}}
+#' @seealso [createProcessState()], [createWeightedCache()], 
+#' [createEffectsObject()]
 #'
 #' @examples
 #' # estimate mobility network

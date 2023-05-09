@@ -25,5 +25,5 @@ traces <- extractTraces(dependentVariable, resDN, exampleEffects)
 plot(traces)
 }
 \seealso{
-\code{\link{estimateMobilityNetwork}}, \code{\link{createEffectsObject}}
+\code{\link[=estimateMobilityNetwork]{estimateMobilityNetwork()}}, \code{\link[=createEffectsObject]{createEffectsObject()}}
 }

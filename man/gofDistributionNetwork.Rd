@@ -32,6 +32,6 @@ gof.tie.weights.1 <- gofDistributionNetwork(ans = resDN, simulations = resDN$dep
 plot(gof.tie.weights.1)
 }
 \seealso{
-\code{\link{estimateMobilityNetwork}}, \code{\link{getIndegree}}, 
-\code{\link{getTieWeights}}
+\code{\link[=estimateMobilityNetwork]{estimateMobilityNetwork()}}, \code{\link[=getIndegree]{getIndegree()}},
+\code{\link[=getTieWeights]{getTieWeights()}}
 }

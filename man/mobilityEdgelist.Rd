@@ -30,14 +30,14 @@ nodeVarCont
 resVarCat
 }
 \description{
-These are example data for the MoNAn package and can be used to estimate a 
+These are example data for the MoNAn package and can be used to estimate a
 mobility network. The following objects are provided for this purpose:
 
 \describe{
-  \item{mobilityEdgelist}{blabla}
-  \item{nodeVarCat}{blabla}
-  \item{nodeVarCont}{blabla}
-  \item{resVarCat}{blabla}
+\item{mobilityEdgelist}{blabla}
+\item{nodeVarCat}{blabla}
+\item{nodeVarCont}{blabla}
+\item{resVarCat}{blabla}
 }
 }
 \keyword{datasets}

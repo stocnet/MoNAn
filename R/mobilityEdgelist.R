@@ -11,24 +11,24 @@
 #'   \item{resVarCat}{blabla}
 #' }
 #' 
-#' @format \code{mobilityEdgelist}
+#' @format `mobilityEdgelist`
 #' A data frame with 743 rows and 2 columns.
 "mobilityEdgelist"
 
 
 #' @rdname mobilityEdgelist
-#' @format \code{nodeVarCat}
+#' @format `nodeVarCat`
 #' An object with 17 values.
 "nodeVarCat"
 
 
 #' @rdname mobilityEdgelist
-#' @format \code{nodeVarCont}
+#' @format `nodeVarCont`
 #' An object with 17 values.
 "nodeVarCont"
 
 
 #' @rdname mobilityEdgelist
-#' @format \code{resVarCat}
+#' @format `resVarCat`
 #' An object with 742 values.
 "resVarCat"

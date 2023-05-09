@@ -12,3 +12,4 @@ Encoding: UTF-8
 LazyData: true
 Imports: snow (>= 0.4-4), snowfall (>= 1.84-6.2)
 RoxygenNote: 7.2.3
+Roxygen: list(markdown = TRUE)

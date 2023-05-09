@@ -18,5 +18,5 @@ people_NS <- createNodeSet(1:nrow(mobilityEdgelist))
 location_NS <- createNodeSet(1:length(nodeVarCat))
 }
 \seealso{
-\code{\link{createProcessState}}
+\code{\link[=createProcessState]{createProcessState()}}
 }

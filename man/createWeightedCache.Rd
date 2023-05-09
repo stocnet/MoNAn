@@ -23,5 +23,5 @@ dependentVariable <- "transfers"
 exampleCache <- createWeightedCache(exampleState, dependentVariable, resourceCovariates = c("resVarCat"))
 }
 \seealso{
-\code{\link{createProcessState}}
+\code{\link[=createProcessState]{createProcessState()}}
 }

@@ -17,5 +17,5 @@ Create an edgelist object
 transfers_EL <- createEdgelist(mobilityEdgelist, nodeSet = c("location", "location", "people"))
 }
 \seealso{
-\code{\link{createProcessState}}
+\code{\link[=createProcessState]{createProcessState()}}
 }

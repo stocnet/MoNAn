@@ -54,6 +54,7 @@ verbose = T,
 returnDeps = T,
 multinomialProposal = T,
 fish = F)
+resDN
 }
 \seealso{
 \code{\link[=createProcessState]{createProcessState()}}, \code{\link[=createWeightedCache]{createWeightedCache()}},

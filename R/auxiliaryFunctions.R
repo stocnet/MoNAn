@@ -291,6 +291,7 @@ print.scoretest.monan <- function(x, ...) {
 #' )
 #' 
 #' test_ME.2 <- scoreTest(dependentVariable, resDN, exampleEffects2)
+#' test_ME.2
 scoreTest <- function(dep.var, ans, effects) {
   # give error if no deps in ans
   if (is.null(ans$deps))

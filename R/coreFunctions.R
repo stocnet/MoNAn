@@ -449,6 +449,7 @@ createWeightedCache <-
 #' returnDeps = T,
 #' multinomialProposal = T,
 #' fish = F)
+#' resDN
 estimateMobilityNetwork <-
   function(dep.var,
            state,

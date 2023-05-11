@@ -41,7 +41,7 @@ Title
 }
 \examples{
 # estimate mobility network
-resDN <- estimateMobilityNetwork(dependentVariable, 
+exampleResDN <- estimateMobilityNetwork(dependentVariable, 
 exampleState, exampleCache, exampleEffects,
 initialParameters = NULL,
 burnInN1 = 200, iterationsN1 = 50, thinningN1 = 2000, gainN1 = 0.1,
@@ -54,7 +54,7 @@ verbose = T,
 returnDeps = T,
 multinomialProposal = T,
 fish = F)
-resDN
+exampleResDNresDN
 }
 \seealso{
 \code{\link[=createProcessState]{createProcessState()}}, \code{\link[=createWeightedCache]{createWeightedCache()}},

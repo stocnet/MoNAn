@@ -25,10 +25,10 @@ Title
 }
 \examples{
 # goodness of fit
-gof.indegree.1 <- gofDistributionNetwork(ans = resDN, simulations = resDN$deps, gofFunction = getIndegree, lvls = 1:100)
+gof.indegree.1 <- gofDistributionNetwork(ans = exampleResDN, simulations = exampleResDN$deps, gofFunction = getIndegree, lvls = 1:100)
 plot(gof.indegree.1)
 
-gof.tie.weights.1 <- gofDistributionNetwork(ans = resDN, simulations = resDN$deps, gofFunction = getTieWeights, lvls = 1:30)
+gof.tie.weights.1 <- gofDistributionNetwork(ans = exampleResDN, simulations = exampleResDN$deps, gofFunction = getTieWeights, lvls = 1:30)
 plot(gof.tie.weights.1)
 }
 \seealso{

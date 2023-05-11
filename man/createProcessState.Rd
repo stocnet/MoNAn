@@ -24,14 +24,12 @@ resVarCat_NV <- createNodeVariable(resVarCat, nodeSet = "people")
 
 # combine created objects to the process state
 exampleState <- createProcessState(list(
-  
   transfers = transfers_EL,
   people = people_NS,
   location = location_NS,
   nodeVarCat = nodeVarCat_NV,
   nodeVarCont = nodeVarCont_NV,
   resVarCat = resVarCat_NV
-  
 ))
 }
 \seealso{

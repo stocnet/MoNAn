@@ -23,7 +23,7 @@ exampleEffects2 <- createEffectsObject(
   )
 )
 
-test_ME.2 <- scoreTest(dependentVariable, resDN, exampleEffects2)
+test_ME.2 <- scoreTest(dependentVariable, exampleResDN, exampleEffects2)
 test_ME.2
 }
 \seealso{

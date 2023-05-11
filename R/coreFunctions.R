@@ -257,14 +257,12 @@ createNodeVariable <-
 #' 
 #' # combine created objects to the process state
 #' exampleState <- createProcessState(list(
-#'   
 #'   transfers = transfers_EL,
 #'   people = people_NS,
 #'   location = location_NS,
 #'   nodeVarCat = nodeVarCat_NV,
 #'   nodeVarCont = nodeVarCont_NV,
 #'   resVarCat = resVarCat_NV
-#'   
 #' ))
 createProcessState <- function(elements) {
   if (!is.list(elements))
@@ -436,7 +434,7 @@ createWeightedCache <-
 #'
 #' @examples
 #' # estimate mobility network
-#' resDN <- estimateMobilityNetwork(dependentVariable, 
+#' exampleResDN <- estimateMobilityNetwork(dependentVariable, 
 #' exampleState, exampleCache, exampleEffects,
 #' initialParameters = NULL,
 #' burnInN1 = 200, iterationsN1 = 50, thinningN1 = 2000, gainN1 = 0.1,
@@ -449,7 +447,7 @@ createWeightedCache <-
 #' returnDeps = T,
 #' multinomialProposal = T,
 #' fish = F)
-#' resDN
+#' exampleResDNresDN
 estimateMobilityNetwork <-
   function(dep.var,
            state,

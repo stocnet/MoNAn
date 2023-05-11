@@ -14,7 +14,7 @@ Title
 }
 \examples{
 # regression diagnostics
-autoCorrelationTest(dependentVariable, resDN)
+autoCorrelationTest(dependentVariable, exampleResDN)
 }
 \seealso{
 \code{\link[=estimateMobilityNetwork]{estimateMobilityNetwork()}}

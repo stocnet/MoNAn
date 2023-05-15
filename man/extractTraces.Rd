@@ -21,7 +21,7 @@ Title
 }
 \examples{
 # regression diagnostics
-traces <- extractTraces(dependentVariable, exampleResDN, exampleEffects)
+traces <- extractTraces(exampleDependentVariable, exampleResDN, exampleEffects)
 plot(traces)
 }
 \seealso{

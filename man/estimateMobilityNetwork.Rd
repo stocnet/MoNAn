@@ -41,7 +41,7 @@ Title
 }
 \examples{
 # estimate mobility network
-exampleResDN <- estimateMobilityNetwork(dependentVariable, 
+exampleResDN <- estimateMobilityNetwork(exampleDependentVariable, 
 exampleState, exampleCache, exampleEffects,
 initialParameters = NULL,
 burnInN1 = 200, iterationsN1 = 50, thinningN1 = 2000, gainN1 = 0.1,

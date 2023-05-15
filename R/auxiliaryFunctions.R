@@ -14,7 +14,7 @@
 #'
 #' @examples
 #' # regression diagnostics
-#' autoCorrelationTest(dependentVariable, exampleResDN)
+#' autoCorrelationTest(exampleDependentVariable, exampleResDN)
 autoCorrelationTest <- function(dep.var, ans) {
   # give error if no deps in ans obj
   if (is.null(ans$deps))
@@ -48,7 +48,7 @@ autoCorrelationTest <- function(dep.var, ans) {
 #'
 #' @examples
 #' # regression diagnostics
-#' traces <- extractTraces(dependentVariable, exampleResDN, exampleEffects)
+#' traces <- extractTraces(exampleDependentVariable, exampleResDN, exampleEffects)
 #' plot(traces)
 extractTraces <- function(dep.var, ans, effects) {
   # give error if no deps in ans
@@ -290,7 +290,7 @@ print.scoretest.monan <- function(x, ...) {
 #'   )
 #' )
 #' 
-#' test_ME.2 <- scoreTest(dependentVariable, exampleResDN, exampleEffects2)
+#' test_ME.2 <- scoreTest(exampleDependentVariable, exampleResDN, exampleEffects2)
 #' test_ME.2
 scoreTest <- function(dep.var, ans, effects) {
   # give error if no deps in ans

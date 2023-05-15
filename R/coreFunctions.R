@@ -328,9 +328,9 @@ createProcessState <- function(elements) {
 #'
 #' @examples
 #' # define dependent variable and create cache object
-#' dependentVariable <- "transfers"
+#' exampleDependentVariable <- "transfers"
 #' 
-#' exampleCache <- createWeightedCache(exampleState, dependentVariable, resourceCovariates = c("resVarCat"))
+#' exampleCache <- createWeightedCache(exampleState, exampleDependentVariable, resourceCovariates = c("resVarCat"))
 createWeightedCache <-
   function(processState,
            cacheObjectNames,
@@ -434,7 +434,7 @@ createWeightedCache <-
 #'
 #' @examples
 #' # estimate mobility network
-#' exampleResDN <- estimateMobilityNetwork(dependentVariable, 
+#' exampleResDN <- estimateMobilityNetwork(exampleDependentVariable, 
 #' exampleState, exampleCache, exampleEffects,
 #' initialParameters = NULL,
 #' burnInN1 = 200, iterationsN1 = 50, thinningN1 = 2000, gainN1 = 0.1,
@@ -447,7 +447,7 @@ createWeightedCache <-
 #' returnDeps = T,
 #' multinomialProposal = T,
 #' fish = F)
-#' exampleResDNresDN
+#' exampleResDN
 estimateMobilityNetwork <-
   function(dep.var,
            state,

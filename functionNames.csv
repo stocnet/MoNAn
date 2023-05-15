@@ -17,9 +17,9 @@ Column1,Function Name,Description,Core / Effect / Hidden / Auxiliary / gof-param
 16,dyadic_covariate_resource_attribute,Effect modelling impact of dyadic variable * resource attribute,Effect,not needed,not needed,"former ""dyadic_covariate_ressource_attribute"""
 17,dyadic_covariate_tie_weights_sigmoid,Effect modelling impact of dyadic variable * concentration,Effect,not needed,not needed,
 18,estimateMobilityNetwork,Function to estimate it all,Core,,x,"also applicable as ""estimateDistributionNetwork"""
-19,estimateFromDataEffects,Function used for testing package,,,,Do not include in package
-20,extractResultsConsistencyDN,Function used for testing package,,,,Do not include in package
-21,extractResultsConsistencyMlogit,Function used for testing package,,,,Do not include in package
+19,estimateFromDataEffects,Function used for testing package,-,-,-,Do not include in package
+20,extractResultsConsistencyDN,Function used for testing package,-,-,-,Do not include in package
+21,extractResultsConsistencyMlogit,Function used for testing package,-,-,-,Do not include in package
 22,extractTraces,Makes trace-plots from phase 3 simulations,Auxiliary,,x,"former ""extractTracesNetDist"""
 23,getCovarianceMatrix,see name,Hidden,not needed,not needed,
 , getIndegree,,gof-param,,, as defined in the Illustration-Script

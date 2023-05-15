@@ -25,11 +25,11 @@ Title
 }
 \examples{
 # goodness of fit
-gof.indegree.1 <- gofDistributionNetwork(ans = exampleResDN, simulations = exampleResDN$deps, gofFunction = getIndegree, lvls = 1:100)
-plot(gof.indegree.1)
+exampleGofIndegree <- gofDistributionNetwork(ans = exampleResDN, simulations = exampleResDN$deps, gofFunction = getIndegree, lvls = 1:100)
+plot(exampleGofIndegree)
 
-gof.tie.weights.1 <- gofDistributionNetwork(ans = exampleResDN, simulations = exampleResDN$deps, gofFunction = getTieWeights, lvls = 1:30)
-plot(gof.tie.weights.1)
+exampleGofTieWeight <- gofDistributionNetwork(ans = exampleResDN, simulations = exampleResDN$deps, gofFunction = getTieWeights, lvls = 1:30)
+plot(exampleGofTieWeight)
 }
 \seealso{
 \code{\link[=estimateMobilityNetwork]{estimateMobilityNetwork()}}, \code{\link[=getIndegree]{getIndegree()}},

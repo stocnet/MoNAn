@@ -48,8 +48,8 @@ autoCorrelationTest <- function(dep.var, ans) {
 #'
 #' @examples
 #' # regression diagnostics
-#' traces <- extractTraces(exampleDependentVariable, exampleResDN, exampleEffects)
-#' plot(traces)
+#' exampleTraces <- extractTraces(exampleDependentVariable, exampleResDN, exampleEffects)
+#' plot(exampleTraces)
 extractTraces <- function(dep.var, ans, effects) {
   # give error if no deps in ans
   if (is.null(ans$deps))
@@ -121,11 +121,11 @@ getInitialEstimates <-
 #'
 #' @examples
 #' # goodness of fit
-#' gof.indegree.1 <- gofDistributionNetwork(ans = exampleResDN, simulations = exampleResDN$deps, gofFunction = getIndegree, lvls = 1:100)
-#' plot(gof.indegree.1)
+#' exampleGofIndegree <- gofDistributionNetwork(ans = exampleResDN, simulations = exampleResDN$deps, gofFunction = getIndegree, lvls = 1:100)
+#' plot(exampleGofIndegree)
 #' 
-#' gof.tie.weights.1 <- gofDistributionNetwork(ans = exampleResDN, simulations = exampleResDN$deps, gofFunction = getTieWeights, lvls = 1:30)
-#' plot(gof.tie.weights.1)
+#' exampleGofTieWeight <- gofDistributionNetwork(ans = exampleResDN, simulations = exampleResDN$deps, gofFunction = getTieWeights, lvls = 1:30)
+#' plot(exampleGofTieWeight)
 gofDistributionNetwork <-
   function(ans,
            simulations,
@@ -290,8 +290,8 @@ print.scoretest.monan <- function(x, ...) {
 #'   )
 #' )
 #' 
-#' test_ME.2 <- scoreTest(exampleDependentVariable, exampleResDN, exampleEffects2)
-#' test_ME.2
+#' exampleTestEffects2 <- scoreTest(exampleDependentVariable, exampleResDN, exampleEffects2)
+#' exampleTestEffects2
 scoreTest <- function(dep.var, ans, effects) {
   # give error if no deps in ans
   if (is.null(ans$deps))

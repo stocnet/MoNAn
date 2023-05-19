@@ -16,8 +16,9 @@ getCovarianceMatrix <- function(statistics) {
 
   nObs <- dim(statistics)[1]
   observationMatrices <-
-    lapply(1:nObs, function(i)
-      statistics[i, ] %*% t(statistics[i, ]))
+    lapply(1:nObs, function(i) {
+      statistics[i, ] %*% t(statistics[i, ])
+    })
   meanObservationMatrix <- Reduce("+", observationMatrices) / nObs
 
   covMatrix <- meanObservationMatrix - meanStatsMatrix
@@ -52,9 +53,11 @@ getIndividualEstimates <- function(statisticsFrame) {
     f <-
       as.formula(paste("choice ~", paste(IVs[estimates], collapse = " + "), "| 0"))
     mlogit.results <-
-      mlogit(formula = eval(f),
-             data = mlogit.dataframe,
-             heterosc = F)
+      mlogit(
+        formula = eval(f),
+        data = mlogit.dataframe,
+        heterosc = F
+      )
     ests[estimates] <- mlogit.results$coefficients[1]
   }
 
@@ -87,9 +90,11 @@ getMultinomialEstimates <- function(statisticsFrame) {
     as.formula(paste("choice ~", paste(IVs, collapse = " + "), "| 0"))
 
   mlogit.results <-
-    mlogit(formula = eval(f),
-           data = mlogit.dataframe,
-           heterosc = F)
+    mlogit(
+      formula = eval(f),
+      data = mlogit.dataframe,
+      heterosc = F
+    )
   return(mlogit.results$coefficients[1:length(IVs)])
 }
 
@@ -139,7 +144,7 @@ getMultinomialStatistics <-
         newState[[dep.var]]$data[number, ][2] <- target
 
         stats[target, 4:(length(effects$effectFormulas) + 3)] <-
-          unlist(lapply(effects$effectFormulas, function(f)
+          unlist(lapply(effects$effectFormulas, function(f) {
             f(
               dep.var = dep.var,
               state = newState,
@@ -148,7 +153,8 @@ getMultinomialStatistics <-
               j = target,
               edge = number,
               update = 1
-            )))
+            )
+          }))
       }
 
       stats[, 1] <- number
@@ -163,7 +169,7 @@ getMultinomialStatistics <-
       c("resource", "target", "choice", effects$name)
 
     return(as.data.frame(statsMat))
-}
+  }
 
 
 # getNetworkStatistics
@@ -173,26 +179,31 @@ getNetworkStatistics <- function(dep.var, state, cache, effects) {
   nActors1 <- length(state[[actors1]]$ids)
   nActors2 <- length(state[[actors2]]$ids)
 
-  targetStatistics <- unlist(lapply(effects$effectFormulas,
-                                    function(f)
-                                      sum(apply(expand.grid(1:nActors1, 1:nActors2),
-                                                1,
-                                                function(v)
-                                                  f(
-                                                    dep.var = dep.var,
-                                                    state = state,
-                                                    cache = cache,
-                                                    i = v[[1]],
-                                                    j = v[[2]],
-                                                    update = NULL,
-                                                    edge = NULL,
-                                                    getTargetContribution = T
-                                                  )))))
+  targetStatistics <- unlist(lapply(
+    effects$effectFormulas,
+    function(f) {
+      sum(apply(
+        expand.grid(1:nActors1, 1:nActors2),
+        1,
+        function(v) {
+          f(
+            dep.var = dep.var,
+            state = state,
+            cache = cache,
+            i = v[[1]],
+            j = v[[2]],
+            update = NULL,
+            edge = NULL,
+            getTargetContribution = T
+          )
+        }
+      ))
+    }
+  ))
 
   names(targetStatistics) <- effects$name
 
   return(targetStatistics)
-
 }
 
 
@@ -238,14 +249,15 @@ runPhase1 <- function(dep.var,
     averageStatistics <- colMeans(statisticsMatrix)
     updatedParameters <-
       initialParameters - gainN1 * sensitivityVector * (averageStatistics - observedStatistics)
-  } else
+  } else {
     updatedParameters <- initialParameters
+  }
 
   # returns initial estimates and sensitivity vector
-  return(list(estimates = updatedParameters,
-              sensitivityVector = sensitivityVector))
-
-
+  return(list(
+    estimates = updatedParameters,
+    sensitivityVector = sensitivityVector
+  ))
 }
 
 
@@ -275,9 +287,9 @@ runPhase2 <- function(dep.var,
     sfInit(parallel = T, cpus = cpus)
     # TODO. Replace this long command with sfLibrary("NetDist") once the package is packaged
     sfLibrary(MoNAn)
-
-  } else
+  } else {
     parallel <- F
+  }
 
 
   # TODO PARALLEL: n burn-ins with n states
@@ -317,8 +329,9 @@ runPhase2 <- function(dep.var,
   iterations <- initialIterationsN2
   parameters <- initialParameters
   for (i in 1:nsubN2) {
-    if (verbose)
+    if (verbose) {
       cat(paste("Starting sub phase", i, "\n"))
+    }
 
     # TODO PARALLEL: sample n chains and pass averaged parameters (but real states, caches) to next sub phase simulations
     if (parallel) {
@@ -336,7 +349,7 @@ runPhase2 <- function(dep.var,
           "observedStatistics"
         )
       )
-      res <- sfLapply(res, function(r)
+      res <- sfLapply(res, function(r) {
         runSubphase2(
           dep.var,
           state = r$state,
@@ -351,7 +364,8 @@ runPhase2 <- function(dep.var,
           multinomialProposal = multinomialProposal,
           allowLoops = allowLoops,
           verbose = F
-        ))
+        )
+      })
       parameterList <- lapply(res, "[[", "parameters")
       parameters <- colMeans(Reduce(rbind, parameterList))
       names(parameters) <- effects$name
@@ -377,10 +391,12 @@ runPhase2 <- function(dep.var,
       names(parameters) <- effects$name
     }
 
-    if (verbose)
+    if (verbose) {
       cat(paste("New parameters:\n"))
-    if (verbose)
+    }
+    if (verbose) {
       cat(paste(names(parameters), "\n", parameters, "\n"))
+    }
 
     # determine number of iterations
     iterations <- iterations * 1.75
@@ -388,11 +404,11 @@ runPhase2 <- function(dep.var,
     gain <- gain / 2
   }
 
-  if (parallel)
+  if (parallel) {
     sfStop()
+  }
 
   return(parameters)
-
 }
 
 
@@ -418,15 +434,16 @@ runPhase3 <- function(dep.var,
   if (parallel && require(snowfall)) {
     iterationsPerCPU <- rep(iterationsN3 %/% cpus, cpus)
     rest <- iterationsN3 %% cpus
-    if (rest > 0)
+    if (rest > 0) {
       iterationsPerCPU[1:rest] <- iterationsPerCPU[1:rest] + 1
+    }
 
     sfInit(parallel = T, cpus = cpus)
     # TODO. Replace this long command with sfLibrary("NetDist") once the package is packaged
     sfLibrary(MoNAn)
 
     statsA <-
-      sfLapply(iterationsPerCPU, function(nIt)
+      sfLapply(iterationsPerCPU, function(nIt) {
         simulateStatisticVectors(
           dep.var,
           state,
@@ -441,16 +458,19 @@ runPhase3 <- function(dep.var,
           returnDeps = returnDeps,
           multinomialProposal = multinomialProposal,
           fish = F
-        ))
+        )
+      })
 
 
     if (returnDeps) {
       stats <- list()
-      stats[[1]] <- lapply(statsA, function(x)
-        x[[1]])
+      stats[[1]] <- lapply(statsA, function(x) {
+        x[[1]]
+      })
       stats[[2]] <-
-        unlist(lapply(statsA, function(x)
-          x[[2]]), recursive = F)
+        unlist(lapply(statsA, function(x) {
+          x[[2]]
+        }), recursive = F)
       statisticsMatrix <- Reduce("rbind", stats[[1]])
     } else {
       stats <- statsA
@@ -508,7 +528,6 @@ runPhase3 <- function(dep.var,
       deps = deps
     )
   )
-
 }
 
 
@@ -529,8 +548,9 @@ runSubphase2 <- function(dep.var,
   parameters <- c()
 
   for (i in 1:iterations) {
-    if (verbose)
+    if (verbose) {
       cat(".")
+    }
     res <-
       simulateNSteps(
         dep.var,
@@ -554,10 +574,10 @@ runSubphase2 <- function(dep.var,
       initialParameters - gain * sensitivityVector * (statistics - observedStatistics)
     initialParameters <- updatedParameters
     parameters <- rbind(parameters, updatedParameters)
-
   }
-  if (verbose)
+  if (verbose) {
     cat("\n")
+  }
 
   # return mean of the parameters
   return(list(
@@ -565,7 +585,6 @@ runSubphase2 <- function(dep.var,
     state = state,
     cache = cache
   ))
-
 }
 
 
@@ -600,7 +619,7 @@ simulateNSteps <-
       cache <- res$cache
     }
     return(res)
-}
+  }
 
 
 # simulateOneStep
@@ -625,22 +644,24 @@ simulateOneStep <-
     i <- state[[dep.var]]$data[randomEdge, 1]
     j <- state[[dep.var]]$data[randomEdge, 2]
 
-    #nEdges <- state[[dep.var]]$size[1]
+    # nEdges <- state[[dep.var]]$size[1]
     nodeSet <-
       state[[nodeName]]$ids[state[[nodeName]]$considerWhenSampling]
-    if (!allowLoops)
+    if (!allowLoops) {
       nodeSet <- setdiff(nodeSet, i)
+    }
 
     ## MULTINOMIAL PROPOSAL ## CONSIDER REFACTOR TO FUNCTION
 
     if (multinomialProposal) {
-      if (debug)
+      if (debug) {
         print(paste("Proposed multinomial change from", i, j))
+      }
 
       # remove resource from process state
       effectFunctions <- effects$effectFormulas
       statisticsDrop <-
-        unlist(lapply(effectFunctions, function(f)
+        unlist(lapply(effectFunctions, function(f) {
           f(
             dep.var = dep.var,
             state = state,
@@ -649,7 +670,8 @@ simulateOneStep <-
             j = j,
             update = -1,
             edge = randomEdge
-          )))
+          )
+        }))
 
       # update process state and cache
       cacheNew <- cache
@@ -668,8 +690,8 @@ simulateOneStep <-
 
       # for each possible receiver
       statisticsCreate <-
-        sapply(nodeSet, function(k)
-          unlist(lapply(effectFunctions, function(f)
+        sapply(nodeSet, function(k) {
+          unlist(lapply(effectFunctions, function(f) {
             f(
               dep.var = dep.var,
               state = state,
@@ -678,8 +700,11 @@ simulateOneStep <-
               j = k,
               update = 1,
               edge = randomEdge
-            ))),
-          simplify = T)
+            )
+          }))
+        },
+        simplify = T
+        )
       objValues <-
         colSums((statisticsCreate + statisticsDrop) * parameters)
       pChange <- exp(objValues) / sum(exp(objValues))
@@ -700,30 +725,31 @@ simulateOneStep <-
           update = 1
         )
       state[[dep.var]]$data[randomEdge, ] <- c(i, l)
-
-
     }
 
 
     ## BINOMIAL PROPOSAL ## CONSIDER REFACTOR TO FUNCTION
 
     if (!multinomialProposal) {
-      if (senderFixed)
-        k <- i # TODO else define k differently
+      if (senderFixed) {
+        k <- i
+      } # TODO else define k differently
 
       l <-
         sample(nodeSet, size = 1) # TODO consider case of receiver fixed
 
-      if (debug)
+      if (debug) {
         print(paste("Proposed change from", i, j, "to", k, l))
+      }
 
 
-      if (j == l)
+      if (j == l) {
         return(list(state = state, cache = cache))
+      }
 
       effectFunctions <- effects$effectFormulas
       statisticsDrop <-
-        unlist(lapply(effectFunctions, function(f)
+        unlist(lapply(effectFunctions, function(f) {
           f(
             dep.var = dep.var,
             state = state,
@@ -732,7 +758,8 @@ simulateOneStep <-
             j = j,
             update = -1,
             edge = randomEdge
-          )))
+          )
+        }))
 
       # update process state and cache
       cacheNew <- cache
@@ -750,7 +777,7 @@ simulateOneStep <-
       stateNew[[dep.var]]$data[randomEdge, ] <- rep(NA, 2)
 
       statisticsCreate <-
-        unlist(lapply(effectFunctions, function(f)
+        unlist(lapply(effectFunctions, function(f) {
           f(
             dep.var = dep.var,
             state = stateNew,
@@ -759,7 +786,8 @@ simulateOneStep <-
             j = l,
             update = +1,
             edge = randomEdge
-          )))
+          )
+        }))
 
       changeContribution <-
         sum((statisticsDrop + statisticsCreate) * parameters)
@@ -779,12 +807,10 @@ simulateOneStep <-
           )
         state[[dep.var]]$data[randomEdge, ] <- c(k, l)
       }
-
     }
 
     return(list(state = state, cache = cache))
-
-}
+  }
 
 
 # simulateStatisticVectors
@@ -808,8 +834,9 @@ simulateStatisticVectors <- function(dep.var,
   }
 
   # burn in
-  if (verbose)
+  if (verbose) {
     cat(paste("Starting burn-in with", burnIn, "steps\n"))
+  }
   res <-
     simulateNSteps(
       dep.var,
@@ -830,8 +857,9 @@ simulateStatisticVectors <- function(dep.var,
       int <- i %% 11
       s <- "_,.-'``'-.,"
       cat(substr(s, int + 1, int + 1))
-      if (runif(1) < 0.02)
+      if (runif(1) < 0.02) {
         cat("><(((Âº>")
+      }
     } else if (verbose) {
       cat(".")
     }
@@ -852,9 +880,10 @@ simulateStatisticVectors <- function(dep.var,
     # calculate and save statistics
     stats <-
       getNetworkStatistics(dep.var,
-                           state = state,
-                           cache = cache,
-                           effects = effects)
+        state = state,
+        cache = cache,
+        effects = effects
+      )
     statisticsMatrix <- rbind(statisticsMatrix, stats)
 
     if (returnDeps) {
@@ -874,7 +903,6 @@ simulateStatisticVectors <- function(dep.var,
   } else {
     return(statisticsMatrix)
   }
-
 }
 
 
@@ -888,8 +916,9 @@ updateWeightedCache <- function(cache,
                                 # refers to the element of the cache to be updated
                                 update,
                                 debug = FALSE) {
-  if (debug)
+  if (debug) {
     print(paste("update cache for s-r-u", sender, receiver, update))
+  }
 
   # Updates of weighted resource caches
   resourceCovariates <- names(cache$resourceNetworks)
@@ -909,14 +938,14 @@ updateWeightedCache <- function(cache,
       1
   }
   if (update < 0 &&
-      cache$netFlowsNetwork[sender, receiver] <= 0 &&
-      sender != receiver) {
+    cache$netFlowsNetwork[sender, receiver] <= 0 &&
+    sender != receiver) {
     cache$minNetwork[sender, receiver] <-
       cache$minNetwork[sender, receiver] -
       # TODO: allow updates of more / less than one
       1
   }
-  if (cache$minNetwork[sender, receiver] < 0)
+  if (cache$minNetwork[sender, receiver] < 0) {
     stop(
       paste(
         "Error in cache update, negative min tie.",
@@ -926,6 +955,7 @@ updateWeightedCache <- function(cache,
         cache$netFlowsNetwork[sender, receiver]
       )
     )
+  }
   ## cache$minNetwork[sender, receiver] <- cache$minNetwork[sender, receiver] + max(0, min(- cache$netFlowsNetwork[sender, receiver], update) )
   cache$minNetwork[receiver, sender] <-
     cache$minNetwork[sender, receiver]

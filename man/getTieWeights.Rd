@@ -7,12 +7,6 @@
 getTieWeights(cache, dep.var, lvls, ...)
 }
 \arguments{
-\item{cache}{}
-
-\item{dep.var}{}
-
-\item{lvls}{}
-
 \item{...}{}
 }
 \description{

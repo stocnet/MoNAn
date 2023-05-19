@@ -25,22 +25,26 @@ as.nodeVariable <- function(values) {
 #' @export
 #'
 #' @seealso [createProcessState()]
-#' 
+#'
 #' @examples
 #' # create an object of class edgelist.monan
 #' transfers_EL <- createEdgelist(mobilityEdgelist, nodeSet = c("location", "location", "people"))
 createEdgelist <-
   function(el, nodeSet = c("actors", "actors", "edges")) {
-    if (dim(el)[2] != 2)
+    if (dim(el)[2] != 2) {
       stop("Two columns expected in edge list creation.")
-    if (length(nodeSet) == 1)
+    }
+    if (length(nodeSet) == 1) {
       stop("Three node sets need to be specified for edge lists: nodes / nodes / edges")
-    l <- list(data = el,
-              nodeSet = nodeSet,
-              size = dim(el))
+    }
+    l <- list(
+      data = el,
+      nodeSet = nodeSet,
+      size = dim(el)
+    )
     class(l) <- "edgelist.monan"
     l
-}
+  }
 
 
 # createEffectsObject
@@ -55,55 +59,67 @@ createEdgelist <-
 #' @examples
 #' # create an effects object
 #' exampleEffects <- createEffectsObject(
-#' list(
-#'   list('loops'),
-#'   list('min_reciprocity'),
-#'   list('loops_resource_covar', resource.attribute.index = "resVarCat")
-#' )
+#'   list(
+#'     list("loops"),
+#'     list("min_reciprocity"),
+#'     list("loops_resource_covar", resource.attribute.index = "resVarCat")
+#'   )
 #' )
 createEffectsObject <-
   function(effectInit, checkProcessState = NULL) {
     # TODO add default parameters to effect names
     effectNames <-
-      lapply(effectInit, function(x)
-        ifelse(is.list(x), do.call(paste, x), x))
+      lapply(effectInit, function(x) {
+        ifelse(is.list(x), do.call(paste, x), x)
+      })
 
     effects <-
-      lapply(effectInit, function(x)
-        eval(parse(text = x[[1]])))
+      lapply(effectInit, function(x) {
+        eval(parse(text = x[[1]]))
+      })
 
     # Update signatures of the effects based on default parameters and above specified parameters
     signatures <- lapply(effects, formals)
-    setParams <- lapply(effectInit, function(x)
-      x[-1])
-    signatures <- mapply(function(s, p) {
-      s[names(p)] <- p
-      s["cache"] <- alist(cache = NULL)
-      s
-    } ,
-    signatures, setParams, SIMPLIFY = F)
-    if ("matrix" %in% class(signatures))
+    setParams <- lapply(effectInit, function(x) {
+      x[-1]
+    })
+    signatures <- mapply(
+      function(s, p) {
+        s[names(p)] <- p
+        s["cache"] <- alist(cache = NULL)
+        s
+      },
+      signatures, setParams,
+      SIMPLIFY = F
+    )
+    if ("matrix" %in% class(signatures)) {
       signatures <- apply(signatures, 2, invisible)
+    }
 
     # Assign signatures with default values to generic functions
-    for (i in 1:length(effects))
+    for (i in 1:length(effects)) {
       formals(effects[[i]]) <- unlist(signatures[i], recursive = F)
+    }
 
     # If a process state is provided, check whether all params refer to existing objects
     if (!is.null(checkProcessState)) {
       stateNames <- names(checkProcessState)
       params <- unlist(signatures)
       refs <- unique(params[names(params) == "attribute.index"])
-      for (r in refs)
-        if (!(r %in% stateNames))
+      for (r in refs) {
+        if (!(r %in% stateNames)) {
           stop(paste("Unknown process state reference:", r))
+        }
+      }
     }
 
-    effectslist <- list(effectFormulas = effects,
-                        name = unlist(effectNames))
+    effectslist <- list(
+      effectFormulas = effects,
+      name = unlist(effectNames)
+    )
     class(effectslist) <- "effectsList.monan"
     effectslist
-}
+  }
 
 
 # createNetwork
@@ -116,7 +132,7 @@ createEffectsObject <-
 #'
 #' @return
 #' @export
-#' 
+#'
 #' @seealso [createProcessState()]
 #'
 #' @examples
@@ -125,10 +141,12 @@ createNetwork <-
            isSymmetric = FALSE,
            isBipartite = FALSE,
            nodeSet = c("actors", "actors")) {
-    if (!is.matrix(m))
+    if (!is.matrix(m)) {
       stop("Not a matrix.")
-    if (length(nodeSet) == 1)
+    }
+    if (length(nodeSet) == 1) {
       nodeSet <- c(nodeSet, nodeSet)
+    }
     l <- list(
       data = m,
       isSymmetric = isSymmetric,
@@ -150,7 +168,7 @@ createNetwork <-
 #'
 #' @return
 #' @export
-#' 
+#'
 #' @seealso [createProcessState()]
 #'
 #' @examples
@@ -161,23 +179,30 @@ createNodeSet <-
   function(x = NULL,
            isPresent = NULL,
            considerWhenSampling = NULL) {
-    if (is.null(x) && is.null(isPresent))
+    if (is.null(x) && is.null(isPresent)) {
       stop("Only null parameters.")
-    if (is.null(x))
+    }
+    if (is.null(x)) {
       x <- length(isPresent)
+    }
     if (length(x) == 1 &&
-        !is.numeric(x))
+      !is.numeric(x)) {
       stop("non-numeric value of single valued x.")
-    ids <- if (length(x) == 1)
+    }
+    ids <- if (length(x) == 1) {
       1:x
-    else
+    } else {
       x
-    if (is.null(isPresent))
+    }
+    if (is.null(isPresent)) {
       isPresent <- rep(T, length(ids))
-    if (is.null(considerWhenSampling))
+    }
+    if (is.null(considerWhenSampling)) {
       considerWhenSampling <- rep(T, length(ids))
-    if (length(isPresent) != length(ids))
+    }
+    if (length(isPresent) != length(ids)) {
       stop("Wrong length of presence vector.")
+    }
     l <- list(
       isPresent = isPresent,
       ids = ids,
@@ -185,7 +210,7 @@ createNodeSet <-
     )
     class(l) <- "nodeSet.monan"
     l
-}
+  }
 
 
 # createNodeVariable
@@ -199,7 +224,7 @@ createNodeSet <-
 #'
 #' @return
 #' @export
-#' 
+#'
 #' @seealso [createProcessState()]
 #'
 #' @examples
@@ -214,8 +239,9 @@ createNodeVariable <-
            addSame = F,
            addSim = F) {
     if (!is.numeric(values) &&
-        !all(is.na(values)))
+      !all(is.na(values))) {
       stop("Values not numeric.")
+    }
     l <- list(
       data = values,
       range = range,
@@ -223,15 +249,17 @@ createNodeVariable <-
       size = length(values)
     )
 
-    if (addSame)
+    if (addSame) {
       l[["same"]] <- outer(values, values, "==") * 1
-    if (addSim)
+    }
+    if (addSim) {
       l[["sim"]] <-
-      1 - abs(outer(values, values, "-")) / (range(values)[2] - range(values)[1])
+        1 - abs(outer(values, values, "-")) / (range(values)[2] - range(values)[1])
+    }
 
     class(l) <- "nodeVar.monan"
     l
-}
+  }
 
 
 # createProcessState
@@ -241,8 +269,8 @@ createNodeVariable <-
 #'
 #' @return
 #' @export
-#' 
-#' @seealso [createEdgelist()], [createNodeSet()], 
+#'
+#' @seealso [createEdgelist()], [createNodeSet()],
 #' [createNodeVariable()], [createNetwork()]
 #'
 #' @examples
@@ -254,7 +282,7 @@ createNodeVariable <-
 #' nodeVarCat_NV <- createNodeVariable(nodeVarCat, nodeSet = "location")
 #' nodeVarCont_NV <- createNodeVariable(nodeVarCont, nodeSet = "location", addSim = TRUE)
 #' resVarCat_NV <- createNodeVariable(resVarCat, nodeSet = "people")
-#' 
+#'
 #' # combine created objects to the process state
 #' exampleState <- createProcessState(list(
 #'   transfers = transfers_EL,
@@ -265,12 +293,15 @@ createNodeVariable <-
 #'   resVarCat = resVarCat_NV
 #' ))
 createProcessState <- function(elements) {
-  if (!is.list(elements))
+  if (!is.list(elements)) {
     stop("Expecting a list.")
-  if (length(elements) == 0)
+  }
+  if (length(elements) == 0) {
     stop("List must have at least one element.")
-  if (is.null(names(elements)))
+  }
+  if (is.null(names(elements))) {
     stop("List must be named.")
+  }
 
   nodeSetIDs <- c()
   linkedElementIDs <- c()
@@ -284,13 +315,15 @@ createProcessState <- function(elements) {
         "nodeVar.monan",
         "network.monan"
       )
-    ))
+    )) {
       stop(paste("Unknown element of class", class(e)))
+    }
 
     # TODO CLEANUP from here. What is necessary, hat should be extended?
 
-    if (class(e) == "nodeSet.monan")
+    if (class(e) == "nodeSet.monan") {
       nodeSetIDs <- c(nodeSetIDs, i)
+    }
     if (class(e) %in% c("network.monan", "nodeVar.monan")) {
       linkedElementIDs <- c(linkedElementIDs, i)
       sizes <- c(sizes, e$size)
@@ -300,8 +333,9 @@ createProcessState <- function(elements) {
   # if no node sets were found, create a default
   # TODO: the node set check should be based on the nodeSet names, not their size
   if (length(nodeSetIDs) == 0) {
-    if (length(unique(sizes)) != 1)
+    if (length(unique(sizes)) != 1) {
       stop("Differing element sizes without defining node sets.")
+    }
     elements <-
       append(elements, list(actors = createNodeSet(sizes[1])))
   }
@@ -317,19 +351,18 @@ createProcessState <- function(elements) {
 # createWeightedCache
 #' Title
 #'
-#' @param processState 
-#' @param cacheObjectNames 
-#' @param resourceCovariates 
+#' @param processState
+#' @param cacheObjectNames
+#' @param resourceCovariates
 #'
 #' @return
 #' @export
-#' 
+#'
 #' @seealso [createProcessState()]
 #'
 #' @examples
 #' # define dependent variable and create cache object
 #' exampleDependentVariable <- "transfers"
-#' 
 #' exampleCache <- createWeightedCache(exampleState, exampleDependentVariable, resourceCovariates = c("resVarCat"))
 createWeightedCache <-
   function(processState,
@@ -338,8 +371,9 @@ createWeightedCache <-
     cache <- list()
 
     for (name in cacheObjectNames) {
-      if (!(class(processState[[name]]) %in% c("network.monan", "edgelist.monan")))
+      if (!(class(processState[[name]]) %in% c("network.monan", "edgelist.monan"))) {
         stop(paste(name, "is not a network or edgelist."))
+      }
 
       nodeSet1 <- processState[[processState[[name]]$nodeSet[1]]]$ids
       nodeSet2 <- processState[[processState[[name]]$nodeSet[2]]]$ids
@@ -347,16 +381,18 @@ createWeightedCache <-
       nActors2 <- length(nodeSet2)
 
       cache[[name]] <- list()
-      if (class(processState[[name]]) == "network.monan")
-        cache[[name]]$valuedNetwork <-  processState[[name]]$data
+      if (class(processState[[name]]) == "network.monan") {
+        cache[[name]]$valuedNetwork <- processState[[name]]$data
+      }
       if (class(processState[[name]]) == "edgelist.monan") {
         # create valued network from edge list
         m <- matrix(0, nActors1, nActors2)
 
         # create weighted resource networks
         m.resource <-
-          lapply(resourceCovariates, function(v)
-            matrix(0, nrow = nActors1, ncol = nActors2))
+          lapply(resourceCovariates, function(v) {
+            matrix(0, nrow = nActors1, ncol = nActors2)
+          })
         names(m.resource) <- resourceCovariates
 
         for (i in 1:processState[[name]]$size[1]) {
@@ -367,11 +403,10 @@ createWeightedCache <-
 
           # cache network * resource covariate matrices
           for (ressCovar in resourceCovariates) {
-            v <- m.resource[[ressCovar]] [sender, receiver]
+            v <- m.resource[[ressCovar]][sender, receiver]
             m.resource[[ressCovar]][sender, receiver] <- v +
               processState[[ressCovar]]$data[i]
           }
-
         }
         cache[[name]]$valuedNetwork <- m
         cache[[name]]$resourceNetworks <- m.resource
@@ -384,16 +419,17 @@ createWeightedCache <-
         cache[[name]]$netFlowsNetwork <-
           cache[[name]]$valuedNetwork - t(cache[[name]]$valuedNetwork)
         cache[[name]]$minNetwork <-
-          matrix(mapply(min, cache[[name]]$valuedNetwork, t(cache[[name]]$valuedNetwork)) ,
-                 nActors1,
-                 nActors2)
+          matrix(
+            mapply(min, cache[[name]]$valuedNetwork, t(cache[[name]]$valuedNetwork)),
+            nActors1,
+            nActors2
+          )
         diag(cache[[name]]$minNetwork) <- 0
       }
-
     } # end for loop
 
     cache
-}
+  }
 
 
 # estimateMobilityNetwork
@@ -428,25 +464,26 @@ createWeightedCache <-
 #'
 #' @return
 #' @export
-#' 
-#' @seealso [createProcessState()], [createWeightedCache()], 
+#'
+#' @seealso [createProcessState()], [createWeightedCache()],
 #' [createEffectsObject()]
 #'
 #' @examples
 #' # estimate mobility network
-#' exampleResDN <- estimateMobilityNetwork(exampleDependentVariable, 
-#' exampleState, exampleCache, exampleEffects,
-#' initialParameters = NULL,
-#' burnInN1 = 200, iterationsN1 = 50, thinningN1 = 2000, gainN1 = 0.1,
-#' burnInN2 = 2000, nsubN2 = 4, initGain = 0.25, thinningN2 = 2000, 
-#' initialIterationsN2 = 25,
-#' iterationsN3 = 500, burnInN3 = 2000, thinningN3 = 2000,
-#' parallel = T, cpus = 4,
-#' allowLoops = T,
-#' verbose = T,
-#' returnDeps = T,
-#' multinomialProposal = T,
-#' fish = F)
+#' exampleResDN <- estimateMobilityNetwork(exampleDependentVariable,
+#'   exampleState, exampleCache, exampleEffects,
+#'   initialParameters = NULL,
+#'   burnInN1 = 200, iterationsN1 = 50, thinningN1 = 2000, gainN1 = 0.1,
+#'   burnInN2 = 2000, nsubN2 = 4, initGain = 0.25, thinningN2 = 2000,
+#'   initialIterationsN2 = 25,
+#'   iterationsN3 = 500, burnInN3 = 2000, thinningN3 = 2000,
+#'   parallel = T, cpus = 4,
+#'   allowLoops = T,
+#'   verbose = T,
+#'   returnDeps = T,
+#'   multinomialProposal = T,
+#'   fish = F
+#' )
 #' exampleResDN
 estimateMobilityNetwork <-
   function(dep.var,
@@ -475,12 +512,14 @@ estimateMobilityNetwork <-
            multinomialProposal = F,
            fish = F) {
     # set parameters to default values if not defined explicitly
-    if (is.null(initialParameters))
+    if (is.null(initialParameters)) {
       initialParameters <- rep(0, length(effects$name))
+    }
     if (is.null(allowLoops)) {
       allowLoops <- T
-      if (all(diag(cache[[dep.var]]$valuedNetwork) == 0))
+      if (all(diag(cache[[dep.var]]$valuedNetwork) == 0)) {
         allowLoops <- F
+      }
     }
 
     observedStatistics <-
@@ -504,8 +543,9 @@ estimateMobilityNetwork <-
       sensitivityVector <- 1 / diag(solve(prevAns$covarianceMatrix))
     } else {
       # run phase 1 to get initial estimates and a sensitivity vector
-      if (verbose)
+      if (verbose) {
         cat("Starting phase 1\n")
+      }
       resPhase1 <-
         runPhase1(
           dep.var,
@@ -526,8 +566,9 @@ estimateMobilityNetwork <-
     }
 
     # run phase 2 to get parameter estimates
-    if (verbose)
+    if (verbose) {
       cat("Starting phase 2\n")
+    }
     resPhase2 <- runPhase2(
       dep.var,
       state,
@@ -548,8 +589,9 @@ estimateMobilityNetwork <-
     )
 
     # run phase 3 to get final covariance matrix and convergence check
-    if (verbose)
+    if (verbose) {
       cat("Starting phase 3\n")
+    }
     resPhase3 <- runPhase3(
       dep.var,
       state,
@@ -595,8 +637,7 @@ estimateMobilityNetwork <-
     class(result) <- "result.monan"
 
     return(result)
-
-}
+  }
 
 
 # estimateDistributionNetwork
@@ -670,12 +711,13 @@ simulateMobilityNetworks <-
       int <- i %% 11
       s <- "_,.-'``'-.,"
       cat(substr(s, int + 1, int + 1))
-      if (runif(1) < 0.02)
+      if (runif(1) < 0.02) {
         cat("<o_><")
+      }
     }
     class(simulatedList) <- "sims.monan"
     return(simulatedList)
-}
+  }
 
 
 # simulateDistributionNetworks

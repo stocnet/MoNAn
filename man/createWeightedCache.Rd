@@ -7,10 +7,6 @@
 createWeightedCache(processState, cacheObjectNames, resourceCovariates = NULL)
 }
 \arguments{
-\item{processState}{}
-
-\item{cacheObjectNames}{}
-
 \item{resourceCovariates}{}
 }
 \description{

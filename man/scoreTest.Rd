@@ -16,10 +16,10 @@ Title
 # test whether other effects should be included
 exampleEffects2 <- createEffectsObject(
   list(
-    list('loops'),
-    list('min_reciprocity'),
-    list('loops_resource_covar', resource.attribute.index = "resVarCat"),
-    list('min_transitivity')
+    list("loops"),
+    list("min_reciprocity"),
+    list("loops_resource_covar", resource.attribute.index = "resVarCat"),
+    list("min_transitivity")
   )
 )
 

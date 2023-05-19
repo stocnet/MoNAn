@@ -9,7 +9,7 @@
 #'
 #' @return
 #' @export
-#' 
+#'
 #' @seealso [estimateMobilityNetwork()]
 #'
 #' @examples
@@ -17,8 +17,9 @@
 #' autoCorrelationTest(exampleDependentVariable, exampleResDN)
 autoCorrelationTest <- function(dep.var, ans) {
   # give error if no deps in ans obj
-  if (is.null(ans$deps))
+  if (is.null(ans$deps)) {
     stop("ans object does not have simulations stored; use returnDeps = T in estimation")
+  }
 
   # get number of simulated nets - 1
   nSims <- length(ans$deps) - 1
@@ -43,7 +44,7 @@ autoCorrelationTest <- function(dep.var, ans) {
 #'
 #' @return
 #' @export
-#' 
+#'
 #' @seealso [estimateMobilityNetwork()], [createEffectsObject()]
 #'
 #' @examples
@@ -52,8 +53,9 @@ autoCorrelationTest <- function(dep.var, ans) {
 #' plot(exampleTraces)
 extractTraces <- function(dep.var, ans, effects) {
   # give error if no deps in ans
-  if (is.null(ans$deps))
+  if (is.null(ans$deps)) {
     stop("ans object does not have simulated states stored; use returnDeps = T in estimation")
+  }
 
   # get statistics of the observed network using state and cache from ans object
   obsStats <-
@@ -61,8 +63,9 @@ extractTraces <- function(dep.var, ans, effects) {
 
   # get a matrix of statistics from the simulated data in the ans object
   simStatsMatrix <-
-    Reduce("rbind", lapply(ans$deps, function(x)
-      getNetworkStatistics(dep.var, x$state, x$cache, effects)))
+    Reduce("rbind", lapply(ans$deps, function(x) {
+      getNetworkStatistics(dep.var, x$state, x$cache, effects)
+    }))
 
   results <- list(
     observedStats = obsStats,
@@ -101,7 +104,7 @@ getInitialEstimates <-
     }
 
     initialParam
-}
+  }
 
 
 # gofDistributionNetwork
@@ -115,15 +118,15 @@ getInitialEstimates <-
 #'
 #' @return
 #' @export
-#' 
-#' @seealso [estimateMobilityNetwork()], [getIndegree()], 
+#'
+#' @seealso [estimateMobilityNetwork()], [getIndegree()],
 #' [getTieWeights()]
 #'
 #' @examples
 #' # goodness of fit
 #' exampleGofIndegree <- gofDistributionNetwork(ans = exampleResDN, simulations = exampleResDN$deps, gofFunction = getIndegree, lvls = 1:100)
 #' plot(exampleGofIndegree)
-#' 
+#'
 #' exampleGofTieWeight <- gofDistributionNetwork(ans = exampleResDN, simulations = exampleResDN$deps, gofFunction = getTieWeights, lvls = 1:30)
 #' plot(exampleGofTieWeight)
 gofDistributionNetwork <-
@@ -132,8 +135,9 @@ gofDistributionNetwork <-
            gofFunction,
            dep.var = NULL,
            lvls = NULL) {
-    if (is.null(dep.var))
+    if (is.null(dep.var)) {
       dep.var <- names(ans$state)[1]
+    }
 
     # generate a list that contains all states for the dep.var with the observed in first place
     allStates <- list()
@@ -148,19 +152,20 @@ gofDistributionNetwork <-
     }
 
     gofStats <-
-      lapply(1:length(allCaches), function(i)
+      lapply(1:length(allCaches), function(i) {
         gofFunction(
           state = allStates[[i]],
           cache = allCaches[[i]],
           dep.var = dep.var,
           lvls = lvls
-        ))
+        )
+      })
     simStats <- gofStats
     simStats[[1]] <- NULL
     gofRes <- list(observed = gofStats[[1]], simulated = simStats)
     class(gofRes) <- "gof.stats.monan"
     return(gofRes)
-}
+  }
 
 
 # plot.gof.stats.monan
@@ -175,8 +180,9 @@ gofDistributionNetwork <-
 #'
 #' @examples
 plot.gof.stats.monan <- function(gofObject, lvls = NULL) {
-  if (is.null(lvls))
+  if (is.null(lvls)) {
     lvls <- 1:length(gofObject$observed)
+  }
   simStats <- Reduce(rbind, gofObject$simulated)
   boxplot(simStats[, lvls])
   lines(gofObject$observed, col = "red")
@@ -199,9 +205,11 @@ plot.traces.monan <- function(xx, ...) {
   nSims <- length(xx[[2]][, 1])
   for (i in 1:nParams) {
     plot(xx[[2]][, i], main = xx[[3]][i])
-    lines(x = 1:nSims,
-          y = rep(xx[[1]][i], nSims),
-          col = "red")
+    lines(
+      x = 1:nSims,
+      y = rep(xx[[1]][i], nSims),
+      col = "red"
+    )
   }
 }
 
@@ -221,7 +229,7 @@ print.result.monan <- function(x, covMat = F, ...) {
   reslt <-
     data.frame(
       Effects = names(x$estimates),
-      Estimates =  as.numeric(x$estimates),
+      Estimates = as.numeric(x$estimates),
       StandardErrors = x$standardErrors,
       Convergence = as.numeric(x$convergenceStatistics)
     )
@@ -276,26 +284,27 @@ print.scoretest.monan <- function(x, ...) {
 #'
 #' @return
 #' @export
-#' 
+#'
 #' @seealso [createEffectsObject()], [estimateMobilityNetwork()]
 #'
 #' @examples
 #' # test whether other effects should be included
 #' exampleEffects2 <- createEffectsObject(
 #'   list(
-#'     list('loops'),
-#'     list('min_reciprocity'),
-#'     list('loops_resource_covar', resource.attribute.index = "resVarCat"),
-#'     list('min_transitivity')
+#'     list("loops"),
+#'     list("min_reciprocity"),
+#'     list("loops_resource_covar", resource.attribute.index = "resVarCat"),
+#'     list("min_transitivity")
 #'   )
 #' )
-#' 
+#'
 #' exampleTestEffects2 <- scoreTest(exampleDependentVariable, exampleResDN, exampleEffects2)
 #' exampleTestEffects2
 scoreTest <- function(dep.var, ans, effects) {
   # give error if no deps in ans
-  if (is.null(ans$deps))
+  if (is.null(ans$deps)) {
     stop("ans object does not have simulated states stored; use returnDeps = T in estimation")
+  }
 
   # get statistics of the observed network using state and cache from ans object
   obsStats <-
@@ -303,8 +312,9 @@ scoreTest <- function(dep.var, ans, effects) {
 
   # get a matrix of statistics from the simulated data in the ans object
   simStatsMatrix <-
-    Reduce("rbind", lapply(ans$deps, function(x)
-      getNetworkStatistics(dep.var, x$state, x$cache, effects)))
+    Reduce("rbind", lapply(ans$deps, function(x) {
+      getNetworkStatistics(dep.var, x$state, x$cache, effects)
+    }))
 
   # get parametric p-values using mean and sd
   p.vals.par <-
@@ -313,8 +323,9 @@ scoreTest <- function(dep.var, ans, effects) {
 
   # get non-parametric p-values using ecdf
   p.vals.np <-
-    (apply(rbind(obsStats, simStatsMatrix), 2, function(x)
-      ecdf(x[2:length(x)])(x[1])))
+    (apply(rbind(obsStats, simStatsMatrix), 2, function(x) {
+      ecdf(x[2:length(x)])(x[1])
+    }))
 
   # return results
   result.score <- list(

@@ -15,7 +15,6 @@ Title
 \examples{
 # define dependent variable and create cache object
 exampleDependentVariable <- "transfers"
-
 exampleCache <- createWeightedCache(exampleState, exampleDependentVariable, resourceCovariates = c("resVarCat"))
 }
 \seealso{

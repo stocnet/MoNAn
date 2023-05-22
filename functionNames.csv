@@ -48,8 +48,8 @@ Column1,Function Name,Description,Core / Effect / Hidden / Auxiliary / gof-param
 46,plot.gof.stats.monan,Plot gof results,Auxiliary,,combined with gofDistributionNetwork,"former ""plot.gof.Stats.netDist"""
 47,plot.traces.monan,plot traces from Phase 3,Auxiliary,,combined with extractTraces,"former ""plot.traces.netdist"""
 48,present_relations,Effect modelling number fo non-0 entries in the data,Effect,not needed,not needed,
-49,print.result.monan,Print results,Auxiliary,,,"former ""print.result.netdist"""
-50,print.scoretest.monan,print score-test results,Auxiliary,,,"former ""print.scoretest.netdist"""
+49,print.result.monan,Print results,Auxiliary,,combined with estimateMobilityNetwork,"former ""print.result.netdist"""
+50,print.scoretest.monan,print score-test results,Auxiliary,,combined with scoreTest,"former ""print.scoretest.netdist"""
 51,resource_covar_to_node_covar,Effect modelling match of vars on node and resource level,Effect,not needed,not needed,"former ""ressource_covar_to_node_covar"""
 52,runPhase1,Internal functions for estimation,Hidden,not needed,not needed,
 53,runPhase2,Internal functions for estimation,Hidden,not needed,not needed,

@@ -11,13 +11,13 @@
 \title{Example Products for the MoNAn Package}
 \format{
 \code{exampleState}
-An object of class processState.monan.
+An object of class "processState.monan".
 
 \code{exampleDependentVariable}
-An object of class character.
+An object of class "character".
 
 \code{exampleCache}
-An object of class list.
+An object of class "list".
 
 \code{exampleEffects}
 An object of class "effectsList.monan".

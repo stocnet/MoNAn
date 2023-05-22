@@ -16,19 +16,19 @@
 #' 
 #' @rdname exampleProducts
 #' @format `exampleState`
-#' An object of class processState.monan.
+#' An object of class "processState.monan".
 "exampleState"
 
 
 #' @rdname exampleProducts
 #' @format `exampleDependentVariable`
-#' An object of class character.
+#' An object of class "character".
 "exampleDependentVariable"
 
 
 #' @rdname exampleProducts
 #' @format `exampleCache`
-#' An object of class list.
+#' An object of class "list".
 "exampleCache"
 
 

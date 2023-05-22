@@ -1,5 +1,6 @@
 #' Example Data for the MoNAn Package
 #'
+#' @name exampleData
 #' @description
 #' These are example data for the MoNAn package and can be used to estimate a 
 #' mobility network. The following objects are provided for this purpose:
@@ -11,24 +12,25 @@
 #'   \item{resVarCat}{blabla}
 #' }
 #' 
+#' @rdname exampleData
 #' @format `mobilityEdgelist`
 #' A data frame with 743 rows and 2 columns.
 "mobilityEdgelist"
 
 
-#' @rdname mobilityEdgelist
+#' @rdname exampleData
 #' @format `nodeVarCat`
 #' An object with 17 values.
 "nodeVarCat"
 
 
-#' @rdname mobilityEdgelist
+#' @rdname exampleData
 #' @format `nodeVarCont`
 #' An object with 17 values.
 "nodeVarCont"
 
 
-#' @rdname mobilityEdgelist
+#' @rdname exampleData
 #' @format `resVarCat`
 #' An object with 742 values.
 "resVarCat"

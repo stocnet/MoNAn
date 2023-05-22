@@ -217,6 +217,7 @@ plot.traces.monan <- function(xx, ...) {
 # print.result.monan
 #' Title
 #'
+#' @rdname estimateMobilityNetwork
 #' @param x
 #' @param covMat
 #' @param ...
@@ -247,34 +248,6 @@ print.result.monan <- function(x, covMat = F, ...) {
 }
 
 
-# print.scoretest.monan
-#' Title
-#'
-#' @param x
-#' @param ...
-#'
-#' @return
-#' @export
-#'
-#' @examples
-print.scoretest.monan <- function(x, ...) {
-  reslt <-
-    data.frame(
-      Effects = x$effects$name,
-      pValuesParametric = as.numeric(x$pValuesParametric),
-      pValuesNonParametric = as.numeric(x$pValuesNonParametric)
-    )
-
-  cat("Results\n")
-
-  print(reslt)
-  cat("\n")
-  cat(
-    " Parametric p-values: small = more significant \n Non-parametric p-values: further away from 0.5 = more significant"
-  )
-}
-
-
 # scoreTest
 #' Title
 #'
@@ -297,7 +270,6 @@ print.scoretest.monan <- function(x, ...) {
 #'     list("min_transitivity")
 #'   )
 #' )
-#'
 #' exampleTestEffects2 <- scoreTest(exampleDependentVariable, exampleResDN, exampleEffects2)
 #' exampleTestEffects2
 scoreTest <- function(dep.var, ans, effects) {
@@ -339,4 +311,33 @@ scoreTest <- function(dep.var, ans, effects) {
   class(result.score) <- "scoretest.monan"
 
   return(result.score)
+}
+
+
+# print.scoretest.monan
+#' Title
+#'
+#' @rdname scoreTest
+#' @param x
+#' @param ...
+#'
+#' @return
+#' @export
+#'
+#' @examples
+print.scoretest.monan <- function(x, ...) {
+  reslt <-
+    data.frame(
+      Effects = x$effects$name,
+      pValuesParametric = as.numeric(x$pValuesParametric),
+      pValuesNonParametric = as.numeric(x$pValuesNonParametric)
+    )
+  
+  cat("Results\n")
+  
+  print(reslt)
+  cat("\n")
+  cat(
+    " Parametric p-values: small = more significant \n Non-parametric p-values: further away from 0.5 = more significant"
+  )
 }

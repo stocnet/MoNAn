@@ -2,7 +2,7 @@
 % Please edit documentation in R/3_coreFunctions.R
 \name{as.nodeVariable}
 \alias{as.nodeVariable}
-\title{Title}
+\title{Assigns an attribute to nodes}
 \usage{
 as.nodeVariable(values)
 }
@@ -10,5 +10,5 @@ as.nodeVariable(values)
 \item{values}{}
 }
 \description{
-Title
+Assigns an attribute to nodes
 }

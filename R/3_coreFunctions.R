@@ -2,7 +2,7 @@
 
 
 # as.nodeVariable
-#' Title
+#' Assigns an attribute to nodes
 #'
 #' @param values
 #'

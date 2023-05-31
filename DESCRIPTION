@@ -5,10 +5,10 @@ Version: 0.0.0.9000
 Date: 2023-05-05
 Authors@R: person("Per", "Block", role = c("cre", "aut"), email = "block@soziologie.uzh.ch")
 Description: Implements the method to analyse weighted mobility networks or distribution networks as outlined in: 
-Block, P., Stadtfeld, C., & Robins, G. (2022). A statistical model for the analysis of mobility 
-tables as weighted networks with an application to faculty hiring networks. Social Networks, 68, 264-278.
+    Block, P., Stadtfeld, C., & Robins, G. (2022). A statistical model for the analysis of mobility 
+    tables as weighted networks with an application to faculty hiring networks. Social Networks, 68, 264-278.
 Depends: R (>= 4.2.2)
-License: GNU GPLv3
+License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
 Imports: snow (>= 0.4-4), snowfall (>= 1.84-6.2)

@@ -4,9 +4,9 @@
 \name{MoNAn-package}
 \alias{MoNAn}
 \alias{MoNAn-package}
-\title{MoNAn: What the Package Does (Title Case)}
+\title{MoNAn: Mobility Network Analysis}
 \description{
-More about what it does (maybe more than one line) Use four spaces when indenting paragraphs within the Description.
+Implements the method to analyse weighted mobility networks or distribution networks as outlined in: Block, P., Stadtfeld, C., & Robins, G. (2022). A statistical model for the analysis of mobility tables as weighted networks with an application to faculty hiring networks. Social Networks, 68, 264-278.
 }
 \author{
 \strong{Maintainer}: Per Block \email{block@soziologie.uzh.ch}

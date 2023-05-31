@@ -1,11 +1,12 @@
 Package: MoNAn
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Mobility Network Analysis
 Version: 0.0.0.9000
 Date: 2023-05-05
 Authors@R: person("Per", "Block", role = c("cre", "aut"), email = "block@soziologie.uzh.ch")
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Description: Implements the method to analyse weighted mobility networks or distribution networks as outlined in: 
+Block, P., Stadtfeld, C., & Robins, G. (2022). A statistical model for the analysis of mobility 
+tables as weighted networks with an application to faculty hiring networks. Social Networks, 68, 264-278.
 Depends: R (>= 4.2.2)
 License: GNU GPLv3
 Encoding: UTF-8

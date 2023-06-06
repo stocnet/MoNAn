@@ -3,10 +3,12 @@
 
 # as.nodeVariable
 #' Assigns an attribute to nodes
+#' 
+#' lalalala this is a test
 #'
-#' @param values
+#' @param values     An attribute in vector form to assign to nodes in a mobility network
 #'
-#' @return
+#' @return a nodevar object
 #' @export
 #'
 #' @examples

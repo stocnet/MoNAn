@@ -7,8 +7,11 @@
 as.nodeVariable(values)
 }
 \arguments{
-\item{values}{}
+\item{values}{An attribute in vector form to assign to nodes in a mobility network}
+}
+\value{
+a nodevar object
 }
 \description{
-Assigns an attribute to nodes
+lalalala this is a test
 }

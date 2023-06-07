@@ -6,7 +6,7 @@ Column1,Function Name,Description,Core / Effect / Hidden / Auxiliary / gof-param
 5,binary_transitivity,Effect Modelling transitivity of the dichotomised network,Effect,not needed,not needed,
 6,createEdgelist,"takes data and creates an edgelist for the ""state"" object",Core,,x,
 7,createEffectsObject,used to specify the model,Core,,x,
-8,createNetwork,"takes data and creates a network for the ""state"" object",Core,,,
+8,createNetwork,"takes data and creates a network for the ""state"" object",Core,,x,
 9,createNodeSet,"takes data and creates a nodeset for the ""state"" object",Core,,x,
 10,createNodeVariable,"takes data and creates a variable on onw of the node sets for the ""state"" object",Core,,x,
 11,createProcessState,Bundles all relevant data together for estimation,Core,,x,

@@ -12,6 +12,18 @@ export(
   plot.gof.stats.monan, plot.traces.monan, print.result.monan, 
   print.scoretest.monan, scoreTest,
   
+  # effect functions
+  alter_covariate, binary_transitivity, crowding_out_by_resource_inflow, 
+  crowding_out_prop_covar_bin, dyadic_covariate,
+  dyadic_covariate_resource_attribute, dyadic_covariate_tie_weights_sigmoid,
+  in_proportion_exponent_covar_bin, in_ties_loops, in_weights_exponent, 
+  in_weights_exponent_covar, loops, loops_GW, loops_node_covar, 
+  loops_resource_covar_node_covar, loops_resource_covar, loops_weight_sigmoid, 
+  loopsNegExp, min_reciprocity, min_reciprocity_resource_covar, min_transitivity,
+  netflow_transitivity, present_relations, resource_covar_to_node_covar, 
+  same_covariate, sim_covariate, staying_by_prop_bin_inflow, 
+  staying_by_resource_inflow, tie_weights_exponent, tie_weights_sigmoid,
+  
   # gof param functions
   getIndegree, getTieWeights
 )

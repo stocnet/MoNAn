@@ -1,4 +1,4 @@
-########## coreFunctions
+####### coreFunctions
 
 
 # as.nodeVariable
@@ -30,7 +30,7 @@ as.nodeVariable <- function(values) {
 #'
 #' @examples
 #' # create an object of class edgelist.monan
-#' transfers_EL <- createEdgelist(mobilityEdgelist, nodeSet = c("location", "location", "people"))
+#' transfers <- createEdgelist(mobilityEdgelist, nodeSet = c("locations", "locations", "people"))
 createEdgelist <-
   function(el, nodeSet = c("actors", "actors", "edges")) {
     if (dim(el)[2] != 2) {
@@ -60,11 +60,14 @@ createEdgelist <-
 #'
 #' @examples
 #' # create an effects object
-#' exampleEffects <- createEffectsObject(
+#' myEffects <- createEffectsObject(
 #'   list(
 #'     list("loops"),
 #'     list("min_reciprocity"),
-#'     list("loops_resource_covar", resource.attribute.index = "resVarCat")
+#'     list("dyadic_covariate", attribute.index = "sameRegion"),
+#'     list("alter_covariate",  attribute.index = "size"),
+#'     list("resource_covar_to_node_covar", attribute.index = "region", resource.attribute.index = "sex"),
+#'     list("loops_resource_covar", resource.attribute.index = "sex")
 #'   )
 #' )
 createEffectsObject <-
@@ -138,6 +141,9 @@ createEffectsObject <-
 #' @seealso [createProcessState()]
 #'
 #' @examples
+#' # create an object of class network.monan
+#' sameRegion <- outer(nodeVarCat, nodeVarCat, "==")*1
+#' sameRegion <- createNetwork(sameRegion, nodeSet = c("locations", "locations"))
 createNetwork <-
   function(m,
            isSymmetric = FALSE,
@@ -175,8 +181,8 @@ createNetwork <-
 #'
 #' @examples
 #' # create an object of class nodeSet.monan
-#' people_NS <- createNodeSet(1:nrow(mobilityEdgelist))
-#' location_NS <- createNodeSet(1:length(nodeVarCat))
+#' people <- createNodeSet(1:nrow(mobilityEdgelist))
+#' locations <- createNodeSet(1:length(nodeVarCat))
 createNodeSet <-
   function(x = NULL,
            isPresent = NULL,
@@ -231,9 +237,9 @@ createNodeSet <-
 #'
 #' @examples
 #' # create an object of class nodeVar.monan
-#' nodeVarCat_NV <- createNodeVariable(nodeVarCat, nodeSet = "location")
-#' nodeVarCont_NV <- createNodeVariable(nodeVarCont, nodeSet = "location", addSim = TRUE)
-#' resVarCat_NV <- createNodeVariable(resVarCat, nodeSet = "people")
+#' region <- createNodeVariable(nodeVarCat, nodeSet = "locations")
+#' size <- createNodeVariable(nodeVarCont, nodeSet = "locations", addSim = TRUE)
+#' sex <- createNodeVariable(resVarCat, nodeSet = "people")
 createNodeVariable <-
   function(values,
            range = NULL,
@@ -276,23 +282,28 @@ createNodeVariable <-
 #' [createNodeVariable()], [createNetwork()]
 #'
 #' @examples
-#' # Create a process state out of the example data objects:
+#' # Create a process state out of the mobility data objects:
 #' # create objects (which are later combined to the process state)
-#' transfers_EL <- createEdgelist(mobilityEdgelist, nodeSet = c("location", "location", "people"))
-#' people_NS <- createNodeSet(1:nrow(mobilityEdgelist))
-#' location_NS <- createNodeSet(1:length(nodeVarCat))
-#' nodeVarCat_NV <- createNodeVariable(nodeVarCat, nodeSet = "location")
-#' nodeVarCont_NV <- createNodeVariable(nodeVarCont, nodeSet = "location", addSim = TRUE)
-#' resVarCat_NV <- createNodeVariable(resVarCat, nodeSet = "people")
-#'
+#' transfers <- createEdgelist(mobilityEdgelist, nodeSet = c("locations", "locations", "people"))
+#' people <- createNodeSet(1:nrow(mobilityEdgelist))
+#' locations <- createNodeSet(1:length(nodeVarCat))
+#' sameRegion <- outer(nodeVarCat, nodeVarCat, "==")*1
+#' sameRegion <- createNetwork(sameRegion, nodeSet = c("locations", "locations"))
+#' region <- createNodeVariable(nodeVarCat, nodeSet = "locations")
+#' size <- createNodeVariable(nodeVarCont, nodeSet = "locations", addSim = TRUE)
+#' sex <- createNodeVariable(resVarCat, nodeSet = "people")
+#' 
 #' # combine created objects to the process state
-#' exampleState <- createProcessState(list(
-#'   transfers = transfers_EL,
-#'   people = people_NS,
-#'   location = location_NS,
-#'   nodeVarCat = nodeVarCat_NV,
-#'   nodeVarCont = nodeVarCont_NV,
-#'   resVarCat = resVarCat_NV
+#' myState <- createProcessState(list(
+#'   transfers = transfers,
+#'   
+#'   people = people,
+#'   locations = locations,
+#'   
+#'   sameRegion = sameRegion,
+#'   region = region,
+#'   size = size,
+#'   sex = sex
 #' ))
 createProcessState <- function(elements) {
   if (!is.list(elements)) {
@@ -364,8 +375,8 @@ createProcessState <- function(elements) {
 #'
 #' @examples
 #' # define dependent variable and create cache object
-#' exampleDependentVariable <- "transfers"
-#' exampleCache <- createWeightedCache(exampleState, exampleDependentVariable, resourceCovariates = c("resVarCat"))
+#' myDependentVariable <- "transfers"
+#' myCache <- createWeightedCache(myState, myDependentVariable, resourceCovariates = c("sex"))
 createWeightedCache <-
   function(processState,
            cacheObjectNames,
@@ -472,21 +483,40 @@ createWeightedCache <-
 #'
 #' @examples
 #' # estimate mobility network
-#' exampleResDN <- estimateMobilityNetwork(exampleDependentVariable,
-#'   exampleState, exampleCache, exampleEffects,
-#'   initialParameters = NULL,
-#'   burnInN1 = 200, iterationsN1 = 50, thinningN1 = 2000, gainN1 = 0.1,
-#'   burnInN2 = 2000, nsubN2 = 4, initGain = 0.25, thinningN2 = 2000,
-#'   initialIterationsN2 = 25,
-#'   iterationsN3 = 500, burnInN3 = 2000, thinningN3 = 2000,
-#'   parallel = T, cpus = 4,
-#'   allowLoops = T,
-#'   verbose = T,
-#'   returnDeps = T,
-#'   multinomialProposal = T,
-#'   fish = F
+#' myResDN <- estimateMobilityNetwork(myDependentVariable,
+#'                                    myState, myCache, myEffects,
+#'                                    initialParameters = NULL,
+#'                                    burnInN1 = 1500, iterationsN1 = 50, thinningN1 = 750, gainN1 = 0.1,
+#'                                    burnInN2 = 7500, nsubN2 = 4, initGain = 0.2, thinningN2 = 1500,
+#'                                    initialIterationsN2 = 25,
+#'                                    iterationsN3 = 500, burnInN3 = 7500, thinningN3 = 3750,
+#'                                    parallel = T, cpus = 4,
+#'                                    allowLoops = T,
+#'                                    verbose = T,
+#'                                    returnDeps = T,
+#'                                    multinomialProposal = F,
+#'                                    fish = F
 #' )
-#' exampleResDN
+#' 
+#' myResDN
+#' 
+#' # estimate mobility network again based on previous results to improve convergence
+#' myResDN <- estimateMobilityNetwork(myDependentVariable,
+#'                                    myState, myCache, myEffects,
+#'                                    prevAns = myResDN,
+#'                                    burnInN1 = 1500, iterationsN1 = 50, thinningN1 = 750, gainN1 = 0.1,
+#'                                    burnInN2 = 7500, nsubN2 = 4, initGain = 0.2, thinningN2 = 3000,
+#'                                    initialIterationsN2 = 40,
+#'                                    iterationsN3 = 500, burnInN3 = 15000, thinningN3 = 7500,
+#'                                    parallel = T, cpus = 4,
+#'                                    allowLoops = T,
+#'                                    verbose = T,
+#'                                    returnDeps = T,
+#'                                    multinomialProposal = F,
+#'                                    fish = F
+#' )
+#' 
+#' myResDN
 estimateMobilityNetwork <-
   function(dep.var,
            state,

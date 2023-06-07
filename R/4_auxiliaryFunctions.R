@@ -14,7 +14,7 @@
 #'
 #' @examples
 #' # regression diagnostics
-#' autoCorrelationTest(exampleDependentVariable, exampleResDN)
+#' autoCorrelationTest(myDependentVariable, myResDN)
 autoCorrelationTest <- function(dep.var, ans) {
   # give error if no deps in ans obj
   if (is.null(ans$deps)) {
@@ -49,8 +49,8 @@ autoCorrelationTest <- function(dep.var, ans) {
 #'
 #' @examples
 #' # regression diagnostics
-#' exampleTraces <- extractTraces(exampleDependentVariable, exampleResDN, exampleEffects)
-#' plot(exampleTraces)
+#' traces <- extractTraces(myDependentVariable, myResDN, myEffects)
+#' plot(traces)
 extractTraces <- function(dep.var, ans, effects) {
   # give error if no deps in ans
   if (is.null(ans$deps)) {
@@ -124,11 +124,11 @@ getInitialEstimates <-
 #'
 #' @examples
 #' # goodness of fit
-#' exampleGofIndegree <- gofDistributionNetwork(ans = exampleResDN, simulations = exampleResDN$deps, gofFunction = getIndegree, lvls = 1:100)
-#' plot(exampleGofIndegree)
-#'
-#' exampleGofTieWeight <- gofDistributionNetwork(ans = exampleResDN, simulations = exampleResDN$deps, gofFunction = getTieWeights, lvls = 1:30)
-#' plot(exampleGofTieWeight)
+#' myGofIndegree <- gofDistributionNetwork(ans = myResDN, simulations = myResDN$deps, gofFunction = getIndegree, lvls = 1:100)
+#' plot(myGofIndegree)
+#' 
+#' myGofTieWeight <- gofDistributionNetwork(ans = myResDN, simulations = myResDN$deps, gofFunction = getTieWeights, lvls = 1:30)
+#' plot(myGofTieWeight)
 gofDistributionNetwork <-
   function(ans,
            simulations,
@@ -262,16 +262,20 @@ print.result.monan <- function(x, covMat = F, ...) {
 #'
 #' @examples
 #' # test whether other effects should be included
-#' exampleEffects2 <- createEffectsObject(
+#' myEffects2 <- createEffectsObject(
 #'   list(
 #'     list("loops"),
 #'     list("min_reciprocity"),
-#'     list("loops_resource_covar", resource.attribute.index = "resVarCat"),
+#'     list("dyadic_covariate", attribute.index = "sameRegion"),
+#'     list("alter_covariate", attribute.index = "size"),
+#'     list("resource_covar_to_node_covar", attribute.index = "region", resource.attribute.index = "sex"),
+#'     list("loops_resource_covar", resource.attribute.index = "sex"),
 #'     list("min_transitivity")
 #'   )
 #' )
-#' exampleTestEffects2 <- scoreTest(exampleDependentVariable, exampleResDN, exampleEffects2)
-#' exampleTestEffects2
+#' 
+#' test_ME.2 <- scoreTest(myDependentVariable, myResDN, myEffects2)
+#' test_ME.2
 scoreTest <- function(dep.var, ans, effects) {
   # give error if no deps in ans
   if (is.null(ans$deps)) {

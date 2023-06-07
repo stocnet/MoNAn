@@ -17,6 +17,11 @@ createNetwork(
 \description{
 Title
 }
+\examples{
+# create an object of class network.monan
+sameRegion <- outer(nodeVarCat, nodeVarCat, "==")*1
+sameRegion <- createNetwork(sameRegion, nodeSet = c("locations", "locations"))
+}
 \seealso{
 \code{\link[=createProcessState]{createProcessState()}}
 }

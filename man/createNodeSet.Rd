@@ -14,8 +14,8 @@ Title
 }
 \examples{
 # create an object of class nodeSet.monan
-people_NS <- createNodeSet(1:nrow(mobilityEdgelist))
-location_NS <- createNodeSet(1:length(nodeVarCat))
+people <- createNodeSet(1:nrow(mobilityEdgelist))
+locations <- createNodeSet(1:length(nodeVarCat))
 }
 \seealso{
 \code{\link[=createProcessState]{createProcessState()}}

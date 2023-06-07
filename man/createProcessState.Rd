@@ -13,23 +13,28 @@ createProcessState(elements)
 Title
 }
 \examples{
-# Create a process state out of the example data objects:
+# Create a process state out of the mobility data objects:
 # create objects (which are later combined to the process state)
-transfers_EL <- createEdgelist(mobilityEdgelist, nodeSet = c("location", "location", "people"))
-people_NS <- createNodeSet(1:nrow(mobilityEdgelist))
-location_NS <- createNodeSet(1:length(nodeVarCat))
-nodeVarCat_NV <- createNodeVariable(nodeVarCat, nodeSet = "location")
-nodeVarCont_NV <- createNodeVariable(nodeVarCont, nodeSet = "location", addSim = TRUE)
-resVarCat_NV <- createNodeVariable(resVarCat, nodeSet = "people")
+transfers <- createEdgelist(mobilityEdgelist, nodeSet = c("locations", "locations", "people"))
+people <- createNodeSet(1:nrow(mobilityEdgelist))
+locations <- createNodeSet(1:length(nodeVarCat))
+sameRegion <- outer(nodeVarCat, nodeVarCat, "==")*1
+sameRegion <- createNetwork(sameRegion, nodeSet = c("locations", "locations"))
+region <- createNodeVariable(nodeVarCat, nodeSet = "locations")
+size <- createNodeVariable(nodeVarCont, nodeSet = "locations", addSim = TRUE)
+sex <- createNodeVariable(resVarCat, nodeSet = "people")
 
 # combine created objects to the process state
-exampleState <- createProcessState(list(
-  transfers = transfers_EL,
-  people = people_NS,
-  location = location_NS,
-  nodeVarCat = nodeVarCat_NV,
-  nodeVarCont = nodeVarCont_NV,
-  resVarCat = resVarCat_NV
+myState <- createProcessState(list(
+  transfers = transfers,
+  
+  people = people,
+  locations = locations,
+  
+  sameRegion = sameRegion,
+  region = region,
+  size = size,
+  sex = sex
 ))
 }
 \seealso{

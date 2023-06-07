@@ -21,8 +21,8 @@ Title
 }
 \examples{
 # regression diagnostics
-exampleTraces <- extractTraces(exampleDependentVariable, exampleResDN, exampleEffects)
-plot(exampleTraces)
+traces <- extractTraces(myDependentVariable, myResDN, myEffects)
+plot(traces)
 }
 \seealso{
 \code{\link[=estimateMobilityNetwork]{estimateMobilityNetwork()}}, \code{\link[=createEffectsObject]{createEffectsObject()}}

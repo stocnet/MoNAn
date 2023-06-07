@@ -48,21 +48,40 @@ Title
 }
 \examples{
 # estimate mobility network
-exampleResDN <- estimateMobilityNetwork(exampleDependentVariable,
-  exampleState, exampleCache, exampleEffects,
-  initialParameters = NULL,
-  burnInN1 = 200, iterationsN1 = 50, thinningN1 = 2000, gainN1 = 0.1,
-  burnInN2 = 2000, nsubN2 = 4, initGain = 0.25, thinningN2 = 2000,
-  initialIterationsN2 = 25,
-  iterationsN3 = 500, burnInN3 = 2000, thinningN3 = 2000,
-  parallel = T, cpus = 4,
-  allowLoops = T,
-  verbose = T,
-  returnDeps = T,
-  multinomialProposal = T,
-  fish = F
+myResDN <- estimateMobilityNetwork(myDependentVariable,
+                                   myState, myCache, myEffects,
+                                   initialParameters = NULL,
+                                   burnInN1 = 1500, iterationsN1 = 50, thinningN1 = 750, gainN1 = 0.1,
+                                   burnInN2 = 7500, nsubN2 = 4, initGain = 0.2, thinningN2 = 1500,
+                                   initialIterationsN2 = 25,
+                                   iterationsN3 = 500, burnInN3 = 7500, thinningN3 = 3750,
+                                   parallel = T, cpus = 4,
+                                   allowLoops = T,
+                                   verbose = T,
+                                   returnDeps = T,
+                                   multinomialProposal = F,
+                                   fish = F
 )
-exampleResDN
+
+myResDN
+
+# estimate mobility network again based on previous results to improve convergence
+myResDN <- estimateMobilityNetwork(myDependentVariable,
+                                   myState, myCache, myEffects,
+                                   prevAns = myResDN,
+                                   burnInN1 = 1500, iterationsN1 = 50, thinningN1 = 750, gainN1 = 0.1,
+                                   burnInN2 = 7500, nsubN2 = 4, initGain = 0.2, thinningN2 = 3000,
+                                   initialIterationsN2 = 40,
+                                   iterationsN3 = 500, burnInN3 = 15000, thinningN3 = 7500,
+                                   parallel = T, cpus = 4,
+                                   allowLoops = T,
+                                   verbose = T,
+                                   returnDeps = T,
+                                   multinomialProposal = F,
+                                   fish = F
+)
+
+myResDN
 }
 \seealso{
 \code{\link[=createProcessState]{createProcessState()}}, \code{\link[=createWeightedCache]{createWeightedCache()}},

@@ -21,16 +21,20 @@ Title
 }
 \examples{
 # test whether other effects should be included
-exampleEffects2 <- createEffectsObject(
+myEffects2 <- createEffectsObject(
   list(
     list("loops"),
     list("min_reciprocity"),
-    list("loops_resource_covar", resource.attribute.index = "resVarCat"),
+    list("dyadic_covariate", attribute.index = "sameRegion"),
+    list("alter_covariate", attribute.index = "size"),
+    list("resource_covar_to_node_covar", attribute.index = "region", resource.attribute.index = "sex"),
+    list("loops_resource_covar", resource.attribute.index = "sex"),
     list("min_transitivity")
   )
 )
-exampleTestEffects2 <- scoreTest(exampleDependentVariable, exampleResDN, exampleEffects2)
-exampleTestEffects2
+
+test_ME.2 <- scoreTest(myDependentVariable, myResDN, myEffects2)
+test_ME.2
 }
 \seealso{
 \code{\link[=createEffectsObject]{createEffectsObject()}}, \code{\link[=estimateMobilityNetwork]{estimateMobilityNetwork()}}

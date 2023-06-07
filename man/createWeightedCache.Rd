@@ -14,8 +14,8 @@ Title
 }
 \examples{
 # define dependent variable and create cache object
-exampleDependentVariable <- "transfers"
-exampleCache <- createWeightedCache(exampleState, exampleDependentVariable, resourceCovariates = c("resVarCat"))
+myDependentVariable <- "transfers"
+myCache <- createWeightedCache(myState, myDependentVariable, resourceCovariates = c("sex"))
 }
 \seealso{
 \code{\link[=createProcessState]{createProcessState()}}

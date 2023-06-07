@@ -20,9 +20,9 @@ Title
 }
 \examples{
 # create an object of class nodeVar.monan
-nodeVarCat_NV <- createNodeVariable(nodeVarCat, nodeSet = "location")
-nodeVarCont_NV <- createNodeVariable(nodeVarCont, nodeSet = "location", addSim = TRUE)
-resVarCat_NV <- createNodeVariable(resVarCat, nodeSet = "people")
+region <- createNodeVariable(nodeVarCat, nodeSet = "locations")
+size <- createNodeVariable(nodeVarCont, nodeSet = "locations", addSim = TRUE)
+sex <- createNodeVariable(resVarCat, nodeSet = "people")
 }
 \seealso{
 \code{\link[=createProcessState]{createProcessState()}}

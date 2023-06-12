@@ -284,21 +284,21 @@ createNodeVariable <-
 #' @examples
 #' # Create a process state out of the mobility data objects:
 #' # create objects (which are later combined to the process state)
-#' transfers <- createEdgelist(mobilityEdgelist, nodeSet = c("locations", "locations", "people"))
+#' transfers <- createEdgelist(mobilityEdgelist, nodeSet = c("organisations", "organisations", "people"))
 #' people <- createNodeSet(1:nrow(mobilityEdgelist))
-#' locations <- createNodeSet(1:length(nodeVarCat))
-#' sameRegion <- outer(nodeVarCat, nodeVarCat, "==")*1
-#' sameRegion <- createNetwork(sameRegion, nodeSet = c("locations", "locations"))
-#' region <- createNodeVariable(nodeVarCat, nodeSet = "locations")
-#' size <- createNodeVariable(nodeVarCont, nodeSet = "locations", addSim = TRUE)
-#' sex <- createNodeVariable(resVarCat, nodeSet = "people")
+#' organisations <- createNodeSet(1:length(orgRegion))
+#' sameRegion <- outer(orgRegion, orgRegion, "==") * 1
+#' sameRegion <- createNetwork(sameRegion, nodeSet = c("organisations", "organisations"))
+#' region <- createNodeVariable(orgRegion, nodeSet = "organisations")
+#' size <- createNodeVariable(orgSize, nodeSet = "organisations", addSim = TRUE)
+#' sex <- createNodeVariable(indSex, nodeSet = "people")
 #' 
 #' # combine created objects to the process state
 #' myState <- createProcessState(list(
 #'   transfers = transfers,
 #'   
 #'   people = people,
-#'   locations = locations,
+#'   organisations = organisations,
 #'   
 #'   sameRegion = sameRegion,
 #'   region = region,

@@ -8,9 +8,9 @@ export(
   simulateMobilityNetworks, simulateDistributionNetworks,
   
   # auxiliary functions
-  autoCorrelationTest, extractTraces, getInitialEstimates, gofDistributionNetwork,
-  plot.gof.stats.monan, plot.traces.monan, print.result.monan, 
-  print.scoretest.monan, scoreTest,
+  autoCorrelationTest, extractTraces, getInitialEstimates, 
+  getMultinomialStatistics, gofDistributionNetwork, plot.gof.stats.monan, 
+  plot.traces.monan, print.result.monan, print.scoretest.monan, scoreTest,
   
   # effect functions
   alter_covariate, binary_transitivity, crowding_out_by_resource_inflow, 

@@ -107,6 +107,91 @@ getInitialEstimates <-
   }
 
 
+# getMultinomialStatistics
+#' Title
+#'
+#' @param state 
+#' @param cache 
+#' @param effects 
+#' @param dep.var 
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' myStatisticsFrame <- getMultinomialStatistics(myState, myCache, myEffects, myDependentVariable)
+getMultinomialStatistics <-
+  function(state, cache, effects, dep.var) {
+    # create a list that will store all statistics
+    statsVec <- list()
+    
+    # get number of options where the resource can go
+    actors1 <- state[[dep.var]]$nodeSet[1]
+    nActors1 <- length(state[[actors1]]$ids)
+    
+    # loop through all resources
+    for (number in 1:nrow(state[[dep.var]]$data)) {
+      transferUnderAnalysis <- state[[dep.var]]$data[number, ]
+      
+      # get a new cache without the transfer under analysis
+      
+      reducedCache <- cache
+      reducedCache[[dep.var]] <-
+        updateWeightedCache(
+          cache = reducedCache[[dep.var]],
+          state = state,
+          resourceID = number,
+          dep.var = dep.var,
+          sender = transferUnderAnalysis[1],
+          receiver = transferUnderAnalysis[2],
+          update = -1
+        )
+      
+      
+      # calculate the statistics for the every option
+      
+      stats <- matrix(NA, nActors1, length(effects$effectFormulas) + 3)
+      
+      for (target in 1:nActors1) {
+        newCache <- reducedCache
+        # newCache[[dep.var]] <- updateWeightedCache(cache = newCache[[dep.var]],
+        #                                            sender = transferUnderAnalysis[1],
+        #                                            receiver = target,
+        #                                            update = 1)
+        
+        # create a state that would be with the transfer in that place
+        newState <- state
+        newState[[dep.var]]$data[number, ][2] <- target
+        
+        stats[target, 4:(length(effects$effectFormulas) + 3)] <-
+          unlist(lapply(effects$effectFormulas, function(f) {
+            f(
+              dep.var = dep.var,
+              state = newState,
+              cache = newCache,
+              i = transferUnderAnalysis[1],
+              j = target,
+              edge = number,
+              update = 1
+            )
+          }))
+      }
+      
+      stats[, 1] <- number
+      stats[, 2] <- 1:nActors1
+      stats[, 3] <- 1:nActors1 == transferUnderAnalysis[2]
+      
+      statsVec[[number]] <- stats
+    }
+    statsMat <- (Reduce(rbind, statsVec))
+    
+    colnames(statsMat) <-
+      c("resource", "target", "choice", effects$name)
+    
+    return(as.data.frame(statsMat))
+  }
+
+
 # gofDistributionNetwork
 #' Title
 #'

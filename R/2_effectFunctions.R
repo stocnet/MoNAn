@@ -640,9 +640,8 @@ loops_weight_sigmoid <-
   }
 
 
-# loopsNegExp
-loopsNegExp <-
-  loopsNegExp <-
+# loops_neg_exp
+loops_neg_exp <-
   function(dep.var = 1,
            state,
            cache,

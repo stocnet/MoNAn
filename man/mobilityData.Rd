@@ -4,31 +4,31 @@
 \name{mobilityData}
 \alias{mobilityData}
 \alias{mobilityEdgelist}
-\alias{nodeVarCat}
-\alias{nodeVarCont}
-\alias{resVarCat}
+\alias{orgRegion}
+\alias{orgSize}
+\alias{indSex}
 \title{Example Data for the MoNAn Package}
 \format{
 \code{mobilityEdgelist}
 A data frame with 743 rows and 2 columns.
 
-\code{nodeVarCat}
+\code{orgRegion}
 An object with 17 values.
 
-\code{nodeVarCont}
+\code{orgSize}
 An object with 17 values.
 
-\code{resVarCat}
+\code{indSex}
 An object with 742 values.
 }
 \usage{
 mobilityEdgelist
 
-nodeVarCat
+orgRegion
 
-nodeVarCont
+orgSize
 
-resVarCat
+indSex
 }
 \description{
 These are example data for the MoNAn package and can be used to estimate a
@@ -36,9 +36,9 @@ mobility network. The following objects are provided for this purpose:
 
 \describe{
 \item{mobilityEdgelist}{blabla}
-\item{nodeVarCat}{blabla}
-\item{nodeVarCont}{blabla}
-\item{resVarCat}{blabla}
+\item{orgRegion}{blabla}
+\item{orgSize}{blabla}
+\item{indSex}{blabla}
 }
 }
 \keyword{datasets}

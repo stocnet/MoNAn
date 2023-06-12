@@ -7,9 +7,9 @@
 #'
 #' \describe{
 #'   \item{mobilityEdgelist}{blabla}
-#'   \item{nodeVarCat}{blabla}
-#'   \item{nodeVarCont}{blabla}
-#'   \item{resVarCat}{blabla}
+#'   \item{orgRegion}{blabla}
+#'   \item{orgSize}{blabla}
+#'   \item{indSex}{blabla}
 #' }
 #' 
 #' @rdname mobilityData
@@ -19,18 +19,18 @@
 
 
 #' @rdname mobilityData
-#' @format `nodeVarCat`
+#' @format `orgRegion`
 #' An object with 17 values.
-"nodeVarCat"
+"orgRegion"
 
 
 #' @rdname mobilityData
-#' @format `nodeVarCont`
+#' @format `orgSize`
 #' An object with 17 values.
-"nodeVarCont"
+"orgSize"
 
 
 #' @rdname mobilityData
-#' @format `resVarCat`
+#' @format `indSex`
 #' An object with 742 values.
-"resVarCat"
+"indSex"

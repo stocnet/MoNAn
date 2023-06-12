@@ -40,7 +40,7 @@ Column1,Function Name,Description,Core / Effect / Hidden / Auxiliary / gof-param
 38,loops_resource_covar_node_covar,Effects modelling staying by node and resource covar,Effect,not needed,not needed,
 39,loops_resource_covar,Effects modelling staying by resource covar,Effect,not needed,not needed,"former ""loops_ressource_covar"""
 40,loops_weight_sigmoid,Effects modelling staying by other nonlinear function,Effect,not needed,not needed,
-41,loopsNegExp,Effects modelling staying by other nonlinear function,Effect,not needed,not needed,
+41,loops_neg_exp,Effects modelling staying by other nonlinear function,Effect,not needed,not needed,
 42,min_reciprocity,Effects modelling reciprocity by min,Effect,not needed,not needed,"former ""min_reciprocity_per"""
 43,min_reciprocity_resource_covar,Effects modelling reciprocity by min weighted by resource covar,Effect,not needed,not needed,"former ""min_reciprocity_ressource_covar"""
 44,min_transitivity,Effects modelling balabced clustering,Effect,not needed,not needed,

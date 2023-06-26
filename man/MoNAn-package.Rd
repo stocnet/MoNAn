@@ -11,5 +11,10 @@ Implements the method to analyse weighted mobility networks or distribution netw
 \author{
 \strong{Maintainer}: Per Block \email{block@soziologie.uzh.ch}
 
+Authors:
+\itemize{
+  \item Christoph Stadtfeld
+}
+
 }
 \keyword{internal}

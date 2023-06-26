@@ -8,7 +8,7 @@ export(
   simulateMobilityNetworks, simulateDistributionNetworks,
   
   # auxiliary functions
-  autoCorrelationTest, extractTraces, getInitialEstimates, 
+  autoCorrelationTest, extractTraces, 
   getMultinomialStatistics, gofDistributionNetwork, plot.gof.stats.monan, 
   plot.traces.monan, print.result.monan, print.scoretest.monan, scoreTest,
   
@@ -30,6 +30,8 @@ export(
 
 importFrom("graphics", "boxplot", "lines")
 importFrom("stats", "as.formula", "ecdf", "pnorm", "runif", "sd")
+importFrom("methods", "is")
+importFrom("snowfall", "sfInit", "sfExport", "sfLapply", "sfLibrary", "sfStop")
 
 # S3 methods
 S3method(print, result.monan)

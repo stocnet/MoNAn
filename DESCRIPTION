@@ -12,7 +12,7 @@ Depends: R (>= 4.2.2)
 License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
-Imports: snow (>= 0.4-4), snowfall (>= 1.84-6.2)
+Imports: snow (>= 0.4-4), snowfall (>= 1.84-6.2), methods
 RoxygenNote: 7.2.3
 Roxygen: list(markdown = TRUE)
 Suggests: 

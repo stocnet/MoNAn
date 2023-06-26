@@ -312,20 +312,24 @@ myResDN
 #> 6 -0.03304023
 ```
 
-## Some diagnostics
+## Diagnostics of the estimated model
 
 The following two diagnostics indicate the extent to which the chain
-mixes (i.e., whether the thinning was chosen appropriately). For the
-autoCorrelationTest, lower values are better. Values above 0.5 are very
-problematic.
+mixes (i.e., whether the thinning was chosen appropriately). The
+autoCorrelationTest indicates the degree to which the values of the
+dependent variable of consecutive draws from the chain in phase 3 are
+correlated. Here lower values are better. Values above 0.5 are very
+problematic and indicate that a higher thinning is needed.
 
 ``` r
 autoCorrelationTest(myDependentVariable, myResDN)
 #> [1] 0.1027527
 ```
 
-For the extractTraces, the plot should show data point randomly
-scattered around the target line.
+The output of extractTraces indicates the correlation of statistics
+between subsequent draws from the chin in phase 3. The plot should show
+data point randomly scattered around the target line, as shown below. If
+patterns in the traces are discernible, a higher thinning is needed.
 
 ``` r
 traces <- extractTraces(myDependentVariable, myResDN, myEffects)
@@ -336,7 +340,7 @@ plot(traces)
 
 <img src="man/figures/README-unnamed-chunk-18-1.png" width="100%" /><img src="man/figures/README-unnamed-chunk-18-2.png" width="100%" /><img src="man/figures/README-unnamed-chunk-18-3.png" width="100%" />
 
-## score-tests
+## Score-tests to check model specification
 
 Based on an estimated model, a score-type test is available that shows
 whether statistics representing non-included effects are well

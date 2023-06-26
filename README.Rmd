@@ -46,13 +46,16 @@ remotes::install_github("perblock/MoNAn")
 # Example
 
 
-# This script runs a simple example with the data from the MoNAn package
+This script runs a simple example with the data from the MoNAn package
 
-``` r
+```{r}
 library(MoNAn)
+```
 
-##### create data objects from internal data files, which are later combined to the process state #####
+First, create data objects from internal data files, which are later combined to the process state
 
+
+```{r}
 # create objects
 transfers <- createEdgelist(mobilityEdgelist, nodeSet = c("organisations", "organisations", "people"))
 people <- createNodeSet(1:nrow(mobilityEdgelist))
@@ -62,8 +65,11 @@ sameRegion <- createNetwork(sameRegion, nodeSet = c("organisations", "organisati
 region <- createNodeVariable(orgRegion, nodeSet = "organisations")
 size <- createNodeVariable(orgSize, nodeSet = "organisations", addSim = TRUE)
 sex <- createNodeVariable(indSex, nodeSet = "people")
+```
 
-# combine created objects to the process state
+Combine the data objects into the process state, i.e., an object that stores all information that will be used in the estimation later.
+
+```{r}
 myState <- createProcessState(list(
   transfers = transfers,
   
@@ -75,17 +81,18 @@ myState <- createProcessState(list(
   size = size,
   sex = sex
 ))
+```
 
+Define the dependent variable, and create a cache, a necessary object used in the simulations.
 
-##### create cache #####
-
-# define dependent variable and create cache object
+```{r}
 myDependentVariable <- "transfers"
 myCache <- createWeightedCache(myState, myDependentVariable, resourceCovariates = c("sex"))
+```
 
+Specify the model. The predictors in the model are called "Effects" and they are defined in a list. Each effect itself is a list that contains the effect name and additional parameters that it needs.
 
-##### create effects object #####
-
+```{r}
 # create an effects object
 myEffects <- createEffectsObject(
   list(
@@ -97,6 +104,9 @@ myEffects <- createEffectsObject(
     list("loops_resource_covar", resource.attribute.index = "sex")
   )
 )
+```
+
+
 
 
 ##### get multinomial statistics to estimate initial parameters using pseudo-likelihood estimation #####

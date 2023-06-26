@@ -20,10 +20,12 @@ as.nodeVariable <- function(values) {
 # createEdgelist
 #' Create an edgelist object
 #'
-#' @param el
+#' @param el an edgelist in the form of a matrix with two columns and N rows. 
+#' The first column indicates the origin of a person, the second row the destination.
+#' Each row is one observation.
 #' @param nodeSet
 #'
-#' @return
+#' @return an object of type edgelist.monan
 #' @export
 #'
 #' @seealso [createProcessState()]

@@ -13,10 +13,10 @@ gofDistributionNetwork(
   lvls = NULL
 )
 
-\method{plot}{gof.stats.monan}(x, ...)
+\method{plot}{gof.stats.monan}(x, lvls, ...)
 }
 \arguments{
-\item{lvls}{}
+\item{lvls}{description}
 
 \item{x}{a gofObject}
 }

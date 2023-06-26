@@ -234,12 +234,13 @@ gofDistributionNetwork <-
 #'
 #' @rdname gofDistributionNetwork
 #' @param x a gofObject
+#' @param lvls description
 #'
 #' @return
 #' @export
 #'
 #' @examples
-plot.gof.stats.monan <- function(x, ...) {
+plot.gof.stats.monan <- function(x, lvls, ...) {
   if (is.null(lvls)) {
     lvls <- 1:length(x$observed)
   }

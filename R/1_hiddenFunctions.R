@@ -137,7 +137,7 @@ runPhase2 <- function(dep.var,
     getNetworkStatistics(dep.var, state, cache, effects)
 
   # initialize parallel computing
-  if (parallel && require(snowfall) && cpus > 1) {
+  if (parallel && cpus > 1) {
     sfInit(parallel = T, cpus = cpus)
     # TODO. Replace this long command with sfLibrary("NetDist") once the package is packaged
     sfLibrary("MoNAn")
@@ -285,7 +285,7 @@ runPhase3 <- function(dep.var,
                       fish = fish) {
   # simulate statistic matrix
   # if parallel computing, initialize several simulation chains and rbind the results at the end
-  if (parallel && require(snowfall)) {
+  if (parallel) {
     iterationsPerCPU <- rep(iterationsN3 %/% cpus, cpus)
     rest <- iterationsN3 %% cpus
     if (rest > 0) {

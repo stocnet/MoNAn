@@ -28,7 +28,7 @@ as found [here](https://www.sciencedirect.com/science/article/pii/S0378873321000
 # Installation
 
 The package is still under development. 
-You can install the development version of MoNAn from [GitHub](https://github.com/) with:
+You can install the development version of MoNAn from GitHub with:
 
 ``` r
 # install.packages("devtools")
@@ -46,7 +46,7 @@ remotes::install_github("perblock/MoNAn")
 # Example
 
 
-This script runs a simple example with the data from the MoNAn package
+This script runs a simple example with the data from the MoNAn package.
 
 ```{r}
 library(MoNAn)
@@ -55,6 +55,15 @@ library(MoNAn)
 library(snow)
 library(snowfall)
 ```
+
+The example case is using synthetic data that represents mobility of individuals between organisations. The artificial data includes an edgelist, i.e. a list of origins and destinations of individuals.
+
+```{r}
+mobilityEdgelist
+```
+
+
+
 
 First, create data objects from internal data files, which are later combined to the process state
 

@@ -18,16 +18,30 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of MoNAn is to ...
+MoNAn is the software implementation of the statistical model outlined in:
+
+Block, P., Stadtfeld, C., & Robins, G. (2022). A statistical model for the analysis of mobility 
+tables as weighted networks with an application to faculty hiring networks. Social Networks, 68, 264-278.
+
+as found [here](https://www.sciencedirect.com/science/article/pii/S0378873321000654).
 
 ## Installation
 
+The package is still under development. 
 You can install the development version of MoNAn from [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
 devtools::install_github("perblock/MoNAn")
 ```
+
+or using:
+
+``` r
+# install.packages("remotes")
+remotes::install_github("perblock/MoNAn")
+```
+
 
 ## Example
 

@@ -68,7 +68,8 @@ createEdgelist <-
 #'     list("min_reciprocity"),
 #'     list("dyadic_covariate", attribute.index = "sameRegion"),
 #'     list("alter_covariate",  attribute.index = "size"),
-#'     list("resource_covar_to_node_covar", attribute.index = "region", resource.attribute.index = "sex"),
+#'     list("resource_covar_to_node_covar", attribute.index = "region", 
+#'           resource.attribute.index = "sex"),
 #'     list("loops_resource_covar", resource.attribute.index = "sex")
 #'   )
 #' )
@@ -97,7 +98,7 @@ createEffectsObject <-
         s
       },
       signatures, setParams,
-      SIMPLIFY = F
+      SIMPLIFY = FALSE
     )
     if ("matrix" %in% class(signatures)) {
       signatures <- apply(signatures, 2, invisible)
@@ -105,7 +106,7 @@ createEffectsObject <-
 
     # Assign signatures with default values to generic functions
     for (i in 1:length(effects)) {
-      formals(effects[[i]]) <- unlist(signatures[i], recursive = F)
+      formals(effects[[i]]) <- unlist(signatures[i], recursive = FALSE)
     }
 
     # If a process state is provided, check whether all params refer to existing objects
@@ -144,7 +145,7 @@ createEffectsObject <-
 #'
 #' @examples
 #' # create an object of class network.monan
-#' sameRegion <- outer(nodeVarCat, nodeVarCat, "==")*1
+#' sameRegion <- outer(orgRegion, orgRegion, "==")*1
 #' sameRegion <- createNetwork(sameRegion, nodeSet = c("locations", "locations"))
 createNetwork <-
   function(m,
@@ -184,7 +185,7 @@ createNetwork <-
 #' @examples
 #' # create an object of class nodeSet.monan
 #' people <- createNodeSet(1:nrow(mobilityEdgelist))
-#' locations <- createNodeSet(1:length(nodeVarCat))
+#' locations <- createNodeSet(1:length(orgRegion))
 createNodeSet <-
   function(x = NULL,
            isPresent = NULL,
@@ -239,15 +240,15 @@ createNodeSet <-
 #'
 #' @examples
 #' # create an object of class nodeVar.monan
-#' region <- createNodeVariable(nodeVarCat, nodeSet = "locations")
-#' size <- createNodeVariable(nodeVarCont, nodeSet = "locations", addSim = TRUE)
-#' sex <- createNodeVariable(resVarCat, nodeSet = "people")
+#' region <- createNodeVariable(orgRegion, nodeSet = "locations")
+#' size <- createNodeVariable(orgSize, nodeSet = "locations", addSim = TRUE)
+#' sex <- createNodeVariable(indSex, nodeSet = "people")
 createNodeVariable <-
   function(values,
            range = NULL,
            nodeSet = "actors",
-           addSame = F,
-           addSim = F) {
+           addSame = FALSE,
+           addSim = FALSE) {
     if (!is.numeric(values) &&
       !all(is.na(values))) {
       stop("Values not numeric.")
@@ -286,11 +287,13 @@ createNodeVariable <-
 #' @examples
 #' # Create a process state out of the mobility data objects:
 #' # create objects (which are later combined to the process state)
-#' transfers <- createEdgelist(mobilityEdgelist, nodeSet = c("organisations", "organisations", "people"))
+#' transfers <- createEdgelist(mobilityEdgelist, 
+#'              nodeSet = c("organisations", "organisations", "people"))
 #' people <- createNodeSet(1:nrow(mobilityEdgelist))
 #' organisations <- createNodeSet(1:length(orgRegion))
 #' sameRegion <- outer(orgRegion, orgRegion, "==") * 1
-#' sameRegion <- createNetwork(sameRegion, nodeSet = c("organisations", "organisations"))
+#' sameRegion <- createNetwork(sameRegion, 
+#'                             nodeSet = c("organisations", "organisations"))
 #' region <- createNodeVariable(orgRegion, nodeSet = "organisations")
 #' size <- createNodeVariable(orgSize, nodeSet = "organisations", addSim = TRUE)
 #' sex <- createNodeVariable(indSex, nodeSet = "people")
@@ -484,20 +487,24 @@ createWeightedCache <-
 #' [createEffectsObject()]
 #'
 #' @examples
+#' \dontrun{
 #' # estimate mobility network
 #' myResDN <- estimateMobilityNetwork(myDependentVariable,
 #'                                    myState, myCache, myEffects,
 #'                                    initialParameters = NULL,
-#'                                    burnInN1 = 1500, iterationsN1 = 50, thinningN1 = 750, gainN1 = 0.1,
-#'                                    burnInN2 = 7500, nsubN2 = 4, initGain = 0.2, thinningN2 = 1500,
+#'                                    burnInN1 = 1500, iterationsN1 = 50, 
+#'                                    thinningN1 = 750, gainN1 = 0.1,
+#'                                    burnInN2 = 7500, nsubN2 = 4, 
+#'                                    initGain = 0.2, thinningN2 = 1500,
 #'                                    initialIterationsN2 = 25,
-#'                                    iterationsN3 = 500, burnInN3 = 7500, thinningN3 = 3750,
-#'                                    parallel = T, cpus = 4,
-#'                                    allowLoops = T,
-#'                                    verbose = T,
-#'                                    returnDeps = T,
-#'                                    multinomialProposal = F,
-#'                                    fish = F
+#'                                    iterationsN3 = 500, burnInN3 = 7500, 
+#'                                    thinningN3 = 3750,
+#'                                    parallel = TRUE, cpus = 4,
+#'                                    allowLoops = TRUE,
+#'                                    verbose = TRUE,
+#'                                    returnDeps = TRUE,
+#'                                    multinomialProposal = FALSE,
+#'                                    fish = FALSE
 #' )
 #' 
 #' myResDN
@@ -506,19 +513,23 @@ createWeightedCache <-
 #' myResDN <- estimateMobilityNetwork(myDependentVariable,
 #'                                    myState, myCache, myEffects,
 #'                                    prevAns = myResDN,
-#'                                    burnInN1 = 1500, iterationsN1 = 50, thinningN1 = 750, gainN1 = 0.1,
-#'                                    burnInN2 = 7500, nsubN2 = 4, initGain = 0.2, thinningN2 = 3000,
+#'                                    burnInN1 = 1500, iterationsN1 = 50, 
+#'                                    thinningN1 = 750, gainN1 = 0.1,
+#'                                    burnInN2 = 7500, nsubN2 = 4, 
+#'                                    initGain = 0.2, thinningN2 = 3000,
 #'                                    initialIterationsN2 = 40,
-#'                                    iterationsN3 = 500, burnInN3 = 15000, thinningN3 = 7500,
-#'                                    parallel = T, cpus = 4,
-#'                                    allowLoops = T,
-#'                                    verbose = T,
-#'                                    returnDeps = T,
-#'                                    multinomialProposal = F,
-#'                                    fish = F
+#'                                    iterationsN3 = 500, burnInN3 = 15000, 
+#'                                    thinningN3 = 7500,
+#'                                    parallel = TRUE, cpus = 4,
+#'                                    allowLoops = TRUE,
+#'                                    verbose = TRUE,
+#'                                    returnDeps = TRUE,
+#'                                    multinomialProposal = FALSE,
+#'                                    fish = FALSE
 #' )
 #' 
 #' myResDN
+#' }
 estimateMobilityNetwork <-
   function(dep.var,
            state,
@@ -539,12 +550,12 @@ estimateMobilityNetwork <-
            burnInN3 = 2000,
            thinningN3 = 30,
            allowLoops = NULL,
-           parallel = F,
+           parallel = FALSE,
            cpus = 3,
-           verbose = F,
-           returnDeps = F,
-           multinomialProposal = F,
-           fish = F) {
+           verbose = FALSE,
+           returnDeps = FALSE,
+           multinomialProposal = FALSE,
+           fish = FALSE) {
     # set parameters to default values if not defined explicitly
     if (is.null(initialParameters)) {
       initialParameters <- rep(0, length(effects$name))
@@ -552,7 +563,7 @@ estimateMobilityNetwork <-
     if (is.null(allowLoops)) {
       allowLoops <- T
       if (all(diag(cache[[dep.var]]$valuedNetwork) == 0)) {
-        allowLoops <- F
+        allowLoops <- FALSE
       }
     }
 
@@ -735,7 +746,7 @@ simulateMobilityNetworks <-
           simState,
           simCache,
           effects,
-          allowLoops = F,
+          allowLoops = FALSE,
           n = thinning,
           parameters = parameters
         )

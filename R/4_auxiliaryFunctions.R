@@ -209,11 +209,15 @@ getMultinomialStatistics <-
 #'
 #' @examples
 #' # goodness of fit
-#' myGofIndegree <- gofDistributionNetwork(ans = myResDN, simulations = myResDN$deps, gofFunction = getIndegree, lvls = 1:100)
-#' plot(myGofIndegree)
+#' myGofIndegree <- gofDistributionNetwork(ans = myResDN, 
+#'                                         simulations = myResDN$deps, 
+#'                                         gofFunction = getIndegree, 
+#'                                         lvls = 1:100)
 #' 
-#' myGofTieWeight <- gofDistributionNetwork(ans = myResDN, simulations = myResDN$deps, gofFunction = getTieWeights, lvls = 1:30)
-#' plot(myGofTieWeight)
+#' myGofTieWeight <- gofDistributionNetwork(ans = myResDN, 
+#'                                          simulations = myResDN$deps, 
+#'                                          gofFunction = getTieWeights, 
+#'                                          lvls = 1:30)
 gofDistributionNetwork <-
   function(ans,
            simulations,
@@ -258,7 +262,6 @@ gofDistributionNetwork <-
 #'
 #' @rdname gofDistributionNetwork
 #' @param x a gofObject
-#' @param lvls
 #'
 #' @return
 #' @export
@@ -353,7 +356,8 @@ print.result.monan <- function(x, covMat = F, ...) {
 #'     list("min_reciprocity"),
 #'     list("dyadic_covariate", attribute.index = "sameRegion"),
 #'     list("alter_covariate", attribute.index = "size"),
-#'     list("resource_covar_to_node_covar", attribute.index = "region", resource.attribute.index = "sex"),
+#'     list("resource_covar_to_node_covar", attribute.index = "region", 
+#'           resource.attribute.index = "sex"),
 #'     list("loops_resource_covar", resource.attribute.index = "sex"),
 #'     list("min_transitivity")
 #'   )

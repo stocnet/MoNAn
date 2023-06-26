@@ -219,17 +219,25 @@ In case convergence is still poor, updating the algorithm might be necessary. Ot
 myResDN
 ```
 
-Some diagnostics. Both indicate the extent to which the chain mixes (i.e., whether the thinning was chosen appropriately). For the autoCorrelationTest, lower values are better. Values above 0.5 are very problematic.
+## Some diagnostics
+
+Both indicate the extent to which the chain mixes (i.e., whether the thinning was chosen appropriately). For the autoCorrelationTest, lower values are better. Values above 0.5 are very problematic.
+
+```{r}
+autoCorrelationTest(myDependentVariable, myResDN)
+```
 
 For the extractTraces, the plot should show data point randomly scattered around the target line.
 
 ```{r}
-autoCorrelationTest(myDependentVariable, myResDN)
-
 traces <- extractTraces(myDependentVariable, myResDN, myEffects)
+
+par(mfrow = c(1,2))
 plot(traces)
 ```
 
+
+## score-tests
 
 Based on an estimated model, a score-type test is available that shows whether statistics representing non-inlcuded effects are well represented. If this is not the case, it is likely that including them will result in significant estimates.
 
@@ -252,6 +260,10 @@ test_ME.2 <- scoreTest(myDependentVariable, myResDN, myEffects2)
 test_ME.2
 ```
 
+The interpretation is that there appears to be some transitive clustering in the data that the model does not account for in its current form.
+
+
+## GOF testing
 
 Akin to ERGMs, goodness of fit testing is available to see whether auxiliary statistics are well captured by the model.
 

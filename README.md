@@ -239,23 +239,30 @@ myResDN
 #> 6 -0.03304023
 ```
 
-Some diagnostics. Both indicate the extent to which the chain mixes
-(i.e., whether the thinning was chosen appropriately). For the
-autoCorrelationTest, lower values are better. Values above 0.5 are very
-problematic.
+## Some diagnostics
+
+Both indicate the extent to which the chain mixes (i.e., whether the
+thinning was chosen appropriately). For the autoCorrelationTest, lower
+values are better. Values above 0.5 are very problematic.
+
+``` r
+autoCorrelationTest(myDependentVariable, myResDN)
+#> [1] 0.1027527
+```
 
 For the extractTraces, the plot should show data point randomly
 scattered around the target line.
 
 ``` r
-autoCorrelationTest(myDependentVariable, myResDN)
-#> [1] 0.1027527
-
 traces <- extractTraces(myDependentVariable, myResDN, myEffects)
+
+par(mfrow = c(1,2))
 plot(traces)
 ```
 
-<img src="man/figures/README-unnamed-chunk-14-1.png" width="100%" /><img src="man/figures/README-unnamed-chunk-14-2.png" width="100%" /><img src="man/figures/README-unnamed-chunk-14-3.png" width="100%" /><img src="man/figures/README-unnamed-chunk-14-4.png" width="100%" /><img src="man/figures/README-unnamed-chunk-14-5.png" width="100%" /><img src="man/figures/README-unnamed-chunk-14-6.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-15-1.png" width="100%" /><img src="man/figures/README-unnamed-chunk-15-2.png" width="100%" /><img src="man/figures/README-unnamed-chunk-15-3.png" width="100%" />
+
+## score-tests
 
 Based on an estimated model, a score-type test is available that shows
 whether statistics representing non-inlcuded effects are well
@@ -302,6 +309,12 @@ test_ME.2
 #>  Non-parametric p-values: further away from 0.5 = more significant
 ```
 
+The interpretation is that there appears to be some transitive
+clustering in the data that the model does not account for in its
+current form.
+
+## GOF testing
+
 Akin to ERGMs, goodness of fit testing is available to see whether
 auxiliary statistics are well captured by the model.
 
@@ -310,7 +323,7 @@ myGofIndegree <- gofDistributionNetwork(ans = myResDN, simulations = myResDN$dep
 plot(myGofIndegree)
 ```
 
-<img src="man/figures/README-unnamed-chunk-16-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-17-1.png" width="100%" />
 
 ``` r
 
@@ -318,4 +331,4 @@ myGofTieWeight <- gofDistributionNetwork(ans = myResDN, simulations = myResDN$de
 plot(myGofTieWeight)
 ```
 
-<img src="man/figures/README-unnamed-chunk-16-2.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-17-2.png" width="100%" />

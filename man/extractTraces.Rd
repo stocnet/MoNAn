@@ -7,7 +7,7 @@
 \usage{
 extractTraces(dep.var, ans, effects)
 
-\method{plot}{traces.monan}(xx, ...)
+\method{plot}{traces.monan}(x, ...)
 }
 \arguments{
 \item{effects}{}

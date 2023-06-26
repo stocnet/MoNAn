@@ -257,20 +257,20 @@ gofDistributionNetwork <-
 #' Title
 #'
 #' @rdname gofDistributionNetwork
-#' @param gofObject
+#' @param x a gofObject
 #' @param lvls
 #'
 #' @return
 #' @export
 #'
 #' @examples
-plot.gof.stats.monan <- function(gofObject, lvls = NULL) {
+plot.gof.stats.monan <- function(x, ...) {
   if (is.null(lvls)) {
-    lvls <- 1:length(gofObject$observed)
+    lvls <- 1:length(x$observed)
   }
-  simStats <- Reduce(rbind, gofObject$simulated)
+  simStats <- Reduce(rbind, x$simulated)
   boxplot(simStats[, lvls])
-  lines(gofObject$observed, col = "red")
+  lines(x$observed, col = "red")
 }
 
 
@@ -278,21 +278,21 @@ plot.gof.stats.monan <- function(gofObject, lvls = NULL) {
 #' Title
 #'
 #' @rdname extractTraces
-#' @param xx
+#' @param x
 #' @param ...
 #'
 #' @return
 #' @export
 #'
 #' @examples
-plot.traces.monan <- function(xx, ...) {
-  nParams <- length(xx[[1]])
-  nSims <- length(xx[[2]][, 1])
+plot.traces.monan <- function(x, ...) {
+  nParams <- length(x[[1]])
+  nSims <- length(x[[2]][, 1])
   for (i in 1:nParams) {
-    plot(xx[[2]][, i], main = xx[[3]][i])
+    plot(x[[2]][, i], main = x[[3]][i])
     lines(
       x = 1:nSims,
-      y = rep(xx[[1]][i], nSims),
+      y = rep(x[[1]][i], nSims),
       col = "red"
     )
   }

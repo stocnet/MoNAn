@@ -78,7 +78,9 @@ myState <- createProcessState(list(
 ```
 
 Define the dependent variable, and create a cache, a necessary object
-used in the simulations.
+used in the simulations. In case variables of the individuals in the
+data are included in the state, they need to be explicitly mentioned in
+the creation of the cache under “resourceCovariates”.
 
 ``` r
 myDependentVariable <- "transfers"
@@ -157,7 +159,8 @@ myResDN <- estimateMobilityNetwork(myDependentVariable,
 )
 ```
 
-In case a pseudo-likelihood estimation was run, replace with
+In case a pseudo-likelihood estimates have been obtained previously,
+replace with
 
 ``` r
 myResDN <- estimateMobilityNetwork(myDependentVariable,
@@ -203,9 +206,12 @@ myResDN <- estimateMobilityNetwork(myDependentVariable,
   multinomialProposal = F,
   fish = F
 )
+```
 
+``` r
 # check convergence
 max(abs(myResDN$convergenceStatistics))
+#> [1] 0.04541426
 ```
 
 In case convergence is still poor, updating the algorithm might be
@@ -243,10 +249,13 @@ scattered around the target line.
 
 ``` r
 autoCorrelationTest(myDependentVariable, myResDN)
+#> [1] 0.1027527
 
 traces <- extractTraces(myDependentVariable, myResDN, myEffects)
 plot(traces)
 ```
+
+<img src="man/figures/README-unnamed-chunk-14-1.png" width="100%" /><img src="man/figures/README-unnamed-chunk-14-2.png" width="100%" /><img src="man/figures/README-unnamed-chunk-14-3.png" width="100%" /><img src="man/figures/README-unnamed-chunk-14-4.png" width="100%" /><img src="man/figures/README-unnamed-chunk-14-5.png" width="100%" /><img src="man/figures/README-unnamed-chunk-14-6.png" width="100%" />
 
 Based on an estimated model, a score-type test is available that shows
 whether statistics representing non-inlcuded effects are well
@@ -299,7 +308,14 @@ auxiliary statistics are well captured by the model.
 ``` r
 myGofIndegree <- gofDistributionNetwork(ans = myResDN, simulations = myResDN$deps, gofFunction = getIndegree, lvls = 1:100)
 plot(myGofIndegree)
+```
+
+<img src="man/figures/README-unnamed-chunk-16-1.png" width="100%" />
+
+``` r
 
 myGofTieWeight <- gofDistributionNetwork(ans = myResDN, simulations = myResDN$deps, gofFunction = getTieWeights, lvls = 1:30)
 plot(myGofTieWeight)
 ```
+
+<img src="man/figures/README-unnamed-chunk-16-2.png" width="100%" />

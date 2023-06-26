@@ -88,7 +88,7 @@ myState <- createProcessState(list(
 ```
 
 
-Define the dependent variable, and create a cache, a necessary object used in the simulations.
+Define the dependent variable, and create a cache, a necessary object used in the simulations. In case variables of the individuals in the data are included in the state, they need to be explicitly mentioned in the creation of the cache under "resourceCovariates".
 
 ```{r}
 myDependentVariable <- "transfers"
@@ -162,7 +162,7 @@ myResDN <- estimateMobilityNetwork(myDependentVariable,
 ```
 
 
-In case a pseudo-likelihood estimation was run, replace with
+In case a pseudo-likelihood estimates have been obtained previously, replace with
 
 ```{r, eval=FALSE}
 myResDN <- estimateMobilityNetwork(myDependentVariable,
@@ -205,7 +205,10 @@ myResDN <- estimateMobilityNetwork(myDependentVariable,
   multinomialProposal = F,
   fish = F
 )
+```
 
+
+```{r}
 # check convergence
 max(abs(myResDN$convergenceStatistics))
 ```
@@ -220,7 +223,7 @@ Some diagnostics. Both indicate the extent to which the chain mixes (i.e., wheth
 
 For the extractTraces, the plot should show data point randomly scattered around the target line.
 
-```{r, eval=FALSE}
+```{r}
 autoCorrelationTest(myDependentVariable, myResDN)
 
 traces <- extractTraces(myDependentVariable, myResDN, myEffects)
@@ -252,7 +255,7 @@ test_ME.2
 
 Akin to ERGMs, goodness of fit testing is available to see whether auxiliary statistics are well captured by the model.
 
-```{r, eval=FALSE}
+```{r}
 myGofIndegree <- gofDistributionNetwork(ans = myResDN, simulations = myResDN$deps, gofFunction = getIndegree, lvls = 1:100)
 plot(myGofIndegree)
 

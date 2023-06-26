@@ -55,8 +55,8 @@ in the MoNAn package.
 library(MoNAn)
 
 # packages for parallel computing
-library(snow)
 library(snowfall)
+#> Loading required package: snow
 ```
 
 ## The Data
@@ -378,7 +378,7 @@ auxiliary statistics are well captured by the model.
 
 ``` r
 myGofIndegree <- gofDistributionNetwork(ans = myResDN, simulations = myResDN$deps, gofFunction = getIndegree, lvls = 1:70)
-plot(myGofIndegree)
+plot(myGofIndegree, lvls = 1:70)
 ```
 
 <img src="man/figures/README-unnamed-chunk-20-1.png" width="100%" />
@@ -386,7 +386,7 @@ plot(myGofIndegree)
 ``` r
 
 myGofTieWeight <- gofDistributionNetwork(ans = myResDN, simulations = myResDN$deps, gofFunction = getTieWeights, lvls = 1:20)
-plot(myGofTieWeight)
+plot(myGofTieWeight, lvls = 1:20)
 ```
 
 <img src="man/figures/README-unnamed-chunk-20-2.png" width="100%" />

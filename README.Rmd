@@ -59,7 +59,6 @@ In this section we outline a simple example with synthetic data stored in the Mo
 library(MoNAn)
 
 # packages for parallel computing
-library(snow)
 library(snowfall)
 ```
 
@@ -299,9 +298,9 @@ Akin to ERGMs, goodness of fit testing is available to see whether auxiliary sta
 
 ```{r}
 myGofIndegree <- gofDistributionNetwork(ans = myResDN, simulations = myResDN$deps, gofFunction = getIndegree, lvls = 1:70)
-plot(myGofIndegree)
+plot(myGofIndegree, lvls = 1:70)
 
 myGofTieWeight <- gofDistributionNetwork(ans = myResDN, simulations = myResDN$deps, gofFunction = getTieWeights, lvls = 1:20)
-plot(myGofTieWeight)
+plot(myGofTieWeight, lvls = 1:20)
 ```
 

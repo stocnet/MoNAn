@@ -3,7 +3,6 @@
 library(MoNAn)
 
 # packages for parallel computing
-library(snow)
 library(snowfall)
 
 ##### create data objects from internal data files, which are later combined to the process state #####

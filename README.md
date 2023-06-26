@@ -13,13 +13,25 @@ Block, P., Stadtfeld, C., & Robins, G. (2022). A statistical model for
 the analysis of mobility tables as weighted networks with an application
 to faculty hiring networks. Social Networks, 68, 264-278.
 
-as found
-[here](https://www.sciencedirect.com/science/article/pii/S0378873321000654).
+[Link to the study in Social
+Networks](https://www.sciencedirect.com/science/article/pii/S0378873321000654).
+[Pre-print with minor differences to the journal
+version](https://osf.io/preprints/socarxiv/n86rx/)
+
+The model allows for the analysis of emergent structures known from
+network analysis in mobility tables, alongside exogenous predictors. It
+combined features from classical log-linear models for mobility tables
+and Exponential Random Graph Models (ERGMs). In the absence of emergent
+structures, the models reduces to the former, when ignoring
+characteristics of individuals, it is an ERGM for weighted networks.
+
+Announcements about workshops etc. can be found
+[here](https://www.suz.uzh.ch/de/institut/professuren/block/monan_software.html)
 
 # Installation
 
-The package is still under development. You can install the development
-version of MoNAn from GitHub with:
+The package is under development. You can install the current
+development version of MoNAn from GitHub with:
 
 ``` r
 # install.packages("devtools")
@@ -35,7 +47,8 @@ remotes::install_github("perblock/MoNAn")
 
 # Example
 
-This script runs a simple example with the data from the MoNAn package.
+The following outlines a simple example with synthetic data stored in
+the MoNAn package.
 
 ``` r
 library(MoNAn)
@@ -47,7 +60,7 @@ library(snowfall)
 
 ## The Data
 
-The example case is using synthetic data that represents mobility of 742
+The example case uses synthetic data that represents mobility of 742
 individuals between 17 organisations. The artificial data includes an
 edgelist, i.e. a list of origins and destinations of individuals sorted
 by origin.
@@ -68,8 +81,8 @@ mobilityEdgelist[1:10,]
 ```
 
 The data further includes (artificial) characteristics of individuals,
-here their sex, but a continuous covariate is also possible in many
-cases.
+here their sex. However, using continuous covariates is also possible,
+although for some effects this would not be meaningful.
 
 ``` r
 indSex[1:10]
@@ -77,8 +90,9 @@ indSex[1:10]
 ```
 
 Characteristics of the organisations are the region in which they are
-located (binary, e.g., northern/southern island) and the organisations’
-size.
+located (binary, northern/southern island) and the organisations’ size
+that represents a composite measure of the number of workers, assets,
+and revenue.
 
 ``` r
 orgRegion
@@ -93,8 +107,7 @@ orgSize
 
 ### Preparing the data
 
-First, create data objects from the introduced data files, which are
-later combined to the process state
+First, we create MoNAn data objects from the introduced data files.
 
 ``` r
 # create objects
@@ -108,8 +121,9 @@ size <- createNodeVariable(orgSize, nodeSet = "organisations", addSim = TRUE)
 sex <- createNodeVariable(indSex, nodeSet = "people")
 ```
 
-Combine the data objects into the process state, i.e., an object that
-stores all information that will be used in the estimation later.
+We combine the data objects into the process state, i.e., a MoNAn object
+that stores all information about the data that will be used in the
+estimation later.
 
 ``` r
 myState <- createProcessState(list(
@@ -125,19 +139,22 @@ myState <- createProcessState(list(
 ))
 ```
 
-Define the dependent variable, and create a cache, a necessary object
-used in the simulations. In case variables of the individuals in the
-data are included in the state, they need to be explicitly mentioned in
-the creation of the cache under “resourceCovariates”.
+We define the dependent variable, and create a cache (a necessary object
+used in the estimation of the model). In case variables of the
+individuals in the data are included in the state (here: “sex”), they
+need to be explicitly mentioned in the creation of the cache under
+“resourceCovariates”.
 
 ``` r
 myDependentVariable <- "transfers"
 myCache <- createWeightedCache(myState, myDependentVariable, resourceCovariates = c("sex"))
 ```
 
-Specify the model. The predictors in the model are called “Effects” and
-they are defined in a list. Each effect itself is a list that contains
-the effect name and additional parameters that it needs.
+### Specifying the model
+
+The predictors in the model are called “Effects” and they are defined in
+a list. Each effect itself is a list that contains the effect name and
+additional parameters that it needs.
 
 ``` r
 # create an effects object
@@ -153,9 +170,14 @@ myEffects <- createEffectsObject(
 )
 ```
 
-Optional: run a pseudo-likelihood estimation to get improved initial
-estimates. This increases the chances of cenvergence in the first run of
-the estimation considerably
+### Optional: Pre-estimation
+
+We can run a pseudo-likelihood estimation that gives a (biased) guess of
+the model results. We can use this to get improved initial estimates,
+which increases the chances of model convergence in the first run of the
+estimation considerably. To get pseudo-likelihood estimates, we need to
+use functions from other libraries to estimate a multinomial logit model
+(e.g., “dfidx” and “mlogit”)
 
 ``` r
 # create multinomial statistics object pseudo-likelihood estimation
@@ -183,11 +205,12 @@ myStatisticsFrame <- getMultinomialStatistics(myState, myCache, myEffects, myDep
 
 ### Estimation
 
-Now estimate the model. The first two lines indicate the dependent
-variable, data (state), cache, and effects. The third line specifies the
-intial estimates, where the previously obtained pseudo-likelihood
-estimates can be used. The remaining lines define the algorithm (see
-helpfiles).
+Now we can estimate the model. The first two lines indicate the
+dependent variable, data (state), cache, and effects. The third line
+specifies the initial estimates, where the previously obtained
+pseudo-likelihood estimates can be used. The remaining lines define the
+algorithm (see the paper introducing the model, in particular the
+appendix, and the helpfiles).
 
 Running the model takes a while (up to 10 minutes for this data with
 parallel computing).
@@ -210,7 +233,7 @@ myResDN <- estimateMobilityNetwork(myDependentVariable,
 ```
 
 In case a pseudo-likelihood estimates have been obtained previously,
-replace with
+this can be specified by
 
 ``` r
 myResDN <- estimateMobilityNetwork(myDependentVariable,
@@ -238,8 +261,8 @@ max(abs(myResDN$convergenceStatistics))
 #> [1] 0.04541426
 ```
 
-Re-run estimation with previous results as starting values and check
-convergence:
+If convergence is too high, re-run estimation with previous results as
+starting values and check convergence:
 
 ``` r
 myResDN <- estimateMobilityNetwork(myDependentVariable,
@@ -265,9 +288,9 @@ max(abs(myResDN$convergenceStatistics))
 ```
 
 In case convergence is still poor, updating the algorithm might be
-necessary. Otherwise, view results, where the first column is the
-estimate, the second column the standard error and the third column the
-convergene ratio. All values in the finla column should be below 0.1
+necessary. Otherwise, we can view the results. The first column is the
+estimate, the second column the standard error, and the third column the
+convergence ratio. All values in the final column should be below 0.1
 (see above).
 
 ``` r
@@ -291,9 +314,10 @@ myResDN
 
 ## Some diagnostics
 
-Both indicate the extent to which the chain mixes (i.e., whether the
-thinning was chosen appropriately). For the autoCorrelationTest, lower
-values are better. Values above 0.5 are very problematic.
+The following two diagnostics indicate the extent to which the chain
+mixes (i.e., whether the thinning was chosen appropriately). For the
+autoCorrelationTest, lower values are better. Values above 0.5 are very
+problematic.
 
 ``` r
 autoCorrelationTest(myDependentVariable, myResDN)
@@ -315,22 +339,13 @@ plot(traces)
 ## score-tests
 
 Based on an estimated model, a score-type test is available that shows
-whether statistics representing non-inlcuded effects are well
+whether statistics representing non-included effects are well
 represented. If this is not the case, it is likely that including them
 will result in significant estimates.
-
-Note that it is advisable that the model specification that is tested
-includes all effects from the previously estimated model.
 
 ``` r
 myEffects2 <- createEffectsObject(
   list(
-    list("loops"),
-    list("min_reciprocity"),
-    list("dyadic_covariate", attribute.index = "sameRegion"),
-    list("alter_covariate", attribute.index = "size"),
-    list("resource_covar_to_node_covar", attribute.index = "region", resource.attribute.index = "sex"),
-    list("loops_resource_covar", resource.attribute.index = "sex"),
     list("min_transitivity")
   )
 )
@@ -338,22 +353,8 @@ myEffects2 <- createEffectsObject(
 test_ME.2 <- scoreTest(myDependentVariable, myResDN, myEffects2)
 test_ME.2
 #> Results
-#>                                   Effects pValuesParametric
-#> 1                                   loops      9.702724e-01
-#> 2                         min_reciprocity      9.818133e-01
-#> 3             dyadic_covariate sameRegion      9.639308e-01
-#> 4                    alter_covariate size      9.779762e-01
-#> 5 resource_covar_to_node_covar region sex      9.637771e-01
-#> 6                loops_resource_covar sex      9.736425e-01
-#> 7                        min_transitivity      2.428713e-09
-#>   pValuesNonParametric
-#> 1                0.556
-#> 2                0.526
-#> 3                0.494
-#> 4                0.476
-#> 5                0.562
-#> 6                0.532
-#> 7                0.000
+#>            Effects pValuesParametric pValuesNonParametric
+#> 1 min_transitivity      2.428713e-09                    0
 #> 
 #>  Parametric p-values: small = more significant 
 #>  Non-parametric p-values: further away from 0.5 = more significant

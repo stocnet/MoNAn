@@ -2,6 +2,10 @@
 
 library(MoNAn)
 
+# packages for parallel computing
+library(snow)
+library(snowfall)
+
 ##### create data objects from internal data files, which are later combined to the process state #####
 
 # create objects
@@ -55,6 +59,26 @@ myEffects <- createEffectsObject(
 # create statistics object, to be used, e.g., with the mlogit package
 myStatisticsFrame <- getMultinomialStatistics(myState, myCache, myEffects, myDependentVariable)
 
+### additional script to get pseudo-likelihood estimates
+# library(dfidx)
+# library(mlogit)
+# my.mlogit.dataframe <- dfidx(myStatisticsFrame,
+#                           shape = "long", 
+#                           choice = "choice")
+# 
+# colnames(my.mlogit.dataframe) <- gsub(" ", "_", colnames(my.mlogit.dataframe))
+# 
+# IVs <- (colnames(my.mlogit.dataframe)[2:(ncol(myStatisticsFrame)-2)])
+# 
+# f <- as.formula(paste("choice ~ 1 + ", paste(IVs, collapse = " + "), "| 0"))
+# 
+# my.mlogit.results <- mlogit(formula = eval(f), data = my.mlogit.dataframe, heterosc = F)
+# 
+# summary(my.mlogit.results)
+# 
+# initEst <- my.mlogit.results$coefficients[1:length(IVs)]
+
+
 
 ##### estimate mobility network model #####
 
@@ -62,6 +86,8 @@ myStatisticsFrame <- getMultinomialStatistics(myState, myCache, myEffects, myDep
 myResDN <- estimateMobilityNetwork(myDependentVariable,
   myState, myCache, myEffects,
   initialParameters = NULL,
+  # in case a pseudo-likelihood estimation was run, replace with
+  # initialParameters = initEst,
   burnInN1 = 1500, iterationsN1 = 50, thinningN1 = 750, gainN1 = 0.1,
   burnInN2 = 7500, nsubN2 = 4, initGain = 0.2, thinningN2 = 1500,
   initialIterationsN2 = 25,
@@ -93,7 +119,7 @@ myResDN <- estimateMobilityNetwork(myDependentVariable,
   fish = F
 )
 
-# chack convergence
+# check convergence
 max(abs(myResDN$convergenceStatistics))
 
 # view results

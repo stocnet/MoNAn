@@ -50,6 +50,10 @@ This script runs a simple example with the data from the MoNAn package
 
 ```{r}
 library(MoNAn)
+
+# packages for parallel computing
+library(snow)
+library(snowfall)
 ```
 
 First, create data objects from internal data files, which are later combined to the process state
@@ -83,6 +87,7 @@ myState <- createProcessState(list(
 ))
 ```
 
+
 Define the dependent variable, and create a cache, a necessary object used in the simulations.
 
 ```{r}
@@ -107,17 +112,39 @@ myEffects <- createEffectsObject(
 ```
 
 
+Optional: run a pseudo-likelihood estimation to get improved initial estimates. This increases the chances of cenvergence in the first run of the estimation considerably
 
-
-##### get multinomial statistics to estimate initial parameters using pseudo-likelihood estimation #####
-
-# create statistics object, to be used, e.g., with the mlogit package
+```{r}
+# create multinomial statistics object pseudo-likelihood estimation
 myStatisticsFrame <- getMultinomialStatistics(myState, myCache, myEffects, myDependentVariable)
 
+### additional script to get pseudo-likelihood estimates, requires the dfidx and mlogit package
+# library(dfidx)
+# library(mlogit)
+# my.mlogit.dataframe <- dfidx(myStatisticsFrame,
+#                           shape = "long", 
+#                           choice = "choice")
+# 
+# colnames(my.mlogit.dataframe) <- gsub(" ", "_", colnames(my.mlogit.dataframe))
+# 
+# IVs <- (colnames(my.mlogit.dataframe)[2:(ncol(myStatisticsFrame)-2)])
+# 
+# f <- as.formula(paste("choice ~ 1 + ", paste(IVs, collapse = " + "), "| 0"))
+# 
+# my.mlogit.results <- mlogit(formula = eval(f), data = my.mlogit.dataframe, heterosc = F)
+# 
+# summary(my.mlogit.results)
+#
+# initEst <- my.mlogit.results$coefficients[1:length(IVs)]
+```
 
-##### estimate mobility network model #####
 
-# estimate mobility network model
+
+Now estimate the model. The first two lines indicate the dependent variable, data (state), cache, and effects. The third line specifies the intial estimates, where the previously obtained pseudo-likelihood estimates can be used. The remaining lines define the algorithm (see helpfiles).
+
+Running the model takes a while (up to 10 minutes for this data with parallel computing).
+
+```{r, eval=FALSE}
 myResDN <- estimateMobilityNetwork(myDependentVariable,
   myState, myCache, myEffects,
   initialParameters = NULL,
@@ -132,11 +159,38 @@ myResDN <- estimateMobilityNetwork(myDependentVariable,
   multinomialProposal = F,
   fish = F
 )
+```
 
-# check convergence
+
+In case a pseudo-likelihood estimation was run, replace with
+
+```{r, eval=FALSE}
+myResDN <- estimateMobilityNetwork(myDependentVariable,
+  myState, myCache, myEffects,
+  initialParameters = initEst,
+  burnInN1 = 1500, iterationsN1 = 50, thinningN1 = 750, gainN1 = 0.1,
+  burnInN2 = 7500, nsubN2 = 4, initGain = 0.2, thinningN2 = 1500,
+  initialIterationsN2 = 25,
+  iterationsN3 = 500, burnInN3 = 7500, thinningN3 = 3750,
+  parallel = T, cpus = 4,
+  allowLoops = T,
+  verbose = T,
+  returnDeps = T,
+  multinomialProposal = F,
+  fish = F
+)
+```
+
+
+Check convergence to see whether the results are reliable. In case the maximum convergence ratio is above 0.1 (or 0.2 for less precise estimates), another run is necessary.
+
+```{r}
 max(abs(myResDN$convergenceStatistics))
+```
 
-# estimate mobility network model again based on previous results to improve convergence
+Re-run estimation with previous results as starting values and check convergence:
+
+```{r, eval=FALSE}
 myResDN <- estimateMobilityNetwork(myDependentVariable,
   myState, myCache, myEffects,
   prevAns = myResDN,
@@ -152,23 +206,33 @@ myResDN <- estimateMobilityNetwork(myDependentVariable,
   fish = F
 )
 
-# chack convergence
+# check convergence
 max(abs(myResDN$convergenceStatistics))
+```
 
-# view results
+In case convergence is still poor, updating the algorithm might be necessary. Otherwise, view results, where the first column is the estimate, the second column the standard error and the third column the convergene ratio. All values in the finla column should be below 0.1 (see above).
+
+```{r}
 myResDN
+```
 
+Some diagnostics. Both indicate the extent to which the chain mixes (i.e., whether the thinning was chosen appropriately). For the autoCorrelationTest, lower values are better. Values above 0.5 are very problematic.
 
-##### regression diagnostics #####
+For the extractTraces, the plot should show data point randomly scattered around the target line.
 
+```{r, eval=FALSE}
 autoCorrelationTest(myDependentVariable, myResDN)
 
 traces <- extractTraces(myDependentVariable, myResDN, myEffects)
 plot(traces)
+```
 
 
-##### test whether other effects should be included #####
+Based on an estimated model, a score-type test is available that shows whether statistics representing non-inlcuded effects are well represented. If this is not the case, it is likely that including them will result in significant estimates.
 
+Note that it is advisable that the model specification that is tested includes all effects from the previously estimated model.
+
+```{r}
 myEffects2 <- createEffectsObject(
   list(
     list("loops"),
@@ -183,10 +247,12 @@ myEffects2 <- createEffectsObject(
 
 test_ME.2 <- scoreTest(myDependentVariable, myResDN, myEffects2)
 test_ME.2
+```
 
 
-##### goodness of fit #####
+Akin to ERGMs, goodness of fit testing is available to see whether auxiliary statistics are well captured by the model.
 
+```{r, eval=FALSE}
 myGofIndegree <- gofDistributionNetwork(ans = myResDN, simulations = myResDN$deps, gofFunction = getIndegree, lvls = 1:100)
 plot(myGofIndegree)
 

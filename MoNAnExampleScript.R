@@ -9,9 +9,9 @@ library(snowfall)
 ##### create data objects from internal data files, which are later combined to the process state #####
 
 # create objects
-transfers <- createEdgelist(mobilityEdgelist, nodeSet = c("organisations", "organisations", "people"))
 people <- createNodeSet(1:nrow(mobilityEdgelist))
 organisations <- createNodeSet(1:length(orgRegion))
+transfers <- createEdgelist(mobilityEdgelist, nodeSet = c("organisations", "organisations", "people"))
 sameRegion <- outer(orgRegion, orgRegion, "==") * 1
 sameRegion <- createNetwork(sameRegion, nodeSet = c("organisations", "organisations"))
 region <- createNodeVariable(orgRegion, nodeSet = "organisations")

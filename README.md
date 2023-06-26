@@ -15,18 +15,19 @@ to faculty hiring networks. Social Networks, 68, 264-278.
 
 [Link to the study in Social
 Networks](https://www.sciencedirect.com/science/article/pii/S0378873321000654).
-[Pre-print with minor differences to the journal
-version](https://osf.io/preprints/socarxiv/n86rx/)
 
-The model allows for the analysis of emergent structures known from
-network analysis in mobility tables, alongside exogenous predictors. It
+[Pre-print with minor differences to the journal
+version](https://osf.io/preprints/socarxiv/n86rx/).
+
+The model allows for the analysis of emergent structures (known from
+network analysis) in mobility tables, alongside exogenous predictors. It
 combined features from classical log-linear models for mobility tables
 and Exponential Random Graph Models (ERGMs). In the absence of emergent
 structures, the models reduces to the former, when ignoring
 characteristics of individuals, it is an ERGM for weighted networks.
 
 Announcements about workshops etc. can be found
-[here](https://www.suz.uzh.ch/de/institut/professuren/block/monan_software.html)
+[here](https://www.suz.uzh.ch/de/institut/professuren/block/monan_software.html).
 
 # Installation
 
@@ -47,8 +48,8 @@ remotes::install_github("perblock/MoNAn")
 
 # Example
 
-The following outlines a simple example with synthetic data stored in
-the MoNAn package.
+In this section we outline a simple example with synthetic data stored
+in the MoNAn package.
 
 ``` r
 library(MoNAn)
@@ -62,8 +63,8 @@ library(snowfall)
 
 The example case uses synthetic data that represents mobility of 742
 individuals between 17 organisations. The artificial data includes an
-edgelist, i.e. a list of origins and destinations of individuals sorted
-by origin.
+edgelist, i.e. a list of origins (column 1) and destinations (column 2)
+of all individuals sorted by origin.
 
 ``` r
 mobilityEdgelist[1:10,]
@@ -81,8 +82,8 @@ mobilityEdgelist[1:10,]
 ```
 
 The data further includes (artificial) characteristics of individuals,
-here their sex. However, using continuous covariates is also possible,
-although for some effects this would not be meaningful.
+which we will call sex. However, using continuous covariates is also
+possible, although for some effects this would not be meaningful.
 
 ``` r
 indSex[1:10]
@@ -107,13 +108,15 @@ orgSize
 
 ### Preparing the data
 
-First, we create MoNAn data objects from the introduced data files.
+First, we create MoNAn data objects from the introduced data files. A
+necessary part is that we define and name the nodesets, i.e., we name
+who (“people”) is mobile between what (“organisations”).
 
 ``` r
 # create objects
-transfers <- createEdgelist(mobilityEdgelist, nodeSet = c("organisations", "organisations", "people"))
 people <- createNodeSet(1:nrow(mobilityEdgelist))
 organisations <- createNodeSet(1:length(orgRegion))
+transfers <- createEdgelist(mobilityEdgelist, nodeSet = c("organisations", "organisations", "people"))
 sameRegion <- outer(orgRegion, orgRegion, "==") * 1
 sameRegion <- createNetwork(sameRegion, nodeSet = c("organisations", "organisations"))
 region <- createNodeVariable(orgRegion, nodeSet = "organisations")
@@ -154,7 +157,7 @@ myCache <- createWeightedCache(myState, myDependentVariable, resourceCovariates 
 
 The predictors in the model are called “Effects” and they are defined in
 a list. Each effect itself is a list that contains the effect name and
-additional parameters that it needs.
+the additional parameters it needs.
 
 ``` r
 # create an effects object
@@ -173,8 +176,8 @@ myEffects <- createEffectsObject(
 ### Optional: Pre-estimation
 
 We can run a pseudo-likelihood estimation that gives a (biased) guess of
-the model results. We can use this to get improved initial estimates,
-which increases the chances of model convergence in the first run of the
+the model results. We use this to get improved initial estimates, which
+increases the chances of model convergence in the first run of the
 estimation considerably. To get pseudo-likelihood estimates, we need to
 use functions from other libraries to estimate a multinomial logit model
 (e.g., “dfidx” and “mlogit”)
@@ -327,7 +330,7 @@ autoCorrelationTest(myDependentVariable, myResDN)
 ```
 
 The output of extractTraces indicates the correlation of statistics
-between subsequent draws from the chin in phase 3. The plot should show
+between subsequent draws from the chain in phase 3. The plot should show
 data point randomly scattered around the target line, as shown below. If
 patterns in the traces are discernible, a higher thinning is needed.
 
@@ -374,7 +377,7 @@ Akin to ERGMs, goodness of fit testing is available to see whether
 auxiliary statistics are well captured by the model.
 
 ``` r
-myGofIndegree <- gofDistributionNetwork(ans = myResDN, simulations = myResDN$deps, gofFunction = getIndegree, lvls = 1:100)
+myGofIndegree <- gofDistributionNetwork(ans = myResDN, simulations = myResDN$deps, gofFunction = getIndegree, lvls = 1:70)
 plot(myGofIndegree)
 ```
 
@@ -382,7 +385,7 @@ plot(myGofIndegree)
 
 ``` r
 
-myGofTieWeight <- gofDistributionNetwork(ans = myResDN, simulations = myResDN$deps, gofFunction = getTieWeights, lvls = 1:30)
+myGofTieWeight <- gofDistributionNetwork(ans = myResDN, simulations = myResDN$deps, gofFunction = getTieWeights, lvls = 1:20)
 plot(myGofTieWeight)
 ```
 

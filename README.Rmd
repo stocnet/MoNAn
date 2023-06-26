@@ -56,17 +56,34 @@ library(snow)
 library(snowfall)
 ```
 
-The example case is using synthetic data that represents mobility of individuals between organisations. The artificial data includes an edgelist, i.e. a list of origins and destinations of individuals.
+
+## The Data
+
+The example case is using synthetic data that represents mobility of 742 individuals between 17 organisations. The artificial data includes an edgelist, i.e. a list of origins and destinations of individuals sorted by origin.
 
 ```{r}
-mobilityEdgelist
+mobilityEdgelist[1:10,]
+```
+
+The data further includes (artificial) characteristics of individuals, here their sex, but a continuous covariate is also possible in many cases.
+
+```{r}
+indSex[1:10]
+```
+
+Characteristics of the organisations are the region in which they are located (binary, e.g., northern/southern island) and the organisations' size.
+
+```{r}
+orgRegion
+orgSize
 ```
 
 
+## Working with the package
 
+### Preparing the data
 
-First, create data objects from internal data files, which are later combined to the process state
-
+First, create data objects from the introduced data files, which are later combined to the process state
 
 ```{r}
 # create objects
@@ -148,6 +165,7 @@ myStatisticsFrame <- getMultinomialStatistics(myState, myCache, myEffects, myDep
 ```
 
 
+### Estimation
 
 Now estimate the model. The first two lines indicate the dependent variable, data (state), cache, and effects. The third line specifies the intial estimates, where the previously obtained pseudo-likelihood estimates can be used. The remaining lines define the algorithm (see helpfiles).
 

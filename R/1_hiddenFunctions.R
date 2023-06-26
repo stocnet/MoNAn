@@ -1,6 +1,5 @@
 ########## hiddenFunctions
 
-
 # binarizeNetwork
 binarizeNetwork <- function(network) {
   net <- 1 * (network >= 1)
@@ -187,7 +186,8 @@ runPhase2 <- function(dep.var,
       cat(paste("Starting sub phase", i, "\n"))
     }
 
-    # TODO PARALLEL: sample n chains and pass averaged parameters (but real states, caches) to next sub phase simulations
+    # TODO PARALLEL: sample n chains and pass averaged parameters 
+    # (but real states, caches) to next sub phase simulations
     if (parallel) {
       sfExport(
         list = c(
@@ -712,7 +712,7 @@ simulateStatisticVectors <- function(dep.var,
       s <- "_,.-'``'-.,"
       cat(substr(s, int + 1, int + 1))
       if (runif(1) < 0.02) {
-        cat("><(((Âº>")
+        cat("><(((A*>")
       }
     } else if (verbose) {
       cat(".")

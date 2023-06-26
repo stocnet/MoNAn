@@ -28,6 +28,8 @@ export(
   getIndegree, getTieWeights
 )
 
+importFrom("graphics", "boxplot", "lines")
+importFrom("stats", "as.formula", "ecdf", "pnorm", "runif", "sd")
 
 # S3 methods
 S3method(print, result.monan)

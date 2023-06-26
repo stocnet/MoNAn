@@ -25,7 +25,7 @@ tables as weighted networks with an application to faculty hiring networks. Soci
 
 as found [here](https://www.sciencedirect.com/science/article/pii/S0378873321000654).
 
-## Installation
+# Installation
 
 The package is still under development. 
 You can install the development version of MoNAn from [GitHub](https://github.com/) with:
@@ -43,11 +43,12 @@ remotes::install_github("perblock/MoNAn")
 ```
 
 
-## Example
+# Example
 
 
 # This script runs a simple example with the data from the MoNAn package
 
+``` r
 library(MoNAn)
 
 ##### create data objects from internal data files, which are later combined to the process state #####
@@ -181,22 +182,5 @@ plot(myGofIndegree)
 
 myGofTieWeight <- gofDistributionNetwork(ans = myResDN, simulations = myResDN$deps, gofFunction = getTieWeights, lvls = 1:30)
 plot(myGofTieWeight)
-
-This is a basic example which shows you how to solve a common problem:
-
-```{r example}
-library(MoNAn)
-## basic example code
 ```
 
-What is special about using `README.Rmd` instead of just `README.md`? You can include R chunks like so:
-
-```{r cars}
-summary(cars)
-```
-
-You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-date. `devtools::build_readme()` is handy for this.
-
-You can also embed plots, for example:
-
-In that case, don't forget to commit and push the resulting figure files, so they display on GitHub and CRAN.

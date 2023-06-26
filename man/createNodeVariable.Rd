@@ -8,8 +8,8 @@ createNodeVariable(
   values,
   range = NULL,
   nodeSet = "actors",
-  addSame = F,
-  addSim = F
+  addSame = FALSE,
+  addSim = FALSE
 )
 }
 \arguments{
@@ -20,9 +20,9 @@ Title
 }
 \examples{
 # create an object of class nodeVar.monan
-region <- createNodeVariable(nodeVarCat, nodeSet = "locations")
-size <- createNodeVariable(nodeVarCont, nodeSet = "locations", addSim = TRUE)
-sex <- createNodeVariable(resVarCat, nodeSet = "people")
+region <- createNodeVariable(orgRegion, nodeSet = "locations")
+size <- createNodeVariable(orgSize, nodeSet = "locations", addSim = TRUE)
+sex <- createNodeVariable(indSex, nodeSet = "people")
 }
 \seealso{
 \code{\link[=createProcessState]{createProcessState()}}

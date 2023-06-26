@@ -15,11 +15,13 @@ Title
 \examples{
 # Create a process state out of the mobility data objects:
 # create objects (which are later combined to the process state)
-transfers <- createEdgelist(mobilityEdgelist, nodeSet = c("organisations", "organisations", "people"))
+transfers <- createEdgelist(mobilityEdgelist, 
+             nodeSet = c("organisations", "organisations", "people"))
 people <- createNodeSet(1:nrow(mobilityEdgelist))
 organisations <- createNodeSet(1:length(orgRegion))
 sameRegion <- outer(orgRegion, orgRegion, "==") * 1
-sameRegion <- createNetwork(sameRegion, nodeSet = c("organisations", "organisations"))
+sameRegion <- createNetwork(sameRegion, 
+                            nodeSet = c("organisations", "organisations"))
 region <- createNodeVariable(orgRegion, nodeSet = "organisations")
 size <- createNodeVariable(orgSize, nodeSet = "organisations", addSim = TRUE)
 sex <- createNodeVariable(indSex, nodeSet = "people")

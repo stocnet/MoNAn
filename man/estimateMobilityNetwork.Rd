@@ -26,12 +26,12 @@ estimateMobilityNetwork(
   burnInN3 = 2000,
   thinningN3 = 30,
   allowLoops = NULL,
-  parallel = F,
+  parallel = FALSE,
   cpus = 3,
-  verbose = F,
-  returnDeps = F,
-  multinomialProposal = F,
-  fish = F
+  verbose = FALSE,
+  returnDeps = FALSE,
+  multinomialProposal = FALSE,
+  fish = FALSE
 )
 
 \method{print}{result.monan}(x, covMat = F, ...)
@@ -47,20 +47,24 @@ Title
 Title
 }
 \examples{
+\dontrun{
 # estimate mobility network
 myResDN <- estimateMobilityNetwork(myDependentVariable,
                                    myState, myCache, myEffects,
                                    initialParameters = NULL,
-                                   burnInN1 = 1500, iterationsN1 = 50, thinningN1 = 750, gainN1 = 0.1,
-                                   burnInN2 = 7500, nsubN2 = 4, initGain = 0.2, thinningN2 = 1500,
+                                   burnInN1 = 1500, iterationsN1 = 50, 
+                                   thinningN1 = 750, gainN1 = 0.1,
+                                   burnInN2 = 7500, nsubN2 = 4, 
+                                   initGain = 0.2, thinningN2 = 1500,
                                    initialIterationsN2 = 25,
-                                   iterationsN3 = 500, burnInN3 = 7500, thinningN3 = 3750,
-                                   parallel = T, cpus = 4,
-                                   allowLoops = T,
-                                   verbose = T,
-                                   returnDeps = T,
-                                   multinomialProposal = F,
-                                   fish = F
+                                   iterationsN3 = 500, burnInN3 = 7500, 
+                                   thinningN3 = 3750,
+                                   parallel = TRUE, cpus = 4,
+                                   allowLoops = TRUE,
+                                   verbose = TRUE,
+                                   returnDeps = TRUE,
+                                   multinomialProposal = FALSE,
+                                   fish = FALSE
 )
 
 myResDN
@@ -69,19 +73,23 @@ myResDN
 myResDN <- estimateMobilityNetwork(myDependentVariable,
                                    myState, myCache, myEffects,
                                    prevAns = myResDN,
-                                   burnInN1 = 1500, iterationsN1 = 50, thinningN1 = 750, gainN1 = 0.1,
-                                   burnInN2 = 7500, nsubN2 = 4, initGain = 0.2, thinningN2 = 3000,
+                                   burnInN1 = 1500, iterationsN1 = 50, 
+                                   thinningN1 = 750, gainN1 = 0.1,
+                                   burnInN2 = 7500, nsubN2 = 4, 
+                                   initGain = 0.2, thinningN2 = 3000,
                                    initialIterationsN2 = 40,
-                                   iterationsN3 = 500, burnInN3 = 15000, thinningN3 = 7500,
-                                   parallel = T, cpus = 4,
-                                   allowLoops = T,
-                                   verbose = T,
-                                   returnDeps = T,
-                                   multinomialProposal = F,
-                                   fish = F
+                                   iterationsN3 = 500, burnInN3 = 15000, 
+                                   thinningN3 = 7500,
+                                   parallel = TRUE, cpus = 4,
+                                   allowLoops = TRUE,
+                                   verbose = TRUE,
+                                   returnDeps = TRUE,
+                                   multinomialProposal = FALSE,
+                                   fish = FALSE
 )
 
 myResDN
+}
 }
 \seealso{
 \code{\link[=createProcessState]{createProcessState()}}, \code{\link[=createWeightedCache]{createWeightedCache()}},

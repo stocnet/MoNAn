@@ -339,7 +339,7 @@ createProcessState <- function(elements) {
 
     # TODO CLEANUP from here. What is necessary, hat should be extended?
 
-    if (class(e) == "nodeSet.monan") {
+    if (is(e, "nodeSet.monan")) {
       nodeSetIDs <- c(nodeSetIDs, i)
     }
     if (class(e) %in% c("network.monan", "nodeVar.monan")) {
@@ -399,10 +399,10 @@ createWeightedCache <-
       nActors2 <- length(nodeSet2)
 
       cache[[name]] <- list()
-      if (class(processState[[name]]) == "network.monan") {
+      if (is(processState[[name]], "network.monan")) {
         cache[[name]]$valuedNetwork <- processState[[name]]$data
       }
-      if (class(processState[[name]]) == "edgelist.monan") {
+      if (is(processState[[name]], "edgelist.monan")) {
         # create valued network from edge list
         m <- matrix(0, nActors1, nActors2)
 
@@ -742,7 +742,7 @@ simulateMobilityNetworks <-
     for (i in 1:nSimulations) {
       r <-
         simulateNSteps(
-          dependentVariable,
+          dep.var,
           simState,
           simCache,
           effects,

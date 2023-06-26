@@ -26,79 +26,6 @@ getCovarianceMatrix <- function(statistics) {
 }
 
 
-# getIndividualEstimates
-getIndividualEstimates <- function(statisticsFrame) {
-  require(mlogit)
-
-  # change some stuff for specific data requirements
-  row.names(statisticsFrame) <-
-    paste0(statisticsFrame[, 1], ".", statisticsFrame[, 2])
-  mlogit.dataframe <-
-    mlogit.data(
-      statisticsFrame,
-      shape = "long",
-      choice = "choice",
-      varying = 4:ncol(statisticsFrame),
-      alt.var = "target"
-    )
-
-  colnames(mlogit.dataframe) <-
-    gsub(" ", "_", colnames(mlogit.dataframe))
-
-  IVs <- (colnames(mlogit.dataframe)[4:ncol(statisticsFrame)])
-
-  ests <- rep(0, length(IVs))
-
-  for (estimates in 1:length(IVs)) {
-    f <-
-      as.formula(paste("choice ~", paste(IVs[estimates], collapse = " + "), "| 0"))
-    mlogit.results <-
-      mlogit(
-        formula = eval(f),
-        data = mlogit.dataframe,
-        heterosc = F
-      )
-    ests[estimates] <- mlogit.results$coefficients[1]
-  }
-
-  return(ests)
-}
-
-
-# getMultinomialEstimates
-getMultinomialEstimates <- function(statisticsFrame) {
-  require(mlogit)
-
-  # change some stuff for specific data requirements
-  row.names(statisticsFrame) <-
-    paste0(statisticsFrame[, 1], ".", statisticsFrame[, 2])
-  mlogit.dataframe <-
-    mlogit.data(
-      statisticsFrame,
-      shape = "long",
-      choice = "choice",
-      varying = 4:ncol(statisticsFrame),
-      alt.var = "target"
-    )
-
-  colnames(mlogit.dataframe) <-
-    gsub(" ", "_", colnames(mlogit.dataframe))
-
-  IVs <- (colnames(mlogit.dataframe)[4:ncol(statisticsFrame)])
-
-  f <-
-    as.formula(paste("choice ~", paste(IVs, collapse = " + "), "| 0"))
-
-  mlogit.results <-
-    mlogit(
-      formula = eval(f),
-      data = mlogit.dataframe,
-      heterosc = F
-    )
-  return(mlogit.results$coefficients[1:length(IVs)])
-}
-
-
 # getNetworkStatistics
 getNetworkStatistics <- function(dep.var, state, cache, effects) {
   actors1 <- state[[dep.var]]$nodeSet[1]
@@ -213,7 +140,7 @@ runPhase2 <- function(dep.var,
   if (parallel && require(snowfall) && cpus > 1) {
     sfInit(parallel = T, cpus = cpus)
     # TODO. Replace this long command with sfLibrary("NetDist") once the package is packaged
-    sfLibrary(MoNAn)
+    sfLibrary("MoNAn")
   } else {
     parallel <- F
   }
@@ -367,7 +294,7 @@ runPhase3 <- function(dep.var,
 
     sfInit(parallel = T, cpus = cpus)
     # TODO. Replace this long command with sfLibrary("NetDist") once the package is packaged
-    sfLibrary(MoNAn)
+    sfLibrary("MoNAn")
 
     statsA <-
       sfLapply(iterationsPerCPU, function(nIt) {

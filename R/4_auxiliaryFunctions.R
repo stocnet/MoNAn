@@ -79,34 +79,6 @@ extractTraces <- function(dep.var, ans, effects) {
 }
 
 
-# getInitialEstimates
-#' Title
-#'
-#' @param state
-#' @param cache
-#' @param effects
-#' @param dep.var
-#' @param joint
-#'
-#' @return
-#' @export
-#'
-#' @examples
-getInitialEstimates <-
-  function(state, cache, effects, dep.var, joint = T) {
-    statisticsFrame <-
-      getMultinomialStatistics(state, cache, effects, dep.var)
-
-    if (joint) {
-      initialParam <- getMultinomialEstimates(statisticsFrame)
-    } else {
-      initialParam <- getIndividualEstimates(statisticsFrame)
-    }
-
-    initialParam
-  }
-
-
 # getMultinomialStatistics
 #' Title
 #'

@@ -1,11 +1,10 @@
-# script running examples from the MoNAn package
+# This script runs a simple example with the data from the MoNAn package
 
 library(MoNAn)
 
-##### create objects (which are later combined to the process state) #####
+##### create data objects from internal data files, which are later combined to the process state #####
 
-# Create a process state out of the mobility data objects:
-# create objects (which are later combined to the process state)
+# create objects
 transfers <- createEdgelist(mobilityEdgelist, nodeSet = c("organisations", "organisations", "people"))
 people <- createNodeSet(1:nrow(mobilityEdgelist))
 organisations <- createNodeSet(1:length(orgRegion))
@@ -51,14 +50,15 @@ myEffects <- createEffectsObject(
 )
 
 
-##### estimate "cheated" exogenous statistics #####
+##### get multinomial statistics to estimate initial parameters using pseudo-likelihood estimation #####
 
+# create statistics object, to be used, e.g., with the mlogit package
 myStatisticsFrame <- getMultinomialStatistics(myState, myCache, myEffects, myDependentVariable)
 
 
-##### estimate network #####
+##### estimate mobility network model #####
 
-# estimate mobility network
+# estimate mobility network model
 myResDN <- estimateMobilityNetwork(myDependentVariable,
   myState, myCache, myEffects,
   initialParameters = NULL,
@@ -74,9 +74,10 @@ myResDN <- estimateMobilityNetwork(myDependentVariable,
   fish = F
 )
 
-myResDN
+# check convergence
+max(abs(myResDN$convergenceStatistics))
 
-# estimate mobility network again based on previous results to improve convergence
+# estimate mobility network model again based on previous results to improve convergence
 myResDN <- estimateMobilityNetwork(myDependentVariable,
   myState, myCache, myEffects,
   prevAns = myResDN,
@@ -92,10 +93,11 @@ myResDN <- estimateMobilityNetwork(myDependentVariable,
   fish = F
 )
 
-myResDN
-
-
+# chack convergence
 max(abs(myResDN$convergenceStatistics))
+
+# view results
+myResDN
 
 
 ##### regression diagnostics #####

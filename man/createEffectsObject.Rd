@@ -2,15 +2,19 @@
 % Please edit documentation in R/3_coreFunctions.R
 \name{createEffectsObject}
 \alias{createEffectsObject}
-\title{Title}
+\title{createEffectsObject}
 \usage{
 createEffectsObject(effectInit, checkProcessState = NULL)
 }
 \arguments{
-\item{checkProcessState}{}
+\item{effectInit}{A list of "Effects", where each effect to be included is specified as a list
+that contains the effect name and the additional parameters it needs.}
+
+\item{checkProcessState}{For internal use only.}
 }
 \description{
-Title
+Specifies the model with endogenous and exogenous predictors.
+The predictors in the model are called “Effects”.
 }
 \examples{
 # create an effects object

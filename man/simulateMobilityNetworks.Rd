@@ -3,7 +3,7 @@
 \name{simulateMobilityNetworks}
 \alias{simulateMobilityNetworks}
 \alias{simulateDistributionNetworks}
-\title{Title}
+\title{simulateMobilityNetworks}
 \usage{
 simulateMobilityNetworks(
   cache,
@@ -16,10 +16,40 @@ simulateMobilityNetworks(
   nSimulations,
   dep.var
 )
+
+simulateDistributionNetworks(
+  cache,
+  state,
+  effects,
+  ans,
+  allowLoops,
+  burnin,
+  thinning,
+  nSimulations,
+  dep.var
+)
 }
 \arguments{
+\item{cache}{}
+
+\item{state}{}
+
+\item{effects}{}
+
+\item{ans}{}
+
+\item{allowLoops}{}
+
+\item{burnin}{}
+
+\item{thinning}{}
+
+\item{nSimulations}{}
+
 \item{dep.var}{}
 }
 \description{
-Title
+simulateMobilityNetworks
+
+simulateDistributionNetworks
 }

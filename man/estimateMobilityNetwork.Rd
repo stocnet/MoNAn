@@ -4,7 +4,7 @@
 \alias{estimateMobilityNetwork}
 \alias{estimateDistributionNetwork}
 \alias{print.result.monan}
-\title{Title}
+\title{estimateMobilityNetwork}
 \usage{
 estimateMobilityNetwork(
   dep.var,
@@ -34,17 +34,51 @@ estimateMobilityNetwork(
   fish = FALSE
 )
 
-\method{print}{result.monan}(x, covMat = F, ...)
+estimateDistributionNetwork(
+  dep.var,
+  state,
+  cache,
+  effects,
+  initialParameters = NULL,
+  prevAns = NULL,
+  burnInN1 = 500,
+  iterationsN1 = 200,
+  thinningN1 = 20,
+  gainN1 = 1,
+  burnInN2 = burnInN1,
+  nsubN2 = 6,
+  initGain = 0.02,
+  thinningN2 = 100,
+  initialIterationsN2 = 50,
+  iterationsN3 = 1000,
+  burnInN3 = 2000,
+  thinningN3 = 30,
+  allowLoops = NULL,
+  parallel = FALSE,
+  cpus = 3,
+  verbose = FALSE,
+  returnDeps = FALSE,
+  multinomialProposal = FALSE,
+  fish = FALSE
+)
+
+\method{print}{result.monan}(x, covMat = FALSE, ...)
 }
 \arguments{
 \item{fish}{}
 
-\item{...}{}
+\item{x}{An ans object resulting from an estimation with estimateMobilityNetwork()}
+
+\item{covMat}{Logical indicating whether the covariance matrix should be printed}
+
+\item{...}{For internal use only}
 }
 \description{
-Title
+estimateMobilityNetwork
 
-Title
+estimateDistributionNetwork
+
+print.result.monan
 }
 \examples{
 \dontrun{
@@ -87,9 +121,8 @@ myResDN <- estimateMobilityNetwork(myDependentVariable,
                                    multinomialProposal = FALSE,
                                    fish = FALSE
 )
-
-myResDN
 }
+myResDN
 }
 \seealso{
 \code{\link[=createProcessState]{createProcessState()}}, \code{\link[=createWeightedCache]{createWeightedCache()}},

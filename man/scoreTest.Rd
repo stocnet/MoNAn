@@ -3,21 +3,32 @@
 \name{scoreTest}
 \alias{scoreTest}
 \alias{print.scoretest.monan}
-\title{Title}
+\title{scoreTest}
 \usage{
 scoreTest(dep.var, ans, effects)
 
 \method{print}{scoretest.monan}(x, ...)
 }
 \arguments{
-\item{effects}{}
+\item{dep.var}{The dependent variable specified in the estimation}
 
-\item{...}{}
+\item{ans}{The ans object resulting from an estimation with "estimateMobilityNetwork"}
+
+\item{effects}{An effects object in which the non included effects that should
+be tested are specified}
+
+\item{x}{A scoretest.monan object}
+
+\item{...}{For internal use only}
+}
+\value{
+A simple output that gives parametric and non-parametric p-values
+for each tested effect.
 }
 \description{
-Title
-
-Title
+Based on an estimated model, a score-type test is available that shows whether
+statistics representing non-included effects are well represented. If this is
+not the case, it is likely that including them will result in significant estimates.
 }
 \examples{
 # test whether other effects should be included

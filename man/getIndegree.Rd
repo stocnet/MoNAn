@@ -2,13 +2,20 @@
 % Please edit documentation in R/5_gofParamFunctions.R
 \name{getIndegree}
 \alias{getIndegree}
-\title{Title}
+\title{getIndegree}
 \usage{
 getIndegree(cache, dep.var, lvls, ...)
 }
 \arguments{
-\item{...}{}
+\item{cache}{Current Cache}
+
+\item{dep.var}{Dependent Variable}
+
+\item{lvls}{Levels for which the function calculates values}
+
+\item{...}{Additional parameters}
 }
 \description{
-Title
+getIndegree
 }
+\keyword{internal}

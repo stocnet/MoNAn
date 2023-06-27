@@ -2,22 +2,34 @@
 % Please edit documentation in R/4_auxiliaryFunctions.R
 \name{getMultinomialStatistics}
 \alias{getMultinomialStatistics}
-\title{Title}
+\title{getMultinomialStatistics}
 \usage{
 getMultinomialStatistics(state, cache, effects, dep.var)
 }
 \arguments{
-\item{state}{}
+\item{state}{A processState.monan object that stores all information to be used in the model.}
 
-\item{cache}{}
+\item{cache}{A cache that contains intermediate information used for estimation.}
 
-\item{effects}{}
+\item{effects}{An effects object for which the statistics of a multinomial
+model should be calculated.}
 
 \item{dep.var}{The dependent variable, i.e. the outcome to be modelled}
 }
+\value{
+A data frame with N*M rows (N = mobile individuals, M = number fo locations)
+that specifies for each observation the statistics associated with moving to this location.
+}
 \description{
-Title
+One updating step in simulating the mobility network model can be expressed
+as a multinomial logit model. Extracting the statistics for such a model allows
+a straight-forward estimation of a multinomial logit model to get initial
+estimates for the full mobility model, which increases the chances of model
+convergence in the first run of the estimation considerably.
 }
 \examples{
 myStatisticsFrame <- getMultinomialStatistics(myState, myCache, myEffects, myDependentVariable)
+}
+\seealso{
+\code{\link[=createProcessState]{createProcessState()}}, \code{\link[=createWeightedCache]{createWeightedCache()}}, \code{\link[=createEffectsObject]{createEffectsObject()}}
 }

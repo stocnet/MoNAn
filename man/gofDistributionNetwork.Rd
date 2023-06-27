@@ -33,10 +33,14 @@ e.g., "getIndegree" or "getTieWeights"}
 
 \item{...}{Additional plotting parameters, use discouraged.}
 }
+\value{
+A list containing (1) the observed values of the auxiliary statistics and
+(2) a list of the simulated values of the auxiliary statistics
+}
 \description{
 Akin to ERGMs, goodness of fit testing is available to see whether auxiliary
-statistics are well captured by the model. The logic behind gof testing is outlined in
-Hunter et al. () and Lospinoso and Snijders (2019).
+statistics are well captured by the model. The logic behind gof testing for network models is outlined in
+Hunter et al. (2008) and Lospinoso and Snijders (2019).
 }
 \examples{
 # goodness of fit
@@ -49,13 +53,14 @@ myGofTieWeight <- gofDistributionNetwork(ans = myResDN,
                                          simulations = myResDN$deps, 
                                          gofFunction = getTieWeights, 
                                          lvls = 1:30)
+plot(myGofIndegree, lvls = 1:100)
 }
 \references{
-Lospinoso, J., & Snijders, T. A. (2019).
-Goodness of fit for stochastic actor-oriented models. Methodological Innovations, 12(3).
-
 Hunter, D. R., Goodreau, S. M., & Handcock, M. S. (2008). Goodness of fit of social network models.
 Journal of the american statistical association, 103(481), 248-258.
+
+Lospinoso, J., & Snijders, T. A. (2019).
+Goodness of fit for stochastic actor-oriented models. Methodological Innovations, 12(3).
 }
 \seealso{
 \code{\link[=estimateMobilityNetwork]{estimateMobilityNetwork()}}, \code{\link[=getIndegree]{getIndegree()}},

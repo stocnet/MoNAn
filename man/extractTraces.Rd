@@ -3,21 +3,32 @@
 \name{extractTraces}
 \alias{extractTraces}
 \alias{plot.traces.monan}
-\title{Title}
+\title{extractTraces}
 \usage{
 extractTraces(dep.var, ans, effects)
 
 \method{plot}{traces.monan}(x, ...)
 }
 \arguments{
-\item{effects}{}
+\item{dep.var}{The dependent variable specified in the estimation}
 
-\item{...}{}
+\item{ans}{The ans object resulting from an estimation with "estimateMobilityNetwork"}
+
+\item{effects}{The effects object used in the estimation}
+
+\item{x}{A traces.monan object obtained from running "extractTraces"}
+
+\item{...}{Additional plotting parameters, use not recommended}
+}
+\value{
+A list that includes (1) the observed statistics for all effects,
+(2) the distribution of statistics for all simulations
+(3) effect names.
+It is recommended to use the ploting function to inspect the traces.
 }
 \description{
-Title
-
-Title
+This function shows the values of simulated statistics in Phase 3 for subsequent draws from the chain.
+Ideally, the plots show points randomly scattered around the red line, which indicates the statistics in the data.
 }
 \examples{
 # regression diagnostics

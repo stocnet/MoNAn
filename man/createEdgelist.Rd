@@ -7,11 +7,12 @@
 createEdgelist(el, nodeSet = c("actors", "actors", "edges"))
 }
 \arguments{
-\item{el}{an edgelist in the form of a matrix with two columns and N rows.
+\item{el}{An edgelist in the form of a matrix with two columns and N rows.
 The first column indicates the origin of a person, the second row the destination.
 Each row is one observation.}
 
-\item{nodeSet}{}
+\item{nodeSet}{The nodeset to which the variable applies, i.e., does it describe mobile individuals/resources,
+or locations (in the example "people" or "organisations")}
 }
 \value{
 an object of type edgelist.monan

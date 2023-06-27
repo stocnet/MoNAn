@@ -3,7 +3,7 @@
 \name{gofDistributionNetwork}
 \alias{gofDistributionNetwork}
 \alias{plot.gof.stats.monan}
-\title{Title}
+\title{gofDistributionNetwork}
 \usage{
 gofDistributionNetwork(
   ans,
@@ -16,14 +16,27 @@ gofDistributionNetwork(
 \method{plot}{gof.stats.monan}(x, lvls, ...)
 }
 \arguments{
-\item{lvls}{description}
+\item{ans}{The ans object resulting from an estimation with "estimateMobilityNetwork"}
 
-\item{x}{a gofObject}
+\item{simulations}{The simulated outcomes with which the observed statistics are compared.
+Usually, they are stored in the ans$deps, in case deps = T was specified in the
+estimation.}
+
+\item{gofFunction}{A gof function that specifies which auxiliary outcome should be,
+e.g., "getIndegree" or "getTieWeights"}
+
+\item{dep.var}{The dependent variable specified in the estimation}
+
+\item{lvls}{The values for which the gofFunction should be calculated / plotted}
+
+\item{x}{A gof.stats.monan object, usually obtained from running "gofDistributionNetwork"}
+
+\item{...}{Additional plotting parameters, use discouraged.}
 }
 \description{
-Title
-
-Title
+Akin to ERGMs, goodness of fit testing is available to see whether auxiliary
+statistics are well captured by the model. The logic behind gof testing is outlined in
+Hunter et al. () and Lospinoso and Snijders (2019).
 }
 \examples{
 # goodness of fit
@@ -36,6 +49,13 @@ myGofTieWeight <- gofDistributionNetwork(ans = myResDN,
                                          simulations = myResDN$deps, 
                                          gofFunction = getTieWeights, 
                                          lvls = 1:30)
+}
+\references{
+Lospinoso, J., & Snijders, T. A. (2019).
+Goodness of fit for stochastic actor-oriented models. Methodological Innovations, 12(3).
+
+Hunter, D. R., Goodreau, S. M., & Handcock, M. S. (2008). Goodness of fit of social network models.
+Journal of the american statistical association, 103(481), 248-258.
 }
 \seealso{
 \code{\link[=estimateMobilityNetwork]{estimateMobilityNetwork()}}, \code{\link[=getIndegree]{getIndegree()}},

@@ -13,7 +13,7 @@ getMultinomialStatistics(state, cache, effects, dep.var)
 
 \item{effects}{}
 
-\item{dep.var}{}
+\item{dep.var}{The dependent variable, i.e. the outcome to be modelled}
 }
 \description{
 Title

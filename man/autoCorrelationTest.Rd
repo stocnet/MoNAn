@@ -2,15 +2,23 @@
 % Please edit documentation in R/4_auxiliaryFunctions.R
 \name{autoCorrelationTest}
 \alias{autoCorrelationTest}
-\title{Title}
+\title{autoCorrelationTest}
 \usage{
 autoCorrelationTest(dep.var, ans)
 }
 \arguments{
-\item{ans}{}
+\item{dep.var}{The dependent variable specified in the estimation}
+
+\item{ans}{The ans object resulting from an estimation with "estimateMobilityNetwork"}
+}
+\value{
+A number indicating the Auto-correlation.
 }
 \description{
-Title
+The autoCorrelationTest indicates the degree to which the values of the dependent
+variable of consecutive draws from the chain in phase 3 are correlated. Here lower
+values are better. Values above 0.5 are very problematic and indicate that a
+higher thinning is needed.
 }
 \examples{
 # regression diagnostics

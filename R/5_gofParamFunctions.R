@@ -1,18 +1,16 @@
 ########## gofParamFunctions
 
 
-# getIndegree
-#' Title
+#' getIndegree
 #'
-#' @param cache
-#' @param dep.var
-#' @param lvls
-#' @param ...
+#' @param cache Current Cache
+#' @param dep.var Dependent Variable
+#' @param lvls Levels for which the function calculates values
+#' @param ... Additional parameters
 #'
-#' @return
 #' @export
-#'
-#' @examples
+#' 
+#' @keywords internal
 getIndegree <- function(cache, dep.var, lvls, ...) {
   m <- cache[[dep.var]]$valuedNetwork
   v <- cbind(lvls, 0)
@@ -22,18 +20,16 @@ getIndegree <- function(cache, dep.var, lvls, ...) {
 }
 
 
-# getTieWeights
-#' Title
+#' getTieWeights
 #'
-#' @param cache
-#' @param dep.var
-#' @param lvls
-#' @param ...
+#' @param cache Current Cache
+#' @param dep.var Dependent Variable
+#' @param lvls Levels for which the function calculates values
+#' @param ... Additional parameters
 #'
-#' @return
 #' @export
 #'
-#' @examples
+#' @keywords internal
 getTieWeights <- function(cache, dep.var, lvls, ...) {
   m <- cache[[dep.var]]$valuedNetwork
   if (is.null(lvls)) {

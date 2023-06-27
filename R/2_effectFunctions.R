@@ -84,7 +84,6 @@ binary_transitivity <-
 
 
 #' crowding_out_by_resource_inflow
-#' 
 #'
 #' @param dep.var 
 #' @param resource.attribute.index 
@@ -95,7 +94,6 @@ binary_transitivity <-
 #' @param edge 
 #' @param update 
 #' @param getTargetContribution 
-#'
 #' 
 #' @keywords internal
 crowding_out_by_resource_inflow <-

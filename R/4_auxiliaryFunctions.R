@@ -59,7 +59,6 @@ autoCorrelationTest <- function(dep.var, ans) {
 #' @examples
 #' # regression diagnostics
 #' traces <- extractTraces(myDependentVariable, myResDN, myEffects)
-#' plot(traces)
 extractTraces <- function(dep.var, ans, effects) {
   # give error if no deps in ans
   if (is.null(ans$deps)) {
@@ -88,17 +87,26 @@ extractTraces <- function(dep.var, ans, effects) {
 }
 
 
-# getMultinomialStatistics
-#' Title
+#' getMultinomialStatistics
 #'
-#' @param state 
-#' @param cache 
-#' @param effects 
+#' One updating step in simulating the mobility network model can be expressed
+#' as a multinomial logit model. Extracting the statistics for such a model allows
+#' a straight-forward estimation of a multinomial logit model to get initial 
+#' estimates for the full mobility model, which increases the chances of model 
+#' convergence in the first run of the estimation considerably.
+#'
+#' @param state A processState.monan object that stores all information to be used in the model.
+#' @param cache A cache that contains intermediate information used for estimation.
+#' @param effects An effects object for which the statistics of a multinomial
+#' model should be calculated.
 #' @param dep.var The dependent variable, i.e. the outcome to be modelled
 #'
-#' @return
+#' @return A data frame with N*M rows (N = mobile individuals, M = number fo locations)
+#' that specifies for each observation the statistics associated with moving to this location.
 #' @export
 #'
+#' @seealso [createProcessState()], [createWeightedCache()], [createEffectsObject()]
+#' 
 #' @examples
 #' myStatisticsFrame <- getMultinomialStatistics(myState, myCache, myEffects, myDependentVariable)
 getMultinomialStatistics <-
@@ -189,7 +197,8 @@ getMultinomialStatistics <-
 #' @param dep.var The dependent variable specified in the estimation
 #' @param lvls The values for which the gofFunction should be calculated / plotted
 #'
-#' @return
+#' @return A list containing (1) the observed values of the auxiliary statistics and
+#' (2) a list of the simulated values of the auxiliary statistics
 #' @export
 #'
 #' @seealso [estimateMobilityNetwork()], [getIndegree()],
@@ -252,18 +261,17 @@ gofDistributionNetwork <-
   }
 
 
-# plot.gof.stats.monan
-#' Title
+#' plot.gof.stats.monan
 #'
 #' @rdname gofDistributionNetwork
 #' @param x A gof.stats.monan object, usually obtained from running "gofDistributionNetwork"
 #' @param lvls The values for which the gofFunction should be calculated / plotted
 #' @param ... Additional plotting parameters, use discouraged.
 #'
-#' @return
 #' @export
 #'
 #' @examples
+#' plot(myGofIndegree, lvls = 1:100)
 plot.gof.stats.monan <- function(x, lvls, ...) {
   if (is.null(lvls)) {
     lvls <- 1:length(x$observed)
@@ -280,10 +288,10 @@ plot.gof.stats.monan <- function(x, lvls, ...) {
 #' @param x A traces.monan object obtained from running "extractTraces"
 #' @param ... Additional plotting parameters, use not recommended
 #'
-#' @return
 #' @export
 #'
 #' @examples
+#' plot(traces)
 plot.traces.monan <- function(x, ...) {
   nParams <- length(x[[1]])
   nSims <- length(x[[2]][, 1])
@@ -298,19 +306,18 @@ plot.traces.monan <- function(x, ...) {
 }
 
 
-# print.result.monan
-#' Title
+#' print.result.monan
 #'
 #' @rdname estimateMobilityNetwork
-#' @param x
-#' @param covMat
-#' @param ...
+#' @param x An ans object resulting from an estimation with estimateMobilityNetwork()
+#' @param covMat Logical indicating whether the covariance matrix should be printed
+#' @param ... For internal use only
 #'
-#' @return
 #' @export
-#'
+#' 
 #' @examples
-print.result.monan <- function(x, covMat = F, ...) {
+#' myResDN
+print.result.monan <- function(x, covMat = FALSE, ...) {
   reslt <-
     data.frame(
       Effects = names(x$estimates),
@@ -332,14 +339,20 @@ print.result.monan <- function(x, covMat = F, ...) {
 }
 
 
-# scoreTest
-#' Title
+
+#' scoreTest
 #'
-#' @param dep.var
-#' @param ans
-#' @param effects
+#' Based on an estimated model, a score-type test is available that shows whether 
+#' statistics representing non-included effects are well represented. If this is 
+#' not the case, it is likely that including them will result in significant estimates.
 #'
-#' @return
+#' @param dep.var The dependent variable specified in the estimation
+#' @param ans The ans object resulting from an estimation with "estimateMobilityNetwork"
+#' @param effects An effects object in which the non included effects that should
+#' be tested are specified
+#'
+#' @return A simple output that gives parametric and non-parametric p-values
+#' for each tested effect.
 #' @export
 #'
 #' @seealso [createEffectsObject()], [estimateMobilityNetwork()]
@@ -360,7 +373,6 @@ print.result.monan <- function(x, covMat = F, ...) {
 #' )
 #' 
 #' test_ME.2 <- scoreTest(myDependentVariable, myResDN, myEffects2)
-#' test_ME.2
 scoreTest <- function(dep.var, ans, effects) {
   # give error if no deps in ans
   if (is.null(ans$deps)) {
@@ -403,17 +415,16 @@ scoreTest <- function(dep.var, ans, effects) {
 }
 
 
-# print.scoretest.monan
-#' Title
+#' print.scoretest.monan
 #'
 #' @rdname scoreTest
-#' @param x
-#' @param ...
+#' @param x A scoretest.monan object
+#' @param ... For internal use only
 #'
-#' @return
 #' @export
 #'
 #' @examples
+#' test_ME.2
 print.scoretest.monan <- function(x, ...) {
   reslt <-
     data.frame(

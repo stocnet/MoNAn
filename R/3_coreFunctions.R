@@ -36,11 +36,14 @@ createEdgelist <-
   }
 
 
-# createEffectsObject
-#' Title
+#' createEffectsObject
 #'
-#' @param effectInit
-#' @param checkProcessState
+#' Specifies the model with endogenous and exogenous predictors. 
+#' The predictors in the model are called “Effects”. 
+#'
+#' @param effectInit A list of "Effects", where each effect to be included is specified as a list 
+#' that contains the effect name and the additional parameters it needs.
+#' @param checkProcessState For internal use only.
 #'
 #' @return
 #' @export
@@ -115,8 +118,7 @@ createEffectsObject <-
   }
 
 
-# createNetwork
-#' Title
+#' createNetwork
 #'
 #' @param m
 #' @param isSymmetric
@@ -155,8 +157,7 @@ createNetwork <-
   }
 
 
-# createNodeSet
-#' Title
+#' createNodeSet
 #'
 #' @param x
 #' @param isPresent
@@ -209,8 +210,7 @@ createNodeSet <-
   }
 
 
-# createNodeVariable
-#' Title
+#' createNodeVariable
 #'
 #' @param values
 #' @param range
@@ -258,8 +258,7 @@ createNodeVariable <-
   }
 
 
-# createProcessState
-#' Title
+#' createProcessState
 #'
 #' @param elements
 #'
@@ -351,8 +350,7 @@ createProcessState <- function(elements) {
 }
 
 
-# createWeightedCache
-#' Title
+#' createWeightedCache
 #'
 #' @param processState
 #' @param cacheObjectNames
@@ -435,10 +433,8 @@ createWeightedCache <-
   }
 
 
-# estimateMobilityNetwork
-#' Title
+#' estimateMobilityNetwork
 #'
-#' @aliases estimateDistributionNetwork
 #' @param dep.var
 #' @param state
 #' @param cache
@@ -465,6 +461,8 @@ createWeightedCache <-
 #' @param multinomialProposal
 #' @param fish
 #'
+#' @aliases estimateDistributionNetwork
+#' 
 #' @return
 #' @export
 #'
@@ -512,8 +510,6 @@ createWeightedCache <-
 #'                                    multinomialProposal = FALSE,
 #'                                    fish = FALSE
 #' )
-#' 
-#' myResDN
 #' }
 estimateMobilityNetwork <-
   function(dep.var,
@@ -670,12 +666,39 @@ estimateMobilityNetwork <-
   }
 
 
-# estimateDistributionNetwork
+#' estimateDistributionNetwork
+#'
+#' @param dep.var
+#' @param state
+#' @param cache
+#' @param effects
+#' @param initialParameters
+#' @param prevAns
+#' @param burnInN1
+#' @param iterationsN1
+#' @param thinningN1
+#' @param gainN1
+#' @param burnInN2
+#' @param nsubN2
+#' @param initGain
+#' @param thinningN2
+#' @param initialIterationsN2
+#' @param iterationsN3
+#' @param burnInN3
+#' @param thinningN3
+#' @param allowLoops
+#' @param parallel
+#' @param cpus
+#' @param verbose
+#' @param returnDeps
+#' @param multinomialProposal
+#' @param fish
+#' 
+#' @rdname estimateMobilityNetwork
 estimateDistributionNetwork <- estimateMobilityNetwork
 
 
-# simulateMobilityNetworks
-#' Title
+#' simulateMobilityNetworks
 #'
 #' @aliases simulateDistributionNetworks
 #' @param cache
@@ -750,5 +773,17 @@ simulateMobilityNetworks <-
   }
 
 
-# simulateDistributionNetworks
+#' simulateDistributionNetworks
+#'
+#' @param cache 
+#' @param state 
+#' @param effects 
+#' @param ans 
+#' @param allowLoops 
+#' @param burnin 
+#' @param thinning 
+#' @param nSimulations 
+#' @param dep.var 
+#'
+#' @rdname simulateMobilityNetworks
 simulateDistributionNetworks <- simulateMobilityNetworks

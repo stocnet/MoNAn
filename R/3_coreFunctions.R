@@ -1,22 +1,6 @@
 ####### coreFunctions
 
 
-# as.nodeVariable
-#' Assigns an attribute to nodes
-#' 
-#' lalalala this is a test
-#'
-#' @param values     An attribute in vector form to assign to nodes in a mobility network
-#'
-#' @return a nodevar object
-#' @export
-#'
-#' @examples
-as.nodeVariable <- function(values) {
-  createNodeVariable(values)
-}
-
-
 # createEdgelist
 #' Create an edgelist object
 #'

@@ -1,13 +1,17 @@
 ########## auxiliaryFunctions
 
 
-# autoCorrelationTest
-#' Title
+#' autoCorrelationTest
+#' 
+#' The autoCorrelationTest indicates the degree to which the values of the dependent 
+#' variable of consecutive draws from the chain in phase 3 are correlated. Here lower 
+#' values are better. Values above 0.5 are very problematic and indicate that a 
+#' higher thinning is needed.
+#' 
+#' @param dep.var The dependent variable specified in the estimation
+#' @param ans The ans object resulting from an estimation with "estimateMobilityNetwork"
 #'
-#' @param dep.var
-#' @param ans
-#'
-#' @return
+#' @return A number indicating the Auto-correlation.
 #' @export
 #'
 #' @seealso [estimateMobilityNetwork()]
@@ -35,14 +39,19 @@ autoCorrelationTest <- function(dep.var, ans) {
 }
 
 
-# extractTraces
-#' Title
+#' extractTraces
+#' 
+#' This function shows the values of simulated statistics in Phase 3 for subsequent draws from the chain.
+#' Ideally, the plots show points randomly scattered around the red line, which indicates the statistics in the data.
+#' 
+#' @param dep.var The dependent variable specified in the estimation
+#' @param ans The ans object resulting from an estimation with "estimateMobilityNetwork"
+#' @param effects The effects object used in the estimation
 #'
-#' @param dep.var
-#' @param ans
-#' @param effects
-#'
-#' @return
+#' @return A list that includes (1) the observed statistics for all effects, 
+#' (2) the distribution of statistics for all simulations
+#' (3) effect names.
+#' It is recommended to use the ploting function to inspect the traces.
 #' @export
 #'
 #' @seealso [estimateMobilityNetwork()], [createEffectsObject()]
@@ -85,7 +94,7 @@ extractTraces <- function(dep.var, ans, effects) {
 #' @param state 
 #' @param cache 
 #' @param effects 
-#' @param dep.var 
+#' @param dep.var The dependent variable, i.e. the outcome to be modelled
 #'
 #' @return
 #' @export
@@ -164,14 +173,21 @@ getMultinomialStatistics <-
   }
 
 
-# gofDistributionNetwork
-#' Title
+
+#' gofDistributionNetwork
+#' 
+#' Akin to ERGMs, goodness of fit testing is available to see whether auxiliary 
+#' statistics are well captured by the model. The logic behind gof testing for network models is outlined in 
+#' Hunter et al. (2008) and Lospinoso and Snijders (2019).
 #'
-#' @param ans
-#' @param simulations
-#' @param gofFunction
-#' @param dep.var
-#' @param lvls
+#' @param ans The ans object resulting from an estimation with "estimateMobilityNetwork"
+#' @param simulations The simulated outcomes with which the observed statistics are compared.
+#' Usually, they are stored in the ans$deps, in case deps = T was specified in the 
+#' estimation.
+#' @param gofFunction A gof function that specifies which auxiliary outcome should be, 
+#' e.g., "getIndegree" or "getTieWeights"
+#' @param dep.var The dependent variable specified in the estimation
+#' @param lvls The values for which the gofFunction should be calculated / plotted
 #'
 #' @return
 #' @export
@@ -179,6 +195,13 @@ getMultinomialStatistics <-
 #' @seealso [estimateMobilityNetwork()], [getIndegree()],
 #' [getTieWeights()]
 #'
+#' @references Hunter, D. R., Goodreau, S. M., & Handcock, M. S. (2008). Goodness of fit of social network models. 
+#' Journal of the american statistical association, 103(481), 248-258.
+#' 
+#' Lospinoso, J., & Snijders, T. A. (2019). 
+#' Goodness of fit for stochastic actor-oriented models. Methodological Innovations, 12(3).
+#' 
+#' 
 #' @examples
 #' # goodness of fit
 #' myGofIndegree <- gofDistributionNetwork(ans = myResDN, 
@@ -233,8 +256,9 @@ gofDistributionNetwork <-
 #' Title
 #'
 #' @rdname gofDistributionNetwork
-#' @param x a gofObject
-#' @param lvls description
+#' @param x A gof.stats.monan object, usually obtained from running "gofDistributionNetwork"
+#' @param lvls The values for which the gofFunction should be calculated / plotted
+#' @param ... Additional plotting parameters, use discouraged.
 #'
 #' @return
 #' @export
@@ -250,12 +274,11 @@ plot.gof.stats.monan <- function(x, lvls, ...) {
 }
 
 
-# plot.traces.monan
-#' Title
+#' plot.traces.monan
 #'
 #' @rdname extractTraces
-#' @param x
-#' @param ...
+#' @param x A traces.monan object obtained from running "extractTraces"
+#' @param ... Additional plotting parameters, use not recommended
 #'
 #' @return
 #' @export

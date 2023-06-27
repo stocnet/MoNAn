@@ -2,7 +2,7 @@
 export(
   
   # core functions
-  as.nodeVariable, createEdgelist, createEffectsObject, createNetwork, 
+  createEdgelist, createEffectsObject, createNetwork, 
   createNodeSet, createNodeVariable, createProcessState, createWeightedCache,
   estimateMobilityNetwork, estimateDistributionNetwork, 
   simulateMobilityNetworks, simulateDistributionNetworks,

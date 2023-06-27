@@ -1,7 +1,21 @@
 ########## effectFunctions
 
 
-# alter_covariate
+#' alter_covariate
+#'
+#' @param dep.var 
+#' @param attribute.index 
+#' @param state 
+#' @param cache 
+#' @param i 
+#' @param j 
+#' @param edge 
+#' @param update 
+#' @param loop.contribution 
+#' @param getTargetContribution 
+#'
+#' 
+#' @keywords internal
 alter_covariate <-
   function(dep.var = 1,
            attribute.index,
@@ -27,7 +41,20 @@ alter_covariate <-
   }
 
 
-# binary_transitivity
+
+#' binary_transitivity
+#'
+#' @param dep.var 
+#' @param state 
+#' @param cache 
+#' @param i 
+#' @param j 
+#' @param k 
+#' @param l 
+#' @param getTargetContribution 
+#'
+#' 
+#' @keywords internal
 binary_transitivity <-
   function(dep.var = 1,
            state,
@@ -56,7 +83,21 @@ binary_transitivity <-
   }
 
 
-# crowding_out_by_resource_inflow
+#' crowding_out_by_resource_inflow
+#' 
+#'
+#' @param dep.var 
+#' @param resource.attribute.index 
+#' @param state 
+#' @param cache 
+#' @param i 
+#' @param j 
+#' @param edge 
+#' @param update 
+#' @param getTargetContribution 
+#'
+#' 
+#' @keywords internal
 crowding_out_by_resource_inflow <-
   function(dep.var = 1,
            resource.attribute.index,
@@ -122,7 +163,21 @@ crowding_out_by_resource_inflow <-
   }
 
 
-# crowding_out_prop_covar_bin
+#' crowding_out_prop_covar_bin
+#' 
+#'
+#' @param dep.var 
+#' @param resource.attribute.index 
+#' @param state 
+#' @param cache 
+#' @param i 
+#' @param j 
+#' @param edge 
+#' @param update 
+#' @param getTargetContribution 
+#'
+#' 
+#' @keywords internal
 crowding_out_prop_covar_bin <-
   function(dep.var = 1,
            resource.attribute.index,
@@ -209,7 +264,21 @@ crowding_out_prop_covar_bin <-
   }
 
 
-# dyadic_covariate
+#' dyadic_covariate
+#' 
+#'
+#' @param dep.var 
+#' @param attribute.index 
+#' @param state 
+#' @param cache 
+#' @param i 
+#' @param j 
+#' @param edge 
+#' @param update 
+#' @param getTargetContribution 
+#'
+#' 
+#' @keywords internal
 dyadic_covariate <-
   function(dep.var = 1,
            attribute.index,
@@ -232,7 +301,22 @@ dyadic_covariate <-
   }
 
 
-# dyadic_covariate_resource_attribute
+#' dyadic_covariate_resource_attribute
+#' 
+#'
+#' @param dep.var 
+#' @param attribute.index 
+#' @param resource.attribute.index 
+#' @param state 
+#' @param cache 
+#' @param i 
+#' @param j 
+#' @param edge 
+#' @param update 
+#' @param getTargetContribution 
+#'
+#' 
+#' @keywords internal
 dyadic_covariate_resource_attribute <-
   function(dep.var = 1,
            attribute.index,
@@ -256,7 +340,22 @@ dyadic_covariate_resource_attribute <-
   }
 
 
-# dyadic_covariate_tie_weights_sigmoid
+#' dyadic_covariate_tie_weights_sigmoid
+#' 
+#'
+#' @param dep.var 
+#' @param attribute.index 
+#' @param state 
+#' @param cache 
+#' @param i 
+#' @param j 
+#' @param edge 
+#' @param update 
+#' @param getTargetContribution 
+#' @param alpha 
+#'
+#' 
+#' @keywords internal
 dyadic_covariate_tie_weights_sigmoid <-
   function(dep.var = 1,
            attribute.index,
@@ -297,7 +396,22 @@ dyadic_covariate_tie_weights_sigmoid <-
   }
 
 
-# in_proportion_exponent_covar_bin
+#' in_proportion_exponent_covar_bin
+#' 
+#'
+#' @param dep.var 
+#' @param resource.attribute.index 
+#' @param state 
+#' @param cache 
+#' @param i 
+#' @param j 
+#' @param edge 
+#' @param update 
+#' @param getTargetContribution 
+#' @param exponent 
+#'
+#' 
+#' @keywords internal
 in_proportion_exponent_covar_bin <-
   function(dep.var = 1,
            resource.attribute.index,
@@ -349,7 +463,20 @@ in_proportion_exponent_covar_bin <-
   }
 
 
-# in_ties_loops
+#' in_ties_loops
+#' 
+#'
+#' @param dep.var 
+#' @param state 
+#' @param cache 
+#' @param i 
+#' @param j 
+#' @param edge 
+#' @param update 
+#' @param getTargetContribution 
+#'
+#' 
+#' @keywords internal
 in_ties_loops <-
   function(dep.var = 1,
            state,
@@ -374,7 +501,21 @@ in_ties_loops <-
   }
 
 
-# in_weights_exponent
+#' in_weights_exponent
+#' 
+#'
+#' @param dep.var 
+#' @param state 
+#' @param cache 
+#' @param i 
+#' @param j 
+#' @param edge 
+#' @param update 
+#' @param getTargetContribution 
+#' @param exponent 
+#'
+#' 
+#' @keywords internal
 in_weights_exponent <-
   function(dep.var = 1,
            state,
@@ -402,7 +543,22 @@ in_weights_exponent <-
   }
 
 
-# in_weights_exponent_covar
+#' in_weights_exponent_covar
+#' 
+#'
+#' @param dep.var 
+#' @param resource.attribute.index 
+#' @param state 
+#' @param cache 
+#' @param i 
+#' @param j 
+#' @param edge 
+#' @param update 
+#' @param getTargetContribution 
+#' @param exponent 
+#'
+#' 
+#' @keywords internal
 in_weights_exponent_covar <-
   function(dep.var = 1,
            resource.attribute.index,
@@ -435,7 +591,20 @@ in_weights_exponent_covar <-
   }
 
 
-# loops
+#' loops
+#' 
+#'
+#' @param dep.var 
+#' @param state 
+#' @param cache 
+#' @param i 
+#' @param j 
+#' @param edge 
+#' @param update 
+#' @param getTargetContribution 
+#'
+#' 
+#' @keywords internal
 loops <-
   function(dep.var = 1,
            state,
@@ -456,7 +625,21 @@ loops <-
   }
 
 
-# loops_GW
+#' loops_GW
+#' 
+#'
+#' @param dep.var 
+#' @param state 
+#' @param cache 
+#' @param i 
+#' @param j 
+#' @param edge 
+#' @param update 
+#' @param getTargetContribution 
+#' @param alpha 
+#'
+#' 
+#' @keywords internal
 loops_GW <- function(dep.var = 1,
                      state,
                      cache,
@@ -521,7 +704,21 @@ loops_GW <- function(dep.var = 1,
 }
 
 
-# loops_node_covar
+#' loops_node_covar
+#' 
+#'
+#' @param dep.var 
+#' @param attribute.index 
+#' @param state 
+#' @param cache 
+#' @param i 
+#' @param j 
+#' @param edge 
+#' @param update 
+#' @param getTargetContribution 
+#'
+#' 
+#' @keywords internal
 loops_node_covar <-
   function(dep.var = 1,
            attribute.index,
@@ -544,7 +741,22 @@ loops_node_covar <-
   }
 
 
-# loops_resource_covar_node_covar
+#' loops_resource_covar_node_covar
+#' 
+#'
+#' @param dep.var 
+#' @param resource.attribute.index 
+#' @param attribute.index 
+#' @param state 
+#' @param cache 
+#' @param i 
+#' @param j 
+#' @param edge 
+#' @param update 
+#' @param getTargetContribution 
+#'
+#' 
+#' @keywords internal
 loops_resource_covar_node_covar <-
   function(dep.var = 1,
            resource.attribute.index,
@@ -569,7 +781,21 @@ loops_resource_covar_node_covar <-
   }
 
 
-# loops_resource_covar
+#' loops_resource_covar
+#' 
+#'
+#' @param dep.var 
+#' @param resource.attribute.index 
+#' @param state 
+#' @param cache 
+#' @param i 
+#' @param j 
+#' @param edge 
+#' @param update 
+#' @param getTargetContribution 
+#'
+#' 
+#' @keywords internal
 loops_resource_covar <-
   function(dep.var = 1,
            resource.attribute.index,
@@ -592,7 +818,21 @@ loops_resource_covar <-
   }
 
 
-# loops_weight_sigmoid
+#' loops_weight_sigmoid
+#' 
+#'
+#' @param dep.var 
+#' @param state 
+#' @param cache 
+#' @param i 
+#' @param j 
+#' @param edge 
+#' @param update 
+#' @param getTargetContribution 
+#' @param alpha 
+#'
+#' 
+#' @keywords internal
 loops_weight_sigmoid <-
   function(dep.var = 1,
            state,
@@ -640,7 +880,21 @@ loops_weight_sigmoid <-
   }
 
 
-# loops_neg_exp
+#' loops_neg_exp
+#' 
+#'
+#' @param dep.var 
+#' @param state 
+#' @param cache 
+#' @param i 
+#' @param j 
+#' @param edge 
+#' @param update 
+#' @param getTargetContribution 
+#' @param half.cont 
+#'
+#' 
+#' @keywords internal
 loops_neg_exp <-
   function(dep.var = 1,
            state,
@@ -691,7 +945,20 @@ loops_neg_exp <-
   }
 
 
-# min_reciprocity
+#' min_reciprocity
+#' 
+#'
+#' @param dep.var 
+#' @param state 
+#' @param cache 
+#' @param i 
+#' @param j 
+#' @param edge 
+#' @param update 
+#' @param getTargetContribution 
+#'
+#' 
+#' @keywords internal
 min_reciprocity <-
   function(dep.var = 1,
            state,
@@ -722,7 +989,21 @@ min_reciprocity <-
   }
 
 
-# min_reciprocity_resource_covar
+#' min_reciprocity_resource_covar
+#' 
+#'
+#' @param dep.var 
+#' @param resource.attribute.index 
+#' @param state 
+#' @param cache 
+#' @param i 
+#' @param j 
+#' @param edge 
+#' @param update 
+#' @param getTargetContribution 
+#'
+#' 
+#' @keywords internal
 min_reciprocity_resource_covar <-
   function(dep.var = 1,
            resource.attribute.index,
@@ -759,7 +1040,20 @@ min_reciprocity_resource_covar <-
   }
 
 
-# min_transitivity
+#' min_transitivity
+#' 
+#'
+#' @param dep.var 
+#' @param state 
+#' @param cache 
+#' @param i 
+#' @param j 
+#' @param edge 
+#' @param update 
+#' @param getTargetContribution 
+#'
+#' 
+#' @keywords internal
 min_transitivity <-
   function(dep.var = 1,
            state,
@@ -811,7 +1105,20 @@ min_transitivity <-
   }
 
 
-# netflow_transitivity
+#' netflow_transitivity
+#' 
+#'
+#' @param dep.var 
+#' @param state 
+#' @param cache 
+#' @param i 
+#' @param j 
+#' @param edge 
+#' @param update 
+#' @param getTargetContribution 
+#'
+#' 
+#' @keywords internal
 netflow_transitivity <-
   function(dep.var = 1,
            state,
@@ -897,7 +1204,20 @@ netflow_transitivity <-
   }
 
 
-# present_relations
+#' present_relations
+#' 
+#'
+#' @param dep.var 
+#' @param state 
+#' @param cache 
+#' @param i 
+#' @param j 
+#' @param edge 
+#' @param update 
+#' @param getTargetContribution 
+#'
+#' 
+#' @keywords internal
 present_relations <-
   function(dep.var = 1,
            state,
@@ -928,7 +1248,23 @@ present_relations <-
   }
 
 
-# resource_covar_to_node_covar
+#' resource_covar_to_node_covar
+#' 
+#'
+#' @param dep.var 
+#' @param resource.attribute.index 
+#' @param attribute.index 
+#' @param state 
+#' @param cache 
+#' @param i 
+#' @param j 
+#' @param edge 
+#' @param update 
+#' @param loop.contribution 
+#' @param getTargetContribution 
+#'
+#' 
+#' @keywords internal
 resource_covar_to_node_covar <-
   function(dep.var = 1,
            resource.attribute.index,
@@ -956,7 +1292,21 @@ resource_covar_to_node_covar <-
   }
 
 
-# same_covariate
+#' same_covariate
+#' 
+#'
+#' @param dep.var 
+#' @param attribute.index 
+#' @param state 
+#' @param cache 
+#' @param i 
+#' @param j 
+#' @param edge 
+#' @param update 
+#' @param getTargetContribution 
+#'
+#' 
+#' @keywords internal
 same_covariate <-
   function(dep.var = 1,
            attribute.index,
@@ -983,7 +1333,21 @@ same_covariate <-
   }
 
 
-# sim_covariate
+#' sim_covariate
+#' 
+#'
+#' @param dep.var 
+#' @param attribute.index 
+#' @param state 
+#' @param cache 
+#' @param i 
+#' @param j 
+#' @param edge 
+#' @param update 
+#' @param getTargetContribution 
+#'
+#' 
+#' @keywords internal
 sim_covariate <-
   function(dep.var = 1,
            attribute.index,
@@ -1010,7 +1374,21 @@ sim_covariate <-
   }
 
 
-# staying_by_prop_bin_inflow
+#' staying_by_prop_bin_inflow
+#' 
+#'
+#' @param dep.var 
+#' @param resource.attribute.index 
+#' @param state 
+#' @param cache 
+#' @param i 
+#' @param j 
+#' @param edge 
+#' @param update 
+#' @param getTargetContribution 
+#'
+#' 
+#' @keywords internal
 staying_by_prop_bin_inflow <-
   function(dep.var = 1,
            resource.attribute.index,
@@ -1091,7 +1469,21 @@ staying_by_prop_bin_inflow <-
   }
 
 
-# staying_by_resource_inflow
+#' staying_by_resource_inflow
+#' 
+#'
+#' @param dep.var 
+#' @param resource.attribute.index 
+#' @param state 
+#' @param cache 
+#' @param i 
+#' @param j 
+#' @param edge 
+#' @param update 
+#' @param getTargetContribution 
+#'
+#' 
+#' @keywords internal
 staying_by_resource_inflow <-
   function(dep.var = 1,
            resource.attribute.index,
@@ -1153,7 +1545,21 @@ staying_by_resource_inflow <-
   }
 
 
-# tie_weights_exponent
+#' tie_weights_exponent
+#' 
+#'
+#' @param dep.var 
+#' @param state 
+#' @param cache 
+#' @param i 
+#' @param j 
+#' @param edge 
+#' @param update 
+#' @param getTargetContribution 
+#' @param exponent 
+#'
+#' 
+#' @keywords internal
 tie_weights_exponent <-
   function(dep.var = 1,
            state,
@@ -1179,7 +1585,21 @@ tie_weights_exponent <-
   }
 
 
-# tie_weights_sigmoid
+#' tie_weights_sigmoid
+#' 
+#'
+#' @param dep.var 
+#' @param state 
+#' @param cache 
+#' @param i 
+#' @param j 
+#' @param edge 
+#' @param update 
+#' @param getTargetContribution 
+#' @param alpha 
+#'
+#' 
+#' @keywords internal
 tie_weights_sigmoid <-
   function(dep.var = 1,
            state,

@@ -230,13 +230,18 @@ createNodeSet <-
 
 #' createNodeVariable
 #'
-#' @param values
-#' @param range
-#' @param nodeSet
-#' @param addSame
-#' @param addSim
+#' Assigns an covariate to one nodeset, i.e., an exogenous characteristic of mobile 
+#' individuals/resources or locations.
 #'
-#' @return
+#' @param values A vector assigning the covariate value to each element of the nodeset.
+#' @param range The range of possible values, currently not in use.
+#' @param nodeSet The nodeset to which the covariate applies.
+#' @param addSame Will the variable be used to model categorical homophily (e.g.,
+#' with the same_covariate effect)? In this case, addSame needs to be set to TRUE.
+#' @param addSim Will the variable be used to model continuous homophily (e.g.,
+#' with the sim_covariate effect)? In this case, addSame needs to be set to TRUE.
+#'
+#' @return A monan node variable object
 #' @export
 #'
 #' @seealso [createProcessState()]
@@ -277,10 +282,16 @@ createNodeVariable <-
 
 
 #' createProcessState
+#' 
+#' Creates the "Process state", i.e., a MoNAn object that stores all information
+#' about the data that will be used in the estimation. This includes the 
+#' outcome variable (edgelist), the nodesets, and all covariates.
 #'
-#' @param elements
+#' @param elements A named list of the outcome variable (edgelist), the nodesets, 
+#' and all covariates that contain the information
+#' about the data that will be used in the estimation.
 #'
-#' @return
+#' @return A monan process state object.
 #' @export
 #'
 #' @seealso [createEdgelist()], [createNodeSet()],
@@ -369,12 +380,21 @@ createProcessState <- function(elements) {
 
 
 #' createWeightedCache
+#' 
+#' Creates a necessary internal object used in simulating the chains in the
+#' simulation and estimation of the model. 
+#' In case variables of the individuals in the data are included in the state, 
+#' they need to be explicitly mentioned in the creation of the cache under 
+#' “resourceCovariates”.
+#' 
+#' @param processState The processs state that provides the data basis for
+#' creating the cache.
+#' @param cacheObjectNames The name of the outcome variable, i.e., the
+#' edgelist in the data that should be modelled as a character vector.
+#' @param resourceCovariates A vector of resource covariates that will be 
+#' used in the model specification?
 #'
-#' @param processState
-#' @param cacheObjectNames
-#' @param resourceCovariates
-#'
-#' @return
+#' @return A monan cache object.
 #' @export
 #'
 #' @seealso [createProcessState()]

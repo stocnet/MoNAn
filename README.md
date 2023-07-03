@@ -29,6 +29,14 @@ characteristics of individuals, it is an ERGM for weighted networks.
 Announcements about workshops etc. can be found
 [here](https://www.suz.uzh.ch/de/institut/professuren/block/monan_software.html).
 
+# Warning!!!
+
+The package is still under development, especially the documentation.
+When using the package you might encounter bugs or errors, or you might
+not be able to do what you want. In that case please write the package
+maintainer under his institutional email address (requires using
+google).
+
 # Installation
 
 The package is under development. You can install the current

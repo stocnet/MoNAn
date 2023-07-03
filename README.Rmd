@@ -13,6 +13,7 @@ knitr::opts_chunk$set(
 )
 ```
 
+
 # MoNAn
 
 <!-- badges: start -->
@@ -31,6 +32,13 @@ The model allows for the analysis of emergent structures (known from network ana
 
 Announcements about workshops etc. can be found [here](https://www.suz.uzh.ch/de/institut/professuren/block/monan_software.html).
 
+
+# Warning!!!
+
+The package is still under development, especially the documentation. When using
+the package you might encounter bugs or errors, or you might not be able to do what you
+want. In that case please write the package maintainer under his
+institutional email address (requires using google).
 
 # Installation
 

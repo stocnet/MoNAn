@@ -278,7 +278,7 @@ plot.gof.stats.monan <- function(x, lvls, ...) {
   }
   simStats <- Reduce(rbind, x$simulated)
   boxplot(simStats[, lvls])
-  lines(x$observed, col = "red")
+  lines(x$observed[lvls], col = "red")
 }
 
 

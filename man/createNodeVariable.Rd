@@ -13,10 +13,24 @@ createNodeVariable(
 )
 }
 \arguments{
-\item{addSim}{}
+\item{values}{A vector assigning the covariate value to each element of the nodeset.}
+
+\item{range}{The range of possible values, currently not in use.}
+
+\item{nodeSet}{The nodeset to which the covariate applies.}
+
+\item{addSame}{Will the variable be used to model categorical homophily (e.g.,
+with the same_covariate effect)? In this case, addSame needs to be set to TRUE.}
+
+\item{addSim}{Will the variable be used to model continuous homophily (e.g.,
+with the sim_covariate effect)? In this case, addSame needs to be set to TRUE.}
+}
+\value{
+A monan node variable object
 }
 \description{
-createNodeVariable
+Assigns an covariate to one nodeset, i.e., an exogenous characteristic of mobile
+individuals/resources or locations.
 }
 \examples{
 # create an object of class nodeVar.monan

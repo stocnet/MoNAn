@@ -7,10 +7,17 @@
 createProcessState(elements)
 }
 \arguments{
-\item{elements}{}
+\item{elements}{A named list of the outcome variable (edgelist), the nodesets,
+and all covariates that contain the information
+about the data that will be used in the estimation.}
+}
+\value{
+A monan process state object.
 }
 \description{
-createProcessState
+Creates the "Process state", i.e., a MoNAn object that stores all information
+about the data that will be used in the estimation. This includes the
+outcome variable (edgelist), the nodesets, and all covariates.
 }
 \examples{
 # Create a process state out of the mobility data objects:

@@ -7,10 +7,24 @@
 createWeightedCache(processState, cacheObjectNames, resourceCovariates = NULL)
 }
 \arguments{
-\item{resourceCovariates}{}
+\item{processState}{The processs state that provides the data basis for
+creating the cache.}
+
+\item{cacheObjectNames}{The name of the outcome variable, i.e., the
+edgelist in the data that should be modelled as a character vector.}
+
+\item{resourceCovariates}{A vector of resource covariates that will be
+used in the model specification?}
+}
+\value{
+A monan cache object.
 }
 \description{
-createWeightedCache
+Creates a necessary internal object used in simulating the chains in the
+simulation and estimation of the model.
+In case variables of the individuals in the data are included in the state,
+they need to be explicitly mentioned in the creation of the cache under
+“resourceCovariates”.
 }
 \examples{
 # define dependent variable and create cache object

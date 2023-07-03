@@ -472,36 +472,82 @@ createWeightedCache <-
 
 
 #' estimateMobilityNetwork
+#' 
+#' The core function of the package in which the model for the analysis of
+#' mobility tables is estimated.
 #'
-#' @param dep.var
-#' @param state
-#' @param cache
-#' @param effects
-#' @param initialParameters
-#' @param prevAns
-#' @param burnInN1
-#' @param iterationsN1
-#' @param thinningN1
-#' @param gainN1
-#' @param burnInN2
-#' @param nsubN2
-#' @param initGain
-#' @param thinningN2
-#' @param initialIterationsN2
-#' @param iterationsN3
-#' @param burnInN3
-#' @param thinningN3
-#' @param allowLoops
-#' @param parallel
-#' @param cpus
-#' @param verbose
-#' @param returnDeps
-#' @param multinomialProposal
-#' @param fish
+#' @param dep.var The outcome variable that is modelled.
+#' @param state A monan state object that contains all relevant information about
+#' the outcome in the form of an edgelist, the nodesets, and covariates. 
+#' @param cache A monan cache object created from the same state object that is
+#' used in the estimation
+#' @param effects An effect object that specifies the model.
+#' @param initialParameters Starting values for the parameters. Using starting
+#' values e.g. from a multinomial logit model (see getMultinomialStatistics()) 
+#' increases the chances of model convergence in the first run of the estimation 
+#' considerably.
+#' @param prevAns If a previous estimation did not yield satisfactory convergence,
+#' the outcome object of that estimation should be specified here to provide new 
+#' starting values for the estimation.
+#' @param burnInN1 The number of simulation steps before the first draw in Phase 1.
+#' A recommended value is at least n_Individuals * n_locations if 
+#' multinomialProposal = F, and at least n_Individuals if multinomialProposal = T
+#' @param iterationsN1 The number of draws taken in Phase 1. 
+#' A recommended value is at least 4 * n_effects.
+#' If the value is too low, there will be an error in Phase 1.
+#' @param thinningN1 The number of simulation steps between two draws in Phase 1.
+#' A recommended value is at least 0.5 * n_Individuals * n_locations if 
+#' multinomialProposal = F, and at least n_Individuals if multinomialProposal = T.
+#' @param gainN1 The size of the updating step after Phase 1. A conservative 
+#' value is 0, values higher than 0.25 are courageous.
+#' @param burnInN2 The number of simulation steps before the first draw in Phase 2.
+#' A recommended value is at least n_Individuals * n_locations if 
+#' multinomialProposal = F, and at least n_Individuals if multinomialProposal = T
+#' @param nsubN2 Number of subphases in Phase 2. In case this is the first 
+#' estimation, 4 subphases are recommended. If convergence in a previous estimation
+#' was close, then 1-2 subphases should be enough.
+#' @param initGain The magnitude of parameter updates in the first subphase of 
+#' Phase 2. Values of around 0.2 are recommended.
+#' @param thinningN2 The number of simulation steps between two draws in Phase 2.
+#' A recommended value is at least 0.5 * n_Individuals * n_locations if 
+#' multinomialProposal = F, and at least n_Individuals if multinomialProposal = T.
+#' @param initialIterationsN2 The number of draws taken in subpphase 1 of Phase 2. 
+#' For first estimations, a recommended value is around 20-50. 
+#' Note that in later subphases, the number 
+#' of iterations increases.
+#' If this is a further estimation to improve convergence, higher values (100+) 
+#' are recommended.
+#' If the value is too low, the model might take more runs to converge.
+#' @param iterationsN3 Number of draws in Phase 3.
+#' Recommended are at the very least 500.
+#' In case this value is too low, the outcome might erroneously indicate a lack 
+#' of convergence.
+#' @param burnInN3 The number of simulation steps before the first draw in Phase 3.
+#' A recommended value is at least 3 * n_Individuals * n_locations if 
+#' multinomialProposal = F, and at least 3 * n_Individuals if multinomialProposal = T
+#' @param thinningN3 The number of simulation steps between two draws in Phase 3.
+#' A recommended value is at least n_Individuals * n_locations if 
+#' multinomialProposal = F, and at least 2 * n_Individuals if multinomialProposal = T.
+#' In case this value is too low, the outcome might erroneously indicate a lack 
+#' of convergence.
+#' @param allowLoops Logical: can individuals/resources stay in their origin?
+#' @param parallel Computation on multiple cores?
+#' @param cpus Number of cores for computation in case parallel = T.
+#' @param verbose Logical: display information about estimation progress in the console?
+#' @param returnDeps Logical: should the simulated values of Phase 3 be stored and returned?
+#' This is necessary to run GoF tests.
+#' Note that this might result in very large objects.
+#' @param multinomialProposal How should the next possible outcome in the simulation chains
+#' be sampled? If TRUE, fewer simulation steps are needed, but each simulation 
+#' step takes considerably longer.
+#' @param fish Logical: display a fish?
 #'
 #' @aliases estimateDistributionNetwork
 #' 
-#' @return
+#' @return A monan results object that contains the estimates, standard errors,
+#' and convergence statistics. Furthermore, the covariance matrix used to calculate
+#' the standard errors is included, which also shows colinearity between effects.
+#' In case returnDeps = TRUE, the simulations of Phase 3 are included, too.
 #' @export
 #'
 #' @seealso [createProcessState()], [createWeightedCache()],
@@ -705,67 +751,67 @@ estimateMobilityNetwork <-
 
 
 #' estimateDistributionNetwork
-#'
-#' @param dep.var
-#' @param state
-#' @param cache
-#' @param effects
-#' @param initialParameters
-#' @param prevAns
-#' @param burnInN1
-#' @param iterationsN1
-#' @param thinningN1
-#' @param gainN1
-#' @param burnInN2
-#' @param nsubN2
-#' @param initGain
-#' @param thinningN2
-#' @param initialIterationsN2
-#' @param iterationsN3
-#' @param burnInN3
-#' @param thinningN3
-#' @param allowLoops
-#' @param parallel
-#' @param cpus
-#' @param verbose
-#' @param returnDeps
-#' @param multinomialProposal
-#' @param fish
 #' 
 #' @rdname estimateMobilityNetwork
 estimateDistributionNetwork <- estimateMobilityNetwork
 
 
 #' simulateMobilityNetworks
+#' 
+#' Simulates mobility networks for a given data, effects, and parameters. This
+#' function is mainly interesting to explore the behaviour of the model or to
+#' do counter-factual simulations.
 #'
 #' @aliases simulateDistributionNetworks
-#' @param cache
-#' @param state
-#' @param effects
-#' @param ans
-#' @param allowLoops
-#' @param burnin
-#' @param thinning
-#' @param nSimulations
-#' @param dep.var
+#' @param dep.var The name of the outcome variable that is simulated.
+#' @param state A monan state object that contains all relevant information about
+#' nodesets, and covariates. Further, an edgelist of the dependent variable needs
+#' to be specified with the initial mobility network as starting value for the
+#' simulation. For a large enough burnin, any initial mobility network is allowed.
+#' @param cache A monan cache object created from the same state object that is
+#' used in the simulation.
+#' @param effects An effect object that specifies the model.
+#' @param parameters The parameters associated with the effects that shall be used
+#' in the simulations.
+#' @param allowLoops Logical: can individuals/resources stay in their origin?
+#' @param burnin The number of simulation steps that are taken before the first draw of a
+#' network is taken. A number too small will mean the first draw is influenced
+#' by the initially specified network. A recommended value for the lower bound is 3 * n_Individuals * 
+#' n_locations.
+#' @param thinning The number of simulation steps that are taken between two draws of a
+#' network. A recommended value for the lower bound is n_Individuals * n_locations.
+#' @param nSimulations The number of mobility networks to be simulated.
 #'
-#' @return
+#' @return A list with nSimulations entries, where each entry contains a further list with the
+#' state and the cache of the current simulation stored.
 #' @export
 #'
-#' @examples
+#' @examples 
+#' \dontrun{
+#' # simulate a mobility network
+#' mySimDN <- simulateMobilityNetworks(myDependentVariable,
+#'                                    myState, 
+#'                                    myCache, 
+#'                                    myEffects,
+#'                                    parameters = c(2, 1, 1.5, 0.1, -1, -0.5),
+#'                                    allowLoops = TRUE,
+#'                                    burnin = 45000, 
+#'                                    thinning = 15000,
+#'                                    nSimulations = 10
+#' )
+#' 
+#' mySimDN[[1]]
+#' }
 simulateMobilityNetworks <-
-  function(cache,
+  function(dep.var,
            state,
+           cache,
            effects,
-           ans,
+           parameters,
            allowLoops,
            burnin,
            thinning,
-           nSimulations,
-           dep.var) {
-    # extract parameters from ans
-    parameters <- ans$estimates
-
+           nSimulations) {
     # generate a state and cache after burnin with parameters
     r <-
       simulateNSteps(
@@ -810,18 +856,7 @@ simulateMobilityNetworks <-
     return(simulatedList)
   }
 
-
 #' simulateDistributionNetworks
-#'
-#' @param cache 
-#' @param state 
-#' @param effects 
-#' @param ans 
-#' @param allowLoops 
-#' @param burnin 
-#' @param thinning 
-#' @param nSimulations 
-#' @param dep.var 
 #'
 #' @rdname simulateMobilityNetworks
 simulateDistributionNetworks <- simulateMobilityNetworks

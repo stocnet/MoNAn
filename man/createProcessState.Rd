@@ -2,7 +2,7 @@
 % Please edit documentation in R/3_coreFunctions.R
 \name{createProcessState}
 \alias{createProcessState}
-\title{Title}
+\title{createProcessState}
 \usage{
 createProcessState(elements)
 }
@@ -10,7 +10,7 @@ createProcessState(elements)
 \item{elements}{}
 }
 \description{
-Title
+createProcessState
 }
 \examples{
 # Create a process state out of the mobility data objects:

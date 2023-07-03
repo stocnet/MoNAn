@@ -2,7 +2,7 @@
 % Please edit documentation in R/3_coreFunctions.R
 \name{createWeightedCache}
 \alias{createWeightedCache}
-\title{Title}
+\title{createWeightedCache}
 \usage{
 createWeightedCache(processState, cacheObjectNames, resourceCovariates = NULL)
 }
@@ -10,7 +10,7 @@ createWeightedCache(processState, cacheObjectNames, resourceCovariates = NULL)
 \item{resourceCovariates}{}
 }
 \description{
-Title
+createWeightedCache
 }
 \examples{
 # define dependent variable and create cache object

@@ -2,7 +2,7 @@
 % Please edit documentation in R/3_coreFunctions.R
 \name{createNodeVariable}
 \alias{createNodeVariable}
-\title{Title}
+\title{createNodeVariable}
 \usage{
 createNodeVariable(
   values,
@@ -16,7 +16,7 @@ createNodeVariable(
 \item{addSim}{}
 }
 \description{
-Title
+createNodeVariable
 }
 \examples{
 # create an object of class nodeVar.monan

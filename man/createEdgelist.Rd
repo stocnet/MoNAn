@@ -2,27 +2,28 @@
 % Please edit documentation in R/3_coreFunctions.R
 \name{createEdgelist}
 \alias{createEdgelist}
-\title{Create an edgelist object}
+\title{createEdgelist}
 \usage{
 createEdgelist(el, nodeSet = c("actors", "actors", "edges"))
 }
 \arguments{
 \item{el}{An edgelist in the form of a matrix with two columns and N rows.
-The first column indicates the origin of a person, the second row the destination.
+The first column indicates the origin of a person/resource, the second row the destination.
 Each row is one observation.}
 
-\item{nodeSet}{The nodeset to which the variable applies, i.e., does it describe mobile individuals/resources,
-or locations (in the example "people" or "organisations")}
+\item{nodeSet}{The nodesets of the edgelists. For edgelists, this is a vector with three
+entries describing between what locations who is mobile, i.e., c(location, location, individuals/resources).}
 }
 \value{
 an object of type edgelist.monan
 }
 \description{
-Create an edgelist object
+Creates an edgelist object, which is the standard format of the outcome to be modelled
+by monan.
 }
 \examples{
 # create an object of class edgelist.monan
-transfers <- createEdgelist(mobilityEdgelist, nodeSet = c("locations", "locations", "people"))
+transfers <- createEdgelist(mobilityEdgelist, c("organisations", "organisations", "people"))
 }
 \seealso{
 \code{\link[=createProcessState]{createProcessState()}}

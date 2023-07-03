@@ -7,14 +7,18 @@
 createEffectsObject(effectInit, checkProcessState = NULL)
 }
 \arguments{
-\item{effectInit}{A list of "Effects", where each effect to be included is specified as a list
-that contains the effect name and the additional parameters it needs.}
+\item{effectInit}{A list of "effects", where each effect to be included is specified as a
+further list that contains the effect name and the additional parameters it needs.
+Effects without further parameters only contain the effect name (e.g., loops).}
 
 \item{checkProcessState}{For internal use only.}
 }
+\value{
+A monan effects object.
+}
 \description{
 Specifies the model with endogenous and exogenous predictors.
-The predictors in the model are called “Effects”.
+The predictors in the model are called “effects”.
 }
 \examples{
 # create an effects object

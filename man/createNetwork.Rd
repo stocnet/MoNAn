@@ -2,7 +2,7 @@
 % Please edit documentation in R/3_coreFunctions.R
 \name{createNetwork}
 \alias{createNetwork}
-\title{Title}
+\title{createNetwork}
 \usage{
 createNetwork(
   m,
@@ -12,10 +12,21 @@ createNetwork(
 )
 }
 \arguments{
-\item{nodeSet}{}
+\item{m}{A square matrix containing the network data.}
+
+\item{isSymmetric}{Currently not in use, defaults to FALSE.}
+
+\item{isBipartite}{Currently not in use, defaults to FALSE.}
+
+\item{nodeSet}{Which nodeset are the nodes of the network. Usually this will
+be the locations in the data.}
+}
+\value{
+a monan network object.
 }
 \description{
-Title
+Defines a network between locations, generally to be used as a predictor in the model.
+NOTE: The outcome variable of the model is not defined as a network, but as an edgelist!
 }
 \examples{
 # create an object of class network.monan
@@ -23,5 +34,5 @@ sameRegion <- outer(orgRegion, orgRegion, "==")*1
 sameRegion <- createNetwork(sameRegion, nodeSet = c("locations", "locations"))
 }
 \seealso{
-\code{\link[=createProcessState]{createProcessState()}}
+\code{\link[=createProcessState]{createProcessState()}}, \code{\link[=createEdgelist]{createEdgelist()}}
 }

@@ -65,7 +65,95 @@ estimateDistributionNetwork(
 \method{print}{result.monan}(x, covMat = FALSE, ...)
 }
 \arguments{
-\item{fish}{}
+\item{dep.var}{The outcome variable that is modelled.}
+
+\item{state}{A monan state object that contains all relevant information about
+the outcome in the form of an edgelist, the nodesets, and covariates.}
+
+\item{cache}{A monan cache object created from the same state object that is
+used in the estimation}
+
+\item{effects}{An effect object that specifies the model.}
+
+\item{initialParameters}{Starting values for the parameters. Using starting
+values e.g. from a multinomial logit model (see getMultinomialStatistics())
+increases the chances of model convergence in the first run of the estimation
+considerably.}
+
+\item{prevAns}{If a previous estimation did not yield satisfactory convergence,
+the outcome object of that estimation should be specified here to provide new
+starting values for the estimation.}
+
+\item{burnInN1}{The number of simulation steps before the first draw in Phase 1.
+A recommended value is at least n_Individuals * n_locations if
+multinomialProposal = F, and at least n_Individuals if multinomialProposal = T}
+
+\item{iterationsN1}{The number of draws taken in Phase 1.
+A recommended value is at least 4 * n_effects.
+If the value is too low, there will be an error in Phase 1.}
+
+\item{thinningN1}{The number of simulation steps between two draws in Phase 1.
+A recommended value is at least 0.5 * n_Individuals * n_locations if
+multinomialProposal = F, and at least n_Individuals if multinomialProposal = T.}
+
+\item{gainN1}{The size of the updating step after Phase 1. A conservative
+value is 0, values higher than 0.25 are courageous.}
+
+\item{burnInN2}{The number of simulation steps before the first draw in Phase 2.
+A recommended value is at least n_Individuals * n_locations if
+multinomialProposal = F, and at least n_Individuals if multinomialProposal = T}
+
+\item{nsubN2}{Number of subphases in Phase 2. In case this is the first
+estimation, 4 subphases are recommended. If convergence in a previous estimation
+was close, then 1-2 subphases should be enough.}
+
+\item{initGain}{The magnitude of parameter updates in the first subphase of
+Phase 2. Values of around 0.2 are recommended.}
+
+\item{thinningN2}{The number of simulation steps between two draws in Phase 2.
+A recommended value is at least 0.5 * n_Individuals * n_locations if
+multinomialProposal = F, and at least n_Individuals if multinomialProposal = T.}
+
+\item{initialIterationsN2}{The number of draws taken in subpphase 1 of Phase 2.
+For first estimations, a recommended value is around 20-50.
+Note that in later subphases, the number
+of iterations increases.
+If this is a further estimation to improve convergence, higher values (100+)
+are recommended.
+If the value is too low, the model might take more runs to converge.}
+
+\item{iterationsN3}{Number of draws in Phase 3.
+Recommended are at the very least 500.
+In case this value is too low, the outcome might erroneously indicate a lack
+of convergence.}
+
+\item{burnInN3}{The number of simulation steps before the first draw in Phase 3.
+A recommended value is at least 3 * n_Individuals * n_locations if
+multinomialProposal = F, and at least 3 * n_Individuals if multinomialProposal = T}
+
+\item{thinningN3}{The number of simulation steps between two draws in Phase 3.
+A recommended value is at least n_Individuals * n_locations if
+multinomialProposal = F, and at least 2 * n_Individuals if multinomialProposal = T.
+In case this value is too low, the outcome might erroneously indicate a lack
+of convergence.}
+
+\item{allowLoops}{Logical: can individuals/resources stay in their origin?}
+
+\item{parallel}{Computation on multiple cores?}
+
+\item{cpus}{Number of cores for computation in case parallel = T.}
+
+\item{verbose}{Logical: display information about estimation progress in the console?}
+
+\item{returnDeps}{Logical: should the simulated values of Phase 3 be stored and returned?
+This is necessary to run GoF tests.
+Note that this might result in very large objects.}
+
+\item{multinomialProposal}{How should the next possible outcome in the simulation chains
+be sampled? If TRUE, fewer simulation steps are needed, but each simulation
+step takes considerably longer.}
+
+\item{fish}{Logical: display a fish?}
 
 \item{x}{An ans object resulting from an estimation with estimateMobilityNetwork()}
 
@@ -73,12 +161,15 @@ estimateDistributionNetwork(
 
 \item{...}{For internal use only}
 }
+\value{
+A monan results object that contains the estimates, standard errors,
+and convergence statistics. Furthermore, the covariance matrix used to calculate
+the standard errors is included, which also shows colinearity between effects.
+In case returnDeps = TRUE, the simulations of Phase 3 are included, too.
+}
 \description{
-estimateMobilityNetwork
-
-estimateDistributionNetwork
-
-print.result.monan
+The core function of the package in which the model for the analysis of
+mobility tables is estimated.
 }
 \examples{
 \dontrun{

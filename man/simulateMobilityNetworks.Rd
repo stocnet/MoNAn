@@ -6,50 +6,80 @@
 \title{simulateMobilityNetworks}
 \usage{
 simulateMobilityNetworks(
-  cache,
+  dep.var,
   state,
+  cache,
   effects,
-  ans,
+  parameters,
   allowLoops,
   burnin,
   thinning,
-  nSimulations,
-  dep.var
+  nSimulations
 )
 
 simulateDistributionNetworks(
-  cache,
+  dep.var,
   state,
+  cache,
   effects,
-  ans,
+  parameters,
   allowLoops,
   burnin,
   thinning,
-  nSimulations,
-  dep.var
+  nSimulations
 )
 }
 \arguments{
-\item{cache}{}
+\item{dep.var}{The name of the outcome variable that is simulated.}
 
-\item{state}{}
+\item{state}{A monan state object that contains all relevant information about
+nodesets, and covariates. Further, an edgelist of the dependent variable needs
+to be specified with the initial mobility network as starting value for the
+simulation. For a large enough burnin, any initial mobility network is allowed.}
 
-\item{effects}{}
+\item{cache}{A monan cache object created from the same state object that is
+used in the simulation.}
 
-\item{ans}{}
+\item{effects}{An effect object that specifies the model.}
 
-\item{allowLoops}{}
+\item{parameters}{The parameters associated with the effects that shall be used
+in the simulations.}
 
-\item{burnin}{}
+\item{allowLoops}{Logical: can individuals/resources stay in their origin?}
 
-\item{thinning}{}
+\item{burnin}{The number of simulation steps that are taken before the first draw of a
+network is taken. A number too small will mean the first draw is influenced
+by the initially specified network. A recommended value for the lower bound is 3 * n_Individuals *
+n_locations.}
 
-\item{nSimulations}{}
+\item{thinning}{The number of simulation steps that are taken between two draws of a
+network. A recommended value for the lower bound is n_Individuals * n_locations.}
 
-\item{dep.var}{}
+\item{nSimulations}{The number of mobility networks to be simulated.}
+}
+\value{
+A list with nSimulations entries, where each entry contains a further list with the
+state and the cache of the current simulation stored.
 }
 \description{
-simulateMobilityNetworks
+Simulates mobility networks for a given data, effects, and parameters. This
+function is mainly interesting to explore the behaviour of the model or to
+do counter-factual simulations.
+}
+\examples{
+\dontrun{
+# simulate a mobility network
+mySimDN <- simulateMobilityNetworks(myDependentVariable,
+                                   myState, 
+                                   myCache, 
+                                   myEffects,
+                                   parameters = c(2, 1, 1.5, 0.1, -1, -0.5),
+                                   allowLoops = TRUE,
+                                   burnin = 45000, 
+                                   thinning = 15000,
+                                   nSimulations = 10
+)
 
-simulateDistributionNetworks
+mySimDN[[1]]
+}
 }

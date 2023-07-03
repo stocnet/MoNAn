@@ -1,14 +1,16 @@
 ####### coreFunctions
 
 
-# createEdgelist
-#' Create an edgelist object
+#' createEdgelist
+#' 
+#' Creates an edgelist object, which is the standard format of the outcome to be modelled
+#' by monan.
 #'
 #' @param el An edgelist in the form of a matrix with two columns and N rows. 
-#' The first column indicates the origin of a person, the second row the destination.
+#' The first column indicates the origin of a person/resource, the second row the destination.
 #' Each row is one observation.
-#' @param nodeSet The nodeset to which the variable applies, i.e., does it describe mobile individuals/resources, 
-#' or locations (in the example "people" or "organisations")
+#' @param nodeSet The nodesets of the edgelists. For edgelists, this is a vector with three
+#' entries describing between what locations who is mobile, i.e., c(location, location, individuals/resources).
 #'
 #' @return an object of type edgelist.monan
 #' @export
@@ -17,7 +19,7 @@
 #'
 #' @examples
 #' # create an object of class edgelist.monan
-#' transfers <- createEdgelist(mobilityEdgelist, nodeSet = c("locations", "locations", "people"))
+#' transfers <- createEdgelist(mobilityEdgelist, c("organisations", "organisations", "people"))
 createEdgelist <-
   function(el, nodeSet = c("actors", "actors", "edges")) {
     if (dim(el)[2] != 2) {
@@ -39,13 +41,14 @@ createEdgelist <-
 #' createEffectsObject
 #'
 #' Specifies the model with endogenous and exogenous predictors. 
-#' The predictors in the model are called “Effects”. 
+#' The predictors in the model are called “effects”. 
 #'
-#' @param effectInit A list of "Effects", where each effect to be included is specified as a list 
-#' that contains the effect name and the additional parameters it needs.
+#' @param effectInit A list of "effects", where each effect to be included is specified as a
+#' further list that contains the effect name and the additional parameters it needs.
+#' Effects without further parameters only contain the effect name (e.g., loops).
 #' @param checkProcessState For internal use only.
 #'
-#' @return
+#' @return A monan effects object.
 #' @export
 #'
 #' @examples
@@ -120,15 +123,19 @@ createEffectsObject <-
 
 #' createNetwork
 #'
-#' @param m
-#' @param isSymmetric
-#' @param isBipartite
-#' @param nodeSet
+#' Defines a network between locations, generally to be used as a predictor in the model.
+#' NOTE: The outcome variable of the model is not defined as a network, but as an edgelist!
 #'
-#' @return
+#' @param m A square matrix containing the network data.
+#' @param isSymmetric Currently not in use, defaults to FALSE.
+#' @param isBipartite Currently not in use, defaults to FALSE.
+#' @param nodeSet Which nodeset are the nodes of the network. Usually this will 
+#' be the locations in the data.
+#'
+#' @return a monan network object.
 #' @export
 #'
-#' @seealso [createProcessState()]
+#' @seealso [createProcessState()], [createEdgelist()]
 #'
 #' @examples
 #' # create an object of class network.monan
@@ -159,11 +166,22 @@ createNetwork <-
 
 #' createNodeSet
 #'
-#' @param x
-#' @param isPresent
-#' @param considerWhenSampling
+#' Determines and names the nodesets of individuals and locations that make up the mobility network.
 #'
-#' @return
+#' @param x Either a single number indicating how many items are in this node-set 
+#' or a vector from 1:n_items.
+#' @param isPresent Currently not in use.
+#' @param considerWhenSampling A boolean/logical vector of the length of the nodeset.
+#' Only in use in special cases. 
+#' If the nodeset indicates a location, considerWhenSampling indicates whether the
+#' location is a possible destination, or is only an origin (e.g. a training facility).
+#' Entries in the vector of locations that cannot be a destination are FALSE.
+#' If the nodeset indicates mobile individuals, considerWhenSampling indicates whether
+#' their mobility should be modelled or whether it is structurally determined, that
+#' is, their mobility is exogenously defined and does not follow the same logic as
+#' the mobility of everybody else.
+#'
+#' @return A monan nodeset object.
 #' @export
 #'
 #' @seealso [createProcessState()]
@@ -171,7 +189,7 @@ createNetwork <-
 #' @examples
 #' # create an object of class nodeSet.monan
 #' people <- createNodeSet(1:nrow(mobilityEdgelist))
-#' locations <- createNodeSet(1:length(orgRegion))
+#' locations <- createNodeSet(length(orgRegion))
 createNodeSet <-
   function(x = NULL,
            isPresent = NULL,

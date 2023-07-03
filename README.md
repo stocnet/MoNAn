@@ -114,8 +114,8 @@ who (“people”) is mobile between what (“organisations”).
 
 ``` r
 # create objects
-people <- createNodeSet(1:nrow(mobilityEdgelist))
-organisations <- createNodeSet(1:length(orgRegion))
+people <- createNodeSet(nrow(mobilityEdgelist))
+organisations <- createNodeSet(length(orgRegion))
 transfers <- createEdgelist(mobilityEdgelist, nodeSet = c("organisations", "organisations", "people"))
 sameRegion <- outer(orgRegion, orgRegion, "==") * 1
 sameRegion <- createNetwork(sameRegion, nodeSet = c("organisations", "organisations"))

@@ -8,8 +8,8 @@ library(snowfall)
 ##### create data objects from internal data files, which are later combined to the process state #####
 
 # create objects
-people <- createNodeSet(1:nrow(mobilityEdgelist))
-organisations <- createNodeSet(1:length(orgRegion))
+people <- createNodeSet(nrow(mobilityEdgelist))
+organisations <- createNodeSet(length(orgRegion))
 transfers <- createEdgelist(mobilityEdgelist, nodeSet = c("organisations", "organisations", "people"))
 sameRegion <- outer(orgRegion, orgRegion, "==") * 1
 sameRegion <- createNetwork(sameRegion, nodeSet = c("organisations", "organisations"))
@@ -154,7 +154,7 @@ test_ME.2
 ##### goodness of fit #####
 
 myGofIndegree <- gofDistributionNetwork(ans = myResDN, simulations = myResDN$deps, gofFunction = getIndegree, lvls = 1:100)
-plot(myGofIndegree)
+plot(myGofIndegree,  lvls = 20:70)
 
 myGofTieWeight <- gofDistributionNetwork(ans = myResDN, simulations = myResDN$deps, gofFunction = getTieWeights, lvls = 1:30)
-plot(myGofTieWeight)
+plot(myGofTieWeight, lvls = 1:15)

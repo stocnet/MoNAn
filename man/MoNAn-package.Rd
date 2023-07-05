@@ -9,11 +9,12 @@
 Implements the method to analyse weighted mobility networks or distribution networks as outlined in: Block, P., Stadtfeld, C., & Robins, G. (2022). A statistical model for the analysis of mobility tables as weighted networks with an application to faculty hiring networks. Social Networks, 68, 264-278.
 }
 \author{
-\strong{Maintainer}: Per Block \email{block@soziologie.uzh.ch}
+\strong{Maintainer}: Per Block \email{block@soziologie.uzh.ch} [copyright holder]
 
 Authors:
 \itemize{
   \item Christoph Stadtfeld
+  \item Nico Keiser
 }
 
 }

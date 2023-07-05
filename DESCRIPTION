@@ -3,8 +3,9 @@ Type: Package
 Title: Mobility Network Analysis
 Version: 0.0.0.9000
 Date: 2023-05-05
-Authors@R: c(person("Per", "Block", role = c("cre", "aut"), email = "block@soziologie.uzh.ch"), 
-    person("Christoph", "Stadtfeld", role = "aut"))
+Authors@R: c(person("Per", "Block", role = c("cre", "aut", "cph"), email = "block@soziologie.uzh.ch"), 
+    person("Christoph", "Stadtfeld", role = "aut"),
+    person("Nico", "Keiser", role = "aut"))
 Description: Implements the method to analyse weighted mobility networks or distribution networks as outlined in: 
     Block, P., Stadtfeld, C., & Robins, G. (2022). A statistical model for the analysis of mobility 
     tables as weighted networks with an application to faculty hiring networks. Social Networks, 68, 264-278.

@@ -1,6 +1,67 @@
 ####### coreFunctions
 
 
+createAlgorithm <- 
+  function(state,
+           effects,
+           burnInN1 = NULL,
+           iterationsN1 = NULL,
+           thinningN1 = NULL,
+           gainN1 = 0.1,
+           burnInN2 = NULL,
+           nsubN2 = 4,
+           initGain = 0.2,
+           thinningN2 = NULL,
+           initialIterationsN2 = 25,
+           iterationsN3 = 500,
+           burnInN3 = NULL,
+           thinningN3 = NULL,
+           allowLoops = TRUE) {
+    
+    algorithm <- list()
+    
+    if (is.null(burnInN1)){
+      algorithm[["burnInN1"]] <- as.numeric(length(state[["people"]][["ids"]]) * length(state[["locations"]][["ids"]]))
+    } else {algorithm[["burnInN1"]] <- as.numeric(burnInN1)}
+    
+    if (is.null(iterationsN1)){
+      algorithm[["iterationsN1"]] <- as.numeric(length(effects[["effectFormulas"]]) * 4)
+    } else {algorithm[["iterationsN1"]] <- as.numeric(iterationsN1)}
+    
+    if (is.null(thinningN1)){
+      algorithm[["thinningN1"]] <- as.numeric(length(state[["people"]][["ids"]]) * length(state[["locations"]][["ids"]]) * 0.5)
+    } else {algorithm[["thinningN1"]] <- as.numeric(thinningN1)}
+    
+    algorithm[["gainN1"]] <- as.numeric(gainN1)
+    
+    if (is.null(burnInN2)){
+      algorithm[["burnInN2"]] <- as.numeric(length(state[["people"]][["ids"]]) * length(state[["locations"]][["ids"]]))
+    } else {algorithm[["burnInN2"]] <- as.numeric(burnInN2)}
+    
+    algorithm[["nsubN2"]] <- as.numeric(nsubN2)
+    
+    algorithm[["initGain"]] <- as.numeric(initGain)
+    
+    if (is.null(thinningN2)){
+      algorithm[["thinningN2"]] <- as.numeric(length(state[["people"]][["ids"]]) * length(state[["locations"]][["ids"]]) * 0.5)
+    } else {algorithm[["thinningN2"]] <- as.numeric(thinningN2)}
+    
+    algorithm[["initialIterationsN2"]] <- as.numeric(initialIterationsN2)
+    
+    algorithm[["iterationsN3"]] <- as.numeric(iterationsN3)
+    
+    if (is.null(burnInN3)){
+      algorithm[["burnInN3"]] <- as.numeric(length(state[["people"]][["ids"]]) * length(state[["locations"]][["ids"]]) * 3)
+    } else {algorithm[["burnInN3"]] <- as.numeric(burnInN3)}
+    
+    if (is.null(thinningN3)){
+      algorithm[["thinningN3"]] <- as.numeric(length(state[["people"]][["ids"]]) * length(state[["locations"]][["ids"]]))
+    } else {algorithm[["thinningN3"]] <- as.numeric(thinningN3)}
+    
+    algorithm[["allowLoops"]] <- as.logical(allowLoops)
+}
+
+
 #' createEdgelist
 #' 
 #' Creates an edgelist object, which is the standard format of the outcome to be modelled

@@ -1,6 +1,5 @@
 Column1,Function Name,Description,Core / Effect / Hidden / Auxiliary / gof-param,Documentation provided,Example provided,Notes
 1,alter_covariate,Effect Modelling Popularity depending on alter attribute,Effect,not needed,not needed,
-2,as.nodeVariable,"forwards to ""createNodeVariable""",Core,,,Perhaps superfluous
 3,autoCorrelationTest,tests the mixing of the chain used in phase 3,Auxiliary,,x,"former ""autoCorrelationTestNetDist"""
 4,binarizeNetwork,Dichotomizes network,Hidden,not needed,not needed,
 5,binary_transitivity,Effect Modelling transitivity of the dichotomised network,Effect,not needed,not needed,

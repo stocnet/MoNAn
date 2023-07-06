@@ -57,7 +57,7 @@ Column1,Function Name,Description,Core / Effect / Hidden / Auxiliary / gof-param
 56,same_covariate,Effect modelling homophily of locations,Effect,not needed,not needed,
 57,scoreTest,Calculating score test for inclusion of new effects,Auxiliary,,x,"former ""scoreTestNetDist"""
 58,sim_covariate,Effect modelling homophily of locations,Effect,not needed,not needed,
-59,simulateMobilityNetworks,Simulate from parameters and data,Core,,,"also applicable as ""simulateDistributionNetworks"""
+59,simulateMobilityNetworks,Simulate from parameters and data,Core,,x,"also applicable as ""simulateDistributionNetworks"""
 60,simulateNSteps,Internal functions for estimation / simulation,Hidden,not needed,not needed,
 61,simulateOneStep,Internal functions for estimation / simulation,Hidden,not needed,not needed,
 62,simulateStatisticVectors,Internal functions for estimation / simulation,Hidden,not needed,not needed,

@@ -23,7 +23,7 @@ Column1,Function Name,Description,Core / Effect / Hidden / Auxiliary / gof-param
 23,getCovarianceMatrix,see name,Hidden,not needed,not needed,
 , getIndegree,,gof-param,,, as defined in the Illustration-Script
 24,getIndividualEstimates,get non-partial initial estimates,Hidden,not needed,not needed,uses mlogit
-25,getInitialEstimates,get initial estimates (option to specify partial),Auxiliary,,,
+25,getInitialEstimates (?),get initial estimates (option to specify partial),Auxiliary,,,
 26,getMultinomialEstimates,get partial initial estimates,Hidden,not needed,not needed,uses mlogit
 27,getMultinomialStatistics,function used in estimation,Auxiliary,,x,
 28,getNetworkStatistics,function used in estimation,Hidden,not needed,not needed,

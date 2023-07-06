@@ -10,6 +10,8 @@
 #'
 #' @export
 #' 
+#' @seealso [gofDistributionNetwork()]
+#'  
 #' @keywords internal
 getIndegree <- function(cache, dep.var, lvls, ...) {
   m <- cache[[dep.var]]$valuedNetwork
@@ -28,6 +30,8 @@ getIndegree <- function(cache, dep.var, lvls, ...) {
 #' @param ... Additional parameters
 #'
 #' @export
+#' 
+#' @seealso [gofDistributionNetwork()]
 #'
 #' @keywords internal
 getTieWeights <- function(cache, dep.var, lvls, ...) {

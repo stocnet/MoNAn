@@ -18,4 +18,7 @@ getIndegree(cache, dep.var, lvls, ...)
 \description{
 getIndegree
 }
+\seealso{
+\code{\link[=gofDistributionNetwork]{gofDistributionNetwork()}}
+}
 \keyword{internal}

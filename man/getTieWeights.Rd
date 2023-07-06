@@ -18,4 +18,7 @@ getTieWeights(cache, dep.var, lvls, ...)
 \description{
 getTieWeights
 }
+\seealso{
+\code{\link[=gofDistributionNetwork]{gofDistributionNetwork()}}
+}
 \keyword{internal}

@@ -30,7 +30,7 @@ NOTE: The outcome variable of the model is not defined as a network, but as an e
 }
 \examples{
 # create an object of class network.monan
-sameRegion <- outer(orgRegion, orgRegion, "==")*1
+sameRegion <- outer(orgRegion, orgRegion, "==") * 1
 sameRegion <- createNetwork(sameRegion, nodeSet = c("locations", "locations"))
 }
 \seealso{

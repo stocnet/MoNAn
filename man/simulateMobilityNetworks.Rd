@@ -70,14 +70,14 @@ do counter-factual simulations.
 \dontrun{
 # simulate a mobility network
 mySimDN <- simulateMobilityNetworks(myDependentVariable,
-                                   myState, 
-                                   myCache, 
-                                   myEffects,
-                                   parameters = c(2, 1, 1.5, 0.1, -1, -0.5),
-                                   allowLoops = TRUE,
-                                   burnin = 45000, 
-                                   thinning = 15000,
-                                   nSimulations = 10
+  myState,
+  myCache,
+  myEffects,
+  parameters = c(2, 1, 1.5, 0.1, -1, -0.5),
+  allowLoops = TRUE,
+  burnin = 45000,
+  thinning = 15000,
+  nSimulations = 10
 )
 
 mySimDN[[1]]

@@ -175,42 +175,42 @@ mobility tables is estimated.
 \dontrun{
 # estimate mobility network
 myResDN <- estimateMobilityNetwork(myDependentVariable,
-                                   myState, myCache, myEffects,
-                                   initialParameters = NULL,
-                                   burnInN1 = 1500, iterationsN1 = 50, 
-                                   thinningN1 = 750, gainN1 = 0.1,
-                                   burnInN2 = 7500, nsubN2 = 4, 
-                                   initGain = 0.2, thinningN2 = 1500,
-                                   initialIterationsN2 = 25,
-                                   iterationsN3 = 500, burnInN3 = 7500, 
-                                   thinningN3 = 3750,
-                                   parallel = TRUE, cpus = 4,
-                                   allowLoops = TRUE,
-                                   verbose = TRUE,
-                                   returnDeps = TRUE,
-                                   multinomialProposal = FALSE,
-                                   fish = FALSE
+  myState, myCache, myEffects,
+  initialParameters = NULL,
+  burnInN1 = 1500, iterationsN1 = 50,
+  thinningN1 = 750, gainN1 = 0.1,
+  burnInN2 = 7500, nsubN2 = 4,
+  initGain = 0.2, thinningN2 = 1500,
+  initialIterationsN2 = 25,
+  iterationsN3 = 500, burnInN3 = 7500,
+  thinningN3 = 3750,
+  parallel = TRUE, cpus = 4,
+  allowLoops = TRUE,
+  verbose = TRUE,
+  returnDeps = TRUE,
+  multinomialProposal = FALSE,
+  fish = FALSE
 )
 
 myResDN
 
 # estimate mobility network again based on previous results to improve convergence
 myResDN <- estimateMobilityNetwork(myDependentVariable,
-                                   myState, myCache, myEffects,
-                                   prevAns = myResDN,
-                                   burnInN1 = 1500, iterationsN1 = 50, 
-                                   thinningN1 = 750, gainN1 = 0.1,
-                                   burnInN2 = 7500, nsubN2 = 4, 
-                                   initGain = 0.2, thinningN2 = 3000,
-                                   initialIterationsN2 = 40,
-                                   iterationsN3 = 500, burnInN3 = 15000, 
-                                   thinningN3 = 7500,
-                                   parallel = TRUE, cpus = 4,
-                                   allowLoops = TRUE,
-                                   verbose = TRUE,
-                                   returnDeps = TRUE,
-                                   multinomialProposal = FALSE,
-                                   fish = FALSE
+  myState, myCache, myEffects,
+  prevAns = myResDN,
+  burnInN1 = 1500, iterationsN1 = 50,
+  thinningN1 = 750, gainN1 = 0.1,
+  burnInN2 = 7500, nsubN2 = 4,
+  initGain = 0.2, thinningN2 = 3000,
+  initialIterationsN2 = 40,
+  iterationsN3 = 500, burnInN3 = 15000,
+  thinningN3 = 7500,
+  parallel = TRUE, cpus = 4,
+  allowLoops = TRUE,
+  verbose = TRUE,
+  returnDeps = TRUE,
+  multinomialProposal = FALSE,
+  fish = FALSE
 )
 }
 myResDN

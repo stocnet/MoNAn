@@ -36,7 +36,7 @@ used in the estimation.}
 \item{dep.var}{The outcome variable that is modelled.}
 
 \item{burnInN1}{The number of simulation steps before the first draw in Phase 1.
-A recommended value is at least n_Individuals * n_locations if
+A recommended value is at least n_Individuals * n_organisations if
 multinomialProposal = F, and at least n_Individuals if multinomialProposal = T
 which is set as default.}
 
@@ -45,7 +45,7 @@ A recommended value is at least 4 * n_effects which is set as default.
 If the value is too low, there will be an error in Phase 1.}
 
 \item{thinningN1}{The number of simulation steps between two draws in Phase 1.
-A recommended value is at least 0.5 * n_Individuals * n_locations if
+A recommended value is at least 0.5 * n_Individuals * n_organisations if
 multinomialProposal = F, and at least n_Individuals if multinomialProposal = T
 which is set as default.}
 
@@ -53,7 +53,7 @@ which is set as default.}
 value is 0, values higher than 0.25 are courageous. Defaults to 0.1.}
 
 \item{burnInN2}{The number of simulation steps before the first draw in Phase 1.
-A recommended value is at least n_Individuals * n_locations if
+A recommended value is at least n_Individuals * n_organisations if
 multinomialProposal = F, and at least n_Individuals if multinomialProposal = T
 which is set as default.}
 
@@ -65,7 +65,7 @@ in a previous estimation was close, then 1-2 subphases should be enough.}
 Phase 2. Values of around 0.2 (default) are recommended.}
 
 \item{thinningN2}{The number of simulation steps between two draws in Phase 2.
-A recommended value is at least 0.5 * n_Individuals * n_locations if
+A recommended value is at least 0.5 * n_Individuals * n_organisations if
 multinomialProposal = F, and at least n_Individuals if multinomialProposal = T
 which is set as default.}
 
@@ -81,12 +81,12 @@ In case this value is too low, the outcome might erroneously indicate a lack
 of convergence.}
 
 \item{burnInN3}{The number of simulation steps before the first draw in Phase 3.
-A recommended value is at least 3 * n_Individuals * n_locations if
+A recommended value is at least 3 * n_Individuals * n_organisations if
 multinomialProposal = F, and at least 3 * n_Individuals if multinomialProposal = T
 which is set as default.}
 
 \item{thinningN3}{The number of simulation steps between two draws in Phase 3.
-A recommended value is at least n_Individuals * n_locations if
+A recommended value is at least n_Individuals * n_organisations if
 multinomialProposal = F, and at least 2 * n_Individuals if multinomialProposal = T
 which is set as default.
 In case this value is too low, the outcome might erroneously indicate a lack

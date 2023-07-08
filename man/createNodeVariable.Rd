@@ -30,12 +30,12 @@ A monan node variable object
 }
 \description{
 Assigns an covariate to one nodeset, i.e., an exogenous characteristic of mobile
-individuals/resources or locations.
+individuals/resources or organisations.
 }
 \examples{
 # create an object of class nodeVar.monan
-region <- createNodeVariable(orgRegion, nodeSet = "locations")
-size <- createNodeVariable(orgSize, nodeSet = "locations", addSim = TRUE)
+region <- createNodeVariable(orgRegion, nodeSet = "organisations")
+size <- createNodeVariable(orgSize, nodeSet = "organisations", addSim = TRUE)
 sex <- createNodeVariable(indSex, nodeSet = "people")
 }
 \seealso{

@@ -16,7 +16,7 @@ or a vector from 1:n_items.}
 Only in use in special cases.
 If the nodeset indicates a location, considerWhenSampling indicates whether the
 location is a possible destination, or is only an origin (e.g. a training facility).
-Entries in the vector of locations that cannot be a destination are FALSE.
+Entries in the vector of organisations that cannot be a destination are FALSE.
 If the nodeset indicates mobile individuals, considerWhenSampling indicates whether
 their mobility should be modelled or whether it is structurally determined, that
 is, their mobility is exogenously defined and does not follow the same logic as
@@ -26,12 +26,12 @@ the mobility of everybody else.}
 A monan nodeset object.
 }
 \description{
-Determines and names the nodesets of individuals and locations that make up the mobility network.
+Determines and names the nodesets of individuals and organisations that make up the mobility network.
 }
 \examples{
 # create an object of class nodeSet.monan
 people <- createNodeSet(1:nrow(mobilityEdgelist))
-locations <- createNodeSet(length(orgRegion))
+organisations <- createNodeSet(length(orgRegion))
 }
 \seealso{
 \code{\link[=createProcessState]{createProcessState()}}

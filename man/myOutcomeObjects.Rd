@@ -7,6 +7,7 @@
 \alias{myDependentVariable}
 \alias{myCache}
 \alias{myEffects}
+\alias{myAlg}
 \alias{myResDN}
 \title{Exemplary Outcome Objects for the MoNAn Package}
 \format{
@@ -22,6 +23,9 @@ An object of class "list".
 \code{myEffects}
 An object of class "effectsList.monan".
 
+\code{myAlg}
+An object of class "algorithm.monan".
+
 \code{myResDN}
 An object of class "result.monan".
 }
@@ -33,6 +37,8 @@ myDependentVariable
 myCache
 
 myEffects
+
+myAlg
 
 myResDN
 }
@@ -46,6 +52,7 @@ products are provided:
 \item{myDependentVariable}{blabla}
 \item{myCache}{blabla}
 \item{myEffects}{blabla}
+\item{myAlg}{blabla}
 \item{myResDN}{blabla}
 }
 }

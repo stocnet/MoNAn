@@ -11,6 +11,7 @@
 #'   \item{myDependentVariable}{blabla}
 #'   \item{myCache}{blabla}
 #'   \item{myEffects}{blabla}
+#'   \item{myAlg}{blabla}
 #'   \item{myResDN}{blabla}
 #' }
 #' 
@@ -36,6 +37,12 @@
 #' @format `myEffects`
 #' An object of class "effectsList.monan".
 "myEffects"
+
+
+#' @rdname myOutcomeObjects
+#' @format `myAlg`
+#' An object of class "algorithm.monan".
+"myAlg"
 
 
 #' @rdname myOutcomeObjects

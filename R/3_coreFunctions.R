@@ -6,10 +6,12 @@
 #' Specifies the algorithm used in later model estimation based on characteristics
 #' of the state and the effects.
 #'
-#' @param state
-#' @param effects
-#' @param cache description
-#' @param dep.var description
+#' @param state A monan state object that contains all relevant information about
+#' the outcome in the form of an edgelist, the nodesets, and covariates.
+#' @param effects An effect object that specifies the model.
+#' @param cache A monan cache object created from the same state object that is
+#' used in the estimation.
+#' @param dep.var The outcome variable that is modelled.
 #' @param burnInN1 The number of simulation steps before the first draw in Phase 1.
 #' A recommended value is at least n_Individuals * n_locations if
 #' multinomialProposal = F, and at least n_Individuals if multinomialProposal = T
@@ -57,7 +59,7 @@
 #' of convergence.
 #' @param allowLoops Logical: can individuals/resources stay in their origin?
 #'
-#' @return
+#' @return An object of class "algorithm.monan".
 #' @export
 #'
 #' @seealso [createProcessState()], [createEffectsObject()], [createWeightedCache()],
@@ -680,7 +682,7 @@ createWeightedCache <-
 #' @export
 #'
 #' @seealso [createProcessState()], [createWeightedCache()],
-#' [createEffectsObject()]
+#' [createEffectsObject()], [createAlgorithm]
 #'
 #' @examples
 #' \dontrun{

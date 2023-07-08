@@ -99,7 +99,7 @@ An object of class "algorithm.monan".
 }
 \description{
 Specifies the algorithm used in later model estimation based on characteristics
-of the state and the effects.
+of the state, the effects, the cache and the dependent variable.
 }
 \examples{
 # define algorithm based on state and effects characteristics

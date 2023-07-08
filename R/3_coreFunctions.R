@@ -4,7 +4,7 @@
 #' createAlgorithm
 #'
 #' Specifies the algorithm used in later model estimation based on characteristics
-#' of the state and the effects.
+#' of the state, the effects, the cache and the dependent variable.
 #'
 #' @param state A monan state object that contains all relevant information about
 #' the outcome in the form of an edgelist, the nodesets, and covariates.

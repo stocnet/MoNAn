@@ -1,7 +1,36 @@
 ####### coreFunctions
 
 
-createAlgorithm <- 
+#' createAlgorithm
+#' 
+#' Specifies the algorithm used in later model estimation based on characteristics 
+#' of the state and the effects.
+#'
+#' @param state
+#' @param effects
+#' @param burnInN1
+#' @param iterationsN1
+#' @param thinningN1
+#' @param gainN1
+#' @param burnInN2
+#' @param nsubN2
+#' @param initGain
+#' @param thinningN2
+#' @param initialIterationsN2
+#' @param iterationsN3
+#' @param burnInN3
+#' @param thinningN3
+#' @param allowLoops
+#'
+#' @return
+#' @export
+#'
+#' @seealso [createProcessState()], [createEffectsObject()], [estimateMobilityNetwork()]
+#'
+#' @examples
+#' # define algorithm based on state and effects characteristics
+#' myAlg <- createAlgorithm(myState, myEffects)
+createAlgorithm <-
   function(state,
            effects,
            burnInN1 = NULL,
@@ -17,57 +46,73 @@ createAlgorithm <-
            burnInN3 = NULL,
            thinningN3 = NULL,
            allowLoops = TRUE) {
-    
     algorithm <- list()
-    
-    if (is.null(burnInN1)){
+
+    if (is.null(burnInN1)) {
       algorithm[["burnInN1"]] <- as.numeric(length(state[["people"]][["ids"]]) * length(state[["locations"]][["ids"]]))
-    } else {algorithm[["burnInN1"]] <- as.numeric(burnInN1)}
-    
-    if (is.null(iterationsN1)){
+    } else {
+      algorithm[["burnInN1"]] <- as.numeric(burnInN1)
+    }
+
+    if (is.null(iterationsN1)) {
       algorithm[["iterationsN1"]] <- as.numeric(length(effects[["effectFormulas"]]) * 4)
-    } else {algorithm[["iterationsN1"]] <- as.numeric(iterationsN1)}
-    
-    if (is.null(thinningN1)){
+    } else {
+      algorithm[["iterationsN1"]] <- as.numeric(iterationsN1)
+    }
+
+    if (is.null(thinningN1)) {
       algorithm[["thinningN1"]] <- as.numeric(length(state[["people"]][["ids"]]) * length(state[["locations"]][["ids"]]) * 0.5)
-    } else {algorithm[["thinningN1"]] <- as.numeric(thinningN1)}
-    
+    } else {
+      algorithm[["thinningN1"]] <- as.numeric(thinningN1)
+    }
+
     algorithm[["gainN1"]] <- as.numeric(gainN1)
-    
-    if (is.null(burnInN2)){
+
+    if (is.null(burnInN2)) {
       algorithm[["burnInN2"]] <- as.numeric(length(state[["people"]][["ids"]]) * length(state[["locations"]][["ids"]]))
-    } else {algorithm[["burnInN2"]] <- as.numeric(burnInN2)}
-    
+    } else {
+      algorithm[["burnInN2"]] <- as.numeric(burnInN2)
+    }
+
     algorithm[["nsubN2"]] <- as.numeric(nsubN2)
-    
+
     algorithm[["initGain"]] <- as.numeric(initGain)
-    
-    if (is.null(thinningN2)){
+
+    if (is.null(thinningN2)) {
       algorithm[["thinningN2"]] <- as.numeric(length(state[["people"]][["ids"]]) * length(state[["locations"]][["ids"]]) * 0.5)
-    } else {algorithm[["thinningN2"]] <- as.numeric(thinningN2)}
-    
+    } else {
+      algorithm[["thinningN2"]] <- as.numeric(thinningN2)
+    }
+
     algorithm[["initialIterationsN2"]] <- as.numeric(initialIterationsN2)
-    
+
     algorithm[["iterationsN3"]] <- as.numeric(iterationsN3)
-    
-    if (is.null(burnInN3)){
+
+    if (is.null(burnInN3)) {
       algorithm[["burnInN3"]] <- as.numeric(length(state[["people"]][["ids"]]) * length(state[["locations"]][["ids"]]) * 3)
-    } else {algorithm[["burnInN3"]] <- as.numeric(burnInN3)}
-    
-    if (is.null(thinningN3)){
+    } else {
+      algorithm[["burnInN3"]] <- as.numeric(burnInN3)
+    }
+
+    if (is.null(thinningN3)) {
       algorithm[["thinningN3"]] <- as.numeric(length(state[["people"]][["ids"]]) * length(state[["locations"]][["ids"]]))
-    } else {algorithm[["thinningN3"]] <- as.numeric(thinningN3)}
-    
+    } else {
+      algorithm[["thinningN3"]] <- as.numeric(thinningN3)
+    }
+
     algorithm[["allowLoops"]] <- as.logical(allowLoops)
-}
+    
+    class(algorithm) <- "algorithm.monan"
+    algorithm
+  }
 
 
 #' createEdgelist
-#' 
+#'
 #' Creates an edgelist object, which is the standard format of the outcome to be modelled
 #' by monan.
 #'
-#' @param el An edgelist in the form of a matrix with two columns and N rows. 
+#' @param el An edgelist in the form of a matrix with two columns and N rows.
 #' The first column indicates the origin of a person/resource, the second row the destination.
 #' Each row is one observation.
 #' @param nodeSet The nodesets of the edgelists. For edgelists, this is a vector with three
@@ -101,8 +146,8 @@ createEdgelist <-
 
 #' createEffectsObject
 #'
-#' Specifies the model with endogenous and exogenous predictors. 
-#' The predictors in the model are called “effects”. 
+#' Specifies the model with endogenous and exogenous predictors.
+#' The predictors in the model are called “effects”.
 #'
 #' @param effectInit A list of "effects", where each effect to be included is specified as a
 #' further list that contains the effect name and the additional parameters it needs.
@@ -119,9 +164,11 @@ createEdgelist <-
 #'     list("loops"),
 #'     list("min_reciprocity"),
 #'     list("dyadic_covariate", attribute.index = "sameRegion"),
-#'     list("alter_covariate",  attribute.index = "size"),
-#'     list("resource_covar_to_node_covar", attribute.index = "region", 
-#'           resource.attribute.index = "sex"),
+#'     list("alter_covariate", attribute.index = "size"),
+#'     list("resource_covar_to_node_covar",
+#'       attribute.index = "region",
+#'       resource.attribute.index = "sex"
+#'     ),
 #'     list("loops_resource_covar", resource.attribute.index = "sex")
 #'   )
 #' )
@@ -190,7 +237,7 @@ createEffectsObject <-
 #' @param m A square matrix containing the network data.
 #' @param isSymmetric Currently not in use, defaults to FALSE.
 #' @param isBipartite Currently not in use, defaults to FALSE.
-#' @param nodeSet Which nodeset are the nodes of the network. Usually this will 
+#' @param nodeSet Which nodeset are the nodes of the network. Usually this will
 #' be the locations in the data.
 #'
 #' @return a monan network object.
@@ -200,7 +247,7 @@ createEffectsObject <-
 #'
 #' @examples
 #' # create an object of class network.monan
-#' sameRegion <- outer(orgRegion, orgRegion, "==")*1
+#' sameRegion <- outer(orgRegion, orgRegion, "==") * 1
 #' sameRegion <- createNetwork(sameRegion, nodeSet = c("locations", "locations"))
 createNetwork <-
   function(m,
@@ -229,11 +276,11 @@ createNetwork <-
 #'
 #' Determines and names the nodesets of individuals and locations that make up the mobility network.
 #'
-#' @param x Either a single number indicating how many items are in this node-set 
+#' @param x Either a single number indicating how many items are in this node-set
 #' or a vector from 1:n_items.
 #' @param isPresent Currently not in use.
 #' @param considerWhenSampling A boolean/logical vector of the length of the nodeset.
-#' Only in use in special cases. 
+#' Only in use in special cases.
 #' If the nodeset indicates a location, considerWhenSampling indicates whether the
 #' location is a possible destination, or is only an origin (e.g. a training facility).
 #' Entries in the vector of locations that cannot be a destination are FALSE.
@@ -291,7 +338,7 @@ createNodeSet <-
 
 #' createNodeVariable
 #'
-#' Assigns an covariate to one nodeset, i.e., an exogenous characteristic of mobile 
+#' Assigns an covariate to one nodeset, i.e., an exogenous characteristic of mobile
 #' individuals/resources or locations.
 #'
 #' @param values A vector assigning the covariate value to each element of the nodeset.
@@ -343,12 +390,12 @@ createNodeVariable <-
 
 
 #' createProcessState
-#' 
+#'
 #' Creates the "Process state", i.e., a MoNAn object that stores all information
-#' about the data that will be used in the estimation. This includes the 
+#' about the data that will be used in the estimation. This includes the
 #' outcome variable (edgelist), the nodesets, and all covariates.
 #'
-#' @param elements A named list of the outcome variable (edgelist), the nodesets, 
+#' @param elements A named list of the outcome variable (edgelist), the nodesets,
 #' and all covariates that contain the information
 #' about the data that will be used in the estimation.
 #'
@@ -361,24 +408,24 @@ createNodeVariable <-
 #' @examples
 #' # Create a process state out of the mobility data objects:
 #' # create objects (which are later combined to the process state)
-#' transfers <- createEdgelist(mobilityEdgelist, 
-#'              nodeSet = c("organisations", "organisations", "people"))
+#' transfers <- createEdgelist(mobilityEdgelist,
+#'   nodeSet = c("organisations", "organisations", "people")
+#' )
 #' people <- createNodeSet(1:nrow(mobilityEdgelist))
 #' organisations <- createNodeSet(1:length(orgRegion))
 #' sameRegion <- outer(orgRegion, orgRegion, "==") * 1
-#' sameRegion <- createNetwork(sameRegion, 
-#'                             nodeSet = c("organisations", "organisations"))
+#' sameRegion <- createNetwork(sameRegion,
+#'   nodeSet = c("organisations", "organisations")
+#' )
 #' region <- createNodeVariable(orgRegion, nodeSet = "organisations")
 #' size <- createNodeVariable(orgSize, nodeSet = "organisations", addSim = TRUE)
 #' sex <- createNodeVariable(indSex, nodeSet = "people")
-#' 
+#'
 #' # combine created objects to the process state
 #' myState <- createProcessState(list(
 #'   transfers = transfers,
-#'   
 #'   people = people,
 #'   organisations = organisations,
-#'   
 #'   sameRegion = sameRegion,
 #'   region = region,
 #'   size = size,
@@ -441,18 +488,18 @@ createProcessState <- function(elements) {
 
 
 #' createWeightedCache
-#' 
+#'
 #' Creates a necessary internal object used in simulating the chains in the
-#' simulation and estimation of the model. 
-#' In case variables of the individuals in the data are included in the state, 
-#' they need to be explicitly mentioned in the creation of the cache under 
+#' simulation and estimation of the model.
+#' In case variables of the individuals in the data are included in the state,
+#' they need to be explicitly mentioned in the creation of the cache under
 #' “resourceCovariates”.
-#' 
+#'
 #' @param processState The processs state that provides the data basis for
 #' creating the cache.
 #' @param cacheObjectNames The name of the outcome variable, i.e., the
 #' edgelist in the data that should be modelled as a character vector.
-#' @param resourceCovariates A vector of resource covariates that will be 
+#' @param resourceCovariates A vector of resource covariates that will be
 #' used in the model specification?
 #'
 #' @return A monan cache object.
@@ -533,63 +580,63 @@ createWeightedCache <-
 
 
 #' estimateMobilityNetwork
-#' 
+#'
 #' The core function of the package in which the model for the analysis of
 #' mobility tables is estimated.
 #'
 #' @param dep.var The outcome variable that is modelled.
 #' @param state A monan state object that contains all relevant information about
-#' the outcome in the form of an edgelist, the nodesets, and covariates. 
+#' the outcome in the form of an edgelist, the nodesets, and covariates.
 #' @param cache A monan cache object created from the same state object that is
 #' used in the estimation
 #' @param effects An effect object that specifies the model.
 #' @param initialParameters Starting values for the parameters. Using starting
-#' values e.g. from a multinomial logit model (see getMultinomialStatistics()) 
-#' increases the chances of model convergence in the first run of the estimation 
+#' values e.g. from a multinomial logit model (see getMultinomialStatistics())
+#' increases the chances of model convergence in the first run of the estimation
 #' considerably.
 #' @param prevAns If a previous estimation did not yield satisfactory convergence,
-#' the outcome object of that estimation should be specified here to provide new 
+#' the outcome object of that estimation should be specified here to provide new
 #' starting values for the estimation.
 #' @param burnInN1 The number of simulation steps before the first draw in Phase 1.
-#' A recommended value is at least n_Individuals * n_locations if 
+#' A recommended value is at least n_Individuals * n_locations if
 #' multinomialProposal = F, and at least n_Individuals if multinomialProposal = T
-#' @param iterationsN1 The number of draws taken in Phase 1. 
+#' @param iterationsN1 The number of draws taken in Phase 1.
 #' A recommended value is at least 4 * n_effects.
 #' If the value is too low, there will be an error in Phase 1.
 #' @param thinningN1 The number of simulation steps between two draws in Phase 1.
-#' A recommended value is at least 0.5 * n_Individuals * n_locations if 
+#' A recommended value is at least 0.5 * n_Individuals * n_locations if
 #' multinomialProposal = F, and at least n_Individuals if multinomialProposal = T.
-#' @param gainN1 The size of the updating step after Phase 1. A conservative 
+#' @param gainN1 The size of the updating step after Phase 1. A conservative
 #' value is 0, values higher than 0.25 are courageous.
 #' @param burnInN2 The number of simulation steps before the first draw in Phase 2.
-#' A recommended value is at least n_Individuals * n_locations if 
+#' A recommended value is at least n_Individuals * n_locations if
 #' multinomialProposal = F, and at least n_Individuals if multinomialProposal = T
-#' @param nsubN2 Number of subphases in Phase 2. In case this is the first 
+#' @param nsubN2 Number of subphases in Phase 2. In case this is the first
 #' estimation, 4 subphases are recommended. If convergence in a previous estimation
 #' was close, then 1-2 subphases should be enough.
-#' @param initGain The magnitude of parameter updates in the first subphase of 
+#' @param initGain The magnitude of parameter updates in the first subphase of
 #' Phase 2. Values of around 0.2 are recommended.
 #' @param thinningN2 The number of simulation steps between two draws in Phase 2.
-#' A recommended value is at least 0.5 * n_Individuals * n_locations if 
+#' A recommended value is at least 0.5 * n_Individuals * n_locations if
 #' multinomialProposal = F, and at least n_Individuals if multinomialProposal = T.
-#' @param initialIterationsN2 The number of draws taken in subpphase 1 of Phase 2. 
-#' For first estimations, a recommended value is around 20-50. 
-#' Note that in later subphases, the number 
+#' @param initialIterationsN2 The number of draws taken in subpphase 1 of Phase 2.
+#' For first estimations, a recommended value is around 20-50.
+#' Note that in later subphases, the number
 #' of iterations increases.
-#' If this is a further estimation to improve convergence, higher values (100+) 
+#' If this is a further estimation to improve convergence, higher values (100+)
 #' are recommended.
 #' If the value is too low, the model might take more runs to converge.
 #' @param iterationsN3 Number of draws in Phase 3.
 #' Recommended are at the very least 500.
-#' In case this value is too low, the outcome might erroneously indicate a lack 
+#' In case this value is too low, the outcome might erroneously indicate a lack
 #' of convergence.
 #' @param burnInN3 The number of simulation steps before the first draw in Phase 3.
-#' A recommended value is at least 3 * n_Individuals * n_locations if 
+#' A recommended value is at least 3 * n_Individuals * n_locations if
 #' multinomialProposal = F, and at least 3 * n_Individuals if multinomialProposal = T
 #' @param thinningN3 The number of simulation steps between two draws in Phase 3.
-#' A recommended value is at least n_Individuals * n_locations if 
+#' A recommended value is at least n_Individuals * n_locations if
 #' multinomialProposal = F, and at least 2 * n_Individuals if multinomialProposal = T.
-#' In case this value is too low, the outcome might erroneously indicate a lack 
+#' In case this value is too low, the outcome might erroneously indicate a lack
 #' of convergence.
 #' @param allowLoops Logical: can individuals/resources stay in their origin?
 #' @param parallel Computation on multiple cores?
@@ -599,12 +646,12 @@ createWeightedCache <-
 #' This is necessary to run GoF tests.
 #' Note that this might result in very large objects.
 #' @param multinomialProposal How should the next possible outcome in the simulation chains
-#' be sampled? If TRUE, fewer simulation steps are needed, but each simulation 
+#' be sampled? If TRUE, fewer simulation steps are needed, but each simulation
 #' step takes considerably longer.
 #' @param fish Logical: display a fish?
 #'
 #' @aliases estimateDistributionNetwork
-#' 
+#'
 #' @return A monan results object that contains the estimates, standard errors,
 #' and convergence statistics. Furthermore, the covariance matrix used to calculate
 #' the standard errors is included, which also shows colinearity between effects.
@@ -618,42 +665,42 @@ createWeightedCache <-
 #' \dontrun{
 #' # estimate mobility network
 #' myResDN <- estimateMobilityNetwork(myDependentVariable,
-#'                                    myState, myCache, myEffects,
-#'                                    initialParameters = NULL,
-#'                                    burnInN1 = 1500, iterationsN1 = 50, 
-#'                                    thinningN1 = 750, gainN1 = 0.1,
-#'                                    burnInN2 = 7500, nsubN2 = 4, 
-#'                                    initGain = 0.2, thinningN2 = 1500,
-#'                                    initialIterationsN2 = 25,
-#'                                    iterationsN3 = 500, burnInN3 = 7500, 
-#'                                    thinningN3 = 3750,
-#'                                    parallel = TRUE, cpus = 4,
-#'                                    allowLoops = TRUE,
-#'                                    verbose = TRUE,
-#'                                    returnDeps = TRUE,
-#'                                    multinomialProposal = FALSE,
-#'                                    fish = FALSE
+#'   myState, myCache, myEffects,
+#'   initialParameters = NULL,
+#'   burnInN1 = 1500, iterationsN1 = 50,
+#'   thinningN1 = 750, gainN1 = 0.1,
+#'   burnInN2 = 7500, nsubN2 = 4,
+#'   initGain = 0.2, thinningN2 = 1500,
+#'   initialIterationsN2 = 25,
+#'   iterationsN3 = 500, burnInN3 = 7500,
+#'   thinningN3 = 3750,
+#'   parallel = TRUE, cpus = 4,
+#'   allowLoops = TRUE,
+#'   verbose = TRUE,
+#'   returnDeps = TRUE,
+#'   multinomialProposal = FALSE,
+#'   fish = FALSE
 #' )
-#' 
+#'
 #' myResDN
-#' 
+#'
 #' # estimate mobility network again based on previous results to improve convergence
 #' myResDN <- estimateMobilityNetwork(myDependentVariable,
-#'                                    myState, myCache, myEffects,
-#'                                    prevAns = myResDN,
-#'                                    burnInN1 = 1500, iterationsN1 = 50, 
-#'                                    thinningN1 = 750, gainN1 = 0.1,
-#'                                    burnInN2 = 7500, nsubN2 = 4, 
-#'                                    initGain = 0.2, thinningN2 = 3000,
-#'                                    initialIterationsN2 = 40,
-#'                                    iterationsN3 = 500, burnInN3 = 15000, 
-#'                                    thinningN3 = 7500,
-#'                                    parallel = TRUE, cpus = 4,
-#'                                    allowLoops = TRUE,
-#'                                    verbose = TRUE,
-#'                                    returnDeps = TRUE,
-#'                                    multinomialProposal = FALSE,
-#'                                    fish = FALSE
+#'   myState, myCache, myEffects,
+#'   prevAns = myResDN,
+#'   burnInN1 = 1500, iterationsN1 = 50,
+#'   thinningN1 = 750, gainN1 = 0.1,
+#'   burnInN2 = 7500, nsubN2 = 4,
+#'   initGain = 0.2, thinningN2 = 3000,
+#'   initialIterationsN2 = 40,
+#'   iterationsN3 = 500, burnInN3 = 15000,
+#'   thinningN3 = 7500,
+#'   parallel = TRUE, cpus = 4,
+#'   allowLoops = TRUE,
+#'   verbose = TRUE,
+#'   returnDeps = TRUE,
+#'   multinomialProposal = FALSE,
+#'   fish = FALSE
 #' )
 #' }
 estimateMobilityNetwork <-
@@ -812,13 +859,13 @@ estimateMobilityNetwork <-
 
 
 #' estimateDistributionNetwork
-#' 
+#'
 #' @rdname estimateMobilityNetwork
 estimateDistributionNetwork <- estimateMobilityNetwork
 
 
 #' simulateMobilityNetworks
-#' 
+#'
 #' Simulates mobility networks for a given data, effects, and parameters. This
 #' function is mainly interesting to explore the behaviour of the model or to
 #' do counter-factual simulations.
@@ -837,7 +884,7 @@ estimateDistributionNetwork <- estimateMobilityNetwork
 #' @param allowLoops Logical: can individuals/resources stay in their origin?
 #' @param burnin The number of simulation steps that are taken before the first draw of a
 #' network is taken. A number too small will mean the first draw is influenced
-#' by the initially specified network. A recommended value for the lower bound is 3 * n_Individuals * 
+#' by the initially specified network. A recommended value for the lower bound is 3 * n_Individuals *
 #' n_locations.
 #' @param thinning The number of simulation steps that are taken between two draws of a
 #' network. A recommended value for the lower bound is n_Individuals * n_locations.
@@ -847,20 +894,20 @@ estimateDistributionNetwork <- estimateMobilityNetwork
 #' state and the cache of the current simulation stored.
 #' @export
 #'
-#' @examples 
+#' @examples
 #' \dontrun{
 #' # simulate a mobility network
 #' mySimDN <- simulateMobilityNetworks(myDependentVariable,
-#'                                    myState, 
-#'                                    myCache, 
-#'                                    myEffects,
-#'                                    parameters = c(2, 1, 1.5, 0.1, -1, -0.5),
-#'                                    allowLoops = TRUE,
-#'                                    burnin = 45000, 
-#'                                    thinning = 15000,
-#'                                    nSimulations = 10
+#'   myState,
+#'   myCache,
+#'   myEffects,
+#'   parameters = c(2, 1, 1.5, 0.1, -1, -0.5),
+#'   allowLoops = TRUE,
+#'   burnin = 45000,
+#'   thinning = 15000,
+#'   nSimulations = 10
 #' )
-#' 
+#'
 #' mySimDN[[1]]
 #' }
 simulateMobilityNetworks <-

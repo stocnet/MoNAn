@@ -7,6 +7,8 @@
 createAlgorithm(
   state,
   effects,
+  cache,
+  dep.var,
   burnInN1 = NULL,
   iterationsN1 = NULL,
   thinningN1 = NULL,
@@ -19,11 +21,72 @@ createAlgorithm(
   iterationsN3 = 500,
   burnInN3 = NULL,
   thinningN3 = NULL,
-  allowLoops = TRUE
+  allowLoops = NULL
 )
 }
 \arguments{
-\item{allowLoops}{}
+\item{cache}{description}
+
+\item{dep.var}{description}
+
+\item{burnInN1}{The number of simulation steps before the first draw in Phase 1.
+A recommended value is at least n_Individuals * n_locations if
+multinomialProposal = F, and at least n_Individuals if multinomialProposal = T
+which is set as default.}
+
+\item{iterationsN1}{The number of draws taken in Phase 1.
+A recommended value is at least 4 * n_effects which is set as default.
+If the value is too low, there will be an error in Phase 1.}
+
+\item{thinningN1}{The number of simulation steps between two draws in Phase 1.
+A recommended value is at least 0.5 * n_Individuals * n_locations if
+multinomialProposal = F, and at least n_Individuals if multinomialProposal = T
+which is set as default.}
+
+\item{gainN1}{The size of the updating step after Phase 1. A conservative
+value is 0, values higher than 0.25 are courageous. Defaults to 0.1.}
+
+\item{burnInN2}{The number of simulation steps before the first draw in Phase 1.
+A recommended value is at least n_Individuals * n_locations if
+multinomialProposal = F, and at least n_Individuals if multinomialProposal = T
+which is set as default.}
+
+\item{nsubN2}{Number of subphases in Phase 2. In case this is the first
+estimation, 4 subphases are recommended and is set as default. If convergence
+in a previous estimation was close, then 1-2 subphases should be enough.}
+
+\item{initGain}{The magnitude of parameter updates in the first subphase of
+Phase 2. Values of around 0.2 (default) are recommended.}
+
+\item{thinningN2}{The number of simulation steps between two draws in Phase 2.
+A recommended value is at least 0.5 * n_Individuals * n_locations if
+multinomialProposal = F, and at least n_Individuals if multinomialProposal = T
+which is set as default.}
+
+\item{initialIterationsN2}{The number of draws taken in subpphase 1 of Phase 2.
+For first estimations, a recommended value is around 20-50 (default to 25).
+Note that in later subphases, the number of iterations increases.
+If this is a further estimation to improve convergence, higher values (100+)
+are recommended.}
+
+\item{iterationsN3}{Number of draws in Phase 3. Recommended are at the very
+least 500 (default).
+In case this value is too low, the outcome might erroneously indicate a lack
+of convergence.}
+
+\item{burnInN3}{The number of simulation steps before the first draw in Phase 3.
+A recommended value is at least 3 * n_Individuals * n_locations if
+multinomialProposal = F, and at least 3 * n_Individuals if multinomialProposal = T
+which is set as default.}
+
+\item{thinningN3}{The number of simulation steps between two draws in Phase 3.
+A recommended value is at least n_Individuals * n_locations if
+multinomialProposal = F, and at least 2 * n_Individuals if multinomialProposal = T
+which is set as default.
+In case this value is too low, the outcome might erroneously indicate a lack
+of convergence.}
+
+\item{allowLoops}{Logical: can individuals/resources stay in their origin?}
 }
 \description{
 Specifies the algorithm used in later model estimation based on characteristics
@@ -31,8 +94,9 @@ of the state and the effects.
 }
 \examples{
 # define algorithm based on state and effects characteristics
-myAlg <- createAlgorithm(myState, myEffects)
+myAlg <- createAlgorithm(myState, myEffects, myCache, myDependentVariable)
 }
 \seealso{
-\code{\link[=createProcessState]{createProcessState()}}, \code{\link[=createEffectsObject]{createEffectsObject()}}, \code{\link[=estimateMobilityNetwork]{estimateMobilityNetwork()}}
+\code{\link[=createProcessState]{createProcessState()}}, \code{\link[=createEffectsObject]{createEffectsObject()}}, \code{\link[=createWeightedCache]{createWeightedCache()}},
+\code{\link[=estimateMobilityNetwork]{estimateMobilityNetwork()}}
 }

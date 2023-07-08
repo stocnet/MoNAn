@@ -2,15 +2,17 @@
 
 
 #' createAlgorithm
-#' 
-#' Specifies the algorithm used in later model estimation based on characteristics 
+#'
+#' Specifies the algorithm used in later model estimation based on characteristics
 #' of the state and the effects.
 #'
 #' @param state
 #' @param effects
+#' @param cache description
+#' @param dep.var description
 #' @param burnInN1 The number of simulation steps before the first draw in Phase 1.
 #' A recommended value is at least n_Individuals * n_locations if
-#' multinomialProposal = F, and at least n_Individuals if multinomialProposal = T 
+#' multinomialProposal = F, and at least n_Individuals if multinomialProposal = T
 #' which is set as default.
 #' @param iterationsN1 The number of draws taken in Phase 1.
 #' A recommended value is at least 4 * n_effects which is set as default.
@@ -23,10 +25,10 @@
 #' value is 0, values higher than 0.25 are courageous. Defaults to 0.1.
 #' @param burnInN2 The number of simulation steps before the first draw in Phase 1.
 #' A recommended value is at least n_Individuals * n_locations if
-#' multinomialProposal = F, and at least n_Individuals if multinomialProposal = T 
+#' multinomialProposal = F, and at least n_Individuals if multinomialProposal = T
 #' which is set as default.
 #' @param nsubN2 Number of subphases in Phase 2. In case this is the first
-#' estimation, 4 subphases are recommended and is set as default. If convergence 
+#' estimation, 4 subphases are recommended and is set as default. If convergence
 #' in a previous estimation was close, then 1-2 subphases should be enough.
 #' @param initGain The magnitude of parameter updates in the first subphase of
 #' Phase 2. Values of around 0.2 (default) are recommended.
@@ -39,7 +41,7 @@
 #' Note that in later subphases, the number of iterations increases.
 #' If this is a further estimation to improve convergence, higher values (100+)
 #' are recommended.
-#' @param iterationsN3 Number of draws in Phase 3. Recommended are at the very 
+#' @param iterationsN3 Number of draws in Phase 3. Recommended are at the very
 #' least 500 (default).
 #' In case this value is too low, the outcome might erroneously indicate a lack
 #' of convergence.
@@ -58,7 +60,8 @@
 #' @return
 #' @export
 #'
-#' @seealso [createProcessState()], [createEffectsObject()], [estimateMobilityNetwork()]
+#' @seealso [createProcessState()], [createEffectsObject()], [createWeightedCache()],
+#' [estimateMobilityNetwork()]
 #'
 #' @examples
 #' # define algorithm based on state and effects characteristics
@@ -84,8 +87,10 @@ createAlgorithm <-
     algorithm <- list()
 
     if (is.null(burnInN1)) {
-      algorithm[["burnInN1"]] <- as.numeric(c(length(state[["people"]][["ids"]]) * length(state[["locations"]][["ids"]]), 
-                                              length(state[["people"]][["ids"]])))
+      algorithm[["burnInN1"]] <- as.numeric(c(
+        length(state[["people"]][["ids"]]) * length(state[["locations"]][["ids"]]),
+        length(state[["people"]][["ids"]])
+      ))
     } else {
       algorithm[["burnInN1"]] <- as.numeric(burnInN1)
     }
@@ -97,8 +102,10 @@ createAlgorithm <-
     }
 
     if (is.null(thinningN1)) {
-      algorithm[["thinningN1"]] <- as.numeric(c(length(state[["people"]][["ids"]]) * length(state[["locations"]][["ids"]]) * 0.5,
-                                              length(state[["people"]][["ids"]])))
+      algorithm[["thinningN1"]] <- as.numeric(c(
+        length(state[["people"]][["ids"]]) * length(state[["locations"]][["ids"]]) * 0.5,
+        length(state[["people"]][["ids"]])
+      ))
     } else {
       algorithm[["thinningN1"]] <- as.numeric(thinningN1)
     }
@@ -106,8 +113,10 @@ createAlgorithm <-
     algorithm[["gainN1"]] <- as.numeric(gainN1)
 
     if (is.null(burnInN2)) {
-      algorithm[["burnInN2"]] <- as.numeric(c(length(state[["people"]][["ids"]]) * length(state[["locations"]][["ids"]]), 
-                                              length(state[["people"]][["ids"]])))
+      algorithm[["burnInN2"]] <- as.numeric(c(
+        length(state[["people"]][["ids"]]) * length(state[["locations"]][["ids"]]),
+        length(state[["people"]][["ids"]])
+      ))
     } else {
       algorithm[["burnInN2"]] <- as.numeric(burnInN2)
     }
@@ -117,8 +126,10 @@ createAlgorithm <-
     algorithm[["initGain"]] <- as.numeric(initGain)
 
     if (is.null(thinningN2)) {
-      algorithm[["thinningN2"]] <- as.numeric(c(length(state[["people"]][["ids"]]) * length(state[["locations"]][["ids"]]) * 0.5,
-                                              length(state[["people"]][["ids"]])))
+      algorithm[["thinningN2"]] <- as.numeric(c(
+        length(state[["people"]][["ids"]]) * length(state[["locations"]][["ids"]]) * 0.5,
+        length(state[["people"]][["ids"]])
+      ))
     } else {
       algorithm[["thinningN2"]] <- as.numeric(thinningN2)
     }
@@ -128,15 +139,19 @@ createAlgorithm <-
     algorithm[["iterationsN3"]] <- as.numeric(iterationsN3)
 
     if (is.null(burnInN3)) {
-      algorithm[["burnInN3"]] <- as.numeric(c(length(state[["people"]][["ids"]]) * length(state[["locations"]][["ids"]]) * 3,
-                                            length(state[["people"]][["ids"]]) * 3))
+      algorithm[["burnInN3"]] <- as.numeric(c(
+        length(state[["people"]][["ids"]]) * length(state[["locations"]][["ids"]]) * 3,
+        length(state[["people"]][["ids"]]) * 3
+      ))
     } else {
       algorithm[["burnInN3"]] <- as.numeric(burnInN3)
     }
 
     if (is.null(thinningN3)) {
-      algorithm[["thinningN3"]] <- as.numeric(c(length(state[["people"]][["ids"]]) * length(state[["locations"]][["ids"]]),
-                                              length(state[["people"]][["ids"]]) * 2))
+      algorithm[["thinningN3"]] <- as.numeric(c(
+        length(state[["people"]][["ids"]]) * length(state[["locations"]][["ids"]]),
+        length(state[["people"]][["ids"]]) * 2
+      ))
     } else {
       algorithm[["thinningN3"]] <- as.numeric(thinningN3)
     }
@@ -645,48 +660,6 @@ createWeightedCache <-
 #' @param prevAns If a previous estimation did not yield satisfactory convergence,
 #' the outcome object of that estimation should be specified here to provide new
 #' starting values for the estimation.
-#' @param burnInN1 The number of simulation steps before the first draw in Phase 1.
-#' A recommended value is at least n_Individuals * n_locations if
-#' multinomialProposal = F, and at least n_Individuals if multinomialProposal = T
-#' @param iterationsN1 The number of draws taken in Phase 1.
-#' A recommended value is at least 4 * n_effects.
-#' If the value is too low, there will be an error in Phase 1.
-#' @param thinningN1 The number of simulation steps between two draws in Phase 1.
-#' A recommended value is at least 0.5 * n_Individuals * n_locations if
-#' multinomialProposal = F, and at least n_Individuals if multinomialProposal = T.
-#' @param gainN1 The size of the updating step after Phase 1. A conservative
-#' value is 0, values higher than 0.25 are courageous.
-#' @param burnInN2 The number of simulation steps before the first draw in Phase 2.
-#' A recommended value is at least n_Individuals * n_locations if
-#' multinomialProposal = F, and at least n_Individuals if multinomialProposal = T
-#' @param nsubN2 Number of subphases in Phase 2. In case this is the first
-#' estimation, 4 subphases are recommended. If convergence in a previous estimation
-#' was close, then 1-2 subphases should be enough.
-#' @param initGain The magnitude of parameter updates in the first subphase of
-#' Phase 2. Values of around 0.2 are recommended.
-#' @param thinningN2 The number of simulation steps between two draws in Phase 2.
-#' A recommended value is at least 0.5 * n_Individuals * n_locations if
-#' multinomialProposal = F, and at least n_Individuals if multinomialProposal = T.
-#' @param initialIterationsN2 The number of draws taken in subpphase 1 of Phase 2.
-#' For first estimations, a recommended value is around 20-50.
-#' Note that in later subphases, the number
-#' of iterations increases.
-#' If this is a further estimation to improve convergence, higher values (100+)
-#' are recommended.
-#' If the value is too low, the model might take more runs to converge.
-#' @param iterationsN3 Number of draws in Phase 3.
-#' Recommended are at the very least 500.
-#' In case this value is too low, the outcome might erroneously indicate a lack
-#' of convergence.
-#' @param burnInN3 The number of simulation steps before the first draw in Phase 3.
-#' A recommended value is at least 3 * n_Individuals * n_locations if
-#' multinomialProposal = F, and at least 3 * n_Individuals if multinomialProposal = T
-#' @param thinningN3 The number of simulation steps between two draws in Phase 3.
-#' A recommended value is at least n_Individuals * n_locations if
-#' multinomialProposal = F, and at least 2 * n_Individuals if multinomialProposal = T.
-#' In case this value is too low, the outcome might erroneously indicate a lack
-#' of convergence.
-#' @param allowLoops Logical: can individuals/resources stay in their origin?
 #' @param parallel Computation on multiple cores?
 #' @param cpus Number of cores for computation in case parallel = T.
 #' @param verbose Logical: display information about estimation progress in the console?
@@ -753,7 +726,7 @@ estimateMobilityNetwork <-
     if (is.null(initialParameters)) {
       initialParameters <- rep(0, length(effects$name))
     }
-    
+
     observedStatistics <-
       getNetworkStatistics(dep.var, state, cache, effects)
 
@@ -786,10 +759,16 @@ estimateMobilityNetwork <-
           effects,
           initialParameters,
           if (multinomialProposal == FALSE) {
-            algorithm$burnInN1[1]} else {algorithm$burnInN1[2]},
+            algorithm$burnInN1[1]
+          } else {
+            algorithm$burnInN1[2]
+          },
           algorithm$iterationsN1,
           if (multinomialProposal == FALSE) {
-            algorithm$thinningN1[1]} else {algorithm$thinningN1[2]},
+            algorithm$thinningN1[1]
+          } else {
+            algorithm$thinningN1[2]
+          },
           algorithm$gainN1,
           algorithm$allowLoops,
           multinomialProposal = multinomialProposal,
@@ -811,11 +790,17 @@ estimateMobilityNetwork <-
       initialParameters,
       sensitivityVector,
       if (multinomialProposal == FALSE) {
-        algorithm$burnInN2[1]} else {algorithm$burnInN2[2]},
+        algorithm$burnInN2[1]
+      } else {
+        algorithm$burnInN2[2]
+      },
       algorithm$nsubN2,
       algorithm$initGain,
       if (multinomialProposal == FALSE) {
-        algorithm$thinningN2[1]} else {algorithm$thinningN2[2]},
+        algorithm$thinningN2[1]
+      } else {
+        algorithm$thinningN2[2]
+      },
       algorithm$initialIterationsN2,
       parallel = parallel,
       cpus = cpus,
@@ -837,9 +822,15 @@ estimateMobilityNetwork <-
       observedStatistics,
       algorithm$iterationsN3,
       if (multinomialProposal == FALSE) {
-        algorithm$burnInN3[1]} else {algorithm$burnInN3[2]},
+        algorithm$burnInN3[1]
+      } else {
+        algorithm$burnInN3[2]
+      },
       if (multinomialProposal == FALSE) {
-        algorithm$thinningN3[1]} else {algorithm$thinningN3[2]},
+        algorithm$thinningN3[1]
+      } else {
+        algorithm$thinningN3[2]
+      },
       parallel = parallel,
       cpus = cpus,
       algorithm$allowLoops,

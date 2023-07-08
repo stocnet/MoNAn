@@ -11,21 +11,9 @@ estimateMobilityNetwork(
   state,
   cache,
   effects,
+  algorithm,
   initialParameters = NULL,
   prevAns = NULL,
-  burnInN1 = 500,
-  iterationsN1 = 200,
-  thinningN1 = 20,
-  gainN1 = 1,
-  burnInN2 = burnInN1,
-  nsubN2 = 6,
-  initGain = 0.02,
-  thinningN2 = 100,
-  initialIterationsN2 = 50,
-  iterationsN3 = 1000,
-  burnInN3 = 2000,
-  thinningN3 = 30,
-  allowLoops = NULL,
   parallel = FALSE,
   cpus = 3,
   verbose = FALSE,
@@ -39,21 +27,9 @@ estimateDistributionNetwork(
   state,
   cache,
   effects,
+  algorithm,
   initialParameters = NULL,
   prevAns = NULL,
-  burnInN1 = 500,
-  iterationsN1 = 200,
-  thinningN1 = 20,
-  gainN1 = 1,
-  burnInN2 = burnInN1,
-  nsubN2 = 6,
-  initGain = 0.02,
-  thinningN2 = 100,
-  initialIterationsN2 = 50,
-  iterationsN3 = 1000,
-  burnInN3 = 2000,
-  thinningN3 = 30,
-  allowLoops = NULL,
   parallel = FALSE,
   cpus = 3,
   verbose = FALSE,
@@ -83,61 +59,6 @@ considerably.}
 \item{prevAns}{If a previous estimation did not yield satisfactory convergence,
 the outcome object of that estimation should be specified here to provide new
 starting values for the estimation.}
-
-\item{burnInN1}{The number of simulation steps before the first draw in Phase 1.
-A recommended value is at least n_Individuals * n_locations if
-multinomialProposal = F, and at least n_Individuals if multinomialProposal = T}
-
-\item{iterationsN1}{The number of draws taken in Phase 1.
-A recommended value is at least 4 * n_effects.
-If the value is too low, there will be an error in Phase 1.}
-
-\item{thinningN1}{The number of simulation steps between two draws in Phase 1.
-A recommended value is at least 0.5 * n_Individuals * n_locations if
-multinomialProposal = F, and at least n_Individuals if multinomialProposal = T.}
-
-\item{gainN1}{The size of the updating step after Phase 1. A conservative
-value is 0, values higher than 0.25 are courageous.}
-
-\item{burnInN2}{The number of simulation steps before the first draw in Phase 2.
-A recommended value is at least n_Individuals * n_locations if
-multinomialProposal = F, and at least n_Individuals if multinomialProposal = T}
-
-\item{nsubN2}{Number of subphases in Phase 2. In case this is the first
-estimation, 4 subphases are recommended. If convergence in a previous estimation
-was close, then 1-2 subphases should be enough.}
-
-\item{initGain}{The magnitude of parameter updates in the first subphase of
-Phase 2. Values of around 0.2 are recommended.}
-
-\item{thinningN2}{The number of simulation steps between two draws in Phase 2.
-A recommended value is at least 0.5 * n_Individuals * n_locations if
-multinomialProposal = F, and at least n_Individuals if multinomialProposal = T.}
-
-\item{initialIterationsN2}{The number of draws taken in subpphase 1 of Phase 2.
-For first estimations, a recommended value is around 20-50.
-Note that in later subphases, the number
-of iterations increases.
-If this is a further estimation to improve convergence, higher values (100+)
-are recommended.
-If the value is too low, the model might take more runs to converge.}
-
-\item{iterationsN3}{Number of draws in Phase 3.
-Recommended are at the very least 500.
-In case this value is too low, the outcome might erroneously indicate a lack
-of convergence.}
-
-\item{burnInN3}{The number of simulation steps before the first draw in Phase 3.
-A recommended value is at least 3 * n_Individuals * n_locations if
-multinomialProposal = F, and at least 3 * n_Individuals if multinomialProposal = T}
-
-\item{thinningN3}{The number of simulation steps between two draws in Phase 3.
-A recommended value is at least n_Individuals * n_locations if
-multinomialProposal = F, and at least 2 * n_Individuals if multinomialProposal = T.
-In case this value is too low, the outcome might erroneously indicate a lack
-of convergence.}
-
-\item{allowLoops}{Logical: can individuals/resources stay in their origin?}
 
 \item{parallel}{Computation on multiple cores?}
 
@@ -175,17 +96,9 @@ mobility tables is estimated.
 \dontrun{
 # estimate mobility network
 myResDN <- estimateMobilityNetwork(myDependentVariable,
-  myState, myCache, myEffects,
+  myState, myCache, myEffects, myAlg,
   initialParameters = NULL,
-  burnInN1 = 1500, iterationsN1 = 50,
-  thinningN1 = 750, gainN1 = 0.1,
-  burnInN2 = 7500, nsubN2 = 4,
-  initGain = 0.2, thinningN2 = 1500,
-  initialIterationsN2 = 25,
-  iterationsN3 = 500, burnInN3 = 7500,
-  thinningN3 = 3750,
   parallel = TRUE, cpus = 4,
-  allowLoops = TRUE,
   verbose = TRUE,
   returnDeps = TRUE,
   multinomialProposal = FALSE,
@@ -196,17 +109,9 @@ myResDN
 
 # estimate mobility network again based on previous results to improve convergence
 myResDN <- estimateMobilityNetwork(myDependentVariable,
-  myState, myCache, myEffects,
+  myState, myCache, myEffects, myAlg,
   prevAns = myResDN,
-  burnInN1 = 1500, iterationsN1 = 50,
-  thinningN1 = 750, gainN1 = 0.1,
-  burnInN2 = 7500, nsubN2 = 4,
-  initGain = 0.2, thinningN2 = 3000,
-  initialIterationsN2 = 40,
-  iterationsN3 = 500, burnInN3 = 15000,
-  thinningN3 = 7500,
   parallel = TRUE, cpus = 4,
-  allowLoops = TRUE,
   verbose = TRUE,
   returnDeps = TRUE,
   multinomialProposal = FALSE,

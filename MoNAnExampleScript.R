@@ -2,17 +2,20 @@
 
 library(MoNAn)
 
-# packages for parallel computing
-library(snowfall)
 
 ##### create data objects from internal data files, which are later combined to the process state #####
 
-# create objects
-people <- createNodeSet(nrow(mobilityEdgelist))
-organisations <- createNodeSet(length(orgRegion))
-transfers <- createEdgelist(mobilityEdgelist, nodeSet = c("organisations", "organisations", "people"))
+# Create a process state out of the mobility data objects:
+# create objects (which are later combined to the process state)
+transfers <- createEdgelist(mobilityEdgelist,
+                            nodeSet = c("organisations", "organisations", "people")
+)
+people <- createNodeSet(1:nrow(mobilityEdgelist))
+organisations <- createNodeSet(1:length(orgRegion))
 sameRegion <- outer(orgRegion, orgRegion, "==") * 1
-sameRegion <- createNetwork(sameRegion, nodeSet = c("organisations", "organisations"))
+sameRegion <- createNetwork(sameRegion,
+                            nodeSet = c("organisations", "organisations")
+)
 region <- createNodeVariable(orgRegion, nodeSet = "organisations")
 size <- createNodeVariable(orgSize, nodeSet = "organisations", addSim = TRUE)
 sex <- createNodeVariable(indSex, nodeSet = "people")
@@ -20,10 +23,8 @@ sex <- createNodeVariable(indSex, nodeSet = "people")
 # combine created objects to the process state
 myState <- createProcessState(list(
   transfers = transfers,
-  
   people = people,
   organisations = organisations,
-  
   sameRegion = sameRegion,
   region = region,
   size = size,
@@ -47,7 +48,10 @@ myEffects <- createEffectsObject(
     list("min_reciprocity"),
     list("dyadic_covariate", attribute.index = "sameRegion"),
     list("alter_covariate", attribute.index = "size"),
-    list("resource_covar_to_node_covar", attribute.index = "region", resource.attribute.index = "sex"),
+    list("resource_covar_to_node_covar",
+         attribute.index = "region",
+         resource.attribute.index = "sex"
+    ),
     list("loops_resource_covar", resource.attribute.index = "sex")
   )
 )
@@ -78,21 +82,21 @@ myStatisticsFrame <- getMultinomialStatistics(myState, myCache, myEffects, myDep
 # initEst <- my.mlogit.results$coefficients[1:length(IVs)]
 
 
+##### create algorithm object #####
+
+# define algorithm based on state and effects characteristics
+myAlg <- createAlgorithm(myState, myEffects, myCache, myDependentVariable)
+
 
 ##### estimate mobility network model #####
 
 # estimate mobility network model
 myResDN <- estimateMobilityNetwork(myDependentVariable,
-  myState, myCache, myEffects,
+  myState, myCache, myEffects, myAlg,
   initialParameters = NULL,
   # in case a pseudo-likelihood estimation was run, replace with
   # initialParameters = initEst,
-  burnInN1 = 1500, iterationsN1 = 50, thinningN1 = 750, gainN1 = 0.1,
-  burnInN2 = 7500, nsubN2 = 4, initGain = 0.2, thinningN2 = 1500,
-  initialIterationsN2 = 25,
-  iterationsN3 = 500, burnInN3 = 7500, thinningN3 = 3750,
   parallel = T, cpus = 4,
-  allowLoops = T,
   verbose = T,
   returnDeps = T,
   multinomialProposal = F,
@@ -103,15 +107,15 @@ myResDN <- estimateMobilityNetwork(myDependentVariable,
 max(abs(myResDN$convergenceStatistics))
 
 # estimate mobility network model again based on previous results to improve convergence
+# with an adjusted algorithm
+myAlg <- createAlgorithm(myState, myEffects, myCache, myDependentVariable,
+                         thinningN2 = 3000, initialIterationsN2 = 40,
+                         burnInN3 = 15000, thinningN3 = 7500)
+
 myResDN <- estimateMobilityNetwork(myDependentVariable,
-  myState, myCache, myEffects,
+  myState, myCache, myEffects, myAlg,
   prevAns = myResDN,
-  burnInN1 = 1500, iterationsN1 = 50, thinningN1 = 750, gainN1 = 0.1,
-  burnInN2 = 7500, nsubN2 = 4, initGain = 0.2, thinningN2 = 3000,
-  initialIterationsN2 = 40,
-  iterationsN3 = 500, burnInN3 = 15000, thinningN3 = 7500,
   parallel = T, cpus = 4,
-  allowLoops = T,
   verbose = T,
   returnDeps = T,
   multinomialProposal = F,

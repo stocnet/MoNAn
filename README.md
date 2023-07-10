@@ -29,11 +29,11 @@ characteristics of individuals, it is an ERGM for weighted networks.
 Announcements about workshops etc. can be found
 [here](https://www.suz.uzh.ch/de/institut/professuren/block/monan_software.html).
 
-<span style="color: red;"> \# Warning!!!
+# Warning!!!
 
-From Sat. 08 July until ~12 July, the definition of the algorithm in the
-package is simplified. In the process, this README file will not work!
-</span>
+<span style="color: red;"> From Sat. 08 July until ~12 July, the
+definition of the algorithm in the package is simplified. In the
+process, this README file will not work! </span>
 
 # Warning!!!
 

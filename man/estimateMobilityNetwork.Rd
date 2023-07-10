@@ -18,7 +18,6 @@ estimateMobilityNetwork(
   cpus = 1,
   verbose = FALSE,
   returnDeps = FALSE,
-  multinomialProposal = FALSE,
   fish = FALSE
 )
 
@@ -34,7 +33,6 @@ estimateDistributionNetwork(
   cpus = 1,
   verbose = FALSE,
   returnDeps = FALSE,
-  multinomialProposal = FALSE,
   fish = FALSE
 )
 
@@ -70,10 +68,6 @@ starting values for the estimation.}
 This is necessary to run GoF tests.
 Note that this might result in very large objects.}
 
-\item{multinomialProposal}{How should the next possible outcome in the simulation chains
-be sampled? If TRUE, fewer simulation steps are needed, but each simulation
-step takes considerably longer.}
-
 \item{fish}{Logical: display a fish?}
 
 \item{x}{An ans object resulting from an estimation with estimateMobilityNetwork()}
@@ -101,7 +95,6 @@ myResDN <- estimateMobilityNetwork(myDependentVariable,
   parallel = TRUE, cpus = 4,
   verbose = TRUE,
   returnDeps = TRUE,
-  multinomialProposal = FALSE,
   fish = FALSE
 )
 
@@ -114,7 +107,6 @@ myResDN <- estimateMobilityNetwork(myDependentVariable,
   parallel = TRUE, cpus = 4,
   verbose = TRUE,
   returnDeps = TRUE,
-  multinomialProposal = FALSE,
   fish = FALSE
 )
 }

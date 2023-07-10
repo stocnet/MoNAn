@@ -7,8 +7,8 @@
 createAlgorithm(
   dep.var,
   state,
-  cache,
   effects,
+  multinomialProposal = FALSE,
   burnInN1 = NULL,
   iterationsN1 = NULL,
   thinningN1 = NULL,
@@ -30,10 +30,11 @@ createAlgorithm(
 \item{state}{A monan state object that contains all relevant information about
 the outcome in the form of an edgelist, the nodesets, and covariates.}
 
-\item{cache}{A monan cache object created from the same state object that is
-used in the estimation.}
-
 \item{effects}{An effect object that specifies the model.}
+
+\item{multinomialProposal}{How should the next possible outcome in the simulation chains
+be sampled? If TRUE, fewer simulation steps are needed, but each simulation
+step takes considerably longer. Defaults to FALSE.}
 
 \item{burnInN1}{The number of simulation steps before the first draw in Phase 1.
 A recommended value is at least n_Individuals * n_organisations if
@@ -99,13 +100,12 @@ An object of class "algorithm.monan".
 }
 \description{
 Specifies the algorithm used in the estimation based on characteristics
-of the state, the effects, the cache and the dependent variable.
+of the state, the effects and the dependent variable.
 }
 \examples{
 # define algorithm based on state and effects characteristics
-myAlg <- createAlgorithm(myState, myEffects, myCache, myDependentVariable)
+myAlg <- createAlgorithm(myDependentVariable, myState, myEffects, multinomialProposal = FALSE)
 }
 \seealso{
-\code{\link[=createProcessState]{createProcessState()}}, \code{\link[=createEffectsObject]{createEffectsObject()}}, \code{\link[=createWeightedCache]{createWeightedCache()}},
-\code{\link[=estimateMobilityNetwork]{estimateMobilityNetwork()}}
+\code{\link[=createProcessState]{createProcessState()}}, \code{\link[=createEffectsObject]{createEffectsObject()}}, \code{\link[=estimateMobilityNetwork]{estimateMobilityNetwork()}}
 }

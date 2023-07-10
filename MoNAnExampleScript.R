@@ -85,7 +85,7 @@ myStatisticsFrame <- getMultinomialStatistics(myState, myCache, myEffects, myDep
 ##### create algorithm object #####
 
 # define algorithm based on state and effects characteristics
-myAlg <- createAlgorithm(myState, myEffects, myCache, myDependentVariable)
+myAlg <- createAlgorithm(myDependentVariable, myState, myEffects, multinomialProposal = FALSE)
 
 
 ##### estimate mobility network model #####
@@ -99,7 +99,6 @@ myResDN <- estimateMobilityNetwork(myDependentVariable,
   parallel = T, cpus = 4,
   verbose = T,
   returnDeps = T,
-  multinomialProposal = F,
   fish = F
 )
 
@@ -108,7 +107,7 @@ max(abs(myResDN$convergenceStatistics))
 
 # estimate mobility network model again based on previous results to improve convergence
 # with an adjusted algorithm
-myAlg <- createAlgorithm(myState, myEffects, myCache, myDependentVariable,
+myAlg <- createAlgorithm(myState, myEffects, myDependentVariable,
                          thinningN2 = 3000, initialIterationsN2 = 40,
                          burnInN3 = 15000, thinningN3 = 7500)
 
@@ -118,7 +117,6 @@ myResDN <- estimateMobilityNetwork(myDependentVariable,
   parallel = T, cpus = 4,
   verbose = T,
   returnDeps = T,
-  multinomialProposal = F,
   fish = F
 )
 

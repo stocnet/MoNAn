@@ -3,15 +3,15 @@
 
 #' createAlgorithm
 #'
-#' Specifies the algorithm used in later model estimation based on characteristics
+#' Specifies the algorithm used in the estimation based on characteristics
 #' of the state, the effects, the cache and the dependent variable.
 #'
+#' @param dep.var The outcome variable that is modelled.
 #' @param state A monan state object that contains all relevant information about
 #' the outcome in the form of an edgelist, the nodesets, and covariates.
-#' @param effects An effect object that specifies the model.
 #' @param cache A monan cache object created from the same state object that is
 #' used in the estimation.
-#' @param dep.var The outcome variable that is modelled.
+#' @param effects An effect object that specifies the model.
 #' @param burnInN1 The number of simulation steps before the first draw in Phase 1.
 #' A recommended value is at least n_Individuals * n_organisations if
 #' multinomialProposal = F, and at least n_Individuals if multinomialProposal = T
@@ -69,17 +69,17 @@
 #' # define algorithm based on state and effects characteristics
 #' myAlg <- createAlgorithm(myState, myEffects, myCache, myDependentVariable)
 createAlgorithm <-
-  function(state,
-           effects,
+  function(dep.var,
+           state,
            cache,
-           dep.var,
+           effects,
            burnInN1 = NULL,
            iterationsN1 = NULL,
            thinningN1 = NULL,
            gainN1 = 0.1,
            burnInN2 = NULL,
            nsubN2 = 4,
-           initGain = 0.2,
+           initGain = 0.1,
            thinningN2 = NULL,
            initialIterationsN2 = 25,
            iterationsN3 = 500,
@@ -719,7 +719,7 @@ estimateMobilityNetwork <-
            initialParameters = NULL,
            prevAns = NULL,
            parallel = FALSE,
-           cpus = 3,
+           cpus = 1,
            verbose = FALSE,
            returnDeps = FALSE,
            multinomialProposal = FALSE,

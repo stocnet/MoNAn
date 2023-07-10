@@ -4,14 +4,15 @@
 #' createAlgorithm
 #'
 #' Specifies the algorithm used in the estimation based on characteristics
-#' of the state, the effects, the cache and the dependent variable.
+#' of the state, the effects and the dependent variable.
 #'
 #' @param dep.var The outcome variable that is modelled.
 #' @param state A monan state object that contains all relevant information about
 #' the outcome in the form of an edgelist, the nodesets, and covariates.
-#' @param cache A monan cache object created from the same state object that is
-#' used in the estimation.
 #' @param effects An effect object that specifies the model.
+#' @param multinomialProposal How should the next possible outcome in the simulation chains
+#' be sampled? If TRUE, fewer simulation steps are needed, but each simulation
+#' step takes considerably longer. Defaults to FALSE.
 #' @param burnInN1 The number of simulation steps before the first draw in Phase 1.
 #' A recommended value is at least n_Individuals * n_organisations if
 #' multinomialProposal = F, and at least n_Individuals if multinomialProposal = T
@@ -62,17 +63,16 @@
 #' @return An object of class "algorithm.monan".
 #' @export
 #'
-#' @seealso [createProcessState()], [createEffectsObject()], [createWeightedCache()],
-#' [estimateMobilityNetwork()]
+#' @seealso [createProcessState()], [createEffectsObject()], [estimateMobilityNetwork()]
 #'
 #' @examples
 #' # define algorithm based on state and effects characteristics
-#' myAlg <- createAlgorithm(myState, myEffects, myCache, myDependentVariable)
+#' myAlg <- createAlgorithm(myDependentVariable, myState, myEffects, multinomialProposal = FALSE)
 createAlgorithm <-
   function(dep.var,
            state,
-           cache,
            effects,
+           multinomialProposal = FALSE,
            burnInN1 = NULL,
            iterationsN1 = NULL,
            thinningN1 = NULL,
@@ -88,12 +88,17 @@ createAlgorithm <-
            allowLoops = NULL) {
     algorithm <- list()
 
-    if (is.null(burnInN1)) {
-      algorithm[["burnInN1"]] <- as.numeric(c(
-        length(state[["people"]][["ids"]]) * length(state[["organisations"]][["ids"]]),
-        length(state[["people"]][["ids"]])
-      ))
-    } else {
+    algorithm[["multinomialProposal"]] <- as.logical(multinomialProposal)
+
+    if (is.null(burnInN1) & multinomialProposal == FALSE) {
+      algorithm[["burnInN1"]] <- as.numeric(
+        length(state[["people"]][["ids"]]) * length(state[["organisations"]][["ids"]])
+      )
+    }
+    if (is.null(burnInN1) & multinomialProposal == TRUE) {
+      algorithm[["burnInN1"]] <- as.numeric(length(state[["people"]][["ids"]]))
+    }
+    if (!(is.null(burnInN1))) {
       algorithm[["burnInN1"]] <- as.numeric(burnInN1)
     }
 
@@ -103,23 +108,29 @@ createAlgorithm <-
       algorithm[["iterationsN1"]] <- as.numeric(iterationsN1)
     }
 
-    if (is.null(thinningN1)) {
-      algorithm[["thinningN1"]] <- as.numeric(c(
-        length(state[["people"]][["ids"]]) * length(state[["organisations"]][["ids"]]) * 0.5,
-        length(state[["people"]][["ids"]])
-      ))
-    } else {
+    if (is.null(thinningN1) & multinomialProposal == FALSE) {
+      algorithm[["thinningN1"]] <- as.numeric(
+        length(state[["people"]][["ids"]]) * length(state[["organisations"]][["ids"]]) * 0.5
+      )
+    }
+    if (is.null(thinningN1) & multinomialProposal == TRUE) {
+      algorithm[["thinningN1"]] <- as.numeric(length(state[["people"]][["ids"]]))
+    }
+    if (!(is.null(thinningN1))) {
       algorithm[["thinningN1"]] <- as.numeric(thinningN1)
     }
 
     algorithm[["gainN1"]] <- as.numeric(gainN1)
 
-    if (is.null(burnInN2)) {
-      algorithm[["burnInN2"]] <- as.numeric(c(
-        length(state[["people"]][["ids"]]) * length(state[["organisations"]][["ids"]]),
-        length(state[["people"]][["ids"]])
-      ))
-    } else {
+    if (is.null(burnInN2) & multinomialProposal == FALSE) {
+      algorithm[["burnInN2"]] <- as.numeric(
+        length(state[["people"]][["ids"]]) * length(state[["organisations"]][["ids"]])
+      )
+    }
+    if (is.null(burnInN2) & multinomialProposal == TRUE) {
+      algorithm[["burnInN2"]] <- as.numeric(length(state[["people"]][["ids"]]))
+    }
+    if (!(is.null(burnInN2))) {
       algorithm[["burnInN2"]] <- as.numeric(burnInN2)
     }
 
@@ -127,12 +138,15 @@ createAlgorithm <-
 
     algorithm[["initGain"]] <- as.numeric(initGain)
 
-    if (is.null(thinningN2)) {
-      algorithm[["thinningN2"]] <- as.numeric(c(
-        length(state[["people"]][["ids"]]) * length(state[["organisations"]][["ids"]]) * 0.5,
-        length(state[["people"]][["ids"]])
-      ))
-    } else {
+    if (is.null(thinningN2) & multinomialProposal == FALSE) {
+      algorithm[["thinningN2"]] <- as.numeric(
+        length(state[["people"]][["ids"]]) * length(state[["organisations"]][["ids"]]) * 0.5
+      )
+    }
+    if (is.null(thinningN2) & multinomialProposal == TRUE) {
+      algorithm[["thinningN2"]] <- as.numeric(length(state[["people"]][["ids"]]))
+    }
+    if (!(is.null(thinningN2))) {
       algorithm[["thinningN2"]] <- as.numeric(thinningN2)
     }
 
@@ -140,30 +154,36 @@ createAlgorithm <-
 
     algorithm[["iterationsN3"]] <- as.numeric(iterationsN3)
 
-    if (is.null(burnInN3)) {
-      algorithm[["burnInN3"]] <- as.numeric(c(
-        length(state[["people"]][["ids"]]) * length(state[["organisations"]][["ids"]]) * 3,
-        length(state[["people"]][["ids"]]) * 3
-      ))
-    } else {
+    if (is.null(burnInN3) & multinomialProposal == FALSE) {
+      algorithm[["burnInN3"]] <- as.numeric(
+        length(state[["people"]][["ids"]]) * length(state[["organisations"]][["ids"]]) * 3
+      )
+    }
+    if (is.null(burnInN3) & multinomialProposal == TRUE) {
+      algorithm[["burnInN3"]] <- as.numeric(length(state[["people"]][["ids"]]) * 3)
+    }
+    if (!(is.null(burnInN3))) {
       algorithm[["burnInN3"]] <- as.numeric(burnInN3)
     }
 
-    if (is.null(thinningN3)) {
-      algorithm[["thinningN3"]] <- as.numeric(c(
-        length(state[["people"]][["ids"]]) * length(state[["organisations"]][["ids"]]),
-        length(state[["people"]][["ids"]]) * 2
-      ))
-    } else {
+    if (is.null(thinningN3) & multinomialProposal == FALSE) {
+      algorithm[["thinningN3"]] <- as.numeric(
+        length(state[["people"]][["ids"]]) * length(state[["organisations"]][["ids"]])
+      )
+    }
+    if (is.null(thinningN3) & multinomialProposal == TRUE) {
+      algorithm[["thinningN3"]] <- as.numeric(length(state[["people"]][["ids"]]) * 2)
+    }
+    if (!(is.null(thinningN3))) {
       algorithm[["thinningN3"]] <- as.numeric(thinningN3)
     }
 
-    if (is.null(allowLoops)) {
+    if (is.null(allowLoops) & any(state$transfers$data[, 1] == state$transfers$data[, 2])) {
       algorithm[["allowLoops"]] <- TRUE
-      if (all(diag(cache[[dep.var]]$valuedNetwork) == 0)) {
-        algorithm[["allowLoops"]] <- FALSE
-      }
     } else {
+      algorithm[["allowLoops"]] <- FALSE
+    }
+    if (!(is.null(allowLoops))) {
       algorithm[["allowLoops"]] <- as.logical(allowLoops)
     }
 
@@ -668,9 +688,6 @@ createWeightedCache <-
 #' @param returnDeps Logical: should the simulated values of Phase 3 be stored and returned?
 #' This is necessary to run GoF tests.
 #' Note that this might result in very large objects.
-#' @param multinomialProposal How should the next possible outcome in the simulation chains
-#' be sampled? If TRUE, fewer simulation steps are needed, but each simulation
-#' step takes considerably longer.
 #' @param fish Logical: display a fish?
 #'
 #' @aliases estimateDistributionNetwork
@@ -693,7 +710,6 @@ createWeightedCache <-
 #'   parallel = TRUE, cpus = 4,
 #'   verbose = TRUE,
 #'   returnDeps = TRUE,
-#'   multinomialProposal = FALSE,
 #'   fish = FALSE
 #' )
 #'
@@ -706,7 +722,6 @@ createWeightedCache <-
 #'   parallel = TRUE, cpus = 4,
 #'   verbose = TRUE,
 #'   returnDeps = TRUE,
-#'   multinomialProposal = FALSE,
 #'   fish = FALSE
 #' )
 #' }
@@ -722,7 +737,6 @@ estimateMobilityNetwork <-
            cpus = 1,
            verbose = FALSE,
            returnDeps = FALSE,
-           multinomialProposal = FALSE,
            fish = FALSE) {
     # set parameters to default values if not defined explicitly
     if (is.null(initialParameters)) {
@@ -760,20 +774,12 @@ estimateMobilityNetwork <-
           cache,
           effects,
           initialParameters,
-          if (multinomialProposal == FALSE) {
-            algorithm$burnInN1[1]
-          } else {
-            algorithm$burnInN1[2]
-          },
+          algorithm$burnInN1,
           algorithm$iterationsN1,
-          if (multinomialProposal == FALSE) {
-            algorithm$thinningN1[1]
-          } else {
-            algorithm$thinningN1[2]
-          },
+          algorithm$thinningN1,
           algorithm$gainN1,
           algorithm$allowLoops,
-          multinomialProposal = multinomialProposal,
+          algorithm$multinomialProposal,
           verbose
         )
       initialParameters <- resPhase1$estimates
@@ -791,22 +797,14 @@ estimateMobilityNetwork <-
       effects,
       initialParameters,
       sensitivityVector,
-      if (multinomialProposal == FALSE) {
-        algorithm$burnInN2[1]
-      } else {
-        algorithm$burnInN2[2]
-      },
+      algorithm$burnInN2,
       algorithm$nsubN2,
       algorithm$initGain,
-      if (multinomialProposal == FALSE) {
-        algorithm$thinningN2[1]
-      } else {
-        algorithm$thinningN2[2]
-      },
+      algorithm$thinningN2,
       algorithm$initialIterationsN2,
       parallel = parallel,
       cpus = cpus,
-      multinomialProposal = multinomialProposal,
+      algorithm$multinomialProposal,
       algorithm$allowLoops,
       verbose = verbose
     )
@@ -823,22 +821,14 @@ estimateMobilityNetwork <-
       resPhase2,
       observedStatistics,
       algorithm$iterationsN3,
-      if (multinomialProposal == FALSE) {
-        algorithm$burnInN3[1]
-      } else {
-        algorithm$burnInN3[2]
-      },
-      if (multinomialProposal == FALSE) {
-        algorithm$thinningN3[1]
-      } else {
-        algorithm$thinningN3[2]
-      },
+      algorithm$burnInN3,
+      algorithm$thinningN3,
       parallel = parallel,
       cpus = cpus,
       algorithm$allowLoops,
       verbose = verbose,
       returnDeps = returnDeps,
-      multinomialProposal = multinomialProposal,
+      algorithm$multinomialProposal,
       fish = fish
     )
 

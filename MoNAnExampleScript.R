@@ -105,11 +105,12 @@ myResDN <- estimateMobilityNetwork(myDependentVariable,
 # check convergence
 max(abs(myResDN$convergenceStatistics))
 
+myResDN_old <- myResDN
+
 # estimate mobility network model again based on previous results to improve convergence
 # with an adjusted algorithm
-myAlg <- createAlgorithm(myState, myEffects, myDependentVariable,
-                         thinningN2 = 3000, initialIterationsN2 = 40,
-                         burnInN3 = 15000, thinningN3 = 7500)
+myAlg <- createAlgorithm(myDependentVariable, myState, myEffects, multinomialProposal = TRUE, 
+                         initialIterationsN2 = 500, nsubN2 = 1, initGain = 0.02, iterationsN3 = 1000)
 
 myResDN <- estimateMobilityNetwork(myDependentVariable,
   myState, myCache, myEffects, myAlg,

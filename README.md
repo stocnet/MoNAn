@@ -241,8 +241,6 @@ parallel computing).
 myResDN <- estimateMobilityNetwork(myDependentVariable,
   myState, myCache, myEffects, myAlg,
   initialParameters = NULL,
-  # in case a pseudo-likelihood estimation was run, replace with
-  # initialParameters = initEst,
   parallel = T, cpus = 4,
   verbose = T,
   returnDeps = T,
@@ -255,17 +253,11 @@ this can be specified by
 
 ``` r
 myResDN <- estimateMobilityNetwork(myDependentVariable,
-  myState, myCache, myEffects,
+  myState, myCache, myEffects, myAlg,
   initialParameters = initEst,
-  burnInN1 = 1500, iterationsN1 = 50, thinningN1 = 750, gainN1 = 0.1,
-  burnInN2 = 7500, nsubN2 = 4, initGain = 0.2, thinningN2 = 1500,
-  initialIterationsN2 = 25,
-  iterationsN3 = 500, burnInN3 = 7500, thinningN3 = 3750,
   parallel = T, cpus = 4,
-  allowLoops = T,
   verbose = T,
   returnDeps = T,
-  multinomialProposal = F,
   fish = F
 )
 ```
@@ -279,22 +271,21 @@ max(abs(myResDN$convergenceStatistics))
 #> [1] 0.04541426
 ```
 
-If convergence is too high, re-run estimation with previous results as
-starting values and check convergence:
+If convergence is too high, update algorithm, re-run estimation with
+previous results as starting values and check convergence:
 
 ``` r
+# estimate mobility network model again based on previous results to improve convergence
+# with an adjusted algorithm
+myAlg <- createAlgorithm(myDependentVariable, myState, myEffects, multinomialProposal = TRUE, 
+                         initialIterationsN2 = 500, nsubN2 = 1, initGain = 0.02, iterationsN3 = 1000)
+
 myResDN <- estimateMobilityNetwork(myDependentVariable,
-  myState, myCache, myEffects,
+  myState, myCache, myEffects, myAlg,
   prevAns = myResDN,
-  burnInN1 = 1500, iterationsN1 = 50, thinningN1 = 750, gainN1 = 0.1,
-  burnInN2 = 7500, nsubN2 = 4, initGain = 0.2, thinningN2 = 3000,
-  initialIterationsN2 = 40,
-  iterationsN3 = 500, burnInN3 = 15000, thinningN3 = 7500,
   parallel = T, cpus = 4,
-  allowLoops = T,
   verbose = T,
   returnDeps = T,
-  multinomialProposal = F,
   fish = F
 )
 ```

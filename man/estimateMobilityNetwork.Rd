@@ -49,6 +49,8 @@ used in the estimation}
 
 \item{effects}{An effect object that specifies the model.}
 
+\item{algorithm}{An object that specifies the algorithm used in the estimation.}
+
 \item{initialParameters}{Starting values for the parameters. Using starting
 values e.g. from a multinomial logit model (see getMultinomialStatistics())
 increases the chances of model convergence in the first run of the estimation

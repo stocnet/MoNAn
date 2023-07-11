@@ -672,6 +672,7 @@ createWeightedCache <-
 #' @param cache A monan cache object created from the same state object that is
 #' used in the estimation
 #' @param effects An effect object that specifies the model.
+#' @param algorithm An object that specifies the algorithm used in the estimation.
 #' @param initialParameters Starting values for the parameters. Using starting
 #' values e.g. from a multinomial logit model (see getMultinomialStatistics())
 #' increases the chances of model convergence in the first run of the estimation

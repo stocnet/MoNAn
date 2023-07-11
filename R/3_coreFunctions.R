@@ -17,24 +17,19 @@
 #' A recommended value is at least n_Individuals * n_organisations if
 #' multinomialProposal = F, and at least n_Individuals if multinomialProposal = T
 #' which is set as default.
-#' @param iterationsN1 The number of draws taken in Phase 1.
-#' A recommended value is at least 4 * n_effects which is set as default.
-#' If the value is too low, there will be an error in Phase 1.
 #' @param thinningN1 The number of simulation steps between two draws in Phase 1.
 #' A recommended value is at least 0.5 * n_Individuals * n_organisations if
 #' multinomialProposal = F, and at least n_Individuals if multinomialProposal = T
 #' which is set as default.
+#' @param iterationsN1 The number of draws taken in Phase 1.
+#' A recommended value is at least 4 * n_effects which is set as default.
+#' If the value is too low, there will be an error in Phase 1.
 #' @param gainN1 The size of the updating step after Phase 1. A conservative
 #' value is 0, values higher than 0.25 are courageous. Defaults to 0.1.
 #' @param burnInN2 The number of simulation steps before the first draw in Phase 1.
 #' A recommended value is at least n_Individuals * n_organisations if
 #' multinomialProposal = F, and at least n_Individuals if multinomialProposal = T
 #' which is set as default.
-#' @param nsubN2 Number of subphases in Phase 2. In case this is the first
-#' estimation, 4 subphases are recommended and is set as default. If convergence
-#' in a previous estimation was close, then 1-2 subphases should be enough.
-#' @param initGain The magnitude of parameter updates in the first subphase of
-#' Phase 2. Values of around 0.2 (default) are recommended.
 #' @param thinningN2 The number of simulation steps between two draws in Phase 2.
 #' A recommended value is at least 0.5 * n_Individuals * n_organisations if
 #' multinomialProposal = F, and at least n_Individuals if multinomialProposal = T
@@ -44,10 +39,11 @@
 #' Note that in later subphases, the number of iterations increases.
 #' If this is a further estimation to improve convergence, higher values (100+)
 #' are recommended.
-#' @param iterationsN3 Number of draws in Phase 3. Recommended are at the very
-#' least 500 (default).
-#' In case this value is too low, the outcome might erroneously indicate a lack
-#' of convergence.
+#' @param nsubN2 Number of subphases in Phase 2. In case this is the first
+#' estimation, 4 subphases are recommended and is set as default. If convergence
+#' in a previous estimation was close, then 1-2 subphases should be enough.
+#' @param initGain The magnitude of parameter updates in the first subphase of
+#' Phase 2. Values of around 0.2 (default) are recommended.
 #' @param burnInN3 The number of simulation steps before the first draw in Phase 3.
 #' A recommended value is at least 3 * n_Individuals * n_organisations if
 #' multinomialProposal = F, and at least 3 * n_Individuals if multinomialProposal = T
@@ -56,6 +52,10 @@
 #' A recommended value is at least n_Individuals * n_organisations if
 #' multinomialProposal = F, and at least 2 * n_Individuals if multinomialProposal = T
 #' which is set as default.
+#' In case this value is too low, the outcome might erroneously indicate a lack
+#' of convergence.
+#' @param iterationsN3 Number of draws in Phase 3. Recommended are at the very
+#' least 500 (default).
 #' In case this value is too low, the outcome might erroneously indicate a lack
 #' of convergence.
 #' @param allowLoops Logical: can individuals/resources stay in their origin?
@@ -74,111 +74,108 @@ createAlgorithm <-
            effects,
            multinomialProposal = FALSE,
            burnInN1 = NULL,
-           iterationsN1 = NULL,
            thinningN1 = NULL,
+           iterationsN1 = NULL,
            gainN1 = 0.1,
            burnInN2 = NULL,
-           nsubN2 = 4,
-           initGain = 0.1,
            thinningN2 = NULL,
-           initialIterationsN2 = 25,
-           iterationsN3 = 500,
+           initialIterationsN2 = 50,
+           nsubN2 = 4,
+           initGain = 0.2,
            burnInN3 = NULL,
            thinningN3 = NULL,
+           iterationsN3 = 500,
            allowLoops = NULL) {
     algorithm <- list()
-
+    
+    nameNodeSet1 <- state[[dep.var]]$nodeSet[1]
+    nameNodeSet2 <- state[[dep.var]]$nodeSet[3]
+    
     algorithm[["multinomialProposal"]] <- as.logical(multinomialProposal)
 
     if (is.null(burnInN1) & multinomialProposal == FALSE) {
-      algorithm[["burnInN1"]] <- as.numeric(
-        length(state[["people"]][["ids"]]) * length(state[["organisations"]][["ids"]])
-      )
+      algorithm[["burnInN1"]] <- 
+        length(state[[nameNodeSet1]][["ids"]]) * length(state[[nameNodeSet2]][["ids"]])
     }
     if (is.null(burnInN1) & multinomialProposal == TRUE) {
-      algorithm[["burnInN1"]] <- as.numeric(length(state[["people"]][["ids"]]))
+      algorithm[["burnInN1"]] <- length(state[[nameNodeSet2]][["ids"]])
     }
     if (!(is.null(burnInN1))) {
-      algorithm[["burnInN1"]] <- as.numeric(burnInN1)
+      algorithm[["burnInN1"]] <- burnInN1
     }
 
     if (is.null(iterationsN1)) {
-      algorithm[["iterationsN1"]] <- as.numeric(length(effects[["effectFormulas"]]) * 4)
+      algorithm[["iterationsN1"]] <- length(effects[["effectFormulas"]]) * 4
     } else {
-      algorithm[["iterationsN1"]] <- as.numeric(iterationsN1)
+      algorithm[["iterationsN1"]] <- iterationsN1
     }
 
     if (is.null(thinningN1) & multinomialProposal == FALSE) {
-      algorithm[["thinningN1"]] <- as.numeric(
-        length(state[["people"]][["ids"]]) * length(state[["organisations"]][["ids"]]) * 0.5
-      )
+      algorithm[["thinningN1"]] <- 
+        length(state[[nameNodeSet2]][["ids"]]) * length(state[[nameNodeSet1]][["ids"]]) * 0.5
     }
     if (is.null(thinningN1) & multinomialProposal == TRUE) {
-      algorithm[["thinningN1"]] <- as.numeric(length(state[["people"]][["ids"]]))
+      algorithm[["thinningN1"]] <- length(state[[nameNodeSet2]][["ids"]])
     }
     if (!(is.null(thinningN1))) {
-      algorithm[["thinningN1"]] <- as.numeric(thinningN1)
+      algorithm[["thinningN1"]] <- thinningN1
     }
 
-    algorithm[["gainN1"]] <- as.numeric(gainN1)
+    algorithm[["gainN1"]] <- gainN1
 
     if (is.null(burnInN2) & multinomialProposal == FALSE) {
-      algorithm[["burnInN2"]] <- as.numeric(
-        length(state[["people"]][["ids"]]) * length(state[["organisations"]][["ids"]])
-      )
+      algorithm[["burnInN2"]] <- 
+        length(state[[nameNodeSet2]][["ids"]]) * length(state[[nameNodeSet1]][["ids"]])
     }
     if (is.null(burnInN2) & multinomialProposal == TRUE) {
-      algorithm[["burnInN2"]] <- as.numeric(length(state[["people"]][["ids"]]))
+      algorithm[["burnInN2"]] <- length(state[[nameNodeSet2]][["ids"]])
     }
     if (!(is.null(burnInN2))) {
-      algorithm[["burnInN2"]] <- as.numeric(burnInN2)
+      algorithm[["burnInN2"]] <- burnInN2
     }
 
-    algorithm[["nsubN2"]] <- as.numeric(nsubN2)
+    algorithm[["nsubN2"]] <- nsubN2
 
-    algorithm[["initGain"]] <- as.numeric(initGain)
+    algorithm[["initGain"]] <- initGain
 
     if (is.null(thinningN2) & multinomialProposal == FALSE) {
-      algorithm[["thinningN2"]] <- as.numeric(
-        length(state[["people"]][["ids"]]) * length(state[["organisations"]][["ids"]]) * 0.5
-      )
+      algorithm[["thinningN2"]] <- 
+        length(state[[nameNodeSet2]][["ids"]]) * length(state[[nameNodeSet1]][["ids"]]) * 0.5
     }
     if (is.null(thinningN2) & multinomialProposal == TRUE) {
-      algorithm[["thinningN2"]] <- as.numeric(length(state[["people"]][["ids"]]))
+      algorithm[["thinningN2"]] <- length(state[[nameNodeSet2]][["ids"]])
     }
     if (!(is.null(thinningN2))) {
-      algorithm[["thinningN2"]] <- as.numeric(thinningN2)
+      algorithm[["thinningN2"]] <- thinningN2
     }
 
-    algorithm[["initialIterationsN2"]] <- as.numeric(initialIterationsN2)
+    algorithm[["initialIterationsN2"]] <- initialIterationsN2
 
-    algorithm[["iterationsN3"]] <- as.numeric(iterationsN3)
+    algorithm[["iterationsN3"]] <- iterationsN3
 
     if (is.null(burnInN3) & multinomialProposal == FALSE) {
-      algorithm[["burnInN3"]] <- as.numeric(
-        length(state[["people"]][["ids"]]) * length(state[["organisations"]][["ids"]]) * 3
-      )
+      algorithm[["burnInN3"]] <- 
+        length(state[[nameNodeSet2]][["ids"]]) * length(state[[nameNodeSet1]][["ids"]]) * 3
     }
     if (is.null(burnInN3) & multinomialProposal == TRUE) {
-      algorithm[["burnInN3"]] <- as.numeric(length(state[["people"]][["ids"]]) * 3)
+      algorithm[["burnInN3"]] <- length(state[[nameNodeSet2]][["ids"]]) * 3
     }
     if (!(is.null(burnInN3))) {
-      algorithm[["burnInN3"]] <- as.numeric(burnInN3)
+      algorithm[["burnInN3"]] <- burnInN3
     }
 
     if (is.null(thinningN3) & multinomialProposal == FALSE) {
-      algorithm[["thinningN3"]] <- as.numeric(
-        length(state[["people"]][["ids"]]) * length(state[["organisations"]][["ids"]])
-      )
+      algorithm[["thinningN3"]] <- 
+        length(state[[nameNodeSet2]][["ids"]]) * length(state[[nameNodeSet1]][["ids"]])
     }
     if (is.null(thinningN3) & multinomialProposal == TRUE) {
-      algorithm[["thinningN3"]] <- as.numeric(length(state[["people"]][["ids"]]) * 2)
+      algorithm[["thinningN3"]] <- length(state[[nameNodeSet2]][["ids"]]) * 2
     }
     if (!(is.null(thinningN3))) {
-      algorithm[["thinningN3"]] <- as.numeric(thinningN3)
+      algorithm[["thinningN3"]] <- thinningN3
     }
 
-    if (is.null(allowLoops) & any(state$transfers$data[, 1] == state$transfers$data[, 2])) {
+    if (is.null(allowLoops) & any(state[[dep.var]]$data[, 1] == state[[dep.var]]$data[, 2])) {
       algorithm[["allowLoops"]] <- TRUE
     } else {
       algorithm[["allowLoops"]] <- FALSE
@@ -738,6 +735,23 @@ estimateMobilityNetwork <-
            verbose = FALSE,
            returnDeps = FALSE,
            fish = FALSE) {
+    # extract parameters from algorithm object
+    
+    multinomialProposal <- algorithm$multinomialProposal
+    burnInN1 <- algorithm$burnInN1
+    iterationsN1 <- algorithm$iterationsN1
+    thinningN1 <- algorithm$thinningN1
+    gainN1 <- algorithm$gainN1
+    burnInN2 <- algorithm$burnInN2
+    nsubN2 <- algorithm$nsubN2
+    initGain <- algorithm$initGain
+    thinningN2 <- algorithm$thinningN2
+    initialIterationsN2 <- algorithm$initialIterationsN2
+    iterationsN3 <- algorithm$iterationsN3
+    burnInN3 <- algorithm$burnInN3
+    thinningN3 <- algorithm$thinningN3
+    allowLoops <- algorithm$allowLoops
+
     # set parameters to default values if not defined explicitly
     if (is.null(initialParameters)) {
       initialParameters <- rep(0, length(effects$name))
@@ -774,12 +788,12 @@ estimateMobilityNetwork <-
           cache,
           effects,
           initialParameters,
-          algorithm$burnInN1,
-          algorithm$iterationsN1,
-          algorithm$thinningN1,
-          algorithm$gainN1,
-          algorithm$allowLoops,
-          algorithm$multinomialProposal,
+          burnInN1,
+          iterationsN1,
+          thinningN1,
+          gainN1,
+          multinomialProposal,
+          allowLoops,
           verbose
         )
       initialParameters <- resPhase1$estimates
@@ -797,15 +811,15 @@ estimateMobilityNetwork <-
       effects,
       initialParameters,
       sensitivityVector,
-      algorithm$burnInN2,
-      algorithm$nsubN2,
-      algorithm$initGain,
-      algorithm$thinningN2,
-      algorithm$initialIterationsN2,
+      burnInN2,
+      nsubN2,
+      initGain,
+      thinningN2,
+      initialIterationsN2,
       parallel = parallel,
       cpus = cpus,
-      algorithm$multinomialProposal,
-      algorithm$allowLoops,
+      multinomialProposal,
+      allowLoops,
       verbose = verbose
     )
 

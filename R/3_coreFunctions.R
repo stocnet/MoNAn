@@ -701,27 +701,42 @@ createWeightedCache <-
 #'
 #' @examples
 #' \dontrun{
-#' # estimate mobility network
+# estimate mobility network model
 #' myResDN <- estimateMobilityNetwork(myDependentVariable,
-#'   myState, myCache, myEffects, myAlg,
-#'   initialParameters = NULL,
-#'   parallel = TRUE, cpus = 4,
-#'   verbose = TRUE,
-#'   returnDeps = TRUE,
-#'   fish = FALSE
+#'                                    myState, myCache, myEffects, myAlg,
+#'                                    initialParameters = NULL,
+#'                                    # in case a pseudo-likelihood estimation was run, replace with
+#'                                    # initialParameters = initEst,
+#'                                    parallel = T, cpus = 4,
+#'                                    verbose = T,
+#'                                    returnDeps = T,
+#'                                    fish = F
 #' )
-#'
+#' 
+#' # check convergence
+#' max(abs(myResDN$convergenceStatistics))
+#' 
+#' myResDN_old <- myResDN
+#' 
+#' # estimate mobility network model again based on previous results to improve convergence
+#' # with an adjusted algorithm
+#' myAlg <- createAlgorithm(myDependentVariable, myState, myEffects, multinomialProposal = TRUE, 
+#'                          initialIterationsN2 = 500, nsubN2 = 1, initGain = 0.02, iterationsN3 = 1000)
+#' 
+#' myResDN <- estimateMobilityNetwork(myDependentVariable,
+#'                                    myState, myCache, myEffects, myAlg,
+#'                                    prevAns = myResDN,
+#'                                    parallel = T, cpus = 4,
+#'                                    verbose = T,
+#'                                    returnDeps = T,
+#'                                    fish = F
+#' )
+#' 
+#' # check convergence
+#' max(abs(myResDN$convergenceStatistics))
+#' 
+#' # view results
 #' myResDN
-#'
-#' # estimate mobility network again based on previous results to improve convergence
-#' myResDN <- estimateMobilityNetwork(myDependentVariable,
-#'   myState, myCache, myEffects, myAlg,
-#'   prevAns = myResDN,
-#'   parallel = TRUE, cpus = 4,
-#'   verbose = TRUE,
-#'   returnDeps = TRUE,
-#'   fish = FALSE
-#' )
 #' }
 estimateMobilityNetwork <-
   function(dep.var,

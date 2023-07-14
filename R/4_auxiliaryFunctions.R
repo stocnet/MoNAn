@@ -369,7 +369,7 @@ print.result.monan <- function(x, covMat = FALSE, ...) {
 #'     list("resource_covar_to_node_covar", attribute.index = "region", 
 #'           resource.attribute.index = "sex"),
 #'     list("loops_resource_covar", resource.attribute.index = "sex"),
-#'     list("min_transitivity")
+#'     list("transitivity_min")
 #'   )
 #' )
 #' 

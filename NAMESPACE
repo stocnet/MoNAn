@@ -27,11 +27,16 @@ export(
   concentration_sq, concentration_GW, concentration_GW_dyad_covar_bin,
   concentration_exponent, concentration_sigmoid, concentration_sigmoid_dyad_covar,
   
+  # effect functions: reciprocity
+  reciprocity_basic,
+  reciprocity_min, reciprocity_min_resource_covar,
+  reciprocity_GW, reciprocity_GW_dyad_covar_bin,
+  
   
   crowding_out_by_resource_inflow, 
   crowding_out_prop_covar_bin,  
   in_proportion_exponent_covar_bin, in_ties_loops, in_weights_exponent, 
-  in_weights_exponent_covar,  min_reciprocity, min_reciprocity_resource_covar, min_transitivity,
+  in_weights_exponent_covar, min_transitivity,
   netflow_transitivity, present_relations,  staying_by_prop_bin_inflow, 
   staying_by_resource_inflow, 
   

@@ -217,3 +217,58 @@ concentration_sigmoid <-
     return(v)
   }
 
+#' concentration_sigmoid_dyad_covar
+#' 
+#'
+#' @param dep.var 
+#' @param attribute.index 
+#' @param state 
+#' @param cache 
+#' @param i 
+#' @param j 
+#' @param edge 
+#' @param update 
+#' @param getTargetContribution 
+#' @param alpha 
+#'
+#' 
+#' @keywords internal
+concentration_sigmoid_dyad_covar <-
+  function(dep.var = 1,
+           attribute.index,
+           state,
+           cache,
+           i,
+           j,
+           edge,
+           update,
+           getTargetContribution = F,
+           alpha) {
+    if (i == j) {
+      return(0)
+    }
+    if (alpha <= 0) {
+      stop("Alpha parameter in sigmoid tie weights function must be positive")
+    }
+    
+    if (getTargetContribution) {
+      nResources <- cache[[dep.var]]$valuedNetwork[i, j]
+      v <- 0
+      for (zz in 0:nResources) {
+        v <- v + zz / (zz + alpha)
+      }
+      return(v * state[[attribute.index]]$data[i, j])
+    }
+    
+    value.old <- cache[[dep.var]]$valuedNetwork[i, j]
+    value.new <- cache[[dep.var]]$valuedNetwork[i, j] + update
+    if (update > 0) {
+      v <- value.new / (value.new + alpha)
+    }
+    if (update < 0) {
+      v <- -value.old / (value.old + alpha)
+    }
+    
+    return(v * state[[attribute.index]]$data[i, j])
+  }
+

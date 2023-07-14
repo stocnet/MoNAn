@@ -363,7 +363,7 @@ print.result.monan <- function(x, covMat = FALSE, ...) {
 #' myEffects2 <- createEffectsObject(
 #'   list(
 #'     list("loops"),
-#'     list("min_reciprocity"),
+#'     list("reciprocity_min"),
 #'     list("dyadic_covariate", attribute.index = "sameRegion"),
 #'     list("alter_covariate", attribute.index = "size"),
 #'     list("resource_covar_to_node_covar", attribute.index = "region", 

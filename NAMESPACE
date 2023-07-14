@@ -24,7 +24,7 @@ export(
   loops_GW_prop,
   
   # effect functions: concentration
-  concentration_sq, concentration_GW, concentration_GW_dyad_covar_bin,
+  concentration_basic, concentration_GW, concentration_GW_dyad_covar_bin,
   concentration_exponent, concentration_sigmoid, concentration_sigmoid_dyad_covar,
   
   # effect functions: reciprocity

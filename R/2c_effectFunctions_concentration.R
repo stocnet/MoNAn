@@ -1,6 +1,6 @@
 ########## effectFunctions: effects concerning concentration (Arc/tie dependence)
 
-#' concentration_sq
+#' concentration_basic
 #'
 #' @param dep.var 
 #' @param state 
@@ -12,7 +12,7 @@
 #' @param getTargetContribution 
 #'
 #' @keywords internal
-concentration_sq <- function(dep.var = 1, state, cache, i, j, edge, update, getTargetContribution = F){
+concentration_basic <- function(dep.var = 1, state, cache, i, j, edge, update, getTargetContribution = F){
   if(getTargetContribution){
     return( (cache[[dep.var]]$valuedNetwork[i, j])^2 )
   } else {

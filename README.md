@@ -172,7 +172,7 @@ the additional parameters it needs.
 myEffects <- createEffectsObject(
   list(
     list("loops"),
-    list("min_reciprocity"),
+    list("reciprocity_min"),
     list("dyadic_covariate", attribute.index = "sameRegion"),
     list("alter_covariate", attribute.index = "size"),
     list("resource_covar_to_node_covar", attribute.index = "region", resource.attribute.index = "sex"),
@@ -359,7 +359,7 @@ will result in significant estimates.
 ``` r
 myEffects2 <- createEffectsObject(
   list(
-    list("min_transitivity")
+    list("transitivity_min")
   )
 )
 
@@ -367,7 +367,7 @@ test_ME.2 <- scoreTest(myDependentVariable, myResDN, myEffects2)
 test_ME.2
 #> Results
 #>            Effects pValuesParametric pValuesNonParametric
-#> 1 min_transitivity      2.428713e-09                    0
+#> 1 transitivity_min      2.428713e-09                    0
 #> 
 #>  Parametric p-values: small = more significant 
 #>  Non-parametric p-values: further away from 0.5 = more significant

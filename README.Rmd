@@ -144,7 +144,7 @@ The predictors in the model are called "Effects" and they are defined in a list.
 myEffects <- createEffectsObject(
   list(
     list("loops"),
-    list("min_reciprocity"),
+    list("reciprocity_min"),
     list("dyadic_covariate", attribute.index = "sameRegion"),
     list("alter_covariate", attribute.index = "size"),
     list("resource_covar_to_node_covar", attribute.index = "region", resource.attribute.index = "sex"),
@@ -284,7 +284,7 @@ Based on an estimated model, a score-type test is available that shows whether s
 ```{r}
 myEffects2 <- createEffectsObject(
   list(
-    list("min_transitivity")
+    list("transitivity_min")
   )
 )
 

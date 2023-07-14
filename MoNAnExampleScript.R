@@ -45,7 +45,7 @@ myCache <- createWeightedCache(myState, myDependentVariable, resourceCovariates 
 myEffects <- createEffectsObject(
   list(
     list("loops"),
-    list("min_reciprocity"),
+    list("reciprocity_min"),
     list("dyadic_covariate", attribute.index = "sameRegion"),
     list("alter_covariate", attribute.index = "size"),
     list("resource_covar_to_node_covar",
@@ -141,12 +141,12 @@ plot(traces)
 myEffects2 <- createEffectsObject(
   list(
     list("loops"),
-    list("min_reciprocity"),
+    list("reciprocity_min"),
     list("dyadic_covariate", attribute.index = "sameRegion"),
     list("alter_covariate", attribute.index = "size"),
     list("resource_covar_to_node_covar", attribute.index = "region", resource.attribute.index = "sex"),
     list("loops_resource_covar", resource.attribute.index = "sex"),
-    list("min_transitivity")
+    list("transitivity_min")
   )
 )
 

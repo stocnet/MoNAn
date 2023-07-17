@@ -268,7 +268,7 @@ estimates), another run is necessary.
 
 ``` r
 max(abs(myResDN$convergenceStatistics))
-#> [1] 0.04541426
+#> [1] 0.06683086
 ```
 
 If convergence is too high, update algorithm, re-run estimation with
@@ -293,7 +293,7 @@ myResDN <- estimateMobilityNetwork(myDependentVariable,
 ``` r
 # check convergence
 max(abs(myResDN$convergenceStatistics))
-#> [1] 0.04541426
+#> [1] 0.06683086
 ```
 
 In case convergence is still poor, updating the algorithm might be
@@ -305,20 +305,13 @@ convergence ratio. All values in the final column should be below 0.1
 ``` r
 myResDN
 #> Results
-#>                                   Effects   Estimates StandardErrors
-#> 1                                   loops  2.59047738     0.18065574
-#> 2                         min_reciprocity  0.81390378     0.19389546
-#> 3             dyadic_covariate sameRegion  1.68755130     0.11189750
-#> 4                    alter_covariate size  0.03616745     0.02483439
-#> 5 resource_covar_to_node_covar region sex -0.64794362     0.16764479
-#> 6                loops_resource_covar sex -0.36810363     0.21342903
-#>   Convergence
-#> 1 -0.03726664
-#> 2  0.02279557
-#> 3  0.04522141
-#> 4  0.02760621
-#> 5 -0.04541426
-#> 6 -0.03304023
+#>                                   Effects  Estimates StandardErrors Convergence
+#> 1                                   loops  2.5760497     0.18642343  0.04545977
+#> 2                         reciprocity_min  0.8092251     0.17865099 -0.06683086
+#> 3             dyadic_covariate sameRegion  1.6825812     0.11110475 -0.06305877
+#> 4                    alter_covariate size  0.0372752     0.02508984 -0.03625389
+#> 5 resource_covar_to_node_covar region sex -0.6416385     0.17817701 -0.01628262
+#> 6                loops_resource_covar sex -0.3528518     0.22986116  0.04615207
 ```
 
 ## Diagnostics of the estimated model
@@ -332,7 +325,7 @@ problematic and indicate that a higher thinning is needed.
 
 ``` r
 autoCorrelationTest(myDependentVariable, myResDN)
-#> [1] 0.1027527
+#> [1] 0.09530652
 ```
 
 The output of extractTraces indicates the correlation of statistics
@@ -367,7 +360,7 @@ test_ME.2 <- scoreTest(myDependentVariable, myResDN, myEffects2)
 test_ME.2
 #> Results
 #>            Effects pValuesParametric pValuesNonParametric
-#> 1 transitivity_min      2.428713e-09                    0
+#> 1 transitivity_min      2.098177e-08                    0
 #> 
 #>  Parametric p-values: small = more significant 
 #>  Non-parametric p-values: further away from 0.5 = more significant

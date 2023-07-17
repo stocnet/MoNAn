@@ -26,7 +26,7 @@ tables as weighted networks with an application to faculty hiring networks. Soci
 
 [Link to the study in Social Networks](https://www.sciencedirect.com/science/article/pii/S0378873321000654).
 
-[Pre-print with minor differences to the journal version](https://osf.io/preprints/socarxiv/n86rx/).
+[Pre-print with minor differences to the journal version](https://osf.io/preprints/socarxiv/n86rx/). 
 
 The model allows for the analysis of emergent structures (known from network analysis) in mobility tables, alongside exogenous predictors. It combined features from classical log-linear models for mobility tables and Exponential Random Graph Models (ERGMs). In the absence of emergent structures, the models reduces to the former, when ignoring characteristics of individuals, it is an ERGM for weighted networks.
 

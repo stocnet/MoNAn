@@ -40,14 +40,7 @@ google).
 # Installation
 
 The package is under development. You can install the current
-development version of MoNAn from GitHub with:
-
-``` r
-# install.packages("devtools")
-devtools::install_github("perblock/MoNAn")
-```
-
-or using:
+development version of MoNAn from GitHub using:
 
 ``` r
 # install.packages("remotes")

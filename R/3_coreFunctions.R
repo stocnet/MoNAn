@@ -209,7 +209,7 @@ createAlgorithm <-
 #' # create an object of class edgelist.monan
 #' transfers <- createEdgelist(mobilityEdgelist, c("organisations", "organisations", "people"))
 createEdgelist <-
-  function(el, nodeSet = c("actors", "actors", "edges")) {
+  function(el, nodeSet = c("location", "location", "individuals")) {
     if (dim(el)[2] != 2) {
       stop("Two columns expected in edge list creation.")
     }

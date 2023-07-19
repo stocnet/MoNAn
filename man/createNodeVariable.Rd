@@ -30,7 +30,7 @@ A monan node variable object
 }
 \description{
 Assigns an covariate to one nodeset, i.e., an exogenous characteristic of mobile
-individuals/resources or organisations.
+individuals/resources or locations.
 }
 \examples{
 # create an object of class nodeVar.monan

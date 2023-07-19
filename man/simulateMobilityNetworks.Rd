@@ -50,10 +50,10 @@ in the simulations.}
 \item{burnin}{The number of simulation steps that are taken before the first draw of a
 network is taken. A number too small will mean the first draw is influenced
 by the initially specified network. A recommended value for the lower bound is 3 * n_Individuals *
-n_organisations.}
+n_locations.}
 
 \item{thinning}{The number of simulation steps that are taken between two draws of a
-network. A recommended value for the lower bound is n_Individuals * n_organisations.}
+network. A recommended value for the lower bound is n_Individuals * n_locations.}
 
 \item{nSimulations}{The number of mobility networks to be simulated.}
 }

@@ -19,13 +19,13 @@ createNetwork(
 \item{isBipartite}{Currently not in use, defaults to FALSE.}
 
 \item{nodeSet}{Which nodeset are the nodes of the network. Usually this will
-be the organisations in the data.}
+be the locations in the data.}
 }
 \value{
 a monan network object.
 }
 \description{
-Defines a network between organisations, generally to be used as a predictor in the model.
+Defines a network between locations, generally to be used as a predictor in the model.
 NOTE: The outcome variable of the model is not defined as a network, but as an edgelist!
 }
 \examples{

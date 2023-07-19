@@ -12,7 +12,7 @@ The first column indicates the origin of a person/resource, the second row the d
 Each row is one observation.}
 
 \item{nodeSet}{The nodesets of the edgelists. For edgelists, this is a vector with three
-entries describing between what organisations who is mobile, i.e., c(location, location, individuals/resources).}
+entries describing between what locations who is mobile, i.e., c(location, location, individuals/resources).}
 }
 \value{
 an object of type edgelist.monan

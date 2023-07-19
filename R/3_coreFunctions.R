@@ -14,11 +14,11 @@
 #' be sampled? If TRUE, fewer simulation steps are needed, but each simulation
 #' step takes considerably longer. Defaults to FALSE.
 #' @param burnInN1 The number of simulation steps before the first draw in Phase 1.
-#' A recommended value is at least n_Individuals * n_organisations if
+#' A recommended value is at least n_Individuals * n_locations if
 #' multinomialProposal = F, and at least n_Individuals if multinomialProposal = T
 #' which is set as default.
 #' @param thinningN1 The number of simulation steps between two draws in Phase 1.
-#' A recommended value is at least 0.5 * n_Individuals * n_organisations if
+#' A recommended value is at least 0.5 * n_Individuals * n_locations if
 #' multinomialProposal = F, and at least n_Individuals if multinomialProposal = T
 #' which is set as default.
 #' @param iterationsN1 The number of draws taken in Phase 1.
@@ -27,11 +27,11 @@
 #' @param gainN1 The size of the updating step after Phase 1. A conservative
 #' value is 0, values higher than 0.25 are courageous. Defaults to 0.1.
 #' @param burnInN2 The number of simulation steps before the first draw in Phase 1.
-#' A recommended value is at least n_Individuals * n_organisations if
+#' A recommended value is at least n_Individuals * n_locations if
 #' multinomialProposal = F, and at least n_Individuals if multinomialProposal = T
 #' which is set as default.
 #' @param thinningN2 The number of simulation steps between two draws in Phase 2.
-#' A recommended value is at least 0.5 * n_Individuals * n_organisations if
+#' A recommended value is at least 0.5 * n_Individuals * n_locations if
 #' multinomialProposal = F, and at least n_Individuals if multinomialProposal = T
 #' which is set as default.
 #' @param initialIterationsN2 The number of draws taken in subpphase 1 of Phase 2.
@@ -45,11 +45,11 @@
 #' @param initGain The magnitude of parameter updates in the first subphase of
 #' Phase 2. Values of around 0.2 (default) are recommended.
 #' @param burnInN3 The number of simulation steps before the first draw in Phase 3.
-#' A recommended value is at least 3 * n_Individuals * n_organisations if
+#' A recommended value is at least 3 * n_Individuals * n_locations if
 #' multinomialProposal = F, and at least 3 * n_Individuals if multinomialProposal = T
 #' which is set as default.
 #' @param thinningN3 The number of simulation steps between two draws in Phase 3.
-#' A recommended value is at least n_Individuals * n_organisations if
+#' A recommended value is at least n_Individuals * n_locations if
 #' multinomialProposal = F, and at least 2 * n_Individuals if multinomialProposal = T
 #' which is set as default.
 #' In case this value is too low, the outcome might erroneously indicate a lack
@@ -198,7 +198,7 @@ createAlgorithm <-
 #' The first column indicates the origin of a person/resource, the second row the destination.
 #' Each row is one observation.
 #' @param nodeSet The nodesets of the edgelists. For edgelists, this is a vector with three
-#' entries describing between what organisations who is mobile, i.e., c(location, location, individuals/resources).
+#' entries describing between what locations who is mobile, i.e., c(location, location, individuals/resources).
 #'
 #' @return an object of type edgelist.monan
 #' @export
@@ -313,14 +313,14 @@ createEffectsObject <-
 
 #' createNetwork
 #'
-#' Defines a network between organisations, generally to be used as a predictor in the model.
+#' Defines a network between locations, generally to be used as a predictor in the model.
 #' NOTE: The outcome variable of the model is not defined as a network, but as an edgelist!
 #'
 #' @param m A square matrix containing the network data.
 #' @param isSymmetric Currently not in use, defaults to FALSE.
 #' @param isBipartite Currently not in use, defaults to FALSE.
 #' @param nodeSet Which nodeset are the nodes of the network. Usually this will
-#' be the organisations in the data.
+#' be the locations in the data.
 #'
 #' @return a monan network object.
 #' @export
@@ -356,7 +356,7 @@ createNetwork <-
 
 #' createNodeSet
 #'
-#' Determines and names the nodesets of individuals and organisations that make up the mobility network.
+#' Determines and names the nodesets of individuals and locations that make up the mobility network.
 #'
 #' @param x Either a single number indicating how many items are in this node-set
 #' or a vector from 1:n_items.
@@ -365,7 +365,7 @@ createNetwork <-
 #' Only in use in special cases.
 #' If the nodeset indicates a location, considerWhenSampling indicates whether the
 #' location is a possible destination, or is only an origin (e.g. a training facility).
-#' Entries in the vector of organisations that cannot be a destination are FALSE.
+#' Entries in the vector of locations that cannot be a destination are FALSE.
 #' If the nodeset indicates mobile individuals, considerWhenSampling indicates whether
 #' their mobility should be modelled or whether it is structurally determined, that
 #' is, their mobility is exogenously defined and does not follow the same logic as
@@ -421,7 +421,7 @@ createNodeSet <-
 #' createNodeVariable
 #'
 #' Assigns an covariate to one nodeset, i.e., an exogenous characteristic of mobile
-#' individuals/resources or organisations.
+#' individuals/resources or locations.
 #'
 #' @param values A vector assigning the covariate value to each element of the nodeset.
 #' @param range The range of possible values, currently not in use.
@@ -918,9 +918,9 @@ estimateDistributionNetwork <- estimateMobilityNetwork
 #' @param burnin The number of simulation steps that are taken before the first draw of a
 #' network is taken. A number too small will mean the first draw is influenced
 #' by the initially specified network. A recommended value for the lower bound is 3 * n_Individuals *
-#' n_organisations.
+#' n_locations.
 #' @param thinning The number of simulation steps that are taken between two draws of a
-#' network. A recommended value for the lower bound is n_Individuals * n_organisations.
+#' network. A recommended value for the lower bound is n_Individuals * n_locations.
 #' @param nSimulations The number of mobility networks to be simulated.
 #'
 #' @return A list with nSimulations entries, where each entry contains a further list with the

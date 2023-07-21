@@ -697,7 +697,7 @@ createWeightedCache <-
 #' @export
 #'
 #' @seealso [createProcessState()], [createWeightedCache()],
-#' [createEffectsObject()], [createAlgorithm]
+#' [createEffectsObject()], [createAlgorithm()]
 #'
 #' @examples
 #' \dontrun{

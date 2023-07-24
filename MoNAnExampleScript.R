@@ -161,3 +161,19 @@ plot(myGofIndegree,  lvls = 20:70)
 
 myGofTieWeight <- gofDistributionNetwork(ans = myResDN, simulations = myResDN$deps, gofFunction = getTieWeights, lvls = 1:30)
 plot(myGofTieWeight, lvls = 1:15)
+
+
+##### estimate mobility network model #####
+
+mySimDN <- simulateMobilityNetworks(myDependentVariable,
+                                    myState,
+                                    myCache,
+                                    myEffects,
+                                    parameters = c(2, 1, 1.5, 0.1, -1, -0.5),
+                                    allowLoops = TRUE,
+                                    burnin = 45000,
+                                    thinning = 15000,
+                                    nSimulations = 10
+)
+
+mySimDN[[1]]

@@ -9,25 +9,29 @@
 \alias{myEffects}
 \alias{myAlg}
 \alias{myResDN}
+\alias{mySimDN}
 \title{Exemplary Outcome Objects for the MoNAn Package}
 \format{
 \code{myState}
-An object of class "processState.monan".
+An object of class \code{processState.monan} created by the function \code{\link[=createProcessState]{createProcessState()}}.
 
 \code{myDependentVariable}
-An object of class "character".
+An object of class \code{character}.
 
 \code{myCache}
-An object of class "list".
+An object of class \code{list} created by the function \code{\link[=createWeightedCache]{createWeightedCache()}}.
 
 \code{myEffects}
-An object of class "effectsList.monan".
+An object of class \code{effectsList.monan} created by the function \code{\link[=createEffectsObject]{createEffectsObject()}}.
 
 \code{myAlg}
-An object of class "algorithm.monan".
+An object of class \code{algorithm.monan} created by the function \code{\link[=createAlgorithm]{createAlgorithm()}}.
 
 \code{myResDN}
-An object of class "result.monan".
+An object of class \code{result.monan} created by the function \code{\link[=estimateMobilityNetwork]{estimateMobilityNetwork()}}.
+
+\code{mySimDN}
+An object of class \code{sims.monan} created by the function \code{\link[=simulateMobilityNetworks]{simulateMobilityNetworks()}}.
 }
 \usage{
 myState
@@ -41,19 +45,12 @@ myEffects
 myAlg
 
 myResDN
+
+mySimDN
 }
 \description{
 These are exemplary outcome objects for the MoNAn package and can be used in
 order not to run all precedent functions and thus save time. The following
 products are provided:
-
-\describe{
-\item{myState}{blabla}
-\item{myDependentVariable}{blabla}
-\item{myCache}{blabla}
-\item{myEffects}{blabla}
-\item{myAlg}{blabla}
-\item{myResDN}{blabla}
-}
 }
 \keyword{datasets}

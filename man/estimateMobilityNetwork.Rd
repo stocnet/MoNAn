@@ -130,5 +130,5 @@ myResDN
 }
 \seealso{
 \code{\link[=createProcessState]{createProcessState()}}, \code{\link[=createWeightedCache]{createWeightedCache()}},
-\code{\link[=createEffectsObject]{createEffectsObject()}}, \link{createAlgorithm}
+\code{\link[=createEffectsObject]{createEffectsObject()}}, \code{\link[=createAlgorithm]{createAlgorithm()}}
 }

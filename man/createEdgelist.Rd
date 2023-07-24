@@ -4,7 +4,7 @@
 \alias{createEdgelist}
 \title{createEdgelist}
 \usage{
-createEdgelist(el, nodeSet = c("actors", "actors", "edges"))
+createEdgelist(el, nodeSet = c("location", "location", "individuals"))
 }
 \arguments{
 \item{el}{An edgelist in the form of a matrix with two columns and N rows.

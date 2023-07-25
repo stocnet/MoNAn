@@ -57,7 +57,7 @@ library(MoNAn)
 
 # packages for parallel computing
 library(snowfall)
-#> Loading required package: snow
+#> Lade nötiges Paket: snow
 ```
 
 ## The Data
@@ -382,3 +382,24 @@ plot(myGofTieWeight, lvls = 1:20)
 ```
 
 <img src="man/figures/README-unnamed-chunk-21-2.png" width="100%" />
+
+## Simulation
+
+The package also provides the possibility to exemplarily simulate
+mobility networks based on the data and the specified effects and
+parameters.
+
+``` r
+mySimDN <- simulateMobilityNetworks(myDependentVariable,
+  myState,
+  myCache,
+  myEffects,
+  parameters = c(2, 1, 1.5, 0.1, -1, -0.5),
+  allowLoops = TRUE,
+  burnin = 45000,
+  thinning = 15000,
+  nSimulations = 10
+)
+
+mySimDN[[1]]
+```

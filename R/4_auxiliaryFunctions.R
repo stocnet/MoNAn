@@ -8,7 +8,6 @@
 #' values are better. Values above 0.5 are very problematic and indicate that a 
 #' higher thinning is needed.
 #' 
-#' @param dep.var The dependent variable specified in the estimation
 #' @param ans The ans object resulting from an estimation with "estimateMobilityNetwork"
 #'
 #' @return A number indicating the Auto-correlation.
@@ -18,8 +17,9 @@
 #'
 #' @examples
 #' # regression diagnostics
-#' autoCorrelationTest(myDependentVariable, myResDN)
-autoCorrelationTest <- function(dep.var, ans) {
+#' autoCorrelationTest(myResDN)
+autoCorrelationTest <- function(ans) {
+  dep.var <- ans$state$dep.var
   # give error if no deps in ans obj
   if (is.null(ans$deps)) {
     stop("ans object does not have simulations stored; use returnDeps = T in estimation")
@@ -44,7 +44,6 @@ autoCorrelationTest <- function(dep.var, ans) {
 #' This function shows the values of simulated statistics in Phase 3 for subsequent draws from the chain.
 #' Ideally, the plots show points randomly scattered around the red line, which indicates the statistics in the data.
 #' 
-#' @param dep.var The dependent variable specified in the estimation
 #' @param ans The ans object resulting from an estimation with "estimateMobilityNetwork"
 #' @param effects The effects object used in the estimation
 #'
@@ -58,8 +57,9 @@ autoCorrelationTest <- function(dep.var, ans) {
 #'
 #' @examples
 #' # regression diagnostics
-#' traces <- extractTraces(myDependentVariable, myResDN, myEffects)
-extractTraces <- function(dep.var, ans, effects) {
+#' traces <- extractTraces(myResDN, myEffects)
+extractTraces <- function(ans, effects) {
+  dep.var <- ans$state$dep.var
   # give error if no deps in ans
   if (is.null(ans$deps)) {
     stop("ans object does not have simulated states stored; use returnDeps = T in estimation")
@@ -99,7 +99,6 @@ extractTraces <- function(dep.var, ans, effects) {
 #' @param cache A cache that contains intermediate information used for estimation.
 #' @param effects An effects object for which the statistics of a multinomial
 #' model should be calculated.
-#' @param dep.var The dependent variable, i.e. the outcome to be modelled
 #'
 #' @return A data frame with N*M rows (N = mobile individuals, M = number fo locations)
 #' that specifies for each observation the statistics associated with moving to this location.
@@ -108,9 +107,11 @@ extractTraces <- function(dep.var, ans, effects) {
 #' @seealso [createProcessState()], [createWeightedCache()], [createEffectsObject()]
 #' 
 #' @examples
-#' myStatisticsFrame <- getMultinomialStatistics(myState, myCache, myEffects, myDependentVariable)
+#' myStatisticsFrame <- getMultinomialStatistics(myState, myCache, myEffects)
 getMultinomialStatistics <-
-  function(state, cache, effects, dep.var) {
+  function(state, cache, effects) {
+    
+    dep.var <- state$dep.var
     # create a list that will store all statistics
     statsVec <- list()
     
@@ -194,7 +195,6 @@ getMultinomialStatistics <-
 #' estimation.
 #' @param gofFunction A gof function that specifies which auxiliary outcome should be, 
 #' e.g., "getIndegree" or "getTieWeights"
-#' @param dep.var The dependent variable specified in the estimation
 #' @param lvls The values for which the gofFunction should be calculated / plotted
 #'
 #' @return A list containing (1) the observed values of the auxiliary statistics and
@@ -226,11 +226,8 @@ gofDistributionNetwork <-
   function(ans,
            simulations,
            gofFunction,
-           dep.var = NULL,
            lvls = NULL) {
-    if (is.null(dep.var)) {
-      dep.var <- names(ans$state)[1]
-    }
+    dep.var <- ans$state$dep.var
 
     # generate a list that contains all states for the dep.var with the observed in first place
     allStates <- list()
@@ -347,7 +344,6 @@ print.result.monan <- function(x, covMat = FALSE, ...) {
 #' statistics representing non-included effects are well represented. If this is 
 #' not the case, it is likely that including them will result in significant estimates.
 #'
-#' @param dep.var The dependent variable specified in the estimation
 #' @param ans The ans object resulting from an estimation with "estimateMobilityNetwork"
 #' @param effects An effects object in which the non included effects that should
 #' be tested are specified
@@ -373,8 +369,9 @@ print.result.monan <- function(x, covMat = FALSE, ...) {
 #'   )
 #' )
 #' 
-#' test_ME.2 <- scoreTest(myDependentVariable, myResDN, myEffects2)
-scoreTest <- function(dep.var, ans, effects) {
+#' test_ME.2 <- scoreTest(myResDN, myEffects2)
+scoreTest <- function(ans, effects) {
+  dep.var <- ans$state$dep.var
   # give error if no deps in ans
   if (is.null(ans$deps)) {
     stop("ans object does not have simulated states stored; use returnDeps = T in estimation")

@@ -6,7 +6,6 @@
 #' Specifies the algorithm used in the estimation based on characteristics
 #' of the state, the effects and the dependent variable.
 #'
-#' @param dep.var The outcome variable that is modelled.
 #' @param state A monan state object that contains all relevant information about
 #' the outcome in the form of an edgelist, the nodesets, and covariates.
 #' @param effects An effect object that specifies the model.
@@ -67,10 +66,9 @@
 #'
 #' @examples
 #' # define algorithm based on state and effects characteristics
-#' myAlg <- createAlgorithm(myDependentVariable, myState, myEffects, multinomialProposal = FALSE)
+#' myAlg <- createAlgorithm(myState, myEffects, multinomialProposal = FALSE)
 createAlgorithm <-
-  function(dep.var,
-           state,
+  function(state,
            effects,
            multinomialProposal = FALSE,
            burnInN1 = NULL,
@@ -86,6 +84,8 @@ createAlgorithm <-
            thinningN3 = NULL,
            iterationsN3 = 500,
            allowLoops = NULL) {
+    dep.var <- state$dep.var
+    
     algorithm <- list()
     
     nameNodeSet1 <- state[[dep.var]]$nodeSet[1]
@@ -480,6 +480,9 @@ createNodeVariable <-
 #' @param elements A named list of the outcome variable (edgelist), the nodesets,
 #' and all covariates that contain the information
 #' about the data that will be used in the estimation.
+#' @param dependentVariable The name of the outcome variable (edgelist) as
+#' specified under "elements". This indicates what outcome
+#' the researcher is interested in.
 #'
 #' @return A monan process state object.
 #' @export
@@ -505,15 +508,15 @@ createNodeVariable <-
 #'
 #' # combine created objects to the process state
 #' myState <- createProcessState(list(
-#'   transfers = transfers,
-#'   people = people,
-#'   organisations = organisations,
-#'   sameRegion = sameRegion,
-#'   region = region,
-#'   size = size,
-#'   sex = sex
-#' ))
-createProcessState <- function(elements) {
+#'     transfers = transfers,
+#'     people = people,
+#'     organisations = organisations,
+#'     sameRegion = sameRegion,
+#'     region = region,
+#'     size = size,
+#'     sex = sex),
+#'   dependentVariable = "transfers")
+createProcessState <- function(elements, dependentVariable) {
   if (!is.list(elements)) {
     stop("Expecting a list.")
   }
@@ -563,6 +566,8 @@ createProcessState <- function(elements) {
 
   # check if all elements in 'linkedElementIDs' have a corresponding node set
   # TODO implement
+  
+  elements$dep.var <- dependentVariable
 
   class(elements) <- "processState.monan"
   elements
@@ -579,8 +584,6 @@ createProcessState <- function(elements) {
 #'
 #' @param processState The processs state that provides the data basis for
 #' creating the cache.
-#' @param cacheObjectNames The name of the outcome variable, i.e., the
-#' edgelist in the data that should be modelled as a character vector.
 #' @param resourceCovariates A vector of resource covariates that will be
 #' used in the model specification?
 #'
@@ -590,14 +593,14 @@ createProcessState <- function(elements) {
 #' @seealso [createProcessState()]
 #'
 #' @examples
-#' # define dependent variable and create cache object
-#' myDependentVariable <- "transfers"
-#' myCache <- createWeightedCache(myState, myDependentVariable, resourceCovariates = c("sex"))
+#' # create cache object
+#' myCache <- createWeightedCache(myState, resourceCovariates = c("sex"))
 createWeightedCache <-
   function(processState,
-           cacheObjectNames,
            resourceCovariates = NULL) {
     cache <- list()
+    
+    cacheObjectNames <- processState$dep.var
 
     for (name in cacheObjectNames) {
       if (!(class(processState[[name]]) %in% c("network.monan", "edgelist.monan"))) {
@@ -666,7 +669,6 @@ createWeightedCache <-
 #' The core function of the package in which the model for the analysis of
 #' mobility tables is estimated.
 #'
-#' @param dep.var The outcome variable that is modelled.
 #' @param state A monan state object that contains all relevant information about
 #' the outcome in the form of an edgelist, the nodesets, and covariates.
 #' @param cache A monan cache object created from the same state object that is
@@ -702,8 +704,7 @@ createWeightedCache <-
 #' @examples
 #' \dontrun{
 # estimate mobility network model
-#' myResDN <- estimateMobilityNetwork(myDependentVariable,
-#'                                    myState, myCache, myEffects, myAlg,
+#' myResDN <- estimateMobilityNetwork(myState, myCache, myEffects, myAlg,
 #'                                    initialParameters = NULL,
 #'                                    # in case a pseudo-likelihood estimation was run, replace with
 #'                                    # initialParameters = initEst,
@@ -720,11 +721,10 @@ createWeightedCache <-
 #' 
 #' # estimate mobility network model again based on previous results to improve convergence
 #' # with an adjusted algorithm
-#' myAlg <- createAlgorithm(myDependentVariable, myState, myEffects, multinomialProposal = TRUE, 
+#' myAlg <- createAlgorithm(myState, myEffects, multinomialProposal = TRUE, 
 #'                          initialIterationsN2 = 500, nsubN2 = 1, initGain = 0.02, iterationsN3 = 1000)
 #' 
-#' myResDN <- estimateMobilityNetwork(myDependentVariable,
-#'                                    myState, myCache, myEffects, myAlg,
+#' myResDN <- estimateMobilityNetwork(myState, myCache, myEffects, myAlg,
 #'                                    prevAns = myResDN,
 #'                                    parallel = T, cpus = 4,
 #'                                    verbose = T,
@@ -739,8 +739,7 @@ createWeightedCache <-
 #' myResDN
 #' }
 estimateMobilityNetwork <-
-  function(dep.var,
-           state,
+  function(state,
            cache,
            effects,
            algorithm,
@@ -751,6 +750,8 @@ estimateMobilityNetwork <-
            verbose = FALSE,
            returnDeps = FALSE,
            fish = FALSE) {
+    dep.var <- state$dep.var
+    
     # extract parameters from algorithm object
     
     multinomialProposal <- algorithm$multinomialProposal
@@ -904,7 +905,6 @@ estimateDistributionNetwork <- estimateMobilityNetwork
 #' do counter-factual simulations.
 #'
 #' @aliases simulateDistributionNetworks
-#' @param dep.var The name of the outcome variable that is simulated.
 #' @param state A monan state object that contains all relevant information about
 #' nodesets, and covariates. Further, an edgelist of the dependent variable needs
 #' to be specified with the initial mobility network as starting value for the
@@ -930,7 +930,7 @@ estimateDistributionNetwork <- estimateMobilityNetwork
 #' @examples
 #' \dontrun{
 #' # simulate a mobility network
-#' mySimDN <- simulateMobilityNetworks(myDependentVariable,
+#' mySimDN <- simulateMobilityNetworks(
 #'   myState,
 #'   myCache,
 #'   myEffects,
@@ -944,8 +944,7 @@ estimateDistributionNetwork <- estimateMobilityNetwork
 #' mySimDN[[1]]
 #' }
 simulateMobilityNetworks <-
-  function(dep.var,
-           state,
+  function(state,
            cache,
            effects,
            parameters,
@@ -953,6 +952,8 @@ simulateMobilityNetworks <-
            burnin,
            thinning,
            nSimulations) {
+    dep.var <- state$dep.var
+    
     # generate a state and cache after burnin with parameters
     r <-
       simulateNSteps(

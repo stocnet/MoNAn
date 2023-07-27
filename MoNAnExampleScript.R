@@ -21,22 +21,22 @@ size <- createNodeVariable(orgSize, nodeSet = "organisations", addSim = TRUE)
 sex <- createNodeVariable(indSex, nodeSet = "people")
 
 # combine created objects to the process state
-myState <- createProcessState(list(
-  transfers = transfers,
-  people = people,
-  organisations = organisations,
-  sameRegion = sameRegion,
-  region = region,
-  size = size,
-  sex = sex
-))
+myState <- createProcessState(
+  list(
+    transfers = transfers,
+    people = people,
+    organisations = organisations,
+    sameRegion = sameRegion,
+    region = region,
+    size = size,
+    sex = sex), 
+  dependentVariable = "transfers")
 
 
 ##### create cache #####
 
 # define dependent variable and create cache object
-myDependentVariable <- "transfers"
-myCache <- createWeightedCache(myState, myDependentVariable, resourceCovariates = c("sex"))
+myCache <- createWeightedCache(myState, resourceCovariates = c("sex"))
 
 
 ##### create effects object #####
@@ -53,14 +53,15 @@ myEffects <- createEffectsObject(
          resource.attribute.index = "sex"
     ),
     list("loops_resource_covar", resource.attribute.index = "sex")
-  )
+  ), 
+  checkProcessState = myState  
 )
 
 
 ##### get multinomial statistics to estimate initial parameters using pseudo-likelihood estimation #####
 
 # create statistics object, to be used, e.g., with the mlogit package
-myStatisticsFrame <- getMultinomialStatistics(myState, myCache, myEffects, myDependentVariable)
+myStatisticsFrame <- getMultinomialStatistics(myState, myCache, myEffects)
 
 ### additional script to get pseudo-likelihood estimates
 # library(dfidx)
@@ -85,13 +86,13 @@ myStatisticsFrame <- getMultinomialStatistics(myState, myCache, myEffects, myDep
 ##### create algorithm object #####
 
 # define algorithm based on state and effects characteristics
-myAlg <- createAlgorithm(myDependentVariable, myState, myEffects, multinomialProposal = FALSE)
+myAlg <- createAlgorithm(myState, myEffects, multinomialProposal = FALSE)
 
 
 ##### estimate mobility network model #####
 
 # estimate mobility network model
-myResDN <- estimateMobilityNetwork(myDependentVariable,
+myResDN <- estimateMobilityNetwork(
   myState, myCache, myEffects, myAlg,
   initialParameters = NULL,
   # in case a pseudo-likelihood estimation was run, replace with
@@ -109,10 +110,10 @@ myResDN_old <- myResDN
 
 # estimate mobility network model again based on previous results to improve convergence
 # with an adjusted algorithm
-myAlg <- createAlgorithm(myDependentVariable, myState, myEffects, multinomialProposal = TRUE, 
+myAlg <- createAlgorithm(myState, myEffects, multinomialProposal = TRUE, 
                          initialIterationsN2 = 500, nsubN2 = 1, initGain = 0.02, iterationsN3 = 1000)
 
-myResDN <- estimateMobilityNetwork(myDependentVariable,
+myResDN <- estimateMobilityNetwork(
   myState, myCache, myEffects, myAlg,
   prevAns = myResDN,
   parallel = T, cpus = 4,
@@ -130,9 +131,9 @@ myResDN
 
 ##### regression diagnostics #####
 
-autoCorrelationTest(myDependentVariable, myResDN)
+autoCorrelationTest(myResDN)
 
-traces <- extractTraces(myDependentVariable, myResDN, myEffects)
+traces <- extractTraces(myResDN, myEffects)
 plot(traces)
 
 
@@ -147,10 +148,11 @@ myEffects2 <- createEffectsObject(
     list("resource_covar_to_node_covar", attribute.index = "region", resource.attribute.index = "sex"),
     list("loops_resource_covar", resource.attribute.index = "sex"),
     list("transitivity_min")
-  )
+  ),
+  checkProcessState = myState
 )
 
-test_ME.2 <- scoreTest(myDependentVariable, myResDN, myEffects2)
+test_ME.2 <- scoreTest(myResDN, myEffects2)
 test_ME.2
 
 
@@ -165,8 +167,7 @@ plot(myGofTieWeight, lvls = 1:15)
 
 ##### estimate mobility network model #####
 
-mySimDN <- simulateMobilityNetworks(myDependentVariable,
-                                    myState,
+mySimDN <- simulateMobilityNetworks(myState,
                                     myCache,
                                     myEffects,
                                     parameters = c(2, 1, 1.5, 0.1, -1, -0.5),

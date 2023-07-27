@@ -13,12 +13,6 @@
 
 
 #' @rdname myOutcomeObjects
-#' @format `myDependentVariable`
-#' An object of class `character`.
-"myDependentVariable"
-
-
-#' @rdname myOutcomeObjects
 #' @format `myCache`
 #' An object of class `list` created by the function [createWeightedCache()].
 "myCache"

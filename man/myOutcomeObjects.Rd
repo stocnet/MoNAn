@@ -4,7 +4,6 @@
 \name{myOutcomeObjects}
 \alias{myOutcomeObjects}
 \alias{myState}
-\alias{myDependentVariable}
 \alias{myCache}
 \alias{myEffects}
 \alias{myAlg}
@@ -14,9 +13,6 @@
 \format{
 \code{myState}
 An object of class \code{processState.monan} created by the function \code{\link[=createProcessState]{createProcessState()}}.
-
-\code{myDependentVariable}
-An object of class \code{character}.
 
 \code{myCache}
 An object of class \code{list} created by the function \code{\link[=createWeightedCache]{createWeightedCache()}}.
@@ -35,8 +31,6 @@ An object of class \code{sims.monan} created by the function \code{\link[=simula
 }
 \usage{
 myState
-
-myDependentVariable
 
 myCache
 

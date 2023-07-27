@@ -6,7 +6,6 @@
 \title{simulateMobilityNetworks}
 \usage{
 simulateMobilityNetworks(
-  dep.var,
   state,
   cache,
   effects,
@@ -18,7 +17,6 @@ simulateMobilityNetworks(
 )
 
 simulateDistributionNetworks(
-  dep.var,
   state,
   cache,
   effects,
@@ -30,8 +28,6 @@ simulateDistributionNetworks(
 )
 }
 \arguments{
-\item{dep.var}{The name of the outcome variable that is simulated.}
-
 \item{state}{A monan state object that contains all relevant information about
 nodesets, and covariates. Further, an edgelist of the dependent variable needs
 to be specified with the initial mobility network as starting value for the
@@ -69,7 +65,7 @@ do counter-factual simulations.
 \examples{
 \dontrun{
 # simulate a mobility network
-mySimDN <- simulateMobilityNetworks(myDependentVariable,
+mySimDN <- simulateMobilityNetworks(
   myState,
   myCache,
   myEffects,

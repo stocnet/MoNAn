@@ -5,13 +5,11 @@
 \alias{plot.traces.monan}
 \title{extractTraces}
 \usage{
-extractTraces(dep.var, ans, effects)
+extractTraces(ans, effects)
 
 \method{plot}{traces.monan}(x, ...)
 }
 \arguments{
-\item{dep.var}{The dependent variable specified in the estimation}
-
 \item{ans}{The ans object resulting from an estimation with "estimateMobilityNetwork"}
 
 \item{effects}{The effects object used in the estimation}
@@ -32,7 +30,7 @@ Ideally, the plots show points randomly scattered around the red line, which ind
 }
 \examples{
 # regression diagnostics
-traces <- extractTraces(myDependentVariable, myResDN, myEffects)
+traces <- extractTraces(myResDN, myEffects)
 plot(traces)
 }
 \seealso{

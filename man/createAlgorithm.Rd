@@ -5,7 +5,6 @@
 \title{createAlgorithm}
 \usage{
 createAlgorithm(
-  dep.var,
   state,
   effects,
   multinomialProposal = FALSE,
@@ -25,8 +24,6 @@ createAlgorithm(
 )
 }
 \arguments{
-\item{dep.var}{The outcome variable that is modelled.}
-
 \item{state}{A monan state object that contains all relevant information about
 the outcome in the form of an edgelist, the nodesets, and covariates.}
 
@@ -104,7 +101,7 @@ of the state, the effects and the dependent variable.
 }
 \examples{
 # define algorithm based on state and effects characteristics
-myAlg <- createAlgorithm(myDependentVariable, myState, myEffects, multinomialProposal = FALSE)
+myAlg <- createAlgorithm(myState, myEffects, multinomialProposal = FALSE)
 }
 \seealso{
 \code{\link[=createProcessState]{createProcessState()}}, \code{\link[=createEffectsObject]{createEffectsObject()}}, \code{\link[=estimateMobilityNetwork]{estimateMobilityNetwork()}}

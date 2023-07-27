@@ -5,13 +5,7 @@
 \alias{plot.gof.stats.monan}
 \title{gofDistributionNetwork}
 \usage{
-gofDistributionNetwork(
-  ans,
-  simulations,
-  gofFunction,
-  dep.var = NULL,
-  lvls = NULL
-)
+gofDistributionNetwork(ans, simulations, gofFunction, lvls = NULL)
 
 \method{plot}{gof.stats.monan}(x, lvls, ...)
 }
@@ -24,8 +18,6 @@ estimation.}
 
 \item{gofFunction}{A gof function that specifies which auxiliary outcome should be,
 e.g., "getIndegree" or "getTieWeights"}
-
-\item{dep.var}{The dependent variable specified in the estimation}
 
 \item{lvls}{The values for which the gofFunction should be calculated / plotted}
 

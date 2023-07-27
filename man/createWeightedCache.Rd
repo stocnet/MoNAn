@@ -4,14 +4,11 @@
 \alias{createWeightedCache}
 \title{createWeightedCache}
 \usage{
-createWeightedCache(processState, cacheObjectNames, resourceCovariates = NULL)
+createWeightedCache(processState, resourceCovariates = NULL)
 }
 \arguments{
 \item{processState}{The processs state that provides the data basis for
 creating the cache.}
-
-\item{cacheObjectNames}{The name of the outcome variable, i.e., the
-edgelist in the data that should be modelled as a character vector.}
 
 \item{resourceCovariates}{A vector of resource covariates that will be
 used in the model specification?}
@@ -27,9 +24,8 @@ they need to be explicitly mentioned in the creation of the cache under
 “resourceCovariates”.
 }
 \examples{
-# define dependent variable and create cache object
-myDependentVariable <- "transfers"
-myCache <- createWeightedCache(myState, myDependentVariable, resourceCovariates = c("sex"))
+# create cache object
+myCache <- createWeightedCache(myState, resourceCovariates = c("sex"))
 }
 \seealso{
 \code{\link[=createProcessState]{createProcessState()}}

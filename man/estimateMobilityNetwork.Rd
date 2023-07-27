@@ -7,7 +7,6 @@
 \title{estimateMobilityNetwork}
 \usage{
 estimateMobilityNetwork(
-  dep.var,
   state,
   cache,
   effects,
@@ -22,7 +21,6 @@ estimateMobilityNetwork(
 )
 
 estimateDistributionNetwork(
-  dep.var,
   state,
   cache,
   effects,
@@ -39,8 +37,6 @@ estimateDistributionNetwork(
 \method{print}{result.monan}(x, covMat = FALSE, ...)
 }
 \arguments{
-\item{dep.var}{The outcome variable that is modelled.}
-
 \item{state}{A monan state object that contains all relevant information about
 the outcome in the form of an edgelist, the nodesets, and covariates.}
 
@@ -90,8 +86,7 @@ mobility tables is estimated.
 }
 \examples{
 \dontrun{
-myResDN <- estimateMobilityNetwork(myDependentVariable,
-                                   myState, myCache, myEffects, myAlg,
+myResDN <- estimateMobilityNetwork(myState, myCache, myEffects, myAlg,
                                    initialParameters = NULL,
                                    # in case a pseudo-likelihood estimation was run, replace with
                                    # initialParameters = initEst,
@@ -108,11 +103,10 @@ myResDN_old <- myResDN
 
 # estimate mobility network model again based on previous results to improve convergence
 # with an adjusted algorithm
-myAlg <- createAlgorithm(myDependentVariable, myState, myEffects, multinomialProposal = TRUE, 
+myAlg <- createAlgorithm(myState, myEffects, multinomialProposal = TRUE, 
                          initialIterationsN2 = 500, nsubN2 = 1, initGain = 0.02, iterationsN3 = 1000)
 
-myResDN <- estimateMobilityNetwork(myDependentVariable,
-                                   myState, myCache, myEffects, myAlg,
+myResDN <- estimateMobilityNetwork(myState, myCache, myEffects, myAlg,
                                    prevAns = myResDN,
                                    parallel = T, cpus = 4,
                                    verbose = T,

@@ -5,13 +5,11 @@
 \alias{print.scoretest.monan}
 \title{scoreTest}
 \usage{
-scoreTest(dep.var, ans, effects)
+scoreTest(ans, effects)
 
 \method{print}{scoretest.monan}(x, ...)
 }
 \arguments{
-\item{dep.var}{The dependent variable specified in the estimation}
-
 \item{ans}{The ans object resulting from an estimation with "estimateMobilityNetwork"}
 
 \item{effects}{An effects object in which the non included effects that should
@@ -45,7 +43,7 @@ myEffects2 <- createEffectsObject(
   )
 )
 
-test_ME.2 <- scoreTest(myDependentVariable, myResDN, myEffects2)
+test_ME.2 <- scoreTest(myResDN, myEffects2)
 test_ME.2
 }
 \seealso{

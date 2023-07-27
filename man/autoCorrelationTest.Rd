@@ -4,11 +4,9 @@
 \alias{autoCorrelationTest}
 \title{autoCorrelationTest}
 \usage{
-autoCorrelationTest(dep.var, ans)
+autoCorrelationTest(ans)
 }
 \arguments{
-\item{dep.var}{The dependent variable specified in the estimation}
-
 \item{ans}{The ans object resulting from an estimation with "estimateMobilityNetwork"}
 }
 \value{
@@ -22,7 +20,7 @@ higher thinning is needed.
 }
 \examples{
 # regression diagnostics
-autoCorrelationTest(myDependentVariable, myResDN)
+autoCorrelationTest(myResDN)
 }
 \seealso{
 \code{\link[=estimateMobilityNetwork]{estimateMobilityNetwork()}}

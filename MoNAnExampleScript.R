@@ -5,13 +5,18 @@ library(MoNAn)
 
 ##### create data objects from internal data files, which are later combined to the process state #####
 
+# extract number of individuals and organisations from the mobility data
+
+N_ind <- nrow(mobilityEdgelist)
+N_org <- length(unique(as.numeric(mobilityEdgelist)))
+
 # Create a process state out of the mobility data objects:
 # create objects (which are later combined to the process state)
 transfers <- createEdgelist(mobilityEdgelist,
                             nodeSet = c("organisations", "organisations", "people")
 )
-people <- createNodeSet(1:nrow(mobilityEdgelist))
-organisations <- createNodeSet(1:length(orgRegion))
+people <- createNodeSet(N_ind)
+organisations <- createNodeSet(N_org)
 sameRegion <- outer(orgRegion, orgRegion, "==") * 1
 sameRegion <- createNetwork(sameRegion,
                             nodeSet = c("organisations", "organisations")

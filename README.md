@@ -114,9 +114,14 @@ necessary part is that we define and name the nodesets, i.e., we name
 who (“people”) is mobile between what (“organisations”).
 
 ``` r
-# create objects
-people <- createNodeSet(nrow(mobilityEdgelist))
-organisations <- createNodeSet(length(orgRegion))
+# extract number of individuals and organisations from the mobility data
+
+N_ind <- nrow(mobilityEdgelist)
+N_org <- length(unique(as.numeric(mobilityEdgelist)))
+
+# create monan objects
+people <- createNodeSet(N_ind)
+organisations <- createNodeSet(N_org)
 transfers <- createEdgelist(mobilityEdgelist, nodeSet = c("organisations", "organisations", "people"))
 sameRegion <- outer(orgRegion, orgRegion, "==") * 1
 sameRegion <- createNetwork(sameRegion, nodeSet = c("organisations", "organisations"))
@@ -254,59 +259,59 @@ myResDN <- estimateMobilityNetwork(
 #> Starting sub phase 1 
 #> New parameters:
 #> loops 
-#>  2.10018125568698 
+#>  1.96239947914881 
 #>  reciprocity_min 
-#>  0.711154312125821 
+#>  0.5921525719097 
 #>  dyadic_covariate sameRegion 
-#>  1.39028727272731 
+#>  1.40049574029235 
 #>  alter_covariate size 
-#>  0.0326158532570112 
+#>  0.033007136338196 
 #>  resource_covar_to_node_covar region sex 
-#>  -0.611985591432725 
+#>  -0.552542320949847 
 #>  loops_resource_covar sex 
-#>  -0.135659781287971 
+#>  0.0129469964664311 
 #> Starting sub phase 2 
 #> New parameters:
 #> loops 
-#>  2.45123895704558 
+#>  2.39723742802551 
 #>  reciprocity_min 
-#>  0.796199306698466 
+#>  0.735171317280412 
 #>  dyadic_covariate sameRegion 
-#>  1.61060075235114 
+#>  1.59953402045278 
 #>  alter_covariate size 
-#>  0.0360016160351146 
+#>  0.0341741994300065 
 #>  resource_covar_to_node_covar region sex 
-#>  -0.64605587739959 
+#>  -0.615722236162676 
 #>  loops_resource_covar sex 
-#>  -0.282004106087904 
+#>  -0.258349863937289 
 #> Starting sub phase 3 
 #> New parameters:
 #> loops 
-#>  2.55867994618009 
+#>  2.52006155407795 
 #>  reciprocity_min 
-#>  0.814759851123527 
+#>  0.782692703309321 
 #>  dyadic_covariate sameRegion 
-#>  1.66551652775221 
+#>  1.66117156519656 
 #>  alter_covariate size 
-#>  0.0363815197249704 
+#>  0.0360495088741273 
 #>  resource_covar_to_node_covar region sex 
-#>  -0.641590519619288 
+#>  -0.6380053370706 
 #>  loops_resource_covar sex 
-#>  -0.351102494734574 
+#>  -0.322942579704397 
 #> Starting sub phase 4 
 #> New parameters:
 #> loops 
-#>  2.57960335970208 
+#>  2.55831223642456 
 #>  reciprocity_min 
-#>  0.810872452239844 
+#>  0.801052602801524 
 #>  dyadic_covariate sameRegion 
-#>  1.67818736534159 
+#>  1.67900023443131 
 #>  alter_covariate size 
-#>  0.0367085926445034 
+#>  0.0378054612771427 
 #>  resource_covar_to_node_covar region sex 
-#>  -0.64372927081116 
+#>  -0.643234381003142 
 #>  loops_resource_covar sex 
-#>  -0.368845200920493
+#>  -0.348498091145485
 #> 
 #> Stopping cluster
 #> Starting phase 3
@@ -337,7 +342,7 @@ estimates), another run is necessary.
 
 ``` r
 max(abs(myResDN$convergenceStatistics))
-#> [1] 0.1001497
+#> [1] 0.06165639
 ```
 
 If convergence is too high, update algorithm, re-run estimation with
@@ -365,17 +370,17 @@ myResDN <- estimateMobilityNetwork(
 #> Starting sub phase 1 
 #> New parameters:
 #> loops 
-#>  2.5877161081692 
+#>  2.57401586997664 
 #>  reciprocity_min 
-#>  0.834709529184143 
+#>  0.830449011051864 
 #>  dyadic_covariate sameRegion 
-#>  1.69913625836648 
+#>  1.69209883761208 
 #>  alter_covariate size 
-#>  0.0384418811505895 
+#>  0.0369637391202157 
 #>  resource_covar_to_node_covar region sex 
-#>  -0.653056017898689 
+#>  -0.650002430600979 
 #>  loops_resource_covar sex 
-#>  -0.365296469392939
+#>  -0.360896544627875
 #> 
 #> Stopping cluster
 #> Starting phase 3
@@ -389,7 +394,7 @@ myResDN <- estimateMobilityNetwork(
 ``` r
 # check convergence
 max(abs(myResDN$convergenceStatistics))
-#> [1] 0.06793414
+#> [1] 0.09751736
 ```
 
 In case convergence is still poor, updating the algorithm might be
@@ -402,19 +407,19 @@ convergence ratio. All values in the final column should be below 0.1
 myResDN
 #> Results
 #>                                   Effects   Estimates StandardErrors
-#> 1                                   loops  2.58771611     0.18171098
-#> 2                         reciprocity_min  0.83470953     0.17511206
-#> 3             dyadic_covariate sameRegion  1.69913626     0.11039838
-#> 4                    alter_covariate size  0.03844188     0.02350032
-#> 5 resource_covar_to_node_covar region sex -0.65305602     0.17143215
-#> 6                loops_resource_covar sex -0.36529647     0.21351668
+#> 1                                   loops  2.57401587     0.18651741
+#> 2                         reciprocity_min  0.83044901     0.17844344
+#> 3             dyadic_covariate sameRegion  1.69209884     0.10998693
+#> 4                    alter_covariate size  0.03696374     0.02426595
+#> 5 resource_covar_to_node_covar region sex -0.65000243     0.17541006
+#> 6                loops_resource_covar sex -0.36089654     0.22183745
 #>    Convergence
-#> 1  0.049667210
-#> 2 -0.057224835
-#> 3 -0.067934144
-#> 4  0.009264238
-#> 5 -0.062830998
-#> 6  0.064829646
+#> 1 -0.005483438
+#> 2 -0.044616791
+#> 3 -0.097517364
+#> 4  0.003780352
+#> 5 -0.021552036
+#> 6 -0.004111089
 ```
 
 ## Diagnostics of the estimated model
@@ -428,7 +433,7 @@ problematic and indicate that a higher thinning is needed.
 
 ``` r
 autoCorrelationTest(myResDN)
-#> [1] 0.2145231
+#> [1] 0.2153447
 ```
 
 The output of extractTraces indicates the correlation of statistics
@@ -463,7 +468,7 @@ test_ME.2 <- scoreTest(myResDN, myEffects2)
 test_ME.2
 #> Results
 #>            Effects pValuesParametric pValuesNonParametric
-#> 1 transitivity_min      1.543609e-08                    0
+#> 1 transitivity_min      4.727783e-09                    0
 #> 
 #>  Parametric p-values: small = more significant 
 #>  Non-parametric p-values: further away from 0.5 = more significant

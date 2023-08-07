@@ -15,7 +15,7 @@
 An object of class \code{processState.monan} created by the function \code{\link[=createProcessState]{createProcessState()}}.
 
 \code{myCache}
-An object of class \code{list} created by the function \code{\link[=createWeightedCache]{createWeightedCache()}}.
+A \code{list} created by the function \code{\link[=createWeightedCache]{createWeightedCache()}}.
 
 \code{myEffects}
 An object of class \code{effectsList.monan} created by the function \code{\link[=createEffectsObject]{createEffectsObject()}}.

@@ -28,7 +28,7 @@ tables as weighted networks with an application to faculty hiring networks. Soci
 
 [Pre-print with minor differences to the journal version](https://osf.io/preprints/socarxiv/n86rx/). 
 
-The model allows for the analysis of emergent structures (known from network analysis) in mobility tables, alongside exogenous predictors. It combined features from classical log-linear models for mobility tables and Exponential Random Graph Models (ERGMs). In the absence of emergent structures, the models reduces to the former, when ignoring characteristics of individuals, it is an ERGM for weighted networks.
+The model allows for the analysis of emergent structures (known from network analysis) in mobility tables, alongside exogenous predictors. It combines features from classical log-linear models for mobility tables and Exponential Random Graph Models (ERGMs). In the absence of emergent structures, the models reduces to the former, when ignoring characteristics of individuals, it is an ERGM for weighted networks.
 
 Announcements about workshops etc. can be found [here](https://www.suz.uzh.ch/de/institut/professuren/block/monan_software.html).
 
@@ -36,7 +36,7 @@ Announcements about workshops etc. can be found [here](https://www.suz.uzh.ch/de
 # Warning!!!
 
 The package is still under development, especially the documentation. When using
-the package you might encounter bugs or errors, or you might not be able to do what you
+the package, you might encounter bugs or errors, or you might not be able to do what you
 want. In that case please write the package maintainer under his
 institutional email address (requires using google).
 
@@ -54,18 +54,15 @@ remotes::install_github("perblock/MoNAn")
 # Example
 
 
-In this section we outline a simple example with synthetic data stored in the MoNAn package.
+In this section, we outline a simple example with synthetic data stored in the MoNAn package.
 
 ```{r}
 library(MoNAn)
-
-# packages for parallel computing
-library(snowfall)
 ```
 
 ## The Data
 
-The example case uses synthetic data that represents mobility of 742 individuals between 17 organisations. The artificial data includes an edgelist, i.e. a list of origins (column 1) and destinations (column 2) of all individuals sorted by origin.
+The example case uses synthetic data that represents mobility of 742 individuals between 17 organisations. The artificial data includes an edgelist, i.e., a list of origins (column 1) and destinations (column 2) of all individuals sorted by origin.
 
 ```{r}
 mobilityEdgelist[1:10,]
@@ -199,7 +196,7 @@ Now we can estimate the model. The first two lines indicate the dependent variab
 
 Running the model takes a while (up to 10 minutes for this data with parallel computing).
 
-```{r}
+```{r, eval=FALSE}
 myResDN <- estimateMobilityNetwork(
   myState, myCache, myEffects, myAlg,
   initialParameters = NULL,
@@ -211,7 +208,7 @@ myResDN <- estimateMobilityNetwork(
 ```
 
 
-In case a pseudo-likelihood estimates have been obtained previously, this can be specified by
+In case pseudo-likelihood estimates have been obtained previously, this can be specified by
 
 ```{r, eval=FALSE}
 myResDN <- estimateMobilityNetwork(
@@ -233,7 +230,7 @@ max(abs(myResDN$convergenceStatistics))
 
 If convergence is too high, update algorithm, re-run estimation with previous results as starting values and check convergence:
 
-```{r}
+```{r, eval=FALSE}
 # estimate mobility network model again based on previous results to improve convergence
 # with an adjusted algorithm
 myAlg <- createAlgorithm(myState, myEffects, multinomialProposal = TRUE, 
@@ -269,7 +266,7 @@ The following two diagnostics indicate the extent to which the chain mixes (i.e.
 autoCorrelationTest(myResDN)
 ```
 
-The output of extractTraces indicates the correlation of statistics between subsequent draws from the chain in phase 3. The plot should show data point randomly scattered around the target line, as shown below. If patterns in the traces are discernible, a higher thinning is needed.
+The output of extractTraces indicates the correlation of statistics between subsequent draws from the chain in phase 3. The plot should show data points randomly scattered around the target line, as shown below. If patterns in the traces are discernible, a higher thinning is needed.
 
 ```{r}
 traces <- extractTraces(myResDN, myEffects)

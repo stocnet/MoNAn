@@ -40,7 +40,7 @@ myState <- createProcessState(
 
 ##### create cache #####
 
-# define dependent variable and create cache object
+# cache object
 myCache <- createWeightedCache(myState, resourceCovariates = c("sex"))
 
 

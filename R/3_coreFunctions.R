@@ -4,11 +4,11 @@
 #' createAlgorithm
 #'
 #' Specifies the algorithm used in the estimation based on characteristics
-#' of the state, the effects and the dependent variable.
+#' of the state and the effects.
 #'
-#' @param state A monan state object that contains all relevant information about
+#' @param state An object of class "processState.monan" that contains all relevant information about
 #' the outcome in the form of an edgelist, the nodesets, and covariates.
-#' @param effects An effect object that specifies the model.
+#' @param effects An object of class "effectsList.monan" that specifies the model.
 #' @param multinomialProposal How should the next possible outcome in the simulation chains
 #' be sampled? If TRUE, fewer simulation steps are needed, but each simulation
 #' step takes considerably longer. Defaults to FALSE.
@@ -200,7 +200,7 @@ createAlgorithm <-
 #' @param nodeSet The nodesets of the edgelists. For edgelists, this is a vector with three
 #' entries describing between what locations who is mobile, i.e., c(location, location, individuals/resources).
 #'
-#' @return an object of type edgelist.monan
+#' @return An object of class "edgelist.monan".
 #' @export
 #'
 #' @seealso [createProcessState()]
@@ -236,7 +236,7 @@ createEdgelist <-
 #' Effects without further parameters only contain the effect name (e.g., loops).
 #' @param checkProcessState For internal use only.
 #'
-#' @return A monan effects object.
+#' @return A object of class "effectsList.monan".
 #' @export
 #'
 #' @examples
@@ -317,12 +317,12 @@ createEffectsObject <-
 #' NOTE: The outcome variable of the model is not defined as a network, but as an edgelist!
 #'
 #' @param m A square matrix containing the network data.
-#' @param isSymmetric Currently not in use, defaults to FALSE.
-#' @param isBipartite Currently not in use, defaults to FALSE.
+#' @param isSymmetric Currently not in use.
+#' @param isBipartite Currently not in use.
 #' @param nodeSet Which nodeset are the nodes of the network. Usually this will
 #' be the locations in the data.
 #'
-#' @return a monan network object.
+#' @return An object of class "network.monan".
 #' @export
 #'
 #' @seealso [createProcessState()], [createEdgelist()]
@@ -358,7 +358,7 @@ createNetwork <-
 #'
 #' Determines and names the nodesets of individuals and locations that make up the mobility network.
 #'
-#' @param x Either a single number indicating how many items are in this node-set
+#' @param x Either a single number indicating how many items are in this nodeset
 #' or a vector from 1:n_items.
 #' @param isPresent Currently not in use.
 #' @param considerWhenSampling A boolean/logical vector of the length of the nodeset.
@@ -420,7 +420,7 @@ createNodeSet <-
 
 #' createNodeVariable
 #'
-#' Assigns an covariate to one nodeset, i.e., an exogenous characteristic of mobile
+#' Assigns a covariate to one nodeset, i.e., an exogenous characteristic of mobile
 #' individuals/resources or locations.
 #'
 #' @param values A vector assigning the covariate value to each element of the nodeset.
@@ -431,7 +431,7 @@ createNodeSet <-
 #' @param addSim Will the variable be used to model continuous homophily (e.g.,
 #' with the sim_covariate effect)? In this case, addSame needs to be set to TRUE.
 #'
-#' @return A monan node variable object
+#' @return A object of class "nodeVar.monan".
 #' @export
 #'
 #' @seealso [createProcessState()]

@@ -68,11 +68,11 @@ Note that this might result in very large objects.}
 
 \item{fish}{Logical: display a fish?}
 
-\item{x}{An ans object resulting from an estimation with estimateMobilityNetwork()}
+\item{x}{An object of class "result.monan".}
 
-\item{covMat}{Logical indicating whether the covariance matrix should be printed}
+\item{covMat}{Logical: indicating whether the covariance matrix should be printed.}
 
-\item{...}{For internal use only}
+\item{...}{For internal use only.}
 }
 \value{
 An object of class "result.monan" that contains the estimates, standard errors,

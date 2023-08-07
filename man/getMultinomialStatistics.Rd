@@ -7,15 +7,15 @@
 getMultinomialStatistics(state, cache, effects)
 }
 \arguments{
-\item{state}{A processState.monan object that stores all information to be used in the model.}
+\item{state}{An object of class "processState.monan" that stores all information to be used in the model.}
 
-\item{cache}{A cache that contains intermediate information used for estimation.}
+\item{cache}{A cache object that contains intermediate information used for estimation.}
 
-\item{effects}{An effects object for which the statistics of a multinomial
+\item{effects}{An object of class "effectsList.monan" for which the statistics of a multinomial
 model should be calculated.}
 }
 \value{
-A data frame with N*M rows (N = mobile individuals, M = number fo locations)
+A data frame with N * M rows (N = mobile individuals, M = number of locations)
 that specifies for each observation the statistics associated with moving to this location.
 }
 \description{

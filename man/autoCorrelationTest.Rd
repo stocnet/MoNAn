@@ -7,10 +7,10 @@
 autoCorrelationTest(ans)
 }
 \arguments{
-\item{ans}{The ans object resulting from an estimation with "estimateMobilityNetwork"}
+\item{ans}{An object of class "result.monan" resulting from an estimation with the function \code{\link[=estimateMobilityNetwork]{estimateMobilityNetwork()}}.}
 }
 \value{
-A number indicating the Auto-correlation.
+A number indicating the auto-correlation.
 }
 \description{
 The autoCorrelationTest indicates the degree to which the values of the dependent
@@ -21,7 +21,4 @@ higher thinning is needed.
 \examples{
 # regression diagnostics
 autoCorrelationTest(myResDN)
-}
-\seealso{
-\code{\link[=estimateMobilityNetwork]{estimateMobilityNetwork()}}
 }

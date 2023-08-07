@@ -10,24 +10,24 @@ gofDistributionNetwork(ans, simulations, gofFunction, lvls = NULL)
 \method{plot}{gof.stats.monan}(x, lvls, ...)
 }
 \arguments{
-\item{ans}{The ans object resulting from an estimation with "estimateMobilityNetwork"}
+\item{ans}{An object of class "result.monan" resulting from an estimation with the function \code{\link[=estimateMobilityNetwork]{estimateMobilityNetwork()}}.}
 
 \item{simulations}{The simulated outcomes with which the observed statistics are compared.
 Usually, they are stored in the ans$deps, in case deps = T was specified in the
 estimation.}
 
-\item{gofFunction}{A gof function that specifies which auxiliary outcome should be,
-e.g., "getIndegree" or "getTieWeights"}
+\item{gofFunction}{A gof function that specifies which auxiliary outcome should be used,
+e.g., "getIndegree" or "getTieWeights".}
 
-\item{lvls}{The values for which the gofFunction should be calculated / plotted}
+\item{lvls}{The values for which the gofFunction should be calculated/plotted.}
 
-\item{x}{A gof.stats.monan object, usually obtained from running "gofDistributionNetwork"}
+\item{x}{An object of class "gof.stats.monan".}
 
 \item{...}{Additional plotting parameters, use discouraged.}
 }
 \value{
 A list containing (1) the observed values of the auxiliary statistics and
-(2) a list of the simulated values of the auxiliary statistics
+(2) a list of the simulated values of the auxiliary statistics.
 }
 \description{
 Akin to ERGMs, goodness of fit testing is available to see whether auxiliary
@@ -56,6 +56,5 @@ Lospinoso, J., & Snijders, T. A. (2019).
 Goodness of fit for stochastic actor-oriented models. Methodological Innovations, 12(3).
 }
 \seealso{
-\code{\link[=estimateMobilityNetwork]{estimateMobilityNetwork()}}, \code{\link[=getIndegree]{getIndegree()}},
-\code{\link[=getTieWeights]{getTieWeights()}}
+\code{\link[=getIndegree]{getIndegree()}}, \code{\link[=getTieWeights]{getTieWeights()}}
 }

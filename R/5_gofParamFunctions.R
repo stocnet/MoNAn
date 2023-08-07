@@ -3,10 +3,10 @@
 
 #' getIndegree
 #'
-#' @param cache Current Cache
-#' @param dep.var Dependent Variable
-#' @param lvls Levels for which the function calculates values
-#' @param ... Additional parameters
+#' @param cache Current Cache.
+#' @param dep.var Dependent Variable.
+#' @param lvls Levels for which the function calculates values.
+#' @param ... Additional parameters.
 #'
 #' @export
 #' 
@@ -24,10 +24,10 @@ getIndegree <- function(cache, dep.var, lvls, ...) {
 
 #' getTieWeights
 #'
-#' @param cache Current Cache
-#' @param dep.var Dependent Variable
-#' @param lvls Levels for which the function calculates values
-#' @param ... Additional parameters
+#' @param cache Current Cache.
+#' @param dep.var Dependent Variable.
+#' @param lvls Levels for which the function calculates values.
+#' @param ... Additional parameters.
 #'
 #' @export
 #' 

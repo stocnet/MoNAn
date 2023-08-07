@@ -15,7 +15,7 @@ Each row is one observation.}
 entries describing between what locations who is mobile, i.e., c(location, location, individuals/resources).}
 }
 \value{
-an object of type edgelist.monan
+An object of class "edgelist.monan".
 }
 \description{
 Creates an edgelist object, which is the standard format of the outcome to be modelled

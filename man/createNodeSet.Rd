@@ -7,7 +7,7 @@
 createNodeSet(x = NULL, isPresent = NULL, considerWhenSampling = NULL)
 }
 \arguments{
-\item{x}{Either a single number indicating how many items are in this node-set
+\item{x}{Either a single number indicating how many items are in this nodeset
 or a vector from 1:n_items.}
 
 \item{isPresent}{Currently not in use.}

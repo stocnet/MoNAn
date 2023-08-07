@@ -24,10 +24,10 @@ createAlgorithm(
 )
 }
 \arguments{
-\item{state}{A monan state object that contains all relevant information about
+\item{state}{An object of class "processState.monan" that contains all relevant information about
 the outcome in the form of an edgelist, the nodesets, and covariates.}
 
-\item{effects}{An effect object that specifies the model.}
+\item{effects}{An object of class "effectsList.monan" that specifies the model.}
 
 \item{multinomialProposal}{How should the next possible outcome in the simulation chains
 be sampled? If TRUE, fewer simulation steps are needed, but each simulation
@@ -97,7 +97,7 @@ An object of class "algorithm.monan".
 }
 \description{
 Specifies the algorithm used in the estimation based on characteristics
-of the state, the effects and the dependent variable.
+of the state and the effects.
 }
 \examples{
 # define algorithm based on state and effects characteristics

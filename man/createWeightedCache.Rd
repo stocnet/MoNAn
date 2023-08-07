@@ -11,10 +11,10 @@ createWeightedCache(processState, resourceCovariates = NULL)
 creating the cache.}
 
 \item{resourceCovariates}{A vector of resource covariates that will be
-used in the model specification?}
+used in the model specification.}
 }
 \value{
-A monan cache object.
+A cache object provided as a list.
 }
 \description{
 Creates a necessary internal object used in simulating the chains in the

@@ -37,18 +37,18 @@ estimateDistributionNetwork(
 \method{print}{result.monan}(x, covMat = FALSE, ...)
 }
 \arguments{
-\item{state}{A monan state object that contains all relevant information about
+\item{state}{An object of class "processState.monan" which contains all relevant information about
 the outcome in the form of an edgelist, the nodesets, and covariates.}
 
-\item{cache}{A monan cache object created from the same state object that is
-used in the estimation}
+\item{cache}{A cache object created from the same state object that is
+used in the estimation.}
 
-\item{effects}{An effect object that specifies the model.}
+\item{effects}{An object of class "effectsList.monan" that specifies the model.}
 
-\item{algorithm}{An object that specifies the algorithm used in the estimation.}
+\item{algorithm}{An object of class "algorithm.monan" which specifies the algorithm used in the estimation.}
 
 \item{initialParameters}{Starting values for the parameters. Using starting
-values e.g. from a multinomial logit model (see getMultinomialStatistics())
+values, e.g., from a multinomial logit model (see \code{\link[=getMultinomialStatistics]{getMultinomialStatistics()}})
 increases the chances of model convergence in the first run of the estimation
 considerably.}
 
@@ -56,7 +56,7 @@ considerably.}
 the outcome object of that estimation should be specified here to provide new
 starting values for the estimation.}
 
-\item{parallel}{Computation on multiple cores?}
+\item{parallel}{Logical: computation on multiple cores?}
 
 \item{cpus}{Number of cores for computation in case parallel = T.}
 
@@ -75,9 +75,9 @@ Note that this might result in very large objects.}
 \item{...}{For internal use only}
 }
 \value{
-A monan results object that contains the estimates, standard errors,
+An object of class "result.monan" that contains the estimates, standard errors,
 and convergence statistics. Furthermore, the covariance matrix used to calculate
-the standard errors is included, which also shows colinearity between effects.
+the standard errors is included, which also shows collinearity between effects.
 In case returnDeps = TRUE, the simulations of Phase 3 are included, too.
 }
 \description{

@@ -46,7 +46,7 @@ myCache <- createWeightedCache(myState, resourceCovariates = c("sex"))
 
 ##### create effects object #####
 
-# create an effects object
+# effects object
 myEffects <- createEffectsObject(
   list(
     list("loops"),
@@ -96,7 +96,7 @@ myAlg <- createAlgorithm(myState, myEffects, multinomialProposal = FALSE)
 
 ##### estimate mobility network model #####
 
-# estimate mobility network model
+# mobility network model
 myResDN <- estimateMobilityNetwork(
   myState, myCache, myEffects, myAlg,
   initialParameters = NULL,
@@ -170,7 +170,7 @@ myGofTieWeight <- gofDistributionNetwork(ans = myResDN, simulations = myResDN$de
 plot(myGofTieWeight, lvls = 1:15)
 
 
-##### estimate mobility network model #####
+##### simulate mobility network #####
 
 mySimDN <- simulateMobilityNetworks(myState,
                                     myCache,

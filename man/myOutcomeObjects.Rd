@@ -29,19 +29,6 @@ An object of class \code{result.monan} created by the function \code{\link[=esti
 \code{mySimDN}
 An object of class \code{sims.monan} created by the function \code{\link[=simulateMobilityNetworks]{simulateMobilityNetworks()}}.
 }
-\usage{
-myState
-
-myCache
-
-myEffects
-
-myAlg
-
-myResDN
-
-mySimDN
-}
 \description{
 These are exemplary outcome objects for the MoNAn package and can be used in
 order not to run all precedent functions and thus save time. The following

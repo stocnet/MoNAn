@@ -23,7 +23,7 @@ is, their mobility is exogenously defined and does not follow the same logic as
 the mobility of everybody else.}
 }
 \value{
-A monan nodeset object.
+An object of class "nodeSet.monan".
 }
 \description{
 Determines and names the nodesets of individuals and locations that make up the mobility network.

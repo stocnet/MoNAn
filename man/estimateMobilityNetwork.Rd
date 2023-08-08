@@ -58,7 +58,7 @@ starting values for the estimation.}
 
 \item{parallel}{Logical: computation on multiple cores?}
 
-\item{cpus}{Number of cores for computation in case parallel = T.}
+\item{cpus}{Number of cores for computation in case parallel = TRUE.}
 
 \item{verbose}{Logical: display information about estimation progress in the console?}
 

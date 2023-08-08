@@ -33,13 +33,13 @@
 #' A recommended value is at least 0.5 * n_Individuals * n_locations if
 #' multinomialProposal = F, and at least n_Individuals if multinomialProposal = T
 #' which is set as default.
-#' @param initialIterationsN2 The number of draws taken in subpphase 1 of Phase 2.
+#' @param initialIterationsN2 The number of draws taken in subphase 1 of Phase 2.
 #' For first estimations, a recommended value is around 50 (default to 50).
 #' Note that in later subphases, the number of iterations increases.
 #' If this is a further estimation to improve convergence, higher values (100+)
 #' are recommended.
 #' @param nsubN2 Number of subphases in Phase 2. In case this is the first
-#' estimation, 4 subphases are recommended and is set as default. If convergence
+#' estimation, 4 subphases are recommended and set as default. If convergence
 #' in a previous estimation was close, then 1-2 subphases should be enough.
 #' @param initGain The magnitude of parameter updates in the first subphase of
 #' Phase 2. Values of around 0.2 (default) are recommended.
@@ -192,11 +192,11 @@ createAlgorithm <-
 #' createEdgelist
 #'
 #' Creates an edgelist object, which is the standard format of the outcome to be modelled
-#' by monan.
+#' by MoNAn.
 #'
 #' @param el An edgelist in the form of a matrix with two columns and N rows.
 #' The first column indicates the origin of a person/resource, the second row the destination.
-#' Each row is one observation.
+#' Each row represents one observation.
 #' @param nodeSet The nodesets of the edgelists. For edgelists, this is a vector with three
 #' entries describing between what locations who is mobile, i.e., c(location, location, individuals/resources).
 #'
@@ -236,7 +236,7 @@ createEdgelist <-
 #' Effects without further parameters only contain the effect name (e.g., loops).
 #' @param checkProcessState For internal use only.
 #'
-#' @return A object of class "effectsList.monan".
+#' @return An object of class "effectsList.monan".
 #' @export
 #'
 #' @examples
@@ -371,7 +371,7 @@ createNetwork <-
 #' is, their mobility is exogenously defined and does not follow the same logic as
 #' the mobility of everybody else.
 #'
-#' @return A monan nodeset object.
+#' @return An object of class "nodeSet.monan".
 #' @export
 #'
 #' @seealso [createProcessState()]
@@ -431,7 +431,7 @@ createNodeSet <-
 #' @param addSim Will the variable be used to model continuous homophily (e.g.,
 #' with the sim_covariate effect)? In this case, addSame needs to be set to TRUE.
 #'
-#' @return A object of class "nodeVar.monan".
+#' @return An object of class "nodeVar.monan".
 #' @export
 #'
 #' @seealso [createProcessState()]
@@ -684,7 +684,7 @@ createWeightedCache <-
 #' the outcome object of that estimation should be specified here to provide new
 #' starting values for the estimation.
 #' @param parallel Logical: computation on multiple cores?
-#' @param cpus Number of cores for computation in case parallel = T.
+#' @param cpus Number of cores for computation in case parallel = TRUE.
 #' @param verbose Logical: display information about estimation progress in the console?
 #' @param returnDeps Logical: should the simulated values of Phase 3 be stored and returned?
 #' This is necessary to run GoF tests.
@@ -901,11 +901,11 @@ estimateDistributionNetwork <- estimateMobilityNetwork
 #' simulateMobilityNetworks
 #'
 #' Simulates mobility networks for given data, effects, and parameters. This
-#' function is mainly interesting to explore the behaviour of the model or to
+#' function is mainly interesting to explore the behavior of the model or to
 #' do counter-factual simulations.
 #'
 #' @aliases simulateDistributionNetworks
-#' @param state A object of class "processState.monan" that contains all relevant information about
+#' @param state An object of class "processState.monan" that contains all relevant information about
 #' nodesets, and covariates. Further, an edgelist of the dependent variable needs
 #' to be specified with the initial mobility network as starting value for the
 #' simulation. For a large enough burn-in, any initial mobility network is allowed.

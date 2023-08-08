@@ -26,7 +26,7 @@ with the same_covariate effect)? In this case, addSame needs to be set to TRUE.}
 with the sim_covariate effect)? In this case, addSame needs to be set to TRUE.}
 }
 \value{
-A object of class "nodeVar.monan".
+An object of class "nodeVar.monan".
 }
 \description{
 Assigns a covariate to one nodeset, i.e., an exogenous characteristic of mobile

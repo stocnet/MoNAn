@@ -28,7 +28,7 @@ simulateDistributionNetworks(
 )
 }
 \arguments{
-\item{state}{A object of class "processState.monan" that contains all relevant information about
+\item{state}{An object of class "processState.monan" that contains all relevant information about
 nodesets, and covariates. Further, an edgelist of the dependent variable needs
 to be specified with the initial mobility network as starting value for the
 simulation. For a large enough burn-in, any initial mobility network is allowed.}
@@ -59,7 +59,7 @@ state and the cache of the current simulation stored.
 }
 \description{
 Simulates mobility networks for given data, effects, and parameters. This
-function is mainly interesting to explore the behaviour of the model or to
+function is mainly interesting to explore the behavior of the model or to
 do counter-factual simulations.
 }
 \examples{

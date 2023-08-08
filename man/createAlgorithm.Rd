@@ -60,14 +60,14 @@ A recommended value is at least 0.5 * n_Individuals * n_locations if
 multinomialProposal = F, and at least n_Individuals if multinomialProposal = T
 which is set as default.}
 
-\item{initialIterationsN2}{The number of draws taken in subpphase 1 of Phase 2.
+\item{initialIterationsN2}{The number of draws taken in subphase 1 of Phase 2.
 For first estimations, a recommended value is around 50 (default to 50).
 Note that in later subphases, the number of iterations increases.
 If this is a further estimation to improve convergence, higher values (100+)
 are recommended.}
 
 \item{nsubN2}{Number of subphases in Phase 2. In case this is the first
-estimation, 4 subphases are recommended and is set as default. If convergence
+estimation, 4 subphases are recommended and set as default. If convergence
 in a previous estimation was close, then 1-2 subphases should be enough.}
 
 \item{initGain}{The magnitude of parameter updates in the first subphase of

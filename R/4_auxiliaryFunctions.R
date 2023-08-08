@@ -189,7 +189,7 @@ getMultinomialStatistics <-
 #'
 #' @param ans An object of class "result.monan" resulting from an estimation with the function [estimateMobilityNetwork()].
 #' @param simulations The simulated outcomes with which the observed statistics are compared.
-#' Usually, they are stored in the ans$deps, in case deps = T was specified in the 
+#' Usually, they are stored in the ans$deps, in case deps = TRUE was specified in the 
 #' estimation.
 #' @param gofFunction A gof function that specifies which auxiliary outcome should be used, 
 #' e.g., "getIndegree" or "getTieWeights".
@@ -202,10 +202,10 @@ getMultinomialStatistics <-
 #' @seealso [getIndegree()], [getTieWeights()]
 #'
 #' @references Hunter, D. R., Goodreau, S. M., & Handcock, M. S. (2008). Goodness of fit of social network models. 
-#' Journal of the american statistical association, 103(481), 248-258.
+#' \emph{Journal of the american statistical association}, 103(481), 248-258.
 #' 
 #' Lospinoso, J., & Snijders, T. A. (2019). 
-#' Goodness of fit for stochastic actor-oriented models. Methodological Innovations, 12(3).
+#' Goodness of fit for stochastic actor-oriented models. \emph{Methodological Innovations}, 12(3).
 #' 
 #' 
 #' @examples
@@ -345,7 +345,7 @@ print.result.monan <- function(x, covMat = FALSE, ...) {
 #' @param effects An object of class "effectsList.monan" in which the non included effects that should
 #' be tested are specified.
 #'
-#' @return A simple output that gives parametric and non-parametric p-values
+#' @return A simple output object of class "scoretest.monan" that gives parametric and non-parametric p-values
 #' for each tested effect.
 #' @export
 #'

@@ -13,7 +13,7 @@ gofDistributionNetwork(ans, simulations, gofFunction, lvls = NULL)
 \item{ans}{An object of class "result.monan" resulting from an estimation with the function \code{\link[=estimateMobilityNetwork]{estimateMobilityNetwork()}}.}
 
 \item{simulations}{The simulated outcomes with which the observed statistics are compared.
-Usually, they are stored in the ans$deps, in case deps = T was specified in the
+Usually, they are stored in the ans$deps, in case deps = TRUE was specified in the
 estimation.}
 
 \item{gofFunction}{A gof function that specifies which auxiliary outcome should be used,
@@ -50,10 +50,10 @@ plot(myGofTieWeight, lvls = 1:15)
 }
 \references{
 Hunter, D. R., Goodreau, S. M., & Handcock, M. S. (2008). Goodness of fit of social network models.
-Journal of the american statistical association, 103(481), 248-258.
+\emph{Journal of the american statistical association}, 103(481), 248-258.
 
 Lospinoso, J., & Snijders, T. A. (2019).
-Goodness of fit for stochastic actor-oriented models. Methodological Innovations, 12(3).
+Goodness of fit for stochastic actor-oriented models. \emph{Methodological Innovations}, 12(3).
 }
 \seealso{
 \code{\link[=getIndegree]{getIndegree()}}, \code{\link[=getTieWeights]{getTieWeights()}}

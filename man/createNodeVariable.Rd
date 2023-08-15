@@ -23,7 +23,7 @@ createNodeVariable(
 with the same_covariate effect)? In this case, addSame needs to be set to TRUE.}
 
 \item{addSim}{Will the variable be used to model continuous homophily (e.g.,
-with the sim_covariate effect)? In this case, addSame needs to be set to TRUE.}
+with the sim_covariate effect)? In this case, addSim needs to be set to TRUE.}
 }
 \value{
 An object of class "nodeVar.monan".

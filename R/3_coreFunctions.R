@@ -197,8 +197,9 @@ createAlgorithm <-
 #' @param el An edgelist in the form of a matrix with two columns and N rows.
 #' The first column indicates the origin of a person/resource, the second row the destination.
 #' Each row represents one observation.
-#' @param nodeSet The nodesets of the edgelists. For edgelists, this is a vector with three
-#' entries describing between what locations who is mobile, i.e., c(location, location, individuals/resources).
+#' @param nodeSet The nodesets of the edgelists. This is a vector with three 
+#' entries referencing the names of the nodesets of locations and individuals 
+#' of the form c(location, location, individuals).
 #'
 #' @return An object of class "edgelist.monan".
 #' @export
@@ -429,7 +430,7 @@ createNodeSet <-
 #' @param addSame Will the variable be used to model categorical homophily (e.g.,
 #' with the same_covariate effect)? In this case, addSame needs to be set to TRUE.
 #' @param addSim Will the variable be used to model continuous homophily (e.g.,
-#' with the sim_covariate effect)? In this case, addSame needs to be set to TRUE.
+#' with the sim_covariate effect)? In this case, addSim needs to be set to TRUE.
 #'
 #' @return An object of class "nodeVar.monan".
 #' @export

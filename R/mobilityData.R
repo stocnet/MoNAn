@@ -3,18 +3,24 @@
 #' @name mobilityData
 #' @description
 #' These are example data for the MoNAn package and can be used to estimate a 
-#' mobility network. The following objects are provided for this purpose:
+#' mobility network. The raw example data is synthetic (i.e.,\ made up). 
+#' This fictitious example contains 17 organisations representing 
+#' a labour market that are located in two regions (north and south). 
+#' 742 workers are employed in these organisations at two time-points. 
+#' Some are mobile while others work in the same organisation at both time-points. 
+#' The following objects are provided for this purpose:
 #'
 #' \describe{
-#'   \item{`mobilityEdgelist`}{This data frame represents the origin at time 1 
-#'   (first column) as well as the destination at time 2 (second column) for 
-#'   each of the 742 individuals between the 17 organisations. Individuals could
-#'   also stay in their organisation meaning that origin equals destination.}
-#'   \item{`orgRegion`}{This characteristic describes whether the resp. 
-#'   organisation is located on the northern (1) or southern (0) island.}
-#'   \item{`orgSize`}{This composite measure represents the size of each 
-#'   organisation including its number of workers, assets, and revenue.}
-#'   \item{`indSex`}{This characteristic represents each individual's gender.}
+#'   \item{`mobilityEdgelist`}{The data frame indicates the origin at time 1 
+#'   (first column) and the destination at time 2 (second column) for 
+#'   each of the 742 individuals between the 17 organisations. Note that some
+#'   workers stay in their organisation, i.e. their origin equals their 
+#'   destination.}
+#'   \item{`orgRegion`}{Categorical characteristic describing whether the 
+#'   organisation is located on the northern (1) or southern (0) region.}
+#'   \item{`orgSize`}{Continuous measure representing the size of each 
+#'   organisation based on assets and revenue.}
+#'   \item{`indSex`}{Individual-level characteristics representing sex.}
 #' }
 #' 
 #' @rdname mobilityData

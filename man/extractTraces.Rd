@@ -10,19 +10,19 @@ extractTraces(ans, effects)
 \method{plot}{traces.monan}(x, ...)
 }
 \arguments{
-\item{ans}{The ans object resulting from an estimation with "estimateMobilityNetwork"}
+\item{ans}{An object of class "result.monan" resulting from an estimation with the function \code{\link[=estimateMobilityNetwork]{estimateMobilityNetwork()}}.}
 
-\item{effects}{The effects object used in the estimation}
+\item{effects}{An object of class "effectsList.monan" used in the estimation.}
 
-\item{x}{A traces.monan object obtained from running "extractTraces"}
+\item{x}{An object of class "traces.monan".}
 
-\item{...}{Additional plotting parameters, use not recommended}
+\item{...}{Additional plotting parameters, use not recommended.}
 }
 \value{
 A list that includes (1) the observed statistics for all effects,
-(2) the distribution of statistics for all simulations
+(2) the distribution of statistics for all simulations and
 (3) effect names.
-It is recommended to use the ploting function to inspect the traces.
+It is recommended to use the plotting function to inspect the traces.
 }
 \description{
 This function shows the values of simulated statistics in Phase 3 for subsequent draws from the chain.
@@ -34,5 +34,5 @@ traces <- extractTraces(myResDN, myEffects)
 plot(traces)
 }
 \seealso{
-\code{\link[=estimateMobilityNetwork]{estimateMobilityNetwork()}}, \code{\link[=createEffectsObject]{createEffectsObject()}}
+\code{\link[=createEffectsObject]{createEffectsObject()}}
 }

@@ -21,7 +21,7 @@ version](https://osf.io/preprints/socarxiv/n86rx/).
 
 The model allows for the analysis of emergent structures (known from
 network analysis) in mobility tables, alongside exogenous predictors. It
-combined features from classical log-linear models for mobility tables
+combines features from classical log-linear models for mobility tables
 and Exponential Random Graph Models (ERGMs). In the absence of emergent
 structures, the models reduces to the former, when ignoring
 characteristics of individuals, it is an ERGM for weighted networks.
@@ -32,7 +32,7 @@ Announcements about workshops etc. can be found
 # Warning!!!
 
 The package is still under development, especially the documentation.
-When using the package you might encounter bugs or errors, or you might
+When using the package, you might encounter bugs or errors, or you might
 not be able to do what you want. In that case please write the package
 maintainer under his institutional email address (requires using
 google).
@@ -49,22 +49,18 @@ remotes::install_github("perblock/MoNAn")
 
 # Example
 
-In this section we outline a simple example with synthetic data stored
+In this section, we outline a simple example with synthetic data stored
 in the MoNAn package.
 
 ``` r
 library(MoNAn)
-
-# packages for parallel computing
-library(snowfall)
-#> Loading required package: snow
 ```
 
 ## The Data
 
 The example case uses synthetic data that represents mobility of 742
 individuals between 17 organisations. The artificial data includes an
-edgelist, i.e. a list of origins (column 1) and destinations (column 2)
+edgelist, i.e., a list of origins (column 1) and destinations (column 2)
 of all individuals sorted by origin.
 
 ``` r
@@ -248,82 +244,10 @@ myResDN <- estimateMobilityNetwork(
   returnDeps = T,
   fish = F
 )
-#> Starting phase 1
-#> Starting burn-in with 12614 steps
-#> ........................
-#> Starting phase 2
-#> R Version:  R version 4.3.1 (2023-06-16)
-#> snowfall 1.84-6.2 initialized (using snow 0.4-4): parallel execution on 4 CPUs.
-#> Library MoNAn loaded.
-#> Library MoNAn loaded in cluster.
-#> Starting sub phase 1 
-#> New parameters:
-#> loops 
-#>  1.96239947914881 
-#>  reciprocity_min 
-#>  0.5921525719097 
-#>  dyadic_covariate sameRegion 
-#>  1.40049574029235 
-#>  alter_covariate size 
-#>  0.033007136338196 
-#>  resource_covar_to_node_covar region sex 
-#>  -0.552542320949847 
-#>  loops_resource_covar sex 
-#>  0.0129469964664311 
-#> Starting sub phase 2 
-#> New parameters:
-#> loops 
-#>  2.39723742802551 
-#>  reciprocity_min 
-#>  0.735171317280412 
-#>  dyadic_covariate sameRegion 
-#>  1.59953402045278 
-#>  alter_covariate size 
-#>  0.0341741994300065 
-#>  resource_covar_to_node_covar region sex 
-#>  -0.615722236162676 
-#>  loops_resource_covar sex 
-#>  -0.258349863937289 
-#> Starting sub phase 3 
-#> New parameters:
-#> loops 
-#>  2.52006155407795 
-#>  reciprocity_min 
-#>  0.782692703309321 
-#>  dyadic_covariate sameRegion 
-#>  1.66117156519656 
-#>  alter_covariate size 
-#>  0.0360495088741273 
-#>  resource_covar_to_node_covar region sex 
-#>  -0.6380053370706 
-#>  loops_resource_covar sex 
-#>  -0.322942579704397 
-#> Starting sub phase 4 
-#> New parameters:
-#> loops 
-#>  2.55831223642456 
-#>  reciprocity_min 
-#>  0.801052602801524 
-#>  dyadic_covariate sameRegion 
-#>  1.67900023443131 
-#>  alter_covariate size 
-#>  0.0378054612771427 
-#>  resource_covar_to_node_covar region sex 
-#>  -0.643234381003142 
-#>  loops_resource_covar sex 
-#>  -0.348498091145485
-#> 
-#> Stopping cluster
-#> Starting phase 3
-#> snowfall 1.84-6.2 initialized (using snow 0.4-4): parallel execution on 4 CPUs.
-#> Library MoNAn loaded.
-#> Library MoNAn loaded in cluster.
-#> 
-#> Stopping cluster
 ```
 
-In case a pseudo-likelihood estimates have been obtained previously,
-this can be specified by
+In case pseudo-likelihood estimates have been obtained previously, this
+can be specified by
 
 ``` r
 myResDN <- estimateMobilityNetwork(
@@ -342,7 +266,7 @@ estimates), another run is necessary.
 
 ``` r
 max(abs(myResDN$convergenceStatistics))
-#> [1] 0.06165639
+#> [1] 0.1158889
 ```
 
 If convergence is too high, update algorithm, re-run estimation with
@@ -362,39 +286,12 @@ myResDN <- estimateMobilityNetwork(
   returnDeps = T,
   fish = F
 )
-#> skipping phase 1 and taking values from prevAns
-#> Starting phase 2
-#> snowfall 1.84-6.2 initialized (using snow 0.4-4): parallel execution on 4 CPUs.
-#> Library MoNAn loaded.
-#> Library MoNAn loaded in cluster.
-#> Starting sub phase 1 
-#> New parameters:
-#> loops 
-#>  2.57401586997664 
-#>  reciprocity_min 
-#>  0.830449011051864 
-#>  dyadic_covariate sameRegion 
-#>  1.69209883761208 
-#>  alter_covariate size 
-#>  0.0369637391202157 
-#>  resource_covar_to_node_covar region sex 
-#>  -0.650002430600979 
-#>  loops_resource_covar sex 
-#>  -0.360896544627875
-#> 
-#> Stopping cluster
-#> Starting phase 3
-#> snowfall 1.84-6.2 initialized (using snow 0.4-4): parallel execution on 4 CPUs.
-#> Library MoNAn loaded.
-#> Library MoNAn loaded in cluster.
-#> 
-#> Stopping cluster
 ```
 
 ``` r
 # check convergence
 max(abs(myResDN$convergenceStatistics))
-#> [1] 0.09751736
+#> [1] 0.1158889
 ```
 
 In case convergence is still poor, updating the algorithm might be
@@ -407,19 +304,19 @@ convergence ratio. All values in the final column should be below 0.1
 myResDN
 #> Results
 #>                                   Effects   Estimates StandardErrors
-#> 1                                   loops  2.57401587     0.18651741
-#> 2                         reciprocity_min  0.83044901     0.17844344
-#> 3             dyadic_covariate sameRegion  1.69209884     0.10998693
-#> 4                    alter_covariate size  0.03696374     0.02426595
-#> 5 resource_covar_to_node_covar region sex -0.65000243     0.17541006
-#> 6                loops_resource_covar sex -0.36089654     0.22183745
-#>    Convergence
-#> 1 -0.005483438
-#> 2 -0.044616791
-#> 3 -0.097517364
-#> 4  0.003780352
-#> 5 -0.021552036
-#> 6 -0.004111089
+#> 1                                   loops  2.55119590     0.16767219
+#> 2                         reciprocity_min  0.80886194     0.17076331
+#> 3             dyadic_covariate sameRegion  1.66660275     0.11099617
+#> 4                    alter_covariate size  0.03613363     0.02307136
+#> 5 resource_covar_to_node_covar region sex -0.64131049     0.16544747
+#> 6                loops_resource_covar sex -0.34885512     0.21719272
+#>   Convergence
+#> 1 -0.08272621
+#> 2 -0.03402212
+#> 3 -0.08645417
+#> 4 -0.11588893
+#> 5 -0.01607496
+#> 6 -0.02259394
 ```
 
 ## Diagnostics of the estimated model
@@ -433,13 +330,13 @@ problematic and indicate that a higher thinning is needed.
 
 ``` r
 autoCorrelationTest(myResDN)
-#> [1] 0.2153447
+#> [1] 0.09344565
 ```
 
 The output of extractTraces indicates the correlation of statistics
 between subsequent draws from the chain in phase 3. The plot should show
-data point randomly scattered around the target line, as shown below. If
-patterns in the traces are discernible, a higher thinning is needed.
+data points randomly scattered around the target line, as shown below.
+If patterns in the traces are discernible, a higher thinning is needed.
 
 ``` r
 traces <- extractTraces(myResDN, myEffects)
@@ -468,7 +365,7 @@ test_ME.2 <- scoreTest(myResDN, myEffects2)
 test_ME.2
 #> Results
 #>            Effects pValuesParametric pValuesNonParametric
-#> 1 transitivity_min      4.727783e-09                    0
+#> 1 transitivity_min      1.149344e-09                    0
 #> 
 #>  Parametric p-values: small = more significant 
 #>  Non-parametric p-values: further away from 0.5 = more significant

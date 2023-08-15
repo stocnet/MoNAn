@@ -28,15 +28,15 @@ simulateDistributionNetworks(
 )
 }
 \arguments{
-\item{state}{A monan state object that contains all relevant information about
+\item{state}{An object of class "processState.monan" that contains all relevant information about
 nodesets, and covariates. Further, an edgelist of the dependent variable needs
 to be specified with the initial mobility network as starting value for the
-simulation. For a large enough burnin, any initial mobility network is allowed.}
+simulation. For a large enough burn-in, any initial mobility network is allowed.}
 
-\item{cache}{A monan cache object created from the same state object that is
+\item{cache}{A cache object created from the same state object that is
 used in the simulation.}
 
-\item{effects}{An effect object that specifies the model.}
+\item{effects}{An object of class "effectsList.monan" that specifies the model.}
 
 \item{parameters}{The parameters associated with the effects that shall be used
 in the simulations.}
@@ -54,12 +54,12 @@ network. A recommended value for the lower bound is n_Individuals * n_locations.
 \item{nSimulations}{The number of mobility networks to be simulated.}
 }
 \value{
-A list with nSimulations entries, where each entry contains a further list with the
+An object of class "sims.monan" with nSimulations entries, where each entry contains a further list with the
 state and the cache of the current simulation stored.
 }
 \description{
-Simulates mobility networks for a given data, effects, and parameters. This
-function is mainly interesting to explore the behaviour of the model or to
+Simulates mobility networks for given data, effects, and parameters. This
+function is mainly interesting to explore the behavior of the model or to
 do counter-factual simulations.
 }
 \examples{

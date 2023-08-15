@@ -8,12 +8,10 @@
 #' values are better. Values above 0.5 are very problematic and indicate that a 
 #' higher thinning is needed.
 #' 
-#' @param ans The ans object resulting from an estimation with "estimateMobilityNetwork"
+#' @param ans An object of class "result.monan" resulting from an estimation with the function [estimateMobilityNetwork()].
 #'
-#' @return A number indicating the Auto-correlation.
+#' @return A number indicating the auto-correlation.
 #' @export
-#'
-#' @seealso [estimateMobilityNetwork()]
 #'
 #' @examples
 #' # regression diagnostics
@@ -44,16 +42,16 @@ autoCorrelationTest <- function(ans) {
 #' This function shows the values of simulated statistics in Phase 3 for subsequent draws from the chain.
 #' Ideally, the plots show points randomly scattered around the red line, which indicates the statistics in the data.
 #' 
-#' @param ans The ans object resulting from an estimation with "estimateMobilityNetwork"
-#' @param effects The effects object used in the estimation
+#' @param ans An object of class "result.monan" resulting from an estimation with the function [estimateMobilityNetwork()].
+#' @param effects An object of class "effectsList.monan" used in the estimation.
 #'
 #' @return A list that includes (1) the observed statistics for all effects, 
-#' (2) the distribution of statistics for all simulations
+#' (2) the distribution of statistics for all simulations and
 #' (3) effect names.
-#' It is recommended to use the ploting function to inspect the traces.
+#' It is recommended to use the plotting function to inspect the traces.
 #' @export
 #'
-#' @seealso [estimateMobilityNetwork()], [createEffectsObject()]
+#' @seealso [createEffectsObject()]
 #'
 #' @examples
 #' # regression diagnostics
@@ -95,12 +93,12 @@ extractTraces <- function(ans, effects) {
 #' estimates for the full mobility model, which increases the chances of model 
 #' convergence in the first run of the estimation considerably.
 #'
-#' @param state A processState.monan object that stores all information to be used in the model.
-#' @param cache A cache that contains intermediate information used for estimation.
-#' @param effects An effects object for which the statistics of a multinomial
+#' @param state An object of class "processState.monan" that stores all information to be used in the model.
+#' @param cache A cache object that contains intermediate information used for estimation.
+#' @param effects An object of class "effectsList.monan" for which the statistics of a multinomial
 #' model should be calculated.
 #'
-#' @return A data frame with N*M rows (N = mobile individuals, M = number fo locations)
+#' @return A data frame with N * M rows (N = mobile individuals, M = number of locations)
 #' that specifies for each observation the statistics associated with moving to this location.
 #' @export
 #'
@@ -189,26 +187,25 @@ getMultinomialStatistics <-
 #' statistics are well captured by the model. The logic behind gof testing for network models is outlined in 
 #' Hunter et al. (2008) and Lospinoso and Snijders (2019).
 #'
-#' @param ans The ans object resulting from an estimation with "estimateMobilityNetwork"
+#' @param ans An object of class "result.monan" resulting from an estimation with the function [estimateMobilityNetwork()].
 #' @param simulations The simulated outcomes with which the observed statistics are compared.
-#' Usually, they are stored in the ans$deps, in case deps = T was specified in the 
+#' Usually, they are stored in the ans$deps, in case deps = TRUE was specified in the 
 #' estimation.
-#' @param gofFunction A gof function that specifies which auxiliary outcome should be, 
-#' e.g., "getIndegree" or "getTieWeights"
-#' @param lvls The values for which the gofFunction should be calculated / plotted
+#' @param gofFunction A gof function that specifies which auxiliary outcome should be used, 
+#' e.g., "getIndegree" or "getTieWeights".
+#' @param lvls The values for which the gofFunction should be calculated/plotted.
 #'
 #' @return A list containing (1) the observed values of the auxiliary statistics and
-#' (2) a list of the simulated values of the auxiliary statistics
+#' (2) a list of the simulated values of the auxiliary statistics.
 #' @export
 #'
-#' @seealso [estimateMobilityNetwork()], [getIndegree()],
-#' [getTieWeights()]
+#' @seealso [getIndegree()], [getTieWeights()]
 #'
 #' @references Hunter, D. R., Goodreau, S. M., & Handcock, M. S. (2008). Goodness of fit of social network models. 
-#' Journal of the american statistical association, 103(481), 248-258.
+#' \emph{Journal of the american statistical association}, 103(481), 248-258.
 #' 
 #' Lospinoso, J., & Snijders, T. A. (2019). 
-#' Goodness of fit for stochastic actor-oriented models. Methodological Innovations, 12(3).
+#' Goodness of fit for stochastic actor-oriented models. \emph{Methodological Innovations}, 12(3).
 #' 
 #' 
 #' @examples
@@ -261,8 +258,8 @@ gofDistributionNetwork <-
 #' plot.gof.stats.monan
 #'
 #' @rdname gofDistributionNetwork
-#' @param x A gof.stats.monan object, usually obtained from running "gofDistributionNetwork"
-#' @param lvls The values for which the gofFunction should be calculated / plotted
+#' @param x An object of class "gof.stats.monan".
+#' @param lvls The values for which the gofFunction should be calculated/plotted.
 #' @param ... Additional plotting parameters, use discouraged.
 #'
 #' @export
@@ -283,8 +280,8 @@ plot.gof.stats.monan <- function(x, lvls, ...) {
 #' plot.traces.monan
 #'
 #' @rdname extractTraces
-#' @param x A traces.monan object obtained from running "extractTraces"
-#' @param ... Additional plotting parameters, use not recommended
+#' @param x An object of class "traces.monan".
+#' @param ... Additional plotting parameters, use not recommended.
 #'
 #' @export
 #'
@@ -307,9 +304,9 @@ plot.traces.monan <- function(x, ...) {
 #' print.result.monan
 #'
 #' @rdname estimateMobilityNetwork
-#' @param x An ans object resulting from an estimation with estimateMobilityNetwork()
-#' @param covMat Logical indicating whether the covariance matrix should be printed
-#' @param ... For internal use only
+#' @param x An object of class "result.monan".
+#' @param covMat Logical: indicating whether the covariance matrix should be printed.
+#' @param ... For internal use only.
 #'
 #' @export
 #' 
@@ -344,15 +341,15 @@ print.result.monan <- function(x, covMat = FALSE, ...) {
 #' statistics representing non-included effects are well represented. If this is 
 #' not the case, it is likely that including them will result in significant estimates.
 #'
-#' @param ans The ans object resulting from an estimation with "estimateMobilityNetwork"
-#' @param effects An effects object in which the non included effects that should
-#' be tested are specified
+#' @param ans An object of class "result.monan" resulting from an estimation with the function [estimateMobilityNetwork()].
+#' @param effects An object of class "effectsList.monan" in which the non included effects that should
+#' be tested are specified.
 #'
-#' @return A simple output that gives parametric and non-parametric p-values
+#' @return A simple output object of class "scoretest.monan" that gives parametric and non-parametric p-values
 #' for each tested effect.
 #' @export
 #'
-#' @seealso [createEffectsObject()], [estimateMobilityNetwork()]
+#' @seealso [createEffectsObject()]
 #'
 #' @examples
 #' # test whether other effects should be included
@@ -416,8 +413,8 @@ scoreTest <- function(ans, effects) {
 #' print.scoretest.monan
 #'
 #' @rdname scoreTest
-#' @param x A scoretest.monan object
-#' @param ... For internal use only
+#' @param x An object of class "scoretest.monan".
+#' @param ... For internal use only.
 #'
 #' @export
 #'

@@ -14,7 +14,7 @@ Effects without further parameters only contain the effect name (e.g., loops).}
 \item{checkProcessState}{For internal use only.}
 }
 \value{
-A monan effects object.
+An object of class "effectsList.monan".
 }
 \description{
 Specifies the model with endogenous and exogenous predictors.

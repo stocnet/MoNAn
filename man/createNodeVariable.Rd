@@ -23,13 +23,13 @@ createNodeVariable(
 with the same_covariate effect)? In this case, addSame needs to be set to TRUE.}
 
 \item{addSim}{Will the variable be used to model continuous homophily (e.g.,
-with the sim_covariate effect)? In this case, addSame needs to be set to TRUE.}
+with the sim_covariate effect)? In this case, addSim needs to be set to TRUE.}
 }
 \value{
-A monan node variable object
+An object of class "nodeVar.monan".
 }
 \description{
-Assigns an covariate to one nodeset, i.e., an exogenous characteristic of mobile
+Assigns a covariate to one nodeset, i.e., an exogenous characteristic of mobile
 individuals/resources or locations.
 }
 \examples{

@@ -14,15 +14,15 @@ createNetwork(
 \arguments{
 \item{m}{A square matrix containing the network data.}
 
-\item{isSymmetric}{Currently not in use, defaults to FALSE.}
+\item{isSymmetric}{Currently not in use.}
 
-\item{isBipartite}{Currently not in use, defaults to FALSE.}
+\item{isBipartite}{Currently not in use.}
 
 \item{nodeSet}{Which nodeset are the nodes of the network. Usually this will
 be the locations in the data.}
 }
 \value{
-a monan network object.
+An object of class "network.monan".
 }
 \description{
 Defines a network between locations, generally to be used as a predictor in the model.

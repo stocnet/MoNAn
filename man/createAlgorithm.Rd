@@ -24,10 +24,10 @@ createAlgorithm(
 )
 }
 \arguments{
-\item{state}{A monan state object that contains all relevant information about
+\item{state}{An object of class "processState.monan" that contains all relevant information about
 the outcome in the form of an edgelist, the nodesets, and covariates.}
 
-\item{effects}{An effect object that specifies the model.}
+\item{effects}{An object of class "effectsList.monan" that specifies the model.}
 
 \item{multinomialProposal}{How should the next possible outcome in the simulation chains
 be sampled? If TRUE, fewer simulation steps are needed, but each simulation
@@ -60,14 +60,14 @@ A recommended value is at least 0.5 * n_Individuals * n_locations if
 multinomialProposal = F, and at least n_Individuals if multinomialProposal = T
 which is set as default.}
 
-\item{initialIterationsN2}{The number of draws taken in subpphase 1 of Phase 2.
+\item{initialIterationsN2}{The number of draws taken in subphase 1 of Phase 2.
 For first estimations, a recommended value is around 50 (default to 50).
 Note that in later subphases, the number of iterations increases.
 If this is a further estimation to improve convergence, higher values (100+)
 are recommended.}
 
 \item{nsubN2}{Number of subphases in Phase 2. In case this is the first
-estimation, 4 subphases are recommended and is set as default. If convergence
+estimation, 4 subphases are recommended and set as default. If convergence
 in a previous estimation was close, then 1-2 subphases should be enough.}
 
 \item{initGain}{The magnitude of parameter updates in the first subphase of
@@ -97,7 +97,7 @@ An object of class "algorithm.monan".
 }
 \description{
 Specifies the algorithm used in the estimation based on characteristics
-of the state, the effects and the dependent variable.
+of the state and the effects.
 }
 \examples{
 # define algorithm based on state and effects characteristics

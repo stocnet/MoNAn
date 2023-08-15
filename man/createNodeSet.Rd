@@ -7,7 +7,7 @@
 createNodeSet(x = NULL, isPresent = NULL, considerWhenSampling = NULL)
 }
 \arguments{
-\item{x}{Either a single number indicating how many items are in this node-set
+\item{x}{Either a single number indicating how many items are in this nodeset
 or a vector from 1:n_items.}
 
 \item{isPresent}{Currently not in use.}
@@ -23,7 +23,7 @@ is, their mobility is exogenously defined and does not follow the same logic as
 the mobility of everybody else.}
 }
 \value{
-A monan nodeset object.
+An object of class "nodeSet.monan".
 }
 \description{
 Determines and names the nodesets of individuals and locations that make up the mobility network.

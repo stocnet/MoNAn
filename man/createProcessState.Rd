@@ -8,15 +8,15 @@ createProcessState(elements, dependentVariable)
 }
 \arguments{
 \item{elements}{A named list of the outcome variable (edgelist), the nodesets,
-and all covariates that contain the information
-about the data that will be used in the estimation.}
+and all covariates that contain the information about the data that will be
+used in the estimation.}
 
 \item{dependentVariable}{The name of the outcome variable (edgelist) as
 specified under "elements". This indicates what outcome
 the researcher is interested in.}
 }
 \value{
-A monan process state object.
+An object of class "processState.monan".
 }
 \description{
 Creates the "Process state", i.e., a MoNAn object that stores all information

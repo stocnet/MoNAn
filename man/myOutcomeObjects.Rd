@@ -12,35 +12,22 @@
 \title{Exemplary Outcome Objects for the MoNAn Package}
 \format{
 \code{myState}
-An object of class \code{processState.monan} created by the function \code{\link[=createProcessState]{createProcessState()}}.
+An object of class "processState.monan" created by the function \code{\link[=createProcessState]{createProcessState()}}.
 
 \code{myCache}
-An object of class \code{list} created by the function \code{\link[=createWeightedCache]{createWeightedCache()}}.
+A "list" created by the function \code{\link[=createWeightedCache]{createWeightedCache()}}.
 
 \code{myEffects}
-An object of class \code{effectsList.monan} created by the function \code{\link[=createEffectsObject]{createEffectsObject()}}.
+An object of class "effectsList.monan" created by the function \code{\link[=createEffectsObject]{createEffectsObject()}}.
 
 \code{myAlg}
-An object of class \code{algorithm.monan} created by the function \code{\link[=createAlgorithm]{createAlgorithm()}}.
+An object of class "algorithm.monan" created by the function \code{\link[=createAlgorithm]{createAlgorithm()}}.
 
 \code{myResDN}
-An object of class \code{result.monan} created by the function \code{\link[=estimateMobilityNetwork]{estimateMobilityNetwork()}}.
+An object of class "result.monan" created by the function \code{\link[=estimateMobilityNetwork]{estimateMobilityNetwork()}}.
 
 \code{mySimDN}
-An object of class \code{sims.monan} created by the function \code{\link[=simulateMobilityNetworks]{simulateMobilityNetworks()}}.
-}
-\usage{
-myState
-
-myCache
-
-myEffects
-
-myAlg
-
-myResDN
-
-mySimDN
+An object of class "sims.monan" created by the function \code{\link[=simulateMobilityNetworks]{simulateMobilityNetworks()}}.
 }
 \description{
 These are exemplary outcome objects for the MoNAn package and can be used in

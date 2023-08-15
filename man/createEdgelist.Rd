@@ -9,17 +9,18 @@ createEdgelist(el, nodeSet = c("location", "location", "individuals"))
 \arguments{
 \item{el}{An edgelist in the form of a matrix with two columns and N rows.
 The first column indicates the origin of a person/resource, the second row the destination.
-Each row is one observation.}
+Each row represents one observation.}
 
-\item{nodeSet}{The nodesets of the edgelists. For edgelists, this is a vector with three
-entries describing between what locations who is mobile, i.e., c(location, location, individuals/resources).}
+\item{nodeSet}{The nodesets of the edgelists. This is a vector with three
+entries referencing the names of the nodesets of locations and individuals
+of the form c(location, location, individuals).}
 }
 \value{
-an object of type edgelist.monan
+An object of class "edgelist.monan".
 }
 \description{
 Creates an edgelist object, which is the standard format of the outcome to be modelled
-by monan.
+by MoNAn.
 }
 \examples{
 # create an object of class edgelist.monan

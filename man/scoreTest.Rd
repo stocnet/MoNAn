@@ -10,17 +10,17 @@ scoreTest(ans, effects)
 \method{print}{scoretest.monan}(x, ...)
 }
 \arguments{
-\item{ans}{The ans object resulting from an estimation with "estimateMobilityNetwork"}
+\item{ans}{An object of class "result.monan" resulting from an estimation with the function \code{\link[=estimateMobilityNetwork]{estimateMobilityNetwork()}}.}
 
-\item{effects}{An effects object in which the non included effects that should
-be tested are specified}
+\item{effects}{An object of class "effectsList.monan" in which the non included effects that should
+be tested are specified.}
 
-\item{x}{A scoretest.monan object}
+\item{x}{An object of class "scoretest.monan".}
 
-\item{...}{For internal use only}
+\item{...}{For internal use only.}
 }
 \value{
-A simple output that gives parametric and non-parametric p-values
+A simple output object of class "scoretest.monan" that gives parametric and non-parametric p-values
 for each tested effect.
 }
 \description{
@@ -47,5 +47,5 @@ test_ME.2 <- scoreTest(myResDN, myEffects2)
 test_ME.2
 }
 \seealso{
-\code{\link[=createEffectsObject]{createEffectsObject()}}, \code{\link[=estimateMobilityNetwork]{estimateMobilityNetwork()}}
+\code{\link[=createEffectsObject]{createEffectsObject()}}
 }

@@ -7,13 +7,13 @@
 getTieWeights(cache, dep.var, lvls, ...)
 }
 \arguments{
-\item{cache}{Current Cache}
+\item{cache}{Current Cache.}
 
-\item{dep.var}{Dependent Variable}
+\item{dep.var}{Dependent Variable.}
 
-\item{lvls}{Levels for which the function calculates values}
+\item{lvls}{Levels for which the function calculates values.}
 
-\item{...}{Additional parameters}
+\item{...}{Additional parameters.}
 }
 \description{
 getTieWeights

@@ -7,8 +7,7 @@ Authors@R: c(person("Per", "Block", role = c("cre", "aut", "cph"), email = "bloc
     person("Christoph", "Stadtfeld", role = "aut"),
     person("Nico", "Keiser", role = "aut"))
 Description: Implements the method to analyse weighted mobility networks or distribution networks as outlined in: 
-    Block, P., Stadtfeld, C., & Robins, G. (2022). A statistical model for the analysis of mobility 
-    tables as weighted networks with an application to faculty hiring networks. Social Networks, 68, 264-278.
+    Block, P., Stadtfeld, C., & Robins, G. (2022). <doi:10.1016/j.socnet.2021.08.003>.
 Depends: R (>= 4.2)
 License: GPL (>= 3)
 Encoding: UTF-8

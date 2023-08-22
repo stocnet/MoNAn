@@ -8,7 +8,7 @@ Authors@R: c(person("Per", "Block", role = c("cre", "aut", "cph"), email = "bloc
     person("Christoph", "Stadtfeld", role = "aut", comment = c(ORCID = "0000-0002-2704-2134")),
     person("Nico", "Keiser", role = "aut"))
 Description: Implements the method to analyse weighted mobility networks or distribution networks as outlined in: 
-    Block, P., Stadtfeld, C., & Robins, G. (2022). <doi:10.1016/j.socnet.2021.08.003>.
+    Block, P., Stadtfeld, C., & Robins, G. (2022) <doi:10.1016/j.socnet.2021.08.003>.
 Depends: R (>= 4.2)
 License: GPL (>= 3)
 Encoding: UTF-8

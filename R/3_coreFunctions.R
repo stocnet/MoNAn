@@ -670,7 +670,6 @@ createWeightedCache <-
 #' The core function of the package in which the model for the analysis of
 #' mobility tables is estimated.
 #'
-#' @aliases estimateDistributionNetwork
 #' @param state An object of class "processState.monan" which contains all relevant information about
 #' the outcome in the form of an edgelist, the nodesets, and covariates.
 #' @param cache A cache object created from the same state object that is
@@ -905,7 +904,6 @@ estimateDistributionNetwork <- estimateMobilityNetwork
 #' function is mainly interesting to explore the behavior of the model or to
 #' do counter-factual simulations.
 #'
-#' @aliases simulateDistributionNetworks
 #' @param state An object of class "processState.monan" that contains all relevant information about
 #' nodesets, and covariates. Further, an edgelist of the dependent variable needs
 #' to be specified with the initial mobility network as starting value for the

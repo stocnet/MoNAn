@@ -181,7 +181,7 @@ getMultinomialStatistics <-
 
 
 
-#' gofDistributionNetwork
+#' gofMobilityNetwork
 #' 
 #' Akin to ERGMs, goodness of fit testing is available to see whether auxiliary 
 #' statistics are well captured by the model. The logic behind gof testing for network models is outlined in 
@@ -210,16 +210,16 @@ getMultinomialStatistics <-
 #' 
 #' @examples
 #' # goodness of fit
-#' myGofIndegree <- gofDistributionNetwork(ans = myResDN, 
+#' myGofIndegree <- gofMobilityNetwork(ans = myResDN, 
 #'                                         simulations = myResDN$deps, 
 #'                                         gofFunction = getIndegree, 
 #'                                         lvls = 1:100)
 #' 
-#' myGofTieWeight <- gofDistributionNetwork(ans = myResDN, 
+#' myGofTieWeight <- gofMobilityNetwork(ans = myResDN, 
 #'                                          simulations = myResDN$deps, 
 #'                                          gofFunction = getTieWeights, 
 #'                                          lvls = 1:30)
-gofDistributionNetwork <-
+gofMobilityNetwork <-
   function(ans,
            simulations,
            gofFunction,
@@ -254,10 +254,14 @@ gofDistributionNetwork <-
     return(gofRes)
   }
 
+#' gofDistributionNetwork
+#'
+#' @rdname gofMobilityNetwork
+gofDistributionNetwork <- gofMobilityNetwork
 
 #' plot.gof.stats.monan
 #'
-#' @rdname gofDistributionNetwork
+#' @rdname gofMobilityNetwork
 #' @param x An object of class "gof.stats.monan".
 #' @param lvls The values for which the gofFunction should be calculated/plotted.
 #' @param ... Additional plotting parameters, use discouraged.

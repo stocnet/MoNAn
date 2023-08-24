@@ -19,6 +19,6 @@ getTieWeights(cache, dep.var, lvls, ...)
 getTieWeights
 }
 \seealso{
-\code{\link[=gofDistributionNetwork]{gofDistributionNetwork()}}
+\code{\link[=gofMobilityNetwork]{gofMobilityNetwork()}}
 }
 \keyword{internal}

@@ -6,14 +6,14 @@
 \alias{MoNAn-package}
 \title{MoNAn: Mobility Network Analysis}
 \description{
-Implements the method to analyse weighted mobility networks or distribution networks as outlined in: Block, P., Stadtfeld, C., & Robins, G. (2022). A statistical model for the analysis of mobility tables as weighted networks with an application to faculty hiring networks. Social Networks, 68, 264-278.
+Implements the method to analyse weighted mobility networks or distribution networks as outlined in: Block, P., Stadtfeld, C., & Robins, G. (2022) \doi{10.1016/j.socnet.2021.08.003}.
 }
 \author{
-\strong{Maintainer}: Per Block \email{block@soziologie.uzh.ch} [copyright holder]
+\strong{Maintainer}: Per Block \email{block@soziologie.uzh.ch} (\href{https://orcid.org/0000-0002-7583-2392}{ORCID}) [copyright holder]
 
 Authors:
 \itemize{
-  \item Christoph Stadtfeld
+  \item Christoph Stadtfeld (\href{https://orcid.org/0000-0002-2704-2134}{ORCID})
   \item Nico Keiser
 }
 

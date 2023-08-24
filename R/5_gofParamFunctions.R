@@ -10,7 +10,7 @@
 #'
 #' @export
 #' 
-#' @seealso [gofDistributionNetwork()]
+#' @seealso [gofMobilityNetwork()]
 #'  
 #' @keywords internal
 getIndegree <- function(cache, dep.var, lvls, ...) {
@@ -31,7 +31,7 @@ getIndegree <- function(cache, dep.var, lvls, ...) {
 #'
 #' @export
 #' 
-#' @seealso [gofDistributionNetwork()]
+#' @seealso [gofMobilityNetwork()]
 #'
 #' @keywords internal
 getTieWeights <- function(cache, dep.var, lvls, ...) {

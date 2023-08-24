@@ -9,7 +9,8 @@ export(
   
   # auxiliary functions
   autoCorrelationTest, extractTraces, 
-  getMultinomialStatistics, gofDistributionNetwork, plot.gof.stats.monan, 
+  getMultinomialStatistics, gofDistributionNetwork, gofMobilityNetwork, 
+  plot.gof.stats.monan, 
   plot.traces.monan, print.result.monan, print.scoretest.monan, scoreTest,
   
   # effect functions: exogenous

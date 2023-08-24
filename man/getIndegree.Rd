@@ -19,6 +19,6 @@ getIndegree(cache, dep.var, lvls, ...)
 getIndegree
 }
 \seealso{
-\code{\link[=gofDistributionNetwork]{gofDistributionNetwork()}}
+\code{\link[=gofMobilityNetwork]{gofMobilityNetwork()}}
 }
 \keyword{internal}

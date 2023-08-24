@@ -35,6 +35,9 @@ loops_sigmoid(
 
 \item{alpha}{}
 }
+\value{
+None.
+}
 \description{
 loops_sigmoid
 }

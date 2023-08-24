@@ -38,6 +38,9 @@ concentration_sigmoid_dyad_covar(
 
 \item{alpha}{}
 }
+\value{
+None.
+}
 \description{
 concentration_sigmoid_dyad_covar
 }

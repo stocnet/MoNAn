@@ -13,6 +13,7 @@
 #' @param getTargetContribution 
 #'
 #' 
+#' @return None.
 #' @keywords internal
 loops <-
   function(dep.var = 1,
@@ -48,6 +49,7 @@ loops <-
 #' @param alpha 
 #'
 #' 
+#' @return None.
 #' @keywords internal
 loops_GW <- function(dep.var = 1,
                      state,
@@ -127,6 +129,7 @@ loops_GW <- function(dep.var = 1,
 #' @param alpha 
 #'
 #' 
+#' @return None.
 #' @keywords internal
 loops_sigmoid <-
   function(dep.var = 1,
@@ -189,6 +192,7 @@ loops_sigmoid <-
 #' @param half.cont 
 #'
 #' 
+#' @return None.
 #' @keywords internal
 loops_GW_prop <-
   function(dep.var = 1,
@@ -255,6 +259,7 @@ loops_GW_prop <-
 #' @param getTargetContribution 
 #'
 #' 
+#' @return None.
 #' @keywords internal
 loops_node_covar <-
   function(dep.var = 1,
@@ -293,6 +298,7 @@ loops_node_covar <-
 #' @param getTargetContribution 
 #'
 #' 
+#' @return None.
 #' @keywords internal
 loops_resource_covar_node_covar <-
   function(dep.var = 1,
@@ -332,6 +338,7 @@ loops_resource_covar_node_covar <-
 #' @param getTargetContribution 
 #'
 #' 
+#' @return None.
 #' @keywords internal
 loops_resource_covar <-
   function(dep.var = 1,

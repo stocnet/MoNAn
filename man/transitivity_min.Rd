@@ -32,6 +32,9 @@ transitivity_min(
 
 \item{getTargetContribution}{}
 }
+\value{
+None.
+}
 \description{
 transitivity_min
 }

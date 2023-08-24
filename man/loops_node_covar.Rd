@@ -35,6 +35,9 @@ loops_node_covar(
 
 \item{getTargetContribution}{}
 }
+\value{
+None.
+}
 \description{
 loops_node_covar
 }

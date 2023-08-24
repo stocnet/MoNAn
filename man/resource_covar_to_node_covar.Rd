@@ -41,6 +41,9 @@ resource_covar_to_node_covar(
 
 \item{getTargetContribution}{}
 }
+\value{
+None.
+}
 \description{
 resource_covar_to_node_covar
 }

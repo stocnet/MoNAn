@@ -23,6 +23,9 @@ loops(dep.var = 1, state, cache, i, j, edge, update, getTargetContribution = F)
 
 \item{getTargetContribution}{}
 }
+\value{
+None.
+}
 \description{
 loops
 }

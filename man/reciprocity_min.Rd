@@ -32,6 +32,9 @@ reciprocity_min(
 
 \item{getTargetContribution}{}
 }
+\value{
+None.
+}
 \description{
 reciprocity_min
 }

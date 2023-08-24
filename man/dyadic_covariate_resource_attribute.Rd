@@ -38,6 +38,9 @@ dyadic_covariate_resource_attribute(
 
 \item{getTargetContribution}{}
 }
+\value{
+None.
+}
 \description{
 dyadic_covariate_resource_attribute
 }

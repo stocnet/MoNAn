@@ -32,6 +32,9 @@ reciprocity_basic(
 
 \item{getTargetContribution}{}
 }
+\value{
+None.
+}
 \description{
 reciprocity_basic
 }

@@ -35,6 +35,9 @@ concentration_sigmoid(
 
 \item{alpha}{}
 }
+\value{
+None.
+}
 \description{
 concentration_sigmoid
 }

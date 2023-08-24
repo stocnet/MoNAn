@@ -35,6 +35,9 @@ same_covariate(
 
 \item{getTargetContribution}{}
 }
+\value{
+None.
+}
 \description{
 same_covariate
 }

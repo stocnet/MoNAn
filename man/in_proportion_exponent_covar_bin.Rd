@@ -38,6 +38,9 @@ in_proportion_exponent_covar_bin(
 
 \item{exponent}{}
 }
+\value{
+None.
+}
 \description{
 in_proportion_exponent_covar_bin
 }

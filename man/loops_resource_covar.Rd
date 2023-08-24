@@ -35,6 +35,9 @@ loops_resource_covar(
 
 \item{getTargetContribution}{}
 }
+\value{
+None.
+}
 \description{
 loops_resource_covar
 }

@@ -38,6 +38,9 @@ in_weights_exponent_covar(
 
 \item{exponent}{}
 }
+\value{
+None.
+}
 \description{
 in_weights_exponent_covar
 }

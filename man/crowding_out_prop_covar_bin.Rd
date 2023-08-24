@@ -35,6 +35,9 @@ crowding_out_prop_covar_bin(
 
 \item{getTargetContribution}{}
 }
+\value{
+None.
+}
 \description{
 crowding_out_prop_covar_bin
 }

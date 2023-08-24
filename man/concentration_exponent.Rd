@@ -35,6 +35,9 @@ concentration_exponent(
 
 \item{exponent}{}
 }
+\value{
+None.
+}
 \description{
 concentration_exponent
 }

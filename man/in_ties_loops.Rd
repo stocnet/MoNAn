@@ -32,6 +32,9 @@ in_ties_loops(
 
 \item{getTargetContribution}{}
 }
+\value{
+None.
+}
 \description{
 in_ties_loops
 }

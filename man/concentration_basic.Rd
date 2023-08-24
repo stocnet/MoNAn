@@ -32,6 +32,9 @@ concentration_basic(
 
 \item{getTargetContribution}{}
 }
+\value{
+None.
+}
 \description{
 concentration_basic
 }

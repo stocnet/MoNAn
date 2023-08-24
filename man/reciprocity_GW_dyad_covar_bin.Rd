@@ -38,6 +38,9 @@ reciprocity_GW_dyad_covar_bin(
 
 \item{lambda}{}
 }
+\value{
+None.
+}
 \description{
 reciprocity_GW_dyad_covar_bin
 }

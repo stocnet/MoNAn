@@ -32,6 +32,9 @@ present_relations(
 
 \item{getTargetContribution}{}
 }
+\value{
+None.
+}
 \description{
 present_relations
 }

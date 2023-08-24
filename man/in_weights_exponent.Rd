@@ -35,6 +35,9 @@ in_weights_exponent(
 
 \item{exponent}{}
 }
+\value{
+None.
+}
 \description{
 in_weights_exponent
 }

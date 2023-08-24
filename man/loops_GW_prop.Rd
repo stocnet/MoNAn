@@ -35,6 +35,9 @@ loops_GW_prop(
 
 \item{half.cont}{}
 }
+\value{
+None.
+}
 \description{
 loops_GW_prop
 }

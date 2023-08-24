@@ -35,6 +35,9 @@ reciprocity_min_resource_covar(
 
 \item{getTargetContribution}{}
 }
+\value{
+None.
+}
 \description{
 reciprocity_min_resource_covar
 }

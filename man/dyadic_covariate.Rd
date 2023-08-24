@@ -35,6 +35,9 @@ dyadic_covariate(
 
 \item{getTargetContribution}{}
 }
+\value{
+None.
+}
 \description{
 dyadic_covariate
 }

@@ -11,6 +11,7 @@
 #' @param update 
 #' @param getTargetContribution 
 #'
+#' @return None.
 #' @keywords internal
 concentration_basic <- function(dep.var = 1, state, cache, i, j, edge, update, getTargetContribution = F){
   if(getTargetContribution){
@@ -35,6 +36,7 @@ concentration_basic <- function(dep.var = 1, state, cache, i, j, edge, update, g
 #' @param getTargetContribution 
 #' @param lambda 
 #'
+#' @return None.
 #' @keywords internal
 concentration_GW <- function(dep.var = 1, state, cache, i, j, edge, update, 
                              getTargetContribution = F, lambda = 2){
@@ -82,6 +84,7 @@ concentration_GW <- function(dep.var = 1, state, cache, i, j, edge, update,
 #' @param getTargetContribution 
 #' @param lambda 
 #'
+#' @return None.
 #' @keywords internal
 concentration_GW_dyad_covar_bin <- function(dep.var = 1, attribute.index, state, cache, i, j, edge, update, 
                                             getTargetContribution = F, lambda = 2){
@@ -138,6 +141,7 @@ concentration_GW_dyad_covar_bin <- function(dep.var = 1, attribute.index, state,
 #' @param exponent 
 #'
 #' 
+#' @return None.
 #' @keywords internal
 concentration_exponent <-
   function(dep.var = 1,
@@ -178,6 +182,7 @@ concentration_exponent <-
 #' @param alpha 
 #'
 #' 
+#' @return None.
 #' @keywords internal
 concentration_sigmoid <-
   function(dep.var = 1,
@@ -232,6 +237,7 @@ concentration_sigmoid <-
 #' @param alpha 
 #'
 #' 
+#' @return None.
 #' @keywords internal
 concentration_sigmoid_dyad_covar <-
   function(dep.var = 1,

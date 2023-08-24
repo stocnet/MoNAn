@@ -35,6 +35,9 @@ loops_GW(
 
 \item{alpha}{}
 }
+\value{
+None.
+}
 \description{
 loops_GW
 }

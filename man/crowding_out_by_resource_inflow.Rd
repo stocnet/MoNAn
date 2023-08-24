@@ -35,6 +35,9 @@ crowding_out_by_resource_inflow(
 
 \item{getTargetContribution}{}
 }
+\value{
+None.
+}
 \description{
 crowding_out_by_resource_inflow
 }

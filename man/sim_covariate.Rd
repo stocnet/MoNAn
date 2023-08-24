@@ -35,6 +35,9 @@ sim_covariate(
 
 \item{getTargetContribution}{}
 }
+\value{
+None.
+}
 \description{
 sim_covariate
 }

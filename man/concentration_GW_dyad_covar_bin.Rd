@@ -38,6 +38,9 @@ concentration_GW_dyad_covar_bin(
 
 \item{lambda}{}
 }
+\value{
+None.
+}
 \description{
 concentration_GW_dyad_covar_bin
 }

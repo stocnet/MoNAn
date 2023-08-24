@@ -32,6 +32,9 @@ transitivity_netflow(
 
 \item{getTargetContribution}{}
 }
+\value{
+None.
+}
 \description{
 transitivity_netflow
 }

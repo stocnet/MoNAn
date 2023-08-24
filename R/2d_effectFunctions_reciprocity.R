@@ -12,6 +12,7 @@
 #' @param update 
 #' @param getTargetContribution 
 #'
+#' @return None.
 #' @keywords internal
 reciprocity_basic <- function(dep.var = 1, state, cache, i, j, edge, update, getTargetContribution = F){
   if (i == j) return(0)
@@ -36,6 +37,7 @@ reciprocity_basic <- function(dep.var = 1, state, cache, i, j, edge, update, get
 #' @param getTargetContribution 
 #'
 #' 
+#' @return None.
 #' @keywords internal
 reciprocity_min <-
   function(dep.var = 1,
@@ -81,6 +83,7 @@ reciprocity_min <-
 #' @param getTargetContribution 
 #'
 #' 
+#' @return None.
 #' @keywords internal
 reciprocity_min_resource_covar <-
   function(dep.var = 1,
@@ -130,6 +133,7 @@ reciprocity_min_resource_covar <-
 #' @param getTargetContribution 
 #' @param lambda 
 #'
+#' @return None.
 #' @keywords internal
 reciprocity_GW <- function(dep.var = 1, state, cache, i, j, edge, update, 
                            getTargetContribution = F, lambda = 2){
@@ -182,6 +186,7 @@ reciprocity_GW <- function(dep.var = 1, state, cache, i, j, edge, update,
 #' @param getTargetContribution 
 #' @param lambda 
 #'
+#' @return None.
 #' @keywords internal
 reciprocity_GW_dyad_covar_bin <- function(dep.var = 1, attribute.index, state, cache, i, j, edge, update, 
                                           getTargetContribution = F, lambda = 2){

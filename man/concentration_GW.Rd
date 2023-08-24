@@ -35,6 +35,9 @@ concentration_GW(
 
 \item{lambda}{}
 }
+\value{
+None.
+}
 \description{
 concentration_GW
 }

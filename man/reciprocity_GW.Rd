@@ -35,6 +35,9 @@ reciprocity_GW(
 
 \item{lambda}{}
 }
+\value{
+None.
+}
 \description{
 reciprocity_GW
 }

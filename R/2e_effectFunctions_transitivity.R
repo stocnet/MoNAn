@@ -14,6 +14,7 @@
 #' @param getTargetContribution 
 #'
 #' 
+#' @return None.
 #' @keywords internal
 transitivity_min <-
   function(dep.var = 1,
@@ -79,6 +80,7 @@ transitivity_min <-
 #' @param getTargetContribution 
 #'
 #' 
+#' @return None.
 #' @keywords internal
 transitivity_netflow <-
   function(dep.var = 1,

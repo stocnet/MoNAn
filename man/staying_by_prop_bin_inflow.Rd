@@ -35,6 +35,9 @@ staying_by_prop_bin_inflow(
 
 \item{getTargetContribution}{}
 }
+\value{
+None.
+}
 \description{
 staying_by_prop_bin_inflow
 }

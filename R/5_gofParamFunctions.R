@@ -8,6 +8,7 @@
 #' @param lvls Levels for which the function calculates values.
 #' @param ... Additional parameters.
 #'
+#' @return None.
 #' @export
 #' 
 #' @seealso [gofMobilityNetwork()]
@@ -29,6 +30,7 @@ getIndegree <- function(cache, dep.var, lvls, ...) {
 #' @param lvls Levels for which the function calculates values.
 #' @param ... Additional parameters.
 #'
+#' @return None.
 #' @export
 #' 
 #' @seealso [gofMobilityNetwork()]

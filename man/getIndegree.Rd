@@ -15,6 +15,9 @@ getIndegree(cache, dep.var, lvls, ...)
 
 \item{...}{Additional parameters.}
 }
+\value{
+None.
+}
 \description{
 getIndegree
 }

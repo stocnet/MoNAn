@@ -38,6 +38,9 @@ loops_resource_covar_node_covar(
 
 \item{getTargetContribution}{}
 }
+\value{
+None.
+}
 \description{
 loops_resource_covar_node_covar
 }

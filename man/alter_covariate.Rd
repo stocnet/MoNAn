@@ -38,6 +38,9 @@ alter_covariate(
 
 \item{getTargetContribution}{}
 }
+\value{
+None.
+}
 \description{
 alter_covariate
 }

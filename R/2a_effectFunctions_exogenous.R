@@ -14,6 +14,7 @@
 #' @param getTargetContribution 
 #'
 #' 
+#' @return None.
 #' @keywords internal
 alter_covariate <-
   function(dep.var = 1,
@@ -54,6 +55,7 @@ alter_covariate <-
 #' @param getTargetContribution 
 #'
 #' 
+#' @return None.
 #' @keywords internal
 dyadic_covariate <-
   function(dep.var = 1,
@@ -92,6 +94,7 @@ dyadic_covariate <-
 #' @param getTargetContribution 
 #'
 #' 
+#' @return None.
 #' @keywords internal
 dyadic_covariate_resource_attribute <-
   function(dep.var = 1,
@@ -131,6 +134,7 @@ dyadic_covariate_resource_attribute <-
 #' @param getTargetContribution 
 #'
 #' 
+#' @return None.
 #' @keywords internal
 resource_covar_to_node_covar <-
   function(dep.var = 1,
@@ -173,6 +177,7 @@ resource_covar_to_node_covar <-
 #' @param getTargetContribution 
 #'
 #' 
+#' @return None.
 #' @keywords internal
 same_covariate <-
   function(dep.var = 1,
@@ -214,6 +219,7 @@ same_covariate <-
 #' @param getTargetContribution 
 #'
 #' 
+#' @return None.
 #' @keywords internal
 sim_covariate <-
   function(dep.var = 1,

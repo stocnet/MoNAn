@@ -13,6 +13,7 @@
 #' @param update 
 #' @param getTargetContribution 
 #' 
+#' @return None.
 #' @keywords internal
 crowding_out_by_resource_inflow <-
   function(dep.var = 1,
@@ -93,6 +94,7 @@ crowding_out_by_resource_inflow <-
 #' @param getTargetContribution 
 #'
 #' 
+#' @return None.
 #' @keywords internal
 crowding_out_prop_covar_bin <-
   function(dep.var = 1,
@@ -197,6 +199,7 @@ crowding_out_prop_covar_bin <-
 #' @param exponent 
 #'
 #' 
+#' @return None.
 #' @keywords internal
 in_proportion_exponent_covar_bin <-
   function(dep.var = 1,
@@ -262,6 +265,7 @@ in_proportion_exponent_covar_bin <-
 #' @param getTargetContribution 
 #'
 #' 
+#' @return None.
 #' @keywords internal
 in_ties_loops <-
   function(dep.var = 1,
@@ -301,6 +305,7 @@ in_ties_loops <-
 #' @param exponent 
 #'
 #' 
+#' @return None.
 #' @keywords internal
 in_weights_exponent <-
   function(dep.var = 1,
@@ -344,6 +349,7 @@ in_weights_exponent <-
 #' @param exponent 
 #'
 #' 
+#' @return None.
 #' @keywords internal
 in_weights_exponent_covar <-
   function(dep.var = 1,
@@ -391,6 +397,7 @@ in_weights_exponent_covar <-
 #' @param getTargetContribution 
 #'
 #' 
+#' @return None.
 #' @keywords internal
 present_relations <-
   function(dep.var = 1,
@@ -438,6 +445,7 @@ present_relations <-
 #' @param getTargetContribution 
 #'
 #' 
+#' @return None.
 #' @keywords internal
 staying_by_prop_bin_inflow <-
   function(dep.var = 1,
@@ -533,6 +541,7 @@ staying_by_prop_bin_inflow <-
 #' @param getTargetContribution 
 #'
 #' 
+#' @return None.
 #' @keywords internal
 staying_by_resource_inflow <-
   function(dep.var = 1,

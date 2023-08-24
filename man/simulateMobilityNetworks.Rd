@@ -64,7 +64,6 @@ do counter-factual simulations.
 }
 \examples{
 \dontrun{
-# simulate a mobility network
 mySimDN <- simulateMobilityNetworks(
   myState,
   myCache,

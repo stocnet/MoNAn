@@ -21,7 +21,6 @@ Specifies the model with endogenous and exogenous predictors.
 The predictors in the model are called “effects”.
 }
 \examples{
-# create an effects object
 myEffects <- createEffectsObject(
   list(
     list("loops"),

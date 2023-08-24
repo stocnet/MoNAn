@@ -22,6 +22,8 @@ be tested are specified.}
 \value{
 A simple output object of class "scoretest.monan" that gives parametric and non-parametric p-values
 for each tested effect.
+
+A print.
 }
 \description{
 Based on an estimated model, a score-type test is available that shows whether
@@ -29,7 +31,6 @@ statistics representing non-included effects are well represented. If this is
 not the case, it is likely that including them will result in significant estimates.
 }
 \examples{
-# test whether other effects should be included
 myEffects2 <- createEffectsObject(
   list(
     list("loops"),

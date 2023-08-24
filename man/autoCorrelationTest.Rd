@@ -19,6 +19,5 @@ values are better. Values above 0.5 are very problematic and indicate that a
 higher thinning is needed.
 }
 \examples{
-# regression diagnostics
 autoCorrelationTest(myResDN)
 }

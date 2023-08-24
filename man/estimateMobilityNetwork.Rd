@@ -79,6 +79,8 @@ An object of class "result.monan" that contains the estimates, standard errors,
 and convergence statistics. Furthermore, the covariance matrix used to calculate
 the standard errors is included, which also shows collinearity between effects.
 In case returnDeps = TRUE, the simulations of Phase 3 are included, too.
+
+A print.
 }
 \description{
 The core function of the package in which the model for the analysis of
@@ -96,7 +98,6 @@ myResDN <- estimateMobilityNetwork(myState, myCache, myEffects, myAlg,
                                    fish = F
 )
 
-# check convergence
 max(abs(myResDN$convergenceStatistics))
 
 myResDN_old <- myResDN
@@ -115,10 +116,8 @@ myResDN <- estimateMobilityNetwork(myState, myCache, myEffects, myAlg,
                                    fish = F
 )
 
-# check convergence
 max(abs(myResDN$convergenceStatistics))
 
-# view results
 myResDN
 }
 myResDN

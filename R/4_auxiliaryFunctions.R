@@ -14,7 +14,6 @@
 #' @export
 #'
 #' @examples
-#' # regression diagnostics
 #' autoCorrelationTest(myResDN)
 autoCorrelationTest <- function(ans) {
   dep.var <- ans$state$dep.var
@@ -54,7 +53,6 @@ autoCorrelationTest <- function(ans) {
 #' @seealso [createEffectsObject()]
 #'
 #' @examples
-#' # regression diagnostics
 #' traces <- extractTraces(myResDN, myEffects)
 extractTraces <- function(ans, effects) {
   dep.var <- ans$state$dep.var
@@ -209,7 +207,6 @@ getMultinomialStatistics <-
 #' 
 #' 
 #' @examples
-#' # goodness of fit
 #' myGofIndegree <- gofMobilityNetwork(ans = myResDN, 
 #'                                         simulations = myResDN$deps, 
 #'                                         gofFunction = getIndegree, 
@@ -266,6 +263,7 @@ gofDistributionNetwork <- gofMobilityNetwork
 #' @param lvls The values for which the gofFunction should be calculated/plotted.
 #' @param ... Additional plotting parameters, use discouraged.
 #'
+#' @return A plot.
 #' @export
 #'
 #' @examples
@@ -287,6 +285,7 @@ plot.gof.stats.monan <- function(x, lvls, ...) {
 #' @param x An object of class "traces.monan".
 #' @param ... Additional plotting parameters, use not recommended.
 #'
+#' @return A plot.
 #' @export
 #'
 #' @examples
@@ -312,6 +311,7 @@ plot.traces.monan <- function(x, ...) {
 #' @param covMat Logical: indicating whether the covariance matrix should be printed.
 #' @param ... For internal use only.
 #'
+#' @return A print.
 #' @export
 #' 
 #' @examples
@@ -356,7 +356,6 @@ print.result.monan <- function(x, covMat = FALSE, ...) {
 #' @seealso [createEffectsObject()]
 #'
 #' @examples
-#' # test whether other effects should be included
 #' myEffects2 <- createEffectsObject(
 #'   list(
 #'     list("loops"),
@@ -422,6 +421,7 @@ scoreTest <- function(ans, effects) {
 #'
 #' @export
 #'
+#' @return A print.
 #' @examples
 #' test_ME.2
 print.scoretest.monan <- function(x, ...) {

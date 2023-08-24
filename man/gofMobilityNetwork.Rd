@@ -31,6 +31,8 @@ e.g., "getIndegree" or "getTieWeights".}
 \value{
 A list containing (1) the observed values of the auxiliary statistics and
 (2) a list of the simulated values of the auxiliary statistics.
+
+A plot.
 }
 \description{
 Akin to ERGMs, goodness of fit testing is available to see whether auxiliary
@@ -38,7 +40,6 @@ statistics are well captured by the model. The logic behind gof testing for netw
 Hunter et al. (2008) and Lospinoso and Snijders (2019).
 }
 \examples{
-# goodness of fit
 myGofIndegree <- gofMobilityNetwork(ans = myResDN, 
                                         simulations = myResDN$deps, 
                                         gofFunction = getIndegree, 

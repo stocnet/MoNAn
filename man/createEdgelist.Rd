@@ -23,7 +23,6 @@ Creates an edgelist object, which is the standard format of the outcome to be mo
 by MoNAn.
 }
 \examples{
-# create an object of class edgelist.monan
 transfers <- createEdgelist(mobilityEdgelist, c("organisations", "organisations", "people"))
 }
 \seealso{

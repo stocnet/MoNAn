@@ -23,13 +23,14 @@ A list that includes (1) the observed statistics for all effects,
 (2) the distribution of statistics for all simulations and
 (3) effect names.
 It is recommended to use the plotting function to inspect the traces.
+
+A plot.
 }
 \description{
 This function shows the values of simulated statistics in Phase 3 for subsequent draws from the chain.
 Ideally, the plots show points randomly scattered around the red line, which indicates the statistics in the data.
 }
 \examples{
-# regression diagnostics
 traces <- extractTraces(myResDN, myEffects)
 plot(traces)
 }

@@ -45,7 +45,8 @@ autoCorrelationTest <- function(ans) {
 #' @param ans An object of class "result.monan" resulting from an estimation with the function [estimateMobilityNetwork()].
 #' @param effects An object of class "effectsList.monan" used in the estimation.
 #'
-#' @return A list that includes (1) the observed statistics for all effects, 
+#' @return The function `extractTraces` returns a list that includes 
+#' (1) the observed statistics for all effects, 
 #' (2) the distribution of statistics for all simulations and
 #' (3) effect names.
 #' It is recommended to use the plotting function to inspect the traces.
@@ -195,7 +196,8 @@ getMultinomialStatistics <-
 #' e.g., "getIndegree" or "getTieWeights".
 #' @param lvls The values for which the gofFunction should be calculated/plotted.
 #'
-#' @return A list containing (1) the observed values of the auxiliary statistics and
+#' @return The function `gofMobilityNetwork` returns a list containing 
+#' (1) the observed values of the auxiliary statistics and
 #' (2) a list of the simulated values of the auxiliary statistics.
 #' @export
 #'
@@ -266,7 +268,8 @@ gofDistributionNetwork <- gofMobilityNetwork
 #' @param lvls The values for which the gofFunction should be calculated/plotted.
 #' @param ... Additional plotting parameters, use discouraged.
 #'
-#' @return A plot.
+#' @return The function `plot.gof.stats.monan` returns violin plots of the 
+#' gof tests with observed values superimposed in red.
 #' @export
 #'
 #' @examples
@@ -288,7 +291,8 @@ plot.gof.stats.monan <- function(x, lvls, ...) {
 #' @param x An object of class "traces.monan".
 #' @param ... Additional plotting parameters, use not recommended.
 #'
-#' @return A plot.
+#' @return The function `plot.traces.monan` shows a scatter plot of the
+#' statistics of simulated networks from phase three of the esimtation.
 #' @export
 #'
 #' @examples
@@ -314,7 +318,9 @@ plot.traces.monan <- function(x, ...) {
 #' @param covMat Logical: indicating whether the covariance matrix should be printed.
 #' @param ... For internal use only.
 #'
-#' @return A print.
+#' @return The function `print.result.monan` prints the results from a monan
+#' estimation with three columns indicating the estimate, the standard error,
+#' and the convergence statistic.
 #' @export
 #' 
 #' @examples
@@ -352,7 +358,8 @@ print.result.monan <- function(x, covMat = FALSE, ...) {
 #' @param effects An object of class "effectsList.monan" in which the non included effects that should
 #' be tested are specified.
 #'
-#' @return A simple output object of class "scoretest.monan" that gives parametric and non-parametric p-values
+#' @return The function `scoreTest` returns basic values to calculate
+#' parametric and non-parametric p-values
 #' for each tested effect.
 #' @export
 #'
@@ -425,7 +432,8 @@ scoreTest <- function(ans, effects) {
 #'
 #' @export
 #'
-#' @return A print.
+#' @return The function `print.scoretest.monan` shows parametric and non-parametric p-values
+#' for each tested effect.
 #' @examples
 #' test_ME.2
 print.scoretest.monan <- function(x, ...) {

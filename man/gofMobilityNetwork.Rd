@@ -29,10 +29,12 @@ e.g., "getIndegree" or "getTieWeights".}
 \item{...}{Additional plotting parameters, use discouraged.}
 }
 \value{
-A list containing (1) the observed values of the auxiliary statistics and
+The function \code{gofMobilityNetwork} returns a list containing
+(1) the observed values of the auxiliary statistics and
 (2) a list of the simulated values of the auxiliary statistics.
 
-A plot.
+The function \code{plot.gof.stats.monan} returns violin plots of the
+gof tests with observed values superimposed in red.
 }
 \description{
 Akin to ERGMs, goodness of fit testing is available to see whether auxiliary

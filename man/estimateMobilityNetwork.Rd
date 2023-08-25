@@ -80,7 +80,9 @@ and convergence statistics. Furthermore, the covariance matrix used to calculate
 the standard errors is included, which also shows collinearity between effects.
 In case returnDeps = TRUE, the simulations of Phase 3 are included, too.
 
-A print.
+The function \code{print.result.monan} prints the results from a monan
+estimation with three columns indicating the estimate, the standard error,
+and the convergence statistic.
 }
 \description{
 The core function of the package in which the model for the analysis of

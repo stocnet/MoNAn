@@ -16,10 +16,10 @@ getTieWeights(cache, dep.var, lvls, ...)
 \item{...}{Additional parameters.}
 }
 \value{
-None.
+The tie weight distribution of simulated networks.
 }
 \description{
-getTieWeights
+Extracts the distribution of tie weights in the mobility network.
 }
 \seealso{
 \code{\link[=gofMobilityNetwork]{gofMobilityNetwork()}}

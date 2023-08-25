@@ -65,6 +65,7 @@
 #' @seealso [createProcessState()], [createEffectsObject()], [estimateMobilityNetwork()]
 #'
 #' @examples
+#' # define algorithm based on state and effects characteristics
 #' myAlg <- createAlgorithm(myState, myEffects, multinomialProposal = FALSE)
 createAlgorithm <-
   function(state,
@@ -206,6 +207,7 @@ createAlgorithm <-
 #' @seealso [createProcessState()]
 #'
 #' @examples
+#' # create an object of class edgelist.monan
 #' transfers <- createEdgelist(mobilityEdgelist, c("organisations", "organisations", "people"))
 createEdgelist <-
   function(el, nodeSet = c("location", "location", "individuals")) {
@@ -239,6 +241,7 @@ createEdgelist <-
 #' @export
 #'
 #' @examples
+#' # create an effects object
 #' myEffects <- createEffectsObject(
 #'   list(
 #'     list("loops"),
@@ -326,6 +329,7 @@ createEffectsObject <-
 #' @seealso [createProcessState()], [createEdgelist()]
 #'
 #' @examples
+#' # create an object of class network.monan
 #' sameRegion <- outer(orgRegion, orgRegion, "==") * 1
 #' sameRegion <- createNetwork(sameRegion, nodeSet = c("organisations", "organisations"))
 createNetwork <-
@@ -374,6 +378,7 @@ createNetwork <-
 #' @seealso [createProcessState()]
 #'
 #' @examples
+#' # create an object of class nodeSet.monan
 #' people <- createNodeSet(1:nrow(mobilityEdgelist))
 #' organisations <- createNodeSet(length(orgRegion))
 createNodeSet <-
@@ -433,6 +438,7 @@ createNodeSet <-
 #' @seealso [createProcessState()]
 #'
 #' @examples
+#' # create an object of class nodeVar.monan
 #' region <- createNodeVariable(orgRegion, nodeSet = "organisations")
 #' size <- createNodeVariable(orgSize, nodeSet = "organisations", addSim = TRUE)
 #' sex <- createNodeVariable(indSex, nodeSet = "people")
@@ -486,6 +492,8 @@ createNodeVariable <-
 #' [createNodeVariable()], [createNetwork()]
 #'
 #' @examples
+#' # Create a process state out of the mobility data objects:
+#' # create objects (which are later combined to the process state)
 #' transfers <- createEdgelist(mobilityEdgelist,
 #'   nodeSet = c("organisations", "organisations", "people")
 #' )
@@ -499,6 +507,7 @@ createNodeVariable <-
 #' size <- createNodeVariable(orgSize, nodeSet = "organisations", addSim = TRUE)
 #' sex <- createNodeVariable(indSex, nodeSet = "people")
 #'
+#' # combine created objects to the process state
 #' myState <- createProcessState(list(
 #'     transfers = transfers,
 #'     people = people,
@@ -585,6 +594,7 @@ createProcessState <- function(elements, dependentVariable) {
 #' @seealso [createProcessState()]
 #'
 #' @examples
+#' # create cache object
 #' myCache <- createWeightedCache(myState, resourceCovariates = c("sex"))
 createWeightedCache <-
   function(processState,
@@ -692,6 +702,7 @@ createWeightedCache <-
 #'
 #' @examples
 #' \dontrun{
+#' # estimate mobility network model
 #' myResDN <- estimateMobilityNetwork(myState, myCache, myEffects, myAlg,
 #'                                    initialParameters = NULL,
 #'                                    # in case a pseudo-likelihood estimation was run, replace with
@@ -702,6 +713,7 @@ createWeightedCache <-
 #'                                    fish = F
 #' )
 #' 
+#' # check convergence
 #' max(abs(myResDN$convergenceStatistics))
 #' 
 #' myResDN_old <- myResDN
@@ -720,8 +732,10 @@ createWeightedCache <-
 #'                                    fish = F
 #' )
 #' 
+#' # check convergence
 #' max(abs(myResDN$convergenceStatistics))
 #' 
+#' # view results
 #' myResDN
 #' }
 estimateMobilityNetwork <-
@@ -914,6 +928,7 @@ estimateDistributionNetwork <- estimateMobilityNetwork
 #'
 #' @examples
 #' \dontrun{
+#' # simulate a mobility network
 #' mySimDN <- simulateMobilityNetworks(
 #'   myState,
 #'   myCache,

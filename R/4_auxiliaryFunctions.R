@@ -14,6 +14,7 @@
 #' @export
 #'
 #' @examples
+#' # regression diagnostics
 #' autoCorrelationTest(myResDN)
 autoCorrelationTest <- function(ans) {
   dep.var <- ans$state$dep.var
@@ -53,6 +54,7 @@ autoCorrelationTest <- function(ans) {
 #' @seealso [createEffectsObject()]
 #'
 #' @examples
+#' # regression diagnostics
 #' traces <- extractTraces(myResDN, myEffects)
 extractTraces <- function(ans, effects) {
   dep.var <- ans$state$dep.var
@@ -207,6 +209,7 @@ getMultinomialStatistics <-
 #' 
 #' 
 #' @examples
+#' # goodness of fit
 #' myGofIndegree <- gofMobilityNetwork(ans = myResDN, 
 #'                                         simulations = myResDN$deps, 
 #'                                         gofFunction = getIndegree, 
@@ -356,6 +359,7 @@ print.result.monan <- function(x, covMat = FALSE, ...) {
 #' @seealso [createEffectsObject()]
 #'
 #' @examples
+#' # test whether other effects should be included
 #' myEffects2 <- createEffectsObject(
 #'   list(
 #'     list("loops"),

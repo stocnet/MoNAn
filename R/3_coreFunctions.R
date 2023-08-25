@@ -691,7 +691,7 @@ createWeightedCache <-
 #' Note that this might result in very large objects.
 #' @param fish Logical: display a fish?
 #'
-#' @return An object of class "result.monan" that contains the estimates, standard errors,
+#' @return The function `estimateMobilityNetwork` returns an object of class "result.monan" that contains the estimates, standard errors,
 #' and convergence statistics. Furthermore, the covariance matrix used to calculate
 #' the standard errors is included, which also shows collinearity between effects.
 #' In case returnDeps = TRUE, the simulations of Phase 3 are included, too.

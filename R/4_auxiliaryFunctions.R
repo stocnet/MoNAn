@@ -55,8 +55,10 @@ autoCorrelationTest <- function(ans) {
 #' @seealso [createEffectsObject()]
 #'
 #' @examples
+#' \dontrun{
 #' # regression diagnostics
 #' traces <- extractTraces(myResDN, myEffects)
+#' }
 extractTraces <- function(ans, effects) {
   dep.var <- ans$state$dep.var
   # give error if no deps in ans
@@ -366,6 +368,7 @@ print.result.monan <- function(x, covMat = FALSE, ...) {
 #' @seealso [createEffectsObject()]
 #'
 #' @examples
+#' \dontrun{
 #' # test whether other effects should be included
 #' myEffects2 <- createEffectsObject(
 #'   list(
@@ -381,6 +384,7 @@ print.result.monan <- function(x, covMat = FALSE, ...) {
 #' )
 #' 
 #' test_ME.2 <- scoreTest(myResDN, myEffects2)
+#' }
 scoreTest <- function(ans, effects) {
   dep.var <- ans$state$dep.var
   # give error if no deps in ans

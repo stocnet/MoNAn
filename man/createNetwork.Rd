@@ -29,6 +29,7 @@ Defines a network between locations, generally to be used as a predictor in the 
 NOTE: The outcome variable of the model is not defined as a network, but as an edgelist!
 }
 \examples{
+# create an object of class network.monan
 sameRegion <- outer(orgRegion, orgRegion, "==") * 1
 sameRegion <- createNetwork(sameRegion, nodeSet = c("organisations", "organisations"))
 }

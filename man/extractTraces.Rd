@@ -31,6 +31,7 @@ This function shows the values of simulated statistics in Phase 3 for subsequent
 Ideally, the plots show points randomly scattered around the red line, which indicates the statistics in the data.
 }
 \examples{
+# regression diagnostics
 traces <- extractTraces(myResDN, myEffects)
 plot(traces)
 }

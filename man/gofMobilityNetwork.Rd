@@ -40,6 +40,7 @@ statistics are well captured by the model. The logic behind gof testing for netw
 Hunter et al. (2008) and Lospinoso and Snijders (2019).
 }
 \examples{
+# goodness of fit
 myGofIndegree <- gofMobilityNetwork(ans = myResDN, 
                                         simulations = myResDN$deps, 
                                         gofFunction = getIndegree, 

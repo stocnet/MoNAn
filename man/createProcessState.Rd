@@ -24,6 +24,8 @@ about the data that will be used in the estimation. This includes the
 outcome variable (edgelist), the nodesets, and all covariates.
 }
 \examples{
+# Create a process state out of the mobility data objects:
+# create objects (which are later combined to the process state)
 transfers <- createEdgelist(mobilityEdgelist,
   nodeSet = c("organisations", "organisations", "people")
 )
@@ -37,6 +39,7 @@ region <- createNodeVariable(orgRegion, nodeSet = "organisations")
 size <- createNodeVariable(orgSize, nodeSet = "organisations", addSim = TRUE)
 sex <- createNodeVariable(indSex, nodeSet = "people")
 
+# combine created objects to the process state
 myState <- createProcessState(list(
     transfers = transfers,
     people = people,

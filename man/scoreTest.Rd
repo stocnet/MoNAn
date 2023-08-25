@@ -31,6 +31,7 @@ statistics representing non-included effects are well represented. If this is
 not the case, it is likely that including them will result in significant estimates.
 }
 \examples{
+# test whether other effects should be included
 myEffects2 <- createEffectsObject(
   list(
     list("loops"),

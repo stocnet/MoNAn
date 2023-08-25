@@ -100,6 +100,7 @@ Specifies the algorithm used in the estimation based on characteristics
 of the state and the effects.
 }
 \examples{
+# define algorithm based on state and effects characteristics
 myAlg <- createAlgorithm(myState, myEffects, multinomialProposal = FALSE)
 }
 \seealso{

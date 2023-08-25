@@ -29,6 +29,7 @@ An object of class "nodeSet.monan".
 Determines and names the nodesets of individuals and locations that make up the mobility network.
 }
 \examples{
+# create an object of class nodeSet.monan
 people <- createNodeSet(1:nrow(mobilityEdgelist))
 organisations <- createNodeSet(length(orgRegion))
 }

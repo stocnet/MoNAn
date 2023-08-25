@@ -88,6 +88,7 @@ mobility tables is estimated.
 }
 \examples{
 \dontrun{
+# estimate mobility network model
 myResDN <- estimateMobilityNetwork(myState, myCache, myEffects, myAlg,
                                    initialParameters = NULL,
                                    # in case a pseudo-likelihood estimation was run, replace with
@@ -98,6 +99,7 @@ myResDN <- estimateMobilityNetwork(myState, myCache, myEffects, myAlg,
                                    fish = F
 )
 
+# check convergence
 max(abs(myResDN$convergenceStatistics))
 
 myResDN_old <- myResDN
@@ -116,8 +118,10 @@ myResDN <- estimateMobilityNetwork(myState, myCache, myEffects, myAlg,
                                    fish = F
 )
 
+# check convergence
 max(abs(myResDN$convergenceStatistics))
 
+# view results
 myResDN
 }
 myResDN

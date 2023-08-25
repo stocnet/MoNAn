@@ -24,6 +24,7 @@ they need to be explicitly mentioned in the creation of the cache under
 “resourceCovariates”.
 }
 \examples{
+# create cache object
 myCache <- createWeightedCache(myState, resourceCovariates = c("sex"))
 }
 \seealso{

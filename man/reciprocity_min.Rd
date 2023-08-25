@@ -33,9 +33,13 @@ reciprocity_min(
 \item{getTargetContribution}{}
 }
 \value{
-None.
+Returns the change statistic or target statistic of the effect for
+internal use by the estimation algorithm.
 }
 \description{
-reciprocity_min
+Do individuals move to destinations that send more individuals to ego’s origin?
+This version of the effect is the minimum of the moves in either direction,
+thereby guarding against degeneracy and guaranteeing sample size consistency.
+It counts the ‘raw’ number of reciprocated transitions in the mobility network.
 }
 \keyword{internal}

@@ -36,9 +36,12 @@ loops_resource_covar(
 \item{getTargetContribution}{}
 }
 \value{
-None.
+Returns the change statistic or target statistic of the effect for
+internal use by the estimation algorithm.
 }
 \description{
-loops_resource_covar
+Are individuals with certain characteristics more likely to remain in their current
+location? For example, are men more likely to remain in their current organisation,
+while women are more likely to move employer?
 }
 \keyword{internal}

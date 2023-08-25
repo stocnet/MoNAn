@@ -36,9 +36,13 @@ loops_GW(
 \item{alpha}{}
 }
 \value{
-None.
+Returns the change statistic or target statistic of the effect for
+internal use by the estimation algorithm.
 }
 \description{
-loops_GW
+Do individuals stay in their current location, in case many other from their
+current location also stay? This effect tests whether the ‘benefit’ of staying
+in the origin location depends on the number of others also staying. Note that
+this effect should be modelled alongside the loops effect.
 }
 \keyword{internal}

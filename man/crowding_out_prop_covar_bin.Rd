@@ -36,9 +36,14 @@ crowding_out_prop_covar_bin(
 \item{getTargetContribution}{}
 }
 \value{
-None.
+Returns the change statistic or target statistic of the effect for
+internal use by the estimation algorithm.
 }
 \description{
-crowding_out_prop_covar_bin
+Is the tendency to stay in vs. move out of a location of individuals of type
+non-w dependent on the proportion of individuals of type w moving into the location?
+This is especially geared towards modelling how some locations become more or
+less attractive dependent on the change in composition for
+particular groups. This models segregation dynamics.
 }
 \keyword{internal}

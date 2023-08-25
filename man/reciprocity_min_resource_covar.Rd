@@ -36,9 +36,12 @@ reciprocity_min_resource_covar(
 \item{getTargetContribution}{}
 }
 \value{
-None.
+Returns the change statistic or target statistic of the effect for
+internal use by the estimation algorithm.
 }
 \description{
-reciprocity_min_resource_covar
+Do people reciprocate moves to other locations specifically if they and others
+have a higher value on some covariate? For example, do women move to organisations
+that send women to their origin organisation?
 }
 \keyword{internal}

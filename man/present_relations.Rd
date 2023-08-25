@@ -33,9 +33,12 @@ present_relations(
 \item{getTargetContribution}{}
 }
 \value{
-None.
+Returns the change statistic or target statistic of the effect for
+internal use by the estimation algorithm.
 }
 \description{
-present_relations
+Do individuals move along many or few paths out of their origin? This models
+whether individuals have a tendency against being the only one
+moving to a particular destination from their origin.
 }
 \keyword{internal}

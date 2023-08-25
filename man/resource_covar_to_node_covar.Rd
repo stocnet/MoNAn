@@ -42,9 +42,11 @@ resource_covar_to_node_covar(
 \item{getTargetContribution}{}
 }
 \value{
-None.
+Returns the change statistic or target statistic of the effect for
+internal use by the estimation algorithm.
 }
 \description{
-resource_covar_to_node_covar
+Do individuals with some individual attribute w tend to move to locations with
+some location characteristic v? E.g., do women move to larger organisations than men?
 }
 \keyword{internal}

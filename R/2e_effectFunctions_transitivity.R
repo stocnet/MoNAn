@@ -3,6 +3,9 @@
 
 #' transitivity_min
 #' 
+#' Is mobility clustered in groups? This is represented by the minimum of reciprocated 
+#' mobility being present among three nodes. Using the minimum ensures that the effect 
+#' is not degenerate and it is sample size consistent.
 #'
 #' @param dep.var 
 #' @param state 
@@ -14,7 +17,8 @@
 #' @param getTargetContribution 
 #'
 #' 
-#' @return None.
+#' @return Returns the change statistic or target statistic of the effect for 
+#' internal use by the estimation algorithm.
 #' @keywords internal
 transitivity_min <-
   function(dep.var = 1,
@@ -69,6 +73,9 @@ transitivity_min <-
 
 #' transitivity_netflow
 #' 
+#' Do individuals move in one direction in locally ordered triads? E.g., is there 
+#' a local hierarchy that individuals follow when moving between locations? The 
+#' effect is sample size consistent.
 #'
 #' @param dep.var 
 #' @param state 
@@ -80,7 +87,8 @@ transitivity_min <-
 #' @param getTargetContribution 
 #'
 #' 
-#' @return None.
+#' @return Returns the change statistic or target statistic of the effect for 
+#' internal use by the estimation algorithm.
 #' @keywords internal
 transitivity_netflow <-
   function(dep.var = 1,

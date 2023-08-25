@@ -39,9 +39,13 @@ concentration_GW_dyad_covar_bin(
 \item{lambda}{}
 }
 \value{
-None.
+Returns the change statistic or target statistic of the effect for
+internal use by the estimation algorithm.
 }
 \description{
-concentration_GW_dyad_covar_bin
+Are bandwagon effects (concentration) particularly prevalent between locations
+that share characteristics as encoded in a binary dyadic covariate? E.g., do
+workers follow the moves of other workers mainly in case they go to organisations
+in the same region?
 }
 \keyword{internal}

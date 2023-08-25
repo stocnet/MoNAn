@@ -36,9 +36,12 @@ loops_node_covar(
 \item{getTargetContribution}{}
 }
 \value{
-None.
+Returns the change statistic or target statistic of the effect for
+internal use by the estimation algorithm.
 }
 \description{
-loops_node_covar
+Are locations with specific attributes ‘stickier’ than others, i.e., do individuals
+have a higher propensity to stay in some locations? E.g., are individuals working
+in organisations in one region less likely to change their employer?
 }
 \keyword{internal}

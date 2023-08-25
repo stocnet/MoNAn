@@ -36,9 +36,11 @@ in_weights_exponent(
 \item{exponent}{}
 }
 \value{
-None.
+Returns the change statistic or target statistic of the effect for
+internal use by the estimation algorithm.
 }
 \description{
-in_weights_exponent
+Is there a preferential attachment in the mobility network, i.e., do individuals
+move particularly to popular destinations?
 }
 \keyword{internal}

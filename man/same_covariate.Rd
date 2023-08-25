@@ -36,9 +36,11 @@ same_covariate(
 \item{getTargetContribution}{}
 }
 \value{
-None.
+Returns the change statistic or target statistic of the effect for
+internal use by the estimation algorithm.
 }
 \description{
-same_covariate
+Is mobility more likely between locations that are identical on some attribute v?
+E.g., is mobility more likely between organisations that are located in the same region?
 }
 \keyword{internal}

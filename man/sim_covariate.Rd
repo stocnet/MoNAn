@@ -36,9 +36,11 @@ sim_covariate(
 \item{getTargetContribution}{}
 }
 \value{
-None.
+Returns the change statistic or target statistic of the effect for
+internal use by the estimation algorithm.
 }
 \description{
-sim_covariate
+Is mobility more likely between locations that are similar on some attribute v?
+E.g., is mobility more likely between organisations that have a similar size?
 }
 \keyword{internal}

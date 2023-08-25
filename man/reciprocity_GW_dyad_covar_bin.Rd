@@ -39,9 +39,12 @@ reciprocity_GW_dyad_covar_bin(
 \item{lambda}{}
 }
 \value{
-None.
+Returns the change statistic or target statistic of the effect for
+internal use by the estimation algorithm.
 }
 \description{
-reciprocity_GW_dyad_covar_bin
+Is reciprocity in mobility particularly prevalent between locations that share
+characteristics as encoded in a binary dyadic covariate? E.g., do workers move
+to organisations in the same region that send more workers to ego’s origin?
 }
 \keyword{internal}

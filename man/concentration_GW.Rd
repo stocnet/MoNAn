@@ -36,9 +36,16 @@ concentration_GW(
 \item{lambda}{}
 }
 \value{
-None.
+Returns the change statistic or target statistic of the effect for
+internal use by the estimation algorithm.
 }
 \description{
-concentration_GW
+Is there a bandwagon effect in mobility, i.e. do mobile individuals move to locations
+that are the destination of many others from their origin? The functional form of this
+statistic assumes that there are decreasing additional returns to more others on the
+same mobility path. For example, the probability to choose a mobility path that already
+contains 20 other individuals is hardly different from a path with 25 other individuals;
+however, there is a substantial difference in the comparison of paths with 2 or 7 other
+individuals.
 }
 \keyword{internal}

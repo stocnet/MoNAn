@@ -1,88 +1,14 @@
 ########## effectFunctions
 
 
-#' crowding_out_by_resource_inflow
-#'
-#' @param dep.var 
-#' @param resource.attribute.index 
-#' @param state 
-#' @param cache 
-#' @param i 
-#' @param j 
-#' @param edge 
-#' @param update 
-#' @param getTargetContribution 
-#' 
-#' @return None.
-#' @keywords internal
-crowding_out_by_resource_inflow <-
-  function(dep.var = 1,
-           resource.attribute.index,
-           state,
-           cache,
-           i,
-           j,
-           edge,
-           update,
-           getTargetContribution = F) {
-    # proportion needs binary coding with only 0 and 1
-    if (!all(state[[resource.attribute.index]]$data %in% c(0, 1))) {
-      stop(
-        "effect crowding_out_by_resource_inflow only defined for binary covariates coded 0 1"
-      )
-    }
-
-    # get the target contribution
-    if (getTargetContribution) {
-      # if a dyad not on the diagonal is checked, return 0
-      if (i != j) {
-        return(0)
-      }
-
-      # get the diagonal value
-      loops <-
-        cache[[dep.var]]$valuedNetwork[j, j] - cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][j, j]
-
-      # get the number of X'ers that move in to the node
-
-      in.resources <-
-        sum(cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][, j]) -
-        cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][j, j]
-
-      return(loops * in.resources)
-    }
-
-    # get the change statistics
-    # change statistics depends on either a new loop that is changed
-    # or on the inflow proportion that the target node has
-    # both need to know the proportion before
-
-    inflow.res.before <-
-      sum(cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][, j]) -
-      cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][j, j]
-
-    # first if a loop is formed
-    if (i == j) {
-      return(inflow.res.before * update * (1 - state[[resource.attribute.index]]$data[edge]))
-    }
-
-    # now if no loop is formed and the inflow number changes
-    loops <-
-      cache[[dep.var]]$valuedNetwork[j, j] - cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][j, j]
-
-    inflow.res.after <-
-      sum(cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][, j]) -
-      cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][j, j] +
-      update * state[[resource.attribute.index]]$data[edge]
-
-    change <- inflow.res.after - inflow.res.before
-    return(change * loops)
-  }
-
-
 #' crowding_out_prop_covar_bin
 #' 
-#'
+#' Is the tendency to stay in vs. move out of a location of individuals of type 
+#' non-w dependent on the proportion of individuals of type w moving into the location? 
+#' This is especially geared towards modelling how some locations become more or 
+#' less attractive dependent on the change in composition for
+#' particular groups. This models segregation dynamics.
+#' 
 #' @param dep.var 
 #' @param resource.attribute.index 
 #' @param state 
@@ -94,7 +20,8 @@ crowding_out_by_resource_inflow <-
 #' @param getTargetContribution 
 #'
 #' 
-#' @return None.
+#' @return Returns the change statistic or target statistic of the effect for 
+#' internal use by the estimation algorithm.
 #' @keywords internal
 crowding_out_prop_covar_bin <-
   function(dep.var = 1,
@@ -184,76 +111,10 @@ crowding_out_prop_covar_bin <-
 
 
 
-#' in_proportion_exponent_covar_bin
-#' 
-#'
-#' @param dep.var 
-#' @param resource.attribute.index 
-#' @param state 
-#' @param cache 
-#' @param i 
-#' @param j 
-#' @param edge 
-#' @param update 
-#' @param getTargetContribution 
-#' @param exponent 
-#'
-#' 
-#' @return None.
-#' @keywords internal
-in_proportion_exponent_covar_bin <-
-  function(dep.var = 1,
-           resource.attribute.index,
-           state,
-           cache,
-           i,
-           j,
-           edge,
-           update,
-           getTargetContribution = F,
-           exponent = 2) {
-    if (!all(state[[resource.attribute.index]]$data %in% c(0, 1))) {
-      stop("effect in_proportion_exponent_covar only defined for binary covariates coded 0 1")
-    }
-
-    # a target contribution is calculated even for unconnected i-j pairs
-    if (getTargetContribution) {
-      if (sum(cache[[dep.var]]$valuedNetwork[, j]) == 0) {
-        return(0)
-      }
-      # calculate proportion that have covar = 1
-      prop <-
-        (sum(cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][, j]) /
-          sum(cache[[dep.var]]$valuedNetwork[, j]))
-      # divide by number of rows, as target stats goes through each dyad
-      return(prop^exponent / length(cache[[dep.var]]$valuedNetwork[, j]))
-    }
-
-    # if a node has nobdy in it, then the old Proportion must be 0, not NaN
-    if (sum(cache[[dep.var]]$valuedNetwork[, j]) == 0) {
-      oldProp <- 0
-    } else {
-      oldProp <-
-        (sum(cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][, j]) /
-          sum(cache[[dep.var]]$valuedNetwork[, j]))^exponent
-    }
-
-    # if a resource is the last to leave a node, then the new proportion must be 0, not NaN
-    if ((sum(cache[[dep.var]]$valuedNetwork[, j]) + update) == 0) {
-      newProp <- 0
-    } else {
-      newProp <-
-        ((sum(cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][, j]) +
-          update * state[[resource.attribute.index]]$data[edge]) /
-          (sum(cache[[dep.var]]$valuedNetwork[, j]) + update))^
-          exponent
-    }
-    return(newProp - oldProp)
-  }
-
-
 #' in_ties_loops
 #' 
+#' Are individuals that are in locations with a large inflow more likely to stay 
+#' in their current location?
 #'
 #' @param dep.var 
 #' @param state 
@@ -265,7 +126,8 @@ in_proportion_exponent_covar_bin <-
 #' @param getTargetContribution 
 #'
 #' 
-#' @return None.
+#' @return Returns the change statistic or target statistic of the effect for 
+#' internal use by the estimation algorithm.
 #' @keywords internal
 in_ties_loops <-
   function(dep.var = 1,
@@ -293,6 +155,8 @@ in_ties_loops <-
 
 #' in_weights_exponent
 #' 
+#' Is there a preferential attachment in the mobility network, i.e., do individuals 
+#' move particularly to popular destinations?
 #'
 #' @param dep.var 
 #' @param state 
@@ -305,7 +169,8 @@ in_ties_loops <-
 #' @param exponent 
 #'
 #' 
-#' @return None.
+#' @return Returns the change statistic or target statistic of the effect for 
+#' internal use by the estimation algorithm.
 #' @keywords internal
 in_weights_exponent <-
   function(dep.var = 1,
@@ -334,58 +199,11 @@ in_weights_exponent <-
   }
 
 
-#' in_weights_exponent_covar
-#' 
-#'
-#' @param dep.var 
-#' @param resource.attribute.index 
-#' @param state 
-#' @param cache 
-#' @param i 
-#' @param j 
-#' @param edge 
-#' @param update 
-#' @param getTargetContribution 
-#' @param exponent 
-#'
-#' 
-#' @return None.
-#' @keywords internal
-in_weights_exponent_covar <-
-  function(dep.var = 1,
-           resource.attribute.index,
-           state,
-           cache,
-           i,
-           j,
-           edge,
-           update,
-           getTargetContribution = F,
-           exponent = .5) {
-    if (i == j) {
-      return(0)
-    }
-
-    # a target contribution is calculated even for unconnected i-j pairs
-    if (getTargetContribution) {
-      return(sum(cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][, j])^
-        exponent /
-        length(cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][, j]))
-    }
-
-    v <-
-      (sum(cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][, j]) + update * state[[resource.attribute.index]]$data[edge])^
-      exponent -
-      (sum(cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][, j]))^
-        exponent
-
-    return(v)
-  }
-
-
-
 #' present_relations
 #' 
+#' Do individuals move along many or few paths out of their origin? This models 
+#' whether individuals have a tendency against being the only one
+#' moving to a particular destination from their origin.
 #'
 #' @param dep.var 
 #' @param state 
@@ -397,7 +215,8 @@ in_weights_exponent_covar <-
 #' @param getTargetContribution 
 #'
 #' 
-#' @return None.
+#' @return Returns the change statistic or target statistic of the effect for 
+#' internal use by the estimation algorithm.
 #' @keywords internal
 present_relations <-
   function(dep.var = 1,
@@ -433,6 +252,10 @@ present_relations <-
 
 #' staying_by_prop_bin_inflow
 #' 
+#' Is the tendency to stay in vs. move out of a location dependent on the proportion 
+#' of individuals of type w that enter the location? This is especially geared 
+#' towards modelling how some locations become more or less
+#' attractive dependent on the change in composition.
 #'
 #' @param dep.var 
 #' @param resource.attribute.index 
@@ -445,7 +268,8 @@ present_relations <-
 #' @param getTargetContribution 
 #'
 #' 
-#' @return None.
+#' @return Returns the change statistic or target statistic of the effect for 
+#' internal use by the estimation algorithm.
 #' @keywords internal
 staying_by_prop_bin_inflow <-
   function(dep.var = 1,
@@ -523,83 +347,6 @@ staying_by_prop_bin_inflow <-
     }
 
     change <- propAfter - propBefore
-    return(change * loops)
-  }
-
-
-#' staying_by_resource_inflow
-#' 
-#'
-#' @param dep.var 
-#' @param resource.attribute.index 
-#' @param state 
-#' @param cache 
-#' @param i 
-#' @param j 
-#' @param edge 
-#' @param update 
-#' @param getTargetContribution 
-#'
-#' 
-#' @return None.
-#' @keywords internal
-staying_by_resource_inflow <-
-  function(dep.var = 1,
-           resource.attribute.index,
-           state,
-           cache,
-           i,
-           j,
-           edge,
-           update,
-           getTargetContribution = F) {
-    # proportion needs binary coding with only 0 and 1
-    if (!all(state[[resource.attribute.index]]$data %in% c(0, 1))) {
-      stop("effect staying_by_resource_inflow only defined for binary covariates coded 0 1")
-    }
-
-    # get the target contribution
-    if (getTargetContribution) {
-      # if a dyad not on the diagonal is checked, return 0
-      if (i != j) {
-        return(0)
-      }
-
-      # get the diagonal value
-      loops <- cache[[dep.var]]$valuedNetwork[i, j]
-
-      # get the number of X'ers that move in to the node
-
-      in.resources <-
-        sum(cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][, j]) -
-        cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][j, j]
-
-      return(loops * in.resources)
-    }
-
-    # get the change statistics
-    # change statistics depends on either a new loop that is changed
-    # or on the inflow proportion that the target node has
-    # both need to know the proportion before
-
-    inflow.res.before <-
-      sum(cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][, j]) -
-      cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][j, j]
-
-    # first if a loop is formed
-    if (i == j) {
-      return(inflow.res.before * update)
-    }
-
-    # now if no loop is formed and the inflow number changes
-    loops <- cache[[dep.var]]$valuedNetwork[j, j]
-
-    inflow.res.after <-
-      sum(cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][, j]) -
-      cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][j, j] +
-      update * state[[resource.attribute.index]]$data[edge]
-
-    change <- inflow.res.after - inflow.res.before
     return(change * loops)
   }
 

@@ -33,9 +33,12 @@ transitivity_netflow(
 \item{getTargetContribution}{}
 }
 \value{
-None.
+Returns the change statistic or target statistic of the effect for
+internal use by the estimation algorithm.
 }
 \description{
-transitivity_netflow
+Do individuals move in one direction in locally ordered triads? E.g., is there
+a local hierarchy that individuals follow when moving between locations? The
+effect is sample size consistent.
 }
 \keyword{internal}

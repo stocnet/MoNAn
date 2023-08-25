@@ -39,9 +39,11 @@ alter_covariate(
 \item{getTargetContribution}{}
 }
 \value{
-None.
+Returns the change statistic or target statistic of the effect for
+internal use by the estimation algorithm.
 }
 \description{
-alter_covariate
+Are locations higher on some attribute v more popular targets of mobility?
+E.g., do workers have a tendency to move to larger organisations?
 }
 \keyword{internal}

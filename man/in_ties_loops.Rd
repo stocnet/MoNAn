@@ -33,9 +33,11 @@ in_ties_loops(
 \item{getTargetContribution}{}
 }
 \value{
-None.
+Returns the change statistic or target statistic of the effect for
+internal use by the estimation algorithm.
 }
 \description{
-in_ties_loops
+Are individuals that are in locations with a large inflow more likely to stay
+in their current location?
 }
 \keyword{internal}

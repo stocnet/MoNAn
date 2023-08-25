@@ -6,7 +6,7 @@
 \alias{MoNAn-package}
 \title{MoNAn: Mobility Network Analysis}
 \description{
-Implements the method to analyse weighted mobility networks or distribution networks as outlined in: Block, P., Stadtfeld, C., & Robins, G. (2022) \doi{10.1016/j.socnet.2021.08.003}.
+Implements the method to analyse weighted mobility networks or distribution networks as outlined in: Block, P., Stadtfeld, C., & Robins, G. (2022) \doi{10.1016/j.socnet.2021.08.003}. The purpose of the model is to analyse the structure of mobility, incorporating exogenous predictors pertaining to individuals and locations known from classical mobility analyses, as well as modelling emergent mobility patterns akin to structural patterns known from the statistical analysis of social networks.
 }
 \author{
 \strong{Maintainer}: Per Block \email{block@soziologie.uzh.ch} (\href{https://orcid.org/0000-0002-7583-2392}{ORCID}) [copyright holder]

@@ -670,7 +670,6 @@ createWeightedCache <-
 #' The core function of the package in which the model for the analysis of
 #' mobility tables is estimated.
 #'
-#' @aliases estimateDistributionNetwork
 #' @param state An object of class "processState.monan" which contains all relevant information about
 #' the outcome in the form of an edgelist, the nodesets, and covariates.
 #' @param cache A cache object created from the same state object that is
@@ -692,7 +691,7 @@ createWeightedCache <-
 #' Note that this might result in very large objects.
 #' @param fish Logical: display a fish?
 #'
-#' @return An object of class "result.monan" that contains the estimates, standard errors,
+#' @return The function `estimateMobilityNetwork` returns an object of class "result.monan" that contains the estimates, standard errors,
 #' and convergence statistics. Furthermore, the covariance matrix used to calculate
 #' the standard errors is included, which also shows collinearity between effects.
 #' In case returnDeps = TRUE, the simulations of Phase 3 are included, too.
@@ -703,7 +702,7 @@ createWeightedCache <-
 #'
 #' @examples
 #' \dontrun{
-# estimate mobility network model
+#' # estimate mobility network model
 #' myResDN <- estimateMobilityNetwork(myState, myCache, myEffects, myAlg,
 #'                                    initialParameters = NULL,
 #'                                    # in case a pseudo-likelihood estimation was run, replace with
@@ -905,7 +904,6 @@ estimateDistributionNetwork <- estimateMobilityNetwork
 #' function is mainly interesting to explore the behavior of the model or to
 #' do counter-factual simulations.
 #'
-#' @aliases simulateDistributionNetworks
 #' @param state An object of class "processState.monan" that contains all relevant information about
 #' nodesets, and covariates. Further, an edgelist of the dependent variable needs
 #' to be specified with the initial mobility network as starting value for the

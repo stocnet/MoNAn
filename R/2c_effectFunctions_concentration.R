@@ -1,7 +1,10 @@
 ########## effectFunctions: effects concerning concentration (Arc/tie dependence)
 
 #' concentration_basic
-#'
+#' 
+#' Is there a bandwagon effect in mobility, i.e. do mobile individuals move to 
+#' locations that are the destination of many others from their origin?
+#' 
 #' @param dep.var 
 #' @param state 
 #' @param cache 
@@ -11,6 +14,8 @@
 #' @param update 
 #' @param getTargetContribution 
 #'
+#' @return Returns the change statistic or target statistic of the effect for 
+#' internal use by the estimation algorithm.
 #' @keywords internal
 concentration_basic <- function(dep.var = 1, state, cache, i, j, edge, update, getTargetContribution = F){
   if(getTargetContribution){
@@ -24,7 +29,15 @@ concentration_basic <- function(dep.var = 1, state, cache, i, j, edge, update, g
 
 
 #' concentration_GW
-#'
+#' 
+#' Is there a bandwagon effect in mobility, i.e. do mobile individuals move to locations 
+#' that are the destination of many others from their origin? The functional form of this 
+#' statistic assumes that there are decreasing additional returns to more others on the 
+#' same mobility path. For example, the probability to choose a mobility path that already 
+#' contains 20 other individuals is hardly different from a path with 25 other individuals; 
+#' however, there is a substantial difference in the comparison of paths with 2 or 7 other 
+#' individuals.
+#' 
 #' @param dep.var 
 #' @param state 
 #' @param cache 
@@ -35,6 +48,8 @@ concentration_basic <- function(dep.var = 1, state, cache, i, j, edge, update, g
 #' @param getTargetContribution 
 #' @param lambda 
 #'
+#' @return Returns the change statistic or target statistic of the effect for 
+#' internal use by the estimation algorithm.
 #' @keywords internal
 concentration_GW <- function(dep.var = 1, state, cache, i, j, edge, update, 
                              getTargetContribution = F, lambda = 2){
@@ -69,8 +84,14 @@ concentration_GW <- function(dep.var = 1, state, cache, i, j, edge, update,
   }
 }
 
+
 #' concentration_GW_dyad_covar_bin
-#'
+#' 
+#' Are bandwagon effects (concentration) particularly prevalent between locations 
+#' that share characteristics as encoded in a binary dyadic covariate? E.g., do 
+#' workers follow the moves of other workers mainly in case they go to organisations 
+#' in the same region?
+#' 
 #' @param dep.var 
 #' @param attribute.index 
 #' @param state 
@@ -82,6 +103,8 @@ concentration_GW <- function(dep.var = 1, state, cache, i, j, edge, update,
 #' @param getTargetContribution 
 #' @param lambda 
 #'
+#' @return Returns the change statistic or target statistic of the effect for 
+#' internal use by the estimation algorithm.
 #' @keywords internal
 concentration_GW_dyad_covar_bin <- function(dep.var = 1, attribute.index, state, cache, i, j, edge, update, 
                                             getTargetContribution = F, lambda = 2){
@@ -124,151 +147,4 @@ concentration_GW_dyad_covar_bin <- function(dep.var = 1, attribute.index, state,
   }
 }
 
-#' concentration_exponent
-#' 
-#'
-#' @param dep.var 
-#' @param state 
-#' @param cache 
-#' @param i 
-#' @param j 
-#' @param edge 
-#' @param update 
-#' @param getTargetContribution 
-#' @param exponent 
-#'
-#' 
-#' @keywords internal
-concentration_exponent <-
-  function(dep.var = 1,
-           state,
-           cache,
-           i,
-           j,
-           edge,
-           update,
-           getTargetContribution = F,
-           exponent = .5) {
-    if (i == j) {
-      return(0)
-    }
-    
-    if (getTargetContribution) {
-      return((cache[[dep.var]]$valuedNetwork[i, j])^exponent)
-    }
-    
-    v <- (cache[[dep.var]]$valuedNetwork[i, j] + update)^exponent -
-      (cache[[dep.var]]$valuedNetwork[i, j])^exponent
-    
-    return(v)
-  }
-
-
-#' concentration_sigmoid
-#' 
-#'
-#' @param dep.var 
-#' @param state 
-#' @param cache 
-#' @param i 
-#' @param j 
-#' @param edge 
-#' @param update 
-#' @param getTargetContribution 
-#' @param alpha 
-#'
-#' 
-#' @keywords internal
-concentration_sigmoid <-
-  function(dep.var = 1,
-           state,
-           cache,
-           i,
-           j,
-           edge,
-           update,
-           getTargetContribution = F,
-           alpha) {
-    if (i == j) {
-      return(0)
-    }
-    if (alpha <= 0) {
-      stop("Alpha parameter in sigmoid tie weights function must be positive")
-    }
-    
-    if (getTargetContribution) {
-      nResources <- cache[[dep.var]]$valuedNetwork[i, j]
-      v <- 0
-      for (zz in 0:nResources) {
-        v <- v + zz / (zz + alpha)
-      }
-      return(v)
-    }
-    
-    value.old <- cache[[dep.var]]$valuedNetwork[i, j]
-    value.new <- cache[[dep.var]]$valuedNetwork[i, j] + update
-    if (update > 0) {
-      v <- value.new / (value.new + alpha)
-    }
-    if (update < 0) {
-      v <- -value.old / (value.old + alpha)
-    }
-    
-    return(v)
-  }
-
-#' concentration_sigmoid_dyad_covar
-#' 
-#'
-#' @param dep.var 
-#' @param attribute.index 
-#' @param state 
-#' @param cache 
-#' @param i 
-#' @param j 
-#' @param edge 
-#' @param update 
-#' @param getTargetContribution 
-#' @param alpha 
-#'
-#' 
-#' @keywords internal
-concentration_sigmoid_dyad_covar <-
-  function(dep.var = 1,
-           attribute.index,
-           state,
-           cache,
-           i,
-           j,
-           edge,
-           update,
-           getTargetContribution = F,
-           alpha) {
-    if (i == j) {
-      return(0)
-    }
-    if (alpha <= 0) {
-      stop("Alpha parameter in sigmoid tie weights function must be positive")
-    }
-    
-    if (getTargetContribution) {
-      nResources <- cache[[dep.var]]$valuedNetwork[i, j]
-      v <- 0
-      for (zz in 0:nResources) {
-        v <- v + zz / (zz + alpha)
-      }
-      return(v * state[[attribute.index]]$data[i, j])
-    }
-    
-    value.old <- cache[[dep.var]]$valuedNetwork[i, j]
-    value.new <- cache[[dep.var]]$valuedNetwork[i, j] + update
-    if (update > 0) {
-      v <- value.new / (value.new + alpha)
-    }
-    if (update < 0) {
-      v <- -value.old / (value.old + alpha)
-    }
-    
-    return(v * state[[attribute.index]]$data[i, j])
-  }
 

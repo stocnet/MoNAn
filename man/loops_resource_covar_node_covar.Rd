@@ -38,7 +38,14 @@ loops_resource_covar_node_covar(
 
 \item{getTargetContribution}{}
 }
+\value{
+Returns the change statistic or target statistic of the effect for
+internal use by the estimation algorithm.
+}
 \description{
-loops_resource_covar_node_covar
+This is an interaction of the previous two effects: Do individuals with certain
+characteristics have a tendency to stay in locations of certain types? Note that
+this effect should be included alongside the main effects of ‘loops by individual
+covariate’ and ‘loops by location covariate’.
 }
 \keyword{internal}

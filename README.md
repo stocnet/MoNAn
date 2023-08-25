@@ -381,7 +381,7 @@ Akin to ERGMs, goodness of fit testing is available to see whether
 auxiliary statistics are well captured by the model.
 
 ``` r
-myGofIndegree <- gofDistributionNetwork(ans = myResDN, simulations = myResDN$deps, gofFunction = getIndegree, lvls = 1:70)
+myGofIndegree <- gofMobilityNetwork(ans = myResDN, simulations = myResDN$deps, gofFunction = getIndegree, lvls = 1:70)
 plot(myGofIndegree, lvls = 1:70)
 ```
 
@@ -389,7 +389,7 @@ plot(myGofIndegree, lvls = 1:70)
 
 ``` r
 
-myGofTieWeight <- gofDistributionNetwork(ans = myResDN, simulations = myResDN$deps, gofFunction = getTieWeights, lvls = 1:20)
+myGofTieWeight <- gofMobilityNetwork(ans = myResDN, simulations = myResDN$deps, gofFunction = getTieWeights, lvls = 1:20)
 plot(myGofTieWeight, lvls = 1:20)
 ```
 

@@ -1,6 +1,9 @@
 ########## effectFunctions: exogenous effects
 
 #' alter_covariate
+#' 
+#' Are locations higher on some attribute v more popular targets of mobility? 
+#' E.g., do workers have a tendency to move to larger organisations?
 #'
 #' @param dep.var 
 #' @param attribute.index 
@@ -14,6 +17,8 @@
 #' @param getTargetContribution 
 #'
 #' 
+#' @return Returns the change statistic or target statistic of the effect for 
+#' internal use by the estimation algorithm.
 #' @keywords internal
 alter_covariate <-
   function(dep.var = 1,
@@ -42,6 +47,10 @@ alter_covariate <-
 
 #' dyadic_covariate
 #' 
+#' Is mobility between locations predicted by the dyadic covariate u? E.g., is mobility 
+#' likely between organisations that are in the same region? Note that in many cases 
+#' dyadic covariates can convey the same information as
+#' the ‘same covariate’ or the ‘covariate similarity’ effects.
 #'
 #' @param dep.var 
 #' @param attribute.index 
@@ -54,6 +63,8 @@ alter_covariate <-
 #' @param getTargetContribution 
 #'
 #' 
+#' @return Returns the change statistic or target statistic of the effect for 
+#' internal use by the estimation algorithm.
 #' @keywords internal
 dyadic_covariate <-
   function(dep.var = 1,
@@ -79,6 +90,12 @@ dyadic_covariate <-
 
 #' dyadic_covariate_resource_attribute
 #' 
+#' Is mobility between locations predicted by the dyadic covariate u weighted by 
+#' the individual covariate w? E.g., is mobility of women more likely between 
+#' organisations that are in the same region? Note that this effect can be used 
+#' to also model the interaction between the ‘same covariate’/‘covariate similarity’ 
+#' effect and individual attributes, since sameness and similarity between locations 
+#' can be translated into dyadic covariates.
 #'
 #' @param dep.var 
 #' @param attribute.index 
@@ -92,6 +109,8 @@ dyadic_covariate <-
 #' @param getTargetContribution 
 #'
 #' 
+#' @return Returns the change statistic or target statistic of the effect for 
+#' internal use by the estimation algorithm.
 #' @keywords internal
 dyadic_covariate_resource_attribute <-
   function(dep.var = 1,
@@ -117,6 +136,8 @@ dyadic_covariate_resource_attribute <-
 
 #' resource_covar_to_node_covar
 #' 
+#' Do individuals with some individual attribute w tend to move to locations with 
+#' some location characteristic v? E.g., do women move to larger organisations than men?
 #'
 #' @param dep.var 
 #' @param resource.attribute.index 
@@ -131,6 +152,8 @@ dyadic_covariate_resource_attribute <-
 #' @param getTargetContribution 
 #'
 #' 
+#' @return Returns the change statistic or target statistic of the effect for 
+#' internal use by the estimation algorithm.
 #' @keywords internal
 resource_covar_to_node_covar <-
   function(dep.var = 1,
@@ -161,6 +184,8 @@ resource_covar_to_node_covar <-
 
 #' same_covariate
 #' 
+#' Is mobility more likely between locations that are identical on some attribute v? 
+#' E.g., is mobility more likely between organisations that are located in the same region?
 #'
 #' @param dep.var 
 #' @param attribute.index 
@@ -173,6 +198,8 @@ resource_covar_to_node_covar <-
 #' @param getTargetContribution 
 #'
 #' 
+#' @return Returns the change statistic or target statistic of the effect for 
+#' internal use by the estimation algorithm.
 #' @keywords internal
 same_covariate <-
   function(dep.var = 1,
@@ -202,6 +229,8 @@ same_covariate <-
 
 #' sim_covariate
 #' 
+#' Is mobility more likely between locations that are similar on some attribute v? 
+#' E.g., is mobility more likely between organisations that have a similar size?
 #'
 #' @param dep.var 
 #' @param attribute.index 
@@ -214,6 +243,8 @@ same_covariate <-
 #' @param getTargetContribution 
 #'
 #' 
+#' @return Returns the change statistic or target statistic of the effect for 
+#' internal use by the estimation algorithm.
 #' @keywords internal
 sim_covariate <-
   function(dep.var = 1,

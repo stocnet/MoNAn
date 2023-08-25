@@ -19,10 +19,14 @@ extractTraces(ans, effects)
 \item{...}{Additional plotting parameters, use not recommended.}
 }
 \value{
-A list that includes (1) the observed statistics for all effects,
+The function \code{extractTraces} returns a list that includes
+(1) the observed statistics for all effects,
 (2) the distribution of statistics for all simulations and
 (3) effect names.
 It is recommended to use the plotting function to inspect the traces.
+
+The function \code{plot.traces.monan} shows a scatter plot of the
+statistics of simulated networks from phase three of the esimtation.
 }
 \description{
 This function shows the values of simulated statistics in Phase 3 for subsequent draws from the chain.

@@ -35,7 +35,14 @@ dyadic_covariate(
 
 \item{getTargetContribution}{}
 }
+\value{
+Returns the change statistic or target statistic of the effect for
+internal use by the estimation algorithm.
+}
 \description{
-dyadic_covariate
+Is mobility between locations predicted by the dyadic covariate u? E.g., is mobility
+likely between organisations that are in the same region? Note that in many cases
+dyadic covariates can convey the same information as
+the ‘same covariate’ or the ‘covariate similarity’ effects.
 }
 \keyword{internal}

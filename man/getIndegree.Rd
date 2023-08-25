@@ -15,10 +15,15 @@ getIndegree(cache, dep.var, lvls, ...)
 
 \item{...}{Additional parameters.}
 }
+\value{
+The degree distribution of simulated networks.
+}
 \description{
-getIndegree
+Calculates the weighted indegree distribution of all locations in the
+network.
+The weighted indegree is simply the column sum of the mobility table.
 }
 \seealso{
-\code{\link[=gofDistributionNetwork]{gofDistributionNetwork()}}
+\code{\link[=gofMobilityNetwork]{gofMobilityNetwork()}}
 }
 \keyword{internal}

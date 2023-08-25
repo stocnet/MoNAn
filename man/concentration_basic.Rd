@@ -32,7 +32,12 @@ concentration_basic(
 
 \item{getTargetContribution}{}
 }
+\value{
+Returns the change statistic or target statistic of the effect for
+internal use by the estimation algorithm.
+}
 \description{
-concentration_basic
+Is there a bandwagon effect in mobility, i.e. do mobile individuals move to
+locations that are the destination of many others from their origin?
 }
 \keyword{internal}

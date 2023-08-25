@@ -20,7 +20,11 @@ be tested are specified.}
 \item{...}{For internal use only.}
 }
 \value{
-A simple output object of class "scoretest.monan" that gives parametric and non-parametric p-values
+The function \code{scoreTest} returns basic values to calculate
+parametric and non-parametric p-values
+for each tested effect.
+
+The function \code{print.scoretest.monan} shows parametric and non-parametric p-values
 for each tested effect.
 }
 \description{

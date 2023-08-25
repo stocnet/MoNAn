@@ -35,7 +35,13 @@ reciprocity_GW(
 
 \item{lambda}{}
 }
+\value{
+Returns the change statistic or target statistic of the effect for
+internal use by the estimation algorithm.
+}
 \description{
-reciprocity_GW
+Do individuals move to destinations that send many individuals to ego’s origin?
+The number of incoming individuals has decreasing returns, that is, every
+additionally incoming individual influences ego’s choice less.
 }
 \keyword{internal}

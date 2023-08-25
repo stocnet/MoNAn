@@ -45,7 +45,8 @@ autoCorrelationTest <- function(ans) {
 #' @param ans An object of class "result.monan" resulting from an estimation with the function [estimateMobilityNetwork()].
 #' @param effects An object of class "effectsList.monan" used in the estimation.
 #'
-#' @return A list that includes (1) the observed statistics for all effects, 
+#' @return The function `extractTraces` returns a list that includes 
+#' (1) the observed statistics for all effects, 
 #' (2) the distribution of statistics for all simulations and
 #' (3) effect names.
 #' It is recommended to use the plotting function to inspect the traces.
@@ -181,7 +182,7 @@ getMultinomialStatistics <-
 
 
 
-#' gofDistributionNetwork
+#' gofMobilityNetwork
 #' 
 #' Akin to ERGMs, goodness of fit testing is available to see whether auxiliary 
 #' statistics are well captured by the model. The logic behind gof testing for network models is outlined in 
@@ -195,7 +196,8 @@ getMultinomialStatistics <-
 #' e.g., "getIndegree" or "getTieWeights".
 #' @param lvls The values for which the gofFunction should be calculated/plotted.
 #'
-#' @return A list containing (1) the observed values of the auxiliary statistics and
+#' @return The function `gofMobilityNetwork` returns a list containing 
+#' (1) the observed values of the auxiliary statistics and
 #' (2) a list of the simulated values of the auxiliary statistics.
 #' @export
 #'
@@ -210,16 +212,16 @@ getMultinomialStatistics <-
 #' 
 #' @examples
 #' # goodness of fit
-#' myGofIndegree <- gofDistributionNetwork(ans = myResDN, 
+#' myGofIndegree <- gofMobilityNetwork(ans = myResDN, 
 #'                                         simulations = myResDN$deps, 
 #'                                         gofFunction = getIndegree, 
 #'                                         lvls = 1:100)
 #' 
-#' myGofTieWeight <- gofDistributionNetwork(ans = myResDN, 
+#' myGofTieWeight <- gofMobilityNetwork(ans = myResDN, 
 #'                                          simulations = myResDN$deps, 
 #'                                          gofFunction = getTieWeights, 
 #'                                          lvls = 1:30)
-gofDistributionNetwork <-
+gofMobilityNetwork <-
   function(ans,
            simulations,
            gofFunction,
@@ -254,14 +256,20 @@ gofDistributionNetwork <-
     return(gofRes)
   }
 
+#' gofDistributionNetwork
+#'
+#' @rdname gofMobilityNetwork
+gofDistributionNetwork <- gofMobilityNetwork
 
 #' plot.gof.stats.monan
 #'
-#' @rdname gofDistributionNetwork
+#' @rdname gofMobilityNetwork
 #' @param x An object of class "gof.stats.monan".
 #' @param lvls The values for which the gofFunction should be calculated/plotted.
 #' @param ... Additional plotting parameters, use discouraged.
 #'
+#' @return The function `plot.gof.stats.monan` returns violin plots of the 
+#' gof tests with observed values superimposed in red.
 #' @export
 #'
 #' @examples
@@ -283,6 +291,8 @@ plot.gof.stats.monan <- function(x, lvls, ...) {
 #' @param x An object of class "traces.monan".
 #' @param ... Additional plotting parameters, use not recommended.
 #'
+#' @return The function `plot.traces.monan` shows a scatter plot of the
+#' statistics of simulated networks from phase three of the esimtation.
 #' @export
 #'
 #' @examples
@@ -308,6 +318,9 @@ plot.traces.monan <- function(x, ...) {
 #' @param covMat Logical: indicating whether the covariance matrix should be printed.
 #' @param ... For internal use only.
 #'
+#' @return The function `print.result.monan` prints the results from a monan
+#' estimation with three columns indicating the estimate, the standard error,
+#' and the convergence statistic.
 #' @export
 #' 
 #' @examples
@@ -345,7 +358,8 @@ print.result.monan <- function(x, covMat = FALSE, ...) {
 #' @param effects An object of class "effectsList.monan" in which the non included effects that should
 #' be tested are specified.
 #'
-#' @return A simple output object of class "scoretest.monan" that gives parametric and non-parametric p-values
+#' @return The function `scoreTest` returns basic values to calculate
+#' parametric and non-parametric p-values
 #' for each tested effect.
 #' @export
 #'
@@ -418,6 +432,8 @@ scoreTest <- function(ans, effects) {
 #'
 #' @export
 #'
+#' @return The function `print.scoretest.monan` shows parametric and non-parametric p-values
+#' for each tested effect.
 #' @examples
 #' test_ME.2
 print.scoretest.monan <- function(x, ...) {

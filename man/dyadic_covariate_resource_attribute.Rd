@@ -38,7 +38,16 @@ dyadic_covariate_resource_attribute(
 
 \item{getTargetContribution}{}
 }
+\value{
+Returns the change statistic or target statistic of the effect for
+internal use by the estimation algorithm.
+}
 \description{
-dyadic_covariate_resource_attribute
+Is mobility between locations predicted by the dyadic covariate u weighted by
+the individual covariate w? E.g., is mobility of women more likely between
+organisations that are in the same region? Note that this effect can be used
+to also model the interaction between the ‘same covariate’/‘covariate similarity’
+effect and individual attributes, since sameness and similarity between locations
+can be translated into dyadic covariates.
 }
 \keyword{internal}

@@ -2,6 +2,9 @@
 
 
 #' reciprocity_basic
+#' 
+#' Do individuals move to destinations dependent on the number of individuals that 
+#' move to ego’s origin from that destination?
 #'
 #' @param dep.var 
 #' @param state 
@@ -12,6 +15,8 @@
 #' @param update 
 #' @param getTargetContribution 
 #'
+#' @return Returns the change statistic or target statistic of the effect for 
+#' internal use by the estimation algorithm.
 #' @keywords internal
 reciprocity_basic <- function(dep.var = 1, state, cache, i, j, edge, update, getTargetContribution = F){
   if (i == j) return(0)
@@ -25,6 +30,10 @@ reciprocity_basic <- function(dep.var = 1, state, cache, i, j, edge, update, get
 
 #' reciprocity_min
 #' 
+#' Do individuals move to destinations that send more individuals to ego’s origin? 
+#' This version of the effect is the minimum of the moves in either direction, 
+#' thereby guarding against degeneracy and guaranteeing sample size consistency. 
+#' It counts the ‘raw’ number of reciprocated transitions in the mobility network.
 #'
 #' @param dep.var 
 #' @param state 
@@ -36,6 +45,8 @@ reciprocity_basic <- function(dep.var = 1, state, cache, i, j, edge, update, get
 #' @param getTargetContribution 
 #'
 #' 
+#' @return Returns the change statistic or target statistic of the effect for 
+#' internal use by the estimation algorithm.
 #' @keywords internal
 reciprocity_min <-
   function(dep.var = 1,
@@ -69,6 +80,9 @@ reciprocity_min <-
 
 #' reciprocity_min_resource_covar
 #' 
+#' Do people reciprocate moves to other locations specifically if they and others 
+#' have a higher value on some covariate? For example, do women move to organisations 
+#' that send women to their origin organisation?
 #'
 #' @param dep.var 
 #' @param resource.attribute.index 
@@ -81,6 +95,8 @@ reciprocity_min <-
 #' @param getTargetContribution 
 #'
 #' 
+#' @return Returns the change statistic or target statistic of the effect for 
+#' internal use by the estimation algorithm.
 #' @keywords internal
 reciprocity_min_resource_covar <-
   function(dep.var = 1,
@@ -119,7 +135,11 @@ reciprocity_min_resource_covar <-
 
 
 #' reciprocity_GW
-#'
+#' 
+#' Do individuals move to destinations that send many individuals to ego’s origin? 
+#' The number of incoming individuals has decreasing returns, that is, every 
+#' additionally incoming individual influences ego’s choice less.
+#' 
 #' @param dep.var 
 #' @param state 
 #' @param cache 
@@ -130,6 +150,8 @@ reciprocity_min_resource_covar <-
 #' @param getTargetContribution 
 #' @param lambda 
 #'
+#' @return Returns the change statistic or target statistic of the effect for 
+#' internal use by the estimation algorithm.
 #' @keywords internal
 reciprocity_GW <- function(dep.var = 1, state, cache, i, j, edge, update, 
                            getTargetContribution = F, lambda = 2){
@@ -170,7 +192,11 @@ reciprocity_GW <- function(dep.var = 1, state, cache, i, j, edge, update,
 }
 
 #' reciprocity_GW_dyad_covar_bin
-#'
+#' 
+#' Is reciprocity in mobility particularly prevalent between locations that share 
+#' characteristics as encoded in a binary dyadic covariate? E.g., do workers move 
+#' to organisations in the same region that send more workers to ego’s origin?
+#' 
 #' @param dep.var 
 #' @param attribute.index 
 #' @param state 
@@ -182,6 +208,8 @@ reciprocity_GW <- function(dep.var = 1, state, cache, i, j, edge, update,
 #' @param getTargetContribution 
 #' @param lambda 
 #'
+#' @return Returns the change statistic or target statistic of the effect for 
+#' internal use by the estimation algorithm.
 #' @keywords internal
 reciprocity_GW_dyad_covar_bin <- function(dep.var = 1, attribute.index, state, cache, i, j, edge, update, 
                                           getTargetContribution = F, lambda = 2){

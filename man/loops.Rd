@@ -23,7 +23,11 @@ loops(dep.var = 1, state, cache, i, j, edge, update, getTargetContribution = F)
 
 \item{getTargetContribution}{}
 }
+\value{
+Returns the change statistic or target statistic of the effect for
+internal use by the estimation algorithm.
+}
 \description{
-loops
+Do individuals stay in their location of origin, compared to going to a different location?
 }
 \keyword{internal}

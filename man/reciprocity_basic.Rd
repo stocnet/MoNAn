@@ -32,7 +32,12 @@ reciprocity_basic(
 
 \item{getTargetContribution}{}
 }
+\value{
+Returns the change statistic or target statistic of the effect for
+internal use by the estimation algorithm.
+}
 \description{
-reciprocity_basic
+Do individuals move to destinations dependent on the number of individuals that
+move to ego’s origin from that destination?
 }
 \keyword{internal}

@@ -32,7 +32,13 @@ transitivity_min(
 
 \item{getTargetContribution}{}
 }
+\value{
+Returns the change statistic or target statistic of the effect for
+internal use by the estimation algorithm.
+}
 \description{
-transitivity_min
+Is mobility clustered in groups? This is represented by the minimum of reciprocated
+mobility being present among three nodes. Using the minimum ensures that the effect
+is not degenerate and it is sample size consistent.
 }
 \keyword{internal}

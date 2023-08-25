@@ -2,6 +2,7 @@
 
 #' loops
 #' 
+#' Do individuals stay in their location of origin, compared to going to a different location?
 #'
 #' @param dep.var 
 #' @param state 
@@ -13,6 +14,8 @@
 #' @param getTargetContribution 
 #'
 #' 
+#' @return Returns the change statistic or target statistic of the effect for 
+#' internal use by the estimation algorithm.
 #' @keywords internal
 loops <-
   function(dep.var = 1,
@@ -36,6 +39,10 @@ loops <-
 
 #' loops_GW
 #' 
+#' Do individuals stay in their current location, in case many other from their 
+#' current location also stay? This effect tests whether the ‘benefit’ of staying 
+#' in the origin location depends on the number of others also staying. Note that 
+#' this effect should be modelled alongside the loops effect.
 #'
 #' @param dep.var 
 #' @param state 
@@ -48,6 +55,8 @@ loops <-
 #' @param alpha 
 #'
 #' 
+#' @return Returns the change statistic or target statistic of the effect for 
+#' internal use by the estimation algorithm.
 #' @keywords internal
 loops_GW <- function(dep.var = 1,
                      state,
@@ -113,136 +122,11 @@ loops_GW <- function(dep.var = 1,
 }
 
 
-#' loops_sigmoid
-#' 
-#'
-#' @param dep.var 
-#' @param state 
-#' @param cache 
-#' @param i 
-#' @param j 
-#' @param edge 
-#' @param update 
-#' @param getTargetContribution 
-#' @param alpha 
-#'
-#' 
-#' @keywords internal
-loops_sigmoid <-
-  function(dep.var = 1,
-           state,
-           cache,
-           i,
-           j,
-           edge,
-           update,
-           getTargetContribution = F,
-           alpha) {
-    if (alpha <= 0) {
-      stop("Alpha parameter in sigmoid loops weights function must be positive")
-    }
-    
-    if (getTargetContribution) {
-      if (i == j) {
-        nResources <- cache[[dep.var]]$valuedNetwork[i, i]
-        v <- 0
-        for (zz in 0:nResources) {
-          v <- v + zz / (zz + alpha)
-        }
-        return(v)
-      }
-      
-      return(0)
-    }
-    
-    if (i != j) {
-      return(0)
-    }
-    
-    if (i == j) {
-      value.old <- cache[[dep.var]]$valuedNetwork[i, i]
-      value.new <- cache[[dep.var]]$valuedNetwork[i, i] + update
-      
-      if (update > 0) {
-        v <- value.new / (value.new + alpha)
-      }
-      if (update < 0) {
-        v <- -value.old / (value.old + alpha)
-      }
-      
-      return(v)
-    }
-  }
-
-
-#' loops_GW_prop
-#' 
-#'
-#' @param dep.var 
-#' @param state 
-#' @param cache 
-#' @param i 
-#' @param j 
-#' @param edge 
-#' @param update 
-#' @param getTargetContribution 
-#' @param half.cont 
-#'
-#' 
-#' @keywords internal
-loops_GW_prop <-
-  function(dep.var = 1,
-           state,
-           cache,
-           i,
-           j,
-           edge,
-           update,
-           getTargetContribution = F,
-           half.cont = 0.1) {
-    if (half.cont <= 0) {
-      stop("half.cont parameter in GW loopsNegExp function must be positive")
-    }
-    
-    getExpChange <- function(count, sum) {
-      alpha <- -(1 / half.cont) * log(0.5)
-      return(1 - exp(-alpha * count / sum))
-    }
-    
-    if (getTargetContribution) {
-      if (i == j) {
-        nLoops <- cache[[dep.var]]$valuedNetwork[i, i]
-        if (nLoops == 0) {
-          return(0)
-        }
-        
-        resInRow <- sum(cache[[dep.var]]$valuedNetwork[i, ])
-        return(sum(getExpChange(1:nLoops, resInRow)))
-      }
-      return(0)
-    }
-    
-    if (i != j) {
-      return(0)
-    }
-    
-    if (i == j) {
-      nLoops <- cache[[dep.var]]$valuedNetwork[i, i]
-      resInRow <- sum(cache[[dep.var]]$valuedNetwork[i, ])
-      
-      if (update == 1) {
-        return(getExpChange((nLoops + 1), resInRow))
-      }
-      if (update == -1) {
-        return(-getExpChange((nLoops), resInRow))
-      }
-    }
-  }
-
-
-
 #' loops_node_covar
 #' 
+#' Are locations with specific attributes ‘stickier’ than others, i.e., do individuals 
+#' have a higher propensity to stay in some locations? E.g., are individuals working 
+#' in organisations in one region less likely to change their employer?
 #'
 #' @param dep.var 
 #' @param attribute.index 
@@ -255,6 +139,8 @@ loops_GW_prop <-
 #' @param getTargetContribution 
 #'
 #' 
+#' @return Returns the change statistic or target statistic of the effect for 
+#' internal use by the estimation algorithm.
 #' @keywords internal
 loops_node_covar <-
   function(dep.var = 1,
@@ -280,6 +166,10 @@ loops_node_covar <-
 
 #' loops_resource_covar_node_covar
 #' 
+#' This is an interaction of the previous two effects: Do individuals with certain 
+#' characteristics have a tendency to stay in locations of certain types? Note that 
+#' this effect should be included alongside the main effects of ‘loops by individual 
+#' covariate’ and ‘loops by location covariate’.
 #'
 #' @param dep.var 
 #' @param resource.attribute.index 
@@ -293,6 +183,8 @@ loops_node_covar <-
 #' @param getTargetContribution 
 #'
 #' 
+#' @return Returns the change statistic or target statistic of the effect for 
+#' internal use by the estimation algorithm.
 #' @keywords internal
 loops_resource_covar_node_covar <-
   function(dep.var = 1,
@@ -319,7 +211,10 @@ loops_resource_covar_node_covar <-
 
 
 #' loops_resource_covar
-#' 
+#'
+#' Are individuals with certain characteristics more likely to remain in their current 
+#' location? For example, are men more likely to remain in their current organisation, 
+#' while women are more likely to move employer? 
 #'
 #' @param dep.var 
 #' @param resource.attribute.index 
@@ -332,6 +227,8 @@ loops_resource_covar_node_covar <-
 #' @param getTargetContribution 
 #'
 #' 
+#' @return Returns the change statistic or target statistic of the effect for 
+#' internal use by the estimation algorithm.
 #' @keywords internal
 loops_resource_covar <-
   function(dep.var = 1,

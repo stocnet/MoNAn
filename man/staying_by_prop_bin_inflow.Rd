@@ -35,7 +35,14 @@ staying_by_prop_bin_inflow(
 
 \item{getTargetContribution}{}
 }
+\value{
+Returns the change statistic or target statistic of the effect for
+internal use by the estimation algorithm.
+}
 \description{
-staying_by_prop_bin_inflow
+Is the tendency to stay in vs. move out of a location dependent on the proportion
+of individuals of type w that enter the location? This is especially geared
+towards modelling how some locations become more or less
+attractive dependent on the change in composition.
 }
 \keyword{internal}

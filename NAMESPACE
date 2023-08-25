@@ -9,7 +9,8 @@ export(
   
   # auxiliary functions
   autoCorrelationTest, extractTraces, 
-  getMultinomialStatistics, gofDistributionNetwork, plot.gof.stats.monan, 
+  getMultinomialStatistics, gofDistributionNetwork, gofMobilityNetwork, 
+  plot.gof.stats.monan, 
   plot.traces.monan, print.result.monan, print.scoretest.monan, scoreTest,
   
   # effect functions: exogenous
@@ -20,13 +21,11 @@ export(
   
   # effect functions: loops
   loops, loops_GW, loops_node_covar, 
-  loops_resource_covar_node_covar, loops_resource_covar, loops_sigmoid, 
-  loops_GW_prop,
-  
+  loops_resource_covar_node_covar, loops_resource_covar, 
+
   # effect functions: concentration
   concentration_basic, concentration_GW, concentration_GW_dyad_covar_bin,
-  concentration_exponent, concentration_sigmoid, concentration_sigmoid_dyad_covar,
-  
+
   # effect functions: reciprocity
   reciprocity_basic,
   reciprocity_min, reciprocity_min_resource_covar,
@@ -36,12 +35,10 @@ export(
   transitivity_min, transitivity_netflow,
   
   # effect functions: other
-  crowding_out_by_resource_inflow, 
   crowding_out_prop_covar_bin,  
-  in_proportion_exponent_covar_bin, in_ties_loops, in_weights_exponent, 
-  in_weights_exponent_covar,  present_relations,  staying_by_prop_bin_inflow, 
-  staying_by_resource_inflow, 
-  
+  in_ties_loops, in_weights_exponent, 
+  present_relations,  staying_by_prop_bin_inflow, 
+
   # gof param functions
   getIndegree, getTieWeights
 )

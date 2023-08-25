@@ -3,3 +3,5 @@
 ^LICENSE\.md$
 ^MoNAnExampleScript\.R$
 ^README\.Rmd$
+^cran-comments\.md$
+^manual$

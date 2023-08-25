@@ -1,6 +1,6 @@
 Package: MoNAn
 Type: Package
-Title: Mobility Network Analysis in R
+Title: Mobility Network Analysis
 Version: 0.1.1
 Date: 2023-08-15
 Authors@R: c(person("Per", "Block", role = c("cre", "aut", "cph"), email = "block@soziologie.uzh.ch", 

@@ -4,7 +4,7 @@
 \name{MoNAn-package}
 \alias{MoNAn}
 \alias{MoNAn-package}
-\title{MoNAn: Mobility Network Analysis in R}
+\title{MoNAn: Mobility Network Analysis}
 \description{
 Implements the method to analyse weighted mobility networks or distribution networks as outlined in: Block, P., Stadtfeld, C., & Robins, G. (2022) \doi{10.1016/j.socnet.2021.08.003}.
 }

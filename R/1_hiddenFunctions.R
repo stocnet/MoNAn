@@ -139,7 +139,7 @@ runPhase2 <- function(dep.var,
   if (parallel && cpus > 1) {
     sfInit(parallel = T, cpus = cpus)
     # TODO. Replace this long command with sfLibrary("NetDist") once the package is packaged
-    sfLibrary(MoNAn)
+    sfLibrary("MoNAn", character.only=TRUE)
   } else {
     parallel <- F
   }
@@ -294,7 +294,7 @@ runPhase3 <- function(dep.var,
 
     sfInit(parallel = T, cpus = cpus)
     # TODO. Replace this long command with sfLibrary("NetDist") once the package is packaged
-    sfLibrary(MoNAn)
+    sfLibrary("MoNAn", character.only=TRUE)
 
     statsA <-
       sfLapply(iterationsPerCPU, function(nIt) {

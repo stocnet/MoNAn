@@ -298,7 +298,9 @@ plot.gof.stats.monan <- function(x, lvls, ...) {
 #' @export
 #'
 #' @examples
+#' \dontrun{
 #' plot(traces)
+#' }
 plot.traces.monan <- function(x, ...) {
   nParams <- length(x[[1]])
   nSims <- length(x[[2]][, 1])
@@ -439,7 +441,9 @@ scoreTest <- function(ans, effects) {
 #' @return The function `print.scoretest.monan` shows parametric and non-parametric p-values
 #' for each tested effect.
 #' @examples
+#' \dontrun{
 #' test_ME.2
+#' }
 print.scoretest.monan <- function(x, ...) {
   reslt <-
     data.frame(

@@ -65,14 +65,16 @@ do counter-factual simulations.
 \examples{
 \donttest{
 # simulate a mobility network
+# note that thinning and burn-in values are for this example only
+# in real cases, choose values aprrox. times 10
 mySimDN <- simulateMobilityNetworks(
   myState,
   myCache,
   myEffects,
   parameters = c(2, 1, 1.5, 0.1, -1, -0.5),
   allowLoops = TRUE,
-  burnin = 45000,
-  thinning = 15000,
+  burnin = 4500,
+  thinning = 1500,
   nSimulations = 10
 )
 

@@ -703,29 +703,11 @@ createWeightedCache <-
 #' @examples
 #' \donttest{
 #' # estimate mobility network model
+#' 
 #' myResDN <- estimateMobilityNetwork(myState, myCache, myEffects, myAlg,
 #'                                    initialParameters = NULL,
 #'                                    # in case a pseudo-likelihood estimation was run, replace with
 #'                                    # initialParameters = initEst,
-#'                                    parallel = TRUE, cpus = 4,
-#'                                    verbose = TRUE,
-#'                                    returnDeps = TRUE,
-#'                                    fish = FALSE
-#' )
-#' 
-#' # check convergence
-#' max(abs(myResDN$convergenceStatistics))
-#' 
-#' myResDN_old <- myResDN
-#' 
-#' # estimate mobility network model again based on previous results to improve convergence
-#' # with an adjusted algorithm
-#' myAlg <- createAlgorithm(myState, myEffects, multinomialProposal = TRUE, 
-#'                          initialIterationsN2 = 500, nsubN2 = 1, 
-#'                          initGain = 0.02, iterationsN3 = 1000)
-#' 
-#' myResDN <- estimateMobilityNetwork(myState, myCache, myEffects, myAlg,
-#'                                    prevAns = myResDN,
 #'                                    parallel = TRUE, cpus = 4,
 #'                                    verbose = TRUE,
 #'                                    returnDeps = TRUE,
@@ -929,14 +911,16 @@ estimateDistributionNetwork <- estimateMobilityNetwork
 #' @examples
 #' \donttest{
 #' # simulate a mobility network
+#' # note that thinning and burn-in values are for this example only
+#' # in real cases, choose values aprrox. times 10
 #' mySimDN <- simulateMobilityNetworks(
 #'   myState,
 #'   myCache,
 #'   myEffects,
 #'   parameters = c(2, 1, 1.5, 0.1, -1, -0.5),
 #'   allowLoops = TRUE,
-#'   burnin = 45000,
-#'   thinning = 15000,
+#'   burnin = 4500,
+#'   thinning = 1500,
 #'   nSimulations = 10
 #' )
 #'

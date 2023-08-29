@@ -141,7 +141,7 @@ runPhase2 <- function(dep.var,
     # TODO. Replace this long command with sfLibrary("NetDist") once the package is packaged
     sfLibrary("MoNAn", character.only=TRUE)
   } else {
-    parallel <- F
+    parallel <- FALSE
   }
 
 

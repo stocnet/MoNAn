@@ -25,7 +25,7 @@ loops <-
            j,
            edge,
            update,
-           getTargetContribution = F) {
+           getTargetContribution = FALSE) {
     if (getTargetContribution) {
       return(cache[[dep.var]]$valuedNetwork[i, j] * (i == j))
     }
@@ -65,7 +65,7 @@ loops_GW <- function(dep.var = 1,
                      j,
                      edge,
                      update,
-                     getTargetContribution = F,
+                     getTargetContribution = FALSE,
                      alpha = 2) {
   if (alpha <= 0) {
     stop("Alpha parameter in GW loops weights function must be positive")
@@ -151,7 +151,7 @@ loops_node_covar <-
            j,
            edge,
            update,
-           getTargetContribution = F) {
+           getTargetContribution = FALSE) {
     if (i != j) {
       return(0)
     }
@@ -196,7 +196,7 @@ loops_resource_covar_node_covar <-
            j,
            edge,
            update,
-           getTargetContribution = F) {
+           getTargetContribution = FALSE) {
     # the count in the resource network on the diagonal times the node covar value
     if (getTargetContribution) {
       return((cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][i, j] * (i == j)) * state[[attribute.index]]$data[i])
@@ -239,7 +239,7 @@ loops_resource_covar <-
            j,
            edge,
            update,
-           getTargetContribution = F) {
+           getTargetContribution = FALSE) {
     if (i != j) {
       return(0)
     }

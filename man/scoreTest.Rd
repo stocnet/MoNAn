@@ -33,7 +33,7 @@ statistics representing non-included effects are well represented. If this is
 not the case, it is likely that including them will result in significant estimates.
 }
 \examples{
-\dontrun{
+\donttest{
 # test whether other effects should be included
 myEffects2 <- createEffectsObject(
   list(
@@ -50,7 +50,7 @@ myEffects2 <- createEffectsObject(
 
 test_ME.2 <- scoreTest(myResDN, myEffects2)
 }
-\dontrun{
+\donttest{
 test_ME.2
 }
 }

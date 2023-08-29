@@ -4,7 +4,16 @@
 \alias{loops}
 \title{loops}
 \usage{
-loops(dep.var = 1, state, cache, i, j, edge, update, getTargetContribution = F)
+loops(
+  dep.var = 1,
+  state,
+  cache,
+  i,
+  j,
+  edge,
+  update,
+  getTargetContribution = FALSE
+)
 }
 \arguments{
 \item{dep.var}{}

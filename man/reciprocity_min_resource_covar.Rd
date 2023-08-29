@@ -13,7 +13,7 @@ reciprocity_min_resource_covar(
   j,
   edge,
   update,
-  getTargetContribution = F
+  getTargetContribution = FALSE
 )
 }
 \arguments{

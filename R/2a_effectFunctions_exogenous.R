@@ -29,8 +29,8 @@ alter_covariate <-
            j,
            edge,
            update,
-           loop.contribution = T,
-           getTargetContribution = F) {
+           loop.contribution = TRUE,
+           getTargetContribution = FALSE) {
     if (!loop.contribution) {
       if (i == j) {
         return(0)
@@ -75,7 +75,7 @@ dyadic_covariate <-
            j,
            edge,
            update,
-           getTargetContribution = F) {
+           getTargetContribution = FALSE) {
     if (i == j) {
       return(0)
     }
@@ -122,7 +122,7 @@ dyadic_covariate_resource_attribute <-
            j,
            edge,
            update,
-           getTargetContribution = F) {
+           getTargetContribution = FALSE) {
     if (i == j) {
       return(0)
     }
@@ -165,8 +165,8 @@ resource_covar_to_node_covar <-
            j,
            edge,
            update,
-           loop.contribution = F,
-           getTargetContribution = F) {
+           loop.contribution = FALSE,
+           getTargetContribution = FALSE) {
     if (!loop.contribution) {
       if (i == j) {
         return(0)
@@ -210,7 +210,7 @@ same_covariate <-
            j,
            edge,
            update,
-           getTargetContribution = F) {
+           getTargetContribution = FALSE) {
     if (i == j) {
       return(0)
     }
@@ -255,7 +255,7 @@ sim_covariate <-
            j,
            edge,
            update,
-           getTargetContribution = F) {
+           getTargetContribution = FALSE) {
     if (i == j) {
       return(0)
     }

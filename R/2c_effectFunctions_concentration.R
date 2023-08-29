@@ -17,7 +17,7 @@
 #' @return Returns the change statistic or target statistic of the effect for 
 #' internal use by the estimation algorithm.
 #' @keywords internal
-concentration_basic <- function(dep.var = 1, state, cache, i, j, edge, update, getTargetContribution = F){
+concentration_basic <- function(dep.var = 1, state, cache, i, j, edge, update, getTargetContribution = FALSE){
   if(getTargetContribution){
     return( (cache[[dep.var]]$valuedNetwork[i, j])^2 )
   } else {
@@ -52,7 +52,7 @@ concentration_basic <- function(dep.var = 1, state, cache, i, j, edge, update, g
 #' internal use by the estimation algorithm.
 #' @keywords internal
 concentration_GW <- function(dep.var = 1, state, cache, i, j, edge, update, 
-                             getTargetContribution = F, lambda = 2){
+                             getTargetContribution = FALSE, lambda = 2){
   if(lambda <= 0) stop("lambda parameter in concentration_GW function must be positive")
   if(getTargetContribution){
     nRessources <- cache[[dep.var]]$valuedNetwork[i, j]
@@ -107,7 +107,7 @@ concentration_GW <- function(dep.var = 1, state, cache, i, j, edge, update,
 #' internal use by the estimation algorithm.
 #' @keywords internal
 concentration_GW_dyad_covar_bin <- function(dep.var = 1, attribute.index, state, cache, i, j, edge, update, 
-                                            getTargetContribution = F, lambda = 2){
+                                            getTargetContribution = FALSE, lambda = 2){
   if(lambda <= 0) stop("lambda parameter in concentration_GW function must be positive")
   if(!all(state[[attribute.index]]$data == t(state[[attribute.index]]$data))) stop("attribute.index in concentration_GW_dyad_covar_bin function must be symmetric")
   if(!all(state[[attribute.index]]$data %in% c(0,1))) stop("all values of attribute.index in concentration_GW_dyad_covar_bin function must be 0 or 1")

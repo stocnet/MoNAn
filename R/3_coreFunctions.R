@@ -14,11 +14,11 @@
 #' step takes considerably longer. Defaults to FALSE.
 #' @param burnInN1 The number of simulation steps before the first draw in Phase 1.
 #' A recommended value is at least n_Individuals * n_locations if
-#' multinomialProposal = F, and at least n_Individuals if multinomialProposal = T
+#' multinomialProposal = FALSE, and at least n_Individuals if multinomialProposal = TRUE
 #' which is set as default.
 #' @param thinningN1 The number of simulation steps between two draws in Phase 1.
 #' A recommended value is at least 0.5 * n_Individuals * n_locations if
-#' multinomialProposal = F, and at least n_Individuals if multinomialProposal = T
+#' multinomialProposal = FALSE, and at least n_Individuals if multinomialProposal = TRUE
 #' which is set as default.
 #' @param iterationsN1 The number of draws taken in Phase 1.
 #' A recommended value is at least 4 * n_effects which is set as default.
@@ -27,11 +27,11 @@
 #' value is 0, values higher than 0.25 are courageous. Defaults to 0.1.
 #' @param burnInN2 The number of simulation steps before the first draw in Phase 1.
 #' A recommended value is at least n_Individuals * n_locations if
-#' multinomialProposal = F, and at least n_Individuals if multinomialProposal = T
+#' multinomialProposal = FALSE, and at least n_Individuals if multinomialProposal = TRUE
 #' which is set as default.
 #' @param thinningN2 The number of simulation steps between two draws in Phase 2.
 #' A recommended value is at least 0.5 * n_Individuals * n_locations if
-#' multinomialProposal = F, and at least n_Individuals if multinomialProposal = T
+#' multinomialProposal = FALSE, and at least n_Individuals if multinomialProposal = TRUE
 #' which is set as default.
 #' @param initialIterationsN2 The number of draws taken in subphase 1 of Phase 2.
 #' For first estimations, a recommended value is around 50 (default to 50).
@@ -45,11 +45,11 @@
 #' Phase 2. Values of around 0.2 (default) are recommended.
 #' @param burnInN3 The number of simulation steps before the first draw in Phase 3.
 #' A recommended value is at least 3 * n_Individuals * n_locations if
-#' multinomialProposal = F, and at least 3 * n_Individuals if multinomialProposal = T
+#' multinomialProposal = FALSE, and at least 3 * n_Individuals if multinomialProposal = TRUE
 #' which is set as default.
 #' @param thinningN3 The number of simulation steps between two draws in Phase 3.
 #' A recommended value is at least n_Individuals * n_locations if
-#' multinomialProposal = F, and at least 2 * n_Individuals if multinomialProposal = T
+#' multinomialProposal = FALSE, and at least 2 * n_Individuals if multinomialProposal = TRUE
 #' which is set as default.
 #' In case this value is too low, the outcome might erroneously indicate a lack
 #' of convergence.
@@ -701,16 +701,16 @@ createWeightedCache <-
 #' [createEffectsObject()], [createAlgorithm()]
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # estimate mobility network model
 #' myResDN <- estimateMobilityNetwork(myState, myCache, myEffects, myAlg,
 #'                                    initialParameters = NULL,
 #'                                    # in case a pseudo-likelihood estimation was run, replace with
 #'                                    # initialParameters = initEst,
-#'                                    parallel = T, cpus = 4,
-#'                                    verbose = T,
-#'                                    returnDeps = T,
-#'                                    fish = F
+#'                                    parallel = TRUE, cpus = 4,
+#'                                    verbose = TRUE,
+#'                                    returnDeps = TRUE,
+#'                                    fish = FALSE
 #' )
 #' 
 #' # check convergence
@@ -726,10 +726,10 @@ createWeightedCache <-
 #' 
 #' myResDN <- estimateMobilityNetwork(myState, myCache, myEffects, myAlg,
 #'                                    prevAns = myResDN,
-#'                                    parallel = T, cpus = 4,
-#'                                    verbose = T,
-#'                                    returnDeps = T,
-#'                                    fish = F
+#'                                    parallel = TRUE, cpus = 4,
+#'                                    verbose = TRUE,
+#'                                    returnDeps = TRUE,
+#'                                    fish = FALSE
 #' )
 #' 
 #' # check convergence
@@ -927,7 +927,7 @@ estimateDistributionNetwork <- estimateMobilityNetwork
 #' @export
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # simulate a mobility network
 #' mySimDN <- simulateMobilityNetworks(
 #'   myState,

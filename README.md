@@ -203,9 +203,9 @@ myStatisticsFrame <- getMultinomialStatistics(myState, myCache, myEffects)
 # 
 # IVs <- (colnames(my.mlogit.dataframe)[2:(ncol(myStatisticsFrame)-2)])
 # 
-# f <- as.formula(paste("choice ~ 1 + ", paste(IVs, collapse = " + "), "| 0"))
+# form <- as.formula(paste("choice ~ 1 + ", paste(IVs, collapse = " + "), "| 0"))
 # 
-# my.mlogit.results <- mlogit(formula = eval(f), data = my.mlogit.dataframe, heterosc = F)
+# my.mlogit.results <- mlogit(formula = eval(form), data = my.mlogit.dataframe, heterosc = FALSE)
 # 
 # summary(my.mlogit.results)
 #
@@ -239,10 +239,10 @@ parallel computing).
 myResDN <- estimateMobilityNetwork(
   myState, myCache, myEffects, myAlg,
   initialParameters = NULL,
-  parallel = T, cpus = 4,
-  verbose = T,
-  returnDeps = T,
-  fish = F
+  parallel = TRUE, cpus = 4,
+  verbose = TRUE,
+  returnDeps = TRUE,
+  fish = FALSE
 )
 ```
 
@@ -253,10 +253,10 @@ can be specified by
 myResDN <- estimateMobilityNetwork(
   myState, myCache, myEffects, myAlg,
   initialParameters = initEst,
-  parallel = T, cpus = 4,
-  verbose = T,
-  returnDeps = T,
-  fish = F
+  parallel = TRUE, cpus = 4,
+  verbose = TRUE,
+  returnDeps = TRUE,
+  fish = FALSE
 )
 ```
 
@@ -281,10 +281,10 @@ myAlg <- createAlgorithm(myState, myEffects, multinomialProposal = TRUE,
 myResDN <- estimateMobilityNetwork(
   myState, myCache, myEffects, myAlg,
   prevAns = myResDN,
-  parallel = T, cpus = 4,
-  verbose = T,
-  returnDeps = T,
-  fish = F
+  parallel = TRUE, cpus = 4,
+  verbose = TRUE,
+  returnDeps = TRUE,
+  fish = FALSE
 )
 ```
 

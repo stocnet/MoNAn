@@ -79,9 +79,9 @@ myStatisticsFrame <- getMultinomialStatistics(myState, myCache, myEffects)
 # 
 # IVs <- (colnames(my.mlogit.dataframe)[2:(ncol(myStatisticsFrame)-2)])
 # 
-# f <- as.formula(paste("choice ~ 1 + ", paste(IVs, collapse = " + "), "| 0"))
+# form <- as.formula(paste("choice ~ 1 + ", paste(IVs, collapse = " + "), "| 0"))
 # 
-# my.mlogit.results <- mlogit(formula = eval(f), data = my.mlogit.dataframe, heterosc = F)
+# my.mlogit.results <- mlogit(formula = eval(form), data = my.mlogit.dataframe, heterosc = FALSE)
 # 
 # summary(my.mlogit.results)
 # 
@@ -102,10 +102,10 @@ myResDN <- estimateMobilityNetwork(
   initialParameters = NULL,
   # in case a pseudo-likelihood estimation was run, replace with
   # initialParameters = initEst,
-  parallel = T, cpus = 4,
-  verbose = T,
-  returnDeps = T,
-  fish = F
+  parallel = TRUE, cpus = 4,
+  verbose = TRUE,
+  returnDeps = TRUE,
+  fish = FALSE
 )
 
 # check convergence
@@ -121,10 +121,10 @@ myAlg <- createAlgorithm(myState, myEffects, multinomialProposal = TRUE,
 myResDN <- estimateMobilityNetwork(
   myState, myCache, myEffects, myAlg,
   prevAns = myResDN,
-  parallel = T, cpus = 4,
-  verbose = T,
-  returnDeps = T,
-  fish = F
+  parallel = TRUE, cpus = 4,
+  verbose = TRUE,
+  returnDeps = TRUE,
+  fish = FALSE
 )
 
 # check convergence
@@ -146,12 +146,6 @@ plot(traces)
 
 myEffects2 <- createEffectsObject(
   list(
-    list("loops"),
-    list("reciprocity_min"),
-    list("dyadic_covariate", attribute.index = "sameRegion"),
-    list("alter_covariate", attribute.index = "size"),
-    list("resource_covar_to_node_covar", attribute.index = "region", resource.attribute.index = "sex"),
-    list("loops_resource_covar", resource.attribute.index = "sex"),
     list("transitivity_min")
   ),
   checkProcessState = myState

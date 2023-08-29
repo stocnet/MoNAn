@@ -13,8 +13,8 @@ alter_covariate(
   j,
   edge,
   update,
-  loop.contribution = T,
-  getTargetContribution = F
+  loop.contribution = TRUE,
+  getTargetContribution = FALSE
 )
 }
 \arguments{

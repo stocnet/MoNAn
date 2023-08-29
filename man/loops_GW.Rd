@@ -12,7 +12,7 @@ loops_GW(
   j,
   edge,
   update,
-  getTargetContribution = F,
+  getTargetContribution = FALSE,
   alpha = 2
 )
 }

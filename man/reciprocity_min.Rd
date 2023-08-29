@@ -12,7 +12,7 @@ reciprocity_min(
   j,
   edge,
   update,
-  getTargetContribution = F
+  getTargetContribution = FALSE
 )
 }
 \arguments{

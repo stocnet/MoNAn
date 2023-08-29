@@ -63,7 +63,7 @@ function is mainly interesting to explore the behavior of the model or to
 do counter-factual simulations.
 }
 \examples{
-\dontrun{
+\donttest{
 # simulate a mobility network
 mySimDN <- simulateMobilityNetworks(
   myState,

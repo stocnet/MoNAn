@@ -20,7 +20,7 @@ autoCorrelationTest <- function(ans) {
   dep.var <- ans$state$dep.var
   # give error if no deps in ans obj
   if (is.null(ans$deps)) {
-    stop("ans object does not have simulations stored; use returnDeps = T in estimation")
+    stop("ans object does not have simulations stored; use returnDeps = TRUE in estimation")
   }
 
   # get number of simulated nets - 1
@@ -55,7 +55,7 @@ autoCorrelationTest <- function(ans) {
 #' @seealso [createEffectsObject()]
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # regression diagnostics
 #' traces <- extractTraces(myResDN, myEffects)
 #' }
@@ -63,7 +63,7 @@ extractTraces <- function(ans, effects) {
   dep.var <- ans$state$dep.var
   # give error if no deps in ans
   if (is.null(ans$deps)) {
-    stop("ans object does not have simulated states stored; use returnDeps = T in estimation")
+    stop("ans object does not have simulated states stored; use returnDeps = TRUE in estimation")
   }
 
   # get statistics of the observed network using state and cache from ans object
@@ -298,7 +298,7 @@ plot.gof.stats.monan <- function(x, lvls, ...) {
 #' @export
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' plot(traces)
 #' }
 plot.traces.monan <- function(x, ...) {
@@ -370,7 +370,7 @@ print.result.monan <- function(x, covMat = FALSE, ...) {
 #' @seealso [createEffectsObject()]
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # test whether other effects should be included
 #' myEffects2 <- createEffectsObject(
 #'   list(
@@ -391,7 +391,7 @@ scoreTest <- function(ans, effects) {
   dep.var <- ans$state$dep.var
   # give error if no deps in ans
   if (is.null(ans$deps)) {
-    stop("ans object does not have simulated states stored; use returnDeps = T in estimation")
+    stop("ans object does not have simulated states stored; use returnDeps = TRUE in estimation")
   }
 
   # get statistics of the observed network using state and cache from ans object
@@ -441,7 +441,7 @@ scoreTest <- function(ans, effects) {
 #' @return The function `print.scoretest.monan` shows parametric and non-parametric p-values
 #' for each tested effect.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' test_ME.2
 #' }
 print.scoretest.monan <- function(x, ...) {

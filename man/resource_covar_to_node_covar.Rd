@@ -14,8 +14,8 @@ resource_covar_to_node_covar(
   j,
   edge,
   update,
-  loop.contribution = F,
-  getTargetContribution = F
+  loop.contribution = FALSE,
+  getTargetContribution = FALSE
 )
 }
 \arguments{

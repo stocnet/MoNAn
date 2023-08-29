@@ -47,7 +47,7 @@ getNetworkStatistics <- function(dep.var, state, cache, effects) {
             j = v[[2]],
             update = NULL,
             edge = NULL,
-            getTargetContribution = T
+            getTargetContribution = TRUE
           )
         }
       ))
@@ -70,9 +70,9 @@ runPhase1 <- function(dep.var,
                       iterationsN1,
                       thinningN1,
                       gainN1,
-                      multinomialProposal = F,
+                      multinomialProposal = FALSE,
                       allowLoops,
-                      verbose = F) {
+                      verbose = FALSE) {
   # simulate statistic matrix
   statisticsMatrix <-
     simulateStatisticVectors(
@@ -128,16 +128,16 @@ runPhase2 <- function(dep.var,
                       initialIterationsN2,
                       parallel,
                       cpus,
-                      multinomialProposal = F,
+                      multinomialProposal = FALSE,
                       allowLoops,
-                      verbose = F) {
+                      verbose = FALSE) {
   # calculate observed statistics
   observedStatistics <-
     getNetworkStatistics(dep.var, state, cache, effects)
 
   # initialize parallel computing
   if (parallel && cpus > 1) {
-    sfInit(parallel = T, cpus = cpus)
+    sfInit(parallel = TRUE, cpus = cpus)
     # TODO. Replace this long command with sfLibrary("NetDist") once the package is packaged
     sfLibrary("MoNAn", character.only=TRUE)
   } else {
@@ -217,7 +217,7 @@ runPhase2 <- function(dep.var,
           iterations,
           multinomialProposal = multinomialProposal,
           allowLoops = allowLoops,
-          verbose = F
+          verbose = FALSE
         )
       })
       parameterList <- lapply(res, "[[", "parameters")
@@ -279,9 +279,9 @@ runPhase3 <- function(dep.var,
                       parallel,
                       cpus,
                       allowLoops,
-                      verbose = F,
-                      returnDeps = F,
-                      multinomialProposal = F,
+                      verbose = FALSE,
+                      returnDeps = FALSE,
+                      multinomialProposal = FALSE,
                       fish = fish) {
   # simulate statistic matrix
   # if parallel computing, initialize several simulation chains and rbind the results at the end
@@ -292,7 +292,7 @@ runPhase3 <- function(dep.var,
       iterationsPerCPU[1:rest] <- iterationsPerCPU[1:rest] + 1
     }
 
-    sfInit(parallel = T, cpus = cpus)
+    sfInit(parallel = TRUE, cpus = cpus)
     # TODO. Replace this long command with sfLibrary("NetDist") once the package is packaged
     sfLibrary("MoNAn", character.only=TRUE)
 
@@ -311,7 +311,7 @@ runPhase3 <- function(dep.var,
           verbose = verbose,
           returnDeps = returnDeps,
           multinomialProposal = multinomialProposal,
-          fish = F
+          fish = FALSE
         )
       })
 
@@ -324,7 +324,7 @@ runPhase3 <- function(dep.var,
       stats[[2]] <-
         unlist(lapply(statsA, function(x) {
           x[[2]]
-        }), recursive = F)
+        }), recursive = FALSE)
       statisticsMatrix <- Reduce("rbind", stats[[1]])
     } else {
       stats <- statsA
@@ -396,9 +396,9 @@ runSubphase2 <- function(dep.var,
                          gain,
                          thinningN2,
                          iterations,
-                         multinomialProposal = F,
+                         multinomialProposal = FALSE,
                          allowLoops,
-                         verbose = F) {
+                         verbose = FALSE) {
   parameters <- c()
 
   for (i in 1:iterations) {
@@ -449,11 +449,11 @@ simulateNSteps <-
            cache,
            effects,
            parameters,
-           allowLoops = T,
-           senderFixed = T,
-           receiverFixed = F,
-           multinomialProposal = F,
-           debug = F,
+           allowLoops = TRUE,
+           senderFixed = TRUE,
+           receiverFixed = FALSE,
+           multinomialProposal = FALSE,
+           debug = FALSE,
            n = 1) {
     for (i in 1:n) {
       res <-
@@ -484,10 +484,10 @@ simulateOneStep <-
            effects,
            parameters,
            allowLoops,
-           senderFixed = T,
-           receiverFixed = F,
-           multinomialProposal = F,
-           debug = F) {
+           senderFixed = TRUE,
+           receiverFixed = FALSE,
+           multinomialProposal = FALSE,
+           debug = FALSE) {
     resourceName <- state[[dep.var]]$nodeSet[3]
     nodeName <- state[[dep.var]]$nodeSet[1]
     resourceSet <-
@@ -557,7 +557,7 @@ simulateOneStep <-
             )
           }))
         },
-        simplify = T
+        simplify = TRUE
         )
       objValues <-
         colSums((statisticsCreate + statisticsDrop) * parameters)
@@ -677,10 +677,10 @@ simulateStatisticVectors <- function(dep.var,
                                      iterations,
                                      thinning,
                                      allowLoops,
-                                     verbose = F,
-                                     multinomialProposal = F,
-                                     fish = F,
-                                     returnDeps = F) {
+                                     verbose = FALSE,
+                                     multinomialProposal = FALSE,
+                                     fish = FALSE,
+                                     returnDeps = FALSE) {
   statisticsMatrix <- c()
 
   if (returnDeps) {

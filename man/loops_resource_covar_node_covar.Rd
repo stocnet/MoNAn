@@ -14,7 +14,7 @@ loops_resource_covar_node_covar(
   j,
   edge,
   update,
-  getTargetContribution = F
+  getTargetContribution = FALSE
 )
 }
 \arguments{

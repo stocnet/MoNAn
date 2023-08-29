@@ -13,7 +13,7 @@ loops_node_covar(
   j,
   edge,
   update,
-  getTargetContribution = F
+  getTargetContribution = FALSE
 )
 }
 \arguments{

@@ -13,7 +13,7 @@ reciprocity_GW_dyad_covar_bin(
   j,
   edge,
   update,
-  getTargetContribution = F,
+  getTargetContribution = FALSE,
   lambda = 2
 )
 }

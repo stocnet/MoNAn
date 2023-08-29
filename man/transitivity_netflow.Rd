@@ -12,7 +12,7 @@ transitivity_netflow(
   j,
   edge,
   update,
-  getTargetContribution = F
+  getTargetContribution = FALSE
 )
 }
 \arguments{

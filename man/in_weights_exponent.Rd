@@ -12,7 +12,7 @@ in_weights_exponent(
   j,
   edge,
   update,
-  getTargetContribution = F,
+  getTargetContribution = FALSE,
   exponent = 0.5
 )
 }

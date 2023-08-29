@@ -32,7 +32,7 @@ crowding_out_prop_covar_bin <-
            j,
            edge,
            update,
-           getTargetContribution = F) {
+           getTargetContribution = FALSE) {
     # proportion needs binary coding with only 0 and 1
     if (!all(state[[resource.attribute.index]]$data %in% c(0, 1))) {
       stop("effect crowding_out_prop_covar_bin only defined for binary covariates coded 0 1")
@@ -137,7 +137,7 @@ in_ties_loops <-
            j,
            edge,
            update,
-           getTargetContribution = F) {
+           getTargetContribution = FALSE) {
     if (getTargetContribution) {
       return((cache[[dep.var]]$valuedNetwork[i, j] * (i == j)) *
         (sum(cache[[dep.var]]$valuedNetwork[, j]) - cache[[dep.var]]$valuedNetwork[j, j]))
@@ -180,7 +180,7 @@ in_weights_exponent <-
            j,
            edge,
            update,
-           getTargetContribution = F,
+           getTargetContribution = FALSE,
            exponent = .5) {
     if (i == j) {
       return(0)
@@ -226,7 +226,7 @@ present_relations <-
            j,
            edge,
            update,
-           getTargetContribution = F) {
+           getTargetContribution = FALSE) {
     if (i == j) {
       return(0)
     }
@@ -280,7 +280,7 @@ staying_by_prop_bin_inflow <-
            j,
            edge,
            update,
-           getTargetContribution = F) {
+           getTargetContribution = FALSE) {
     # proportion needs binary coding with only 0 and 1
     if (!all(state[[resource.attribute.index]]$data %in% c(0, 1))) {
       stop("effect staying_by_prop_bin_inflow only defined for binary covariates coded 0 1")

@@ -89,16 +89,16 @@ The core function of the package in which the model for the analysis of
 mobility tables is estimated.
 }
 \examples{
-\dontrun{
+\donttest{
 # estimate mobility network model
 myResDN <- estimateMobilityNetwork(myState, myCache, myEffects, myAlg,
                                    initialParameters = NULL,
                                    # in case a pseudo-likelihood estimation was run, replace with
                                    # initialParameters = initEst,
-                                   parallel = T, cpus = 4,
-                                   verbose = T,
-                                   returnDeps = T,
-                                   fish = F
+                                   parallel = TRUE, cpus = 4,
+                                   verbose = TRUE,
+                                   returnDeps = TRUE,
+                                   fish = FALSE
 )
 
 # check convergence
@@ -114,10 +114,10 @@ myAlg <- createAlgorithm(myState, myEffects, multinomialProposal = TRUE,
 
 myResDN <- estimateMobilityNetwork(myState, myCache, myEffects, myAlg,
                                    prevAns = myResDN,
-                                   parallel = T, cpus = 4,
-                                   verbose = T,
-                                   returnDeps = T,
-                                   fish = F
+                                   parallel = TRUE, cpus = 4,
+                                   verbose = TRUE,
+                                   returnDeps = TRUE,
+                                   fish = FALSE
 )
 
 # check convergence

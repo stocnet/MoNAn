@@ -13,7 +13,7 @@ staying_by_prop_bin_inflow(
   j,
   edge,
   update,
-  getTargetContribution = F
+  getTargetContribution = FALSE
 )
 }
 \arguments{

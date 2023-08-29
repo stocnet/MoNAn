@@ -18,7 +18,7 @@
 #' @return Returns the change statistic or target statistic of the effect for 
 #' internal use by the estimation algorithm.
 #' @keywords internal
-reciprocity_basic <- function(dep.var = 1, state, cache, i, j, edge, update, getTargetContribution = F){
+reciprocity_basic <- function(dep.var = 1, state, cache, i, j, edge, update, getTargetContribution = FALSE){
   if (i == j) return(0)
   if (getTargetContribution){
     return (cache[[dep.var]]$valuedNetwork[i, j] * cache[[dep.var]]$valuedNetwork[j, i] / 2)
@@ -56,7 +56,7 @@ reciprocity_min <-
            j,
            edge,
            update,
-           getTargetContribution = F) {
+           getTargetContribution = FALSE) {
     if (i == j) {
       return(0)
     }
@@ -107,7 +107,7 @@ reciprocity_min_resource_covar <-
            j,
            edge,
            update,
-           getTargetContribution = F) {
+           getTargetContribution = FALSE) {
     if (i == j) {
       return(0)
     }
@@ -154,7 +154,7 @@ reciprocity_min_resource_covar <-
 #' internal use by the estimation algorithm.
 #' @keywords internal
 reciprocity_GW <- function(dep.var = 1, state, cache, i, j, edge, update, 
-                           getTargetContribution = F, lambda = 2){
+                           getTargetContribution = FALSE, lambda = 2){
   if(lambda <= 0) stop("lambda parameter in reciprocity_GW function must be positive")
   if(i==j) return(0)
   if(getTargetContribution){
@@ -212,7 +212,7 @@ reciprocity_GW <- function(dep.var = 1, state, cache, i, j, edge, update,
 #' internal use by the estimation algorithm.
 #' @keywords internal
 reciprocity_GW_dyad_covar_bin <- function(dep.var = 1, attribute.index, state, cache, i, j, edge, update, 
-                                          getTargetContribution = F, lambda = 2){
+                                          getTargetContribution = FALSE, lambda = 2){
   if(lambda <= 0) stop("lambda parameter in reciprocity_GW_dyad_covar_bin function must be positive")
   if(!all(state[[attribute.index]]$data == t(state[[attribute.index]]$data))) stop("attribute.index in reciprocity_GW_dyad_covar_bin function must be symmetric")
   if(!all(state[[attribute.index]]$data %in% c(0,1))) stop("all values of attribute.index in reciprocity_GW_dyad_covar_bin function must be 0 or 1")

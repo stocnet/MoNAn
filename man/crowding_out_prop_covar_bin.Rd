@@ -13,7 +13,7 @@ crowding_out_prop_covar_bin(
   j,
   edge,
   update,
-  getTargetContribution = F
+  getTargetContribution = FALSE
 )
 }
 \arguments{

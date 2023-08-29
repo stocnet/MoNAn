@@ -12,7 +12,7 @@ in_ties_loops(
   j,
   edge,
   update,
-  getTargetContribution = F
+  getTargetContribution = FALSE
 )
 }
 \arguments{

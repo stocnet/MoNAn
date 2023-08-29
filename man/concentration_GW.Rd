@@ -12,7 +12,7 @@ concentration_GW(
   j,
   edge,
   update,
-  getTargetContribution = F,
+  getTargetContribution = FALSE,
   lambda = 2
 )
 }

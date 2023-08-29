@@ -14,7 +14,7 @@ dyadic_covariate_resource_attribute(
   j,
   edge,
   update,
-  getTargetContribution = F
+  getTargetContribution = FALSE
 )
 }
 \arguments{

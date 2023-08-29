@@ -28,7 +28,7 @@ transitivity_min <-
            j,
            edge,
            update,
-           getTargetContribution = F) {
+           getTargetContribution = FALSE) {
     if (i == j) {
       return(0)
     }
@@ -98,7 +98,7 @@ transitivity_netflow <-
            j,
            edge,
            update,
-           getTargetContribution = F) {
+           getTargetContribution = FALSE) {
     if (i == j) {
       return(0)
     }

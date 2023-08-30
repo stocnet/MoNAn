@@ -31,11 +31,11 @@ Announcements about workshops etc. can be found
 
 # Note from the developers
 
-As of 30 Aug 2023, we have a CRAN release of the package Nevertheless,
+As of 30 Aug 2023, we have a CRAN release of the package. Nevertheless,
 the package and the documentation might still have bugs or errors, or
-you might not be able to do what you want. In that case please write the
-package maintainer under his institutional email address (requires using
-google).
+you might not be able to do what you want. In that case, or if you are
+unsure please write the package maintainer under his institutional email
+address.
 
 # Installation
 
@@ -54,7 +54,7 @@ remotes::install_github("perblock/MoNAn")
 However, you can also get the (often slightly older) CRAN version with:
 
 ``` r
-install.packages("igraph")
+install.packages("MoNAn")
 ```
 
 # Example

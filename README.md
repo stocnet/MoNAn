@@ -29,6 +29,9 @@ characteristics of individuals, it is an ERGM for weighted networks.
 Announcements about workshops etc. can be found
 [here](https://www.suz.uzh.ch/de/institut/professuren/block/monan_software.html).
 
+The **MoNAn Manual** is available here on github in the manual folder or
+on [SocArXiv](https://osf.io/preprints/socarxiv/8q2xu/)
+
 # Note from the developers
 
 As of 30 Aug 2023, we have a CRAN release of the package. Nevertheless,

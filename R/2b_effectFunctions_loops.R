@@ -109,6 +109,7 @@ loops_GW <- function(dep.var = 1,
     if(update > 0){
       return(update * g_mar(y = tie_val, a = alpha))
     }
+  }
 }
 
 

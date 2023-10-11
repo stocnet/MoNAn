@@ -71,23 +71,19 @@ loops_GW <- function(dep.var = 1,
     stop("Alpha parameter in GW loops weights function must be positive")
   }
   
+  g_cum <- function(y, a){
+    contr <- 0
+    for(k in 0:y){
+      contr <- contr + (y-k) * exp(-log(a)*k)
+    }
+    contr - y
+  }
+  
   if (getTargetContribution) {
     if (i == j) {
       nResources <- cache[[dep.var]]$valuedNetwork[i, i]
       
-      if (nResources == 0) {
-        return(0)
-      }
-      
-      v <- list()
-      for (turn in 1:nResources) {
-        ind_cont <- 0
-        for (k in 1:turn) {
-          ind_cont <- ind_cont + (1 / (alpha)^(k))
-        }
-        v[[turn]] <- ind_cont
-      }
-      return(sum(unlist(v)))
+      return(g_cum(y = nResources, a = alpha))
     }
     
     return(0)
@@ -97,28 +93,22 @@ loops_GW <- function(dep.var = 1,
     return(0)
   }
   
-  if (i == j) {
-    value.old <- cache[[dep.var]]$valuedNetwork[i, i]
-    value.new <- cache[[dep.var]]$valuedNetwork[i, i] + update
-    
-    if (update > 0) {
-      ind_cont <- 0
-      for (k in 1:value.new) {
-        ind_cont <- ind_cont + (1 / (alpha)^(k))
-      }
-      v <- ind_cont
+  g_mar <- function(y, a){
+    contr <- 0
+    for(k in 0:y){
+      contr <- contr + exp(-log(a)*k)
     }
-    
-    if (update < 0) {
-      ind_cont <- 0
-      for (k in 1:value.old) {
-        ind_cont <- ind_cont + (1 / (alpha)^(k))
-      }
-      v <- -ind_cont
-    }
-    
-    return(v)
+    contr - 1
   }
+  
+  if (i == j) {
+    tie_val <- cache[[dep.var]]$valuedNetwork[i, i]
+    if(update < 0){
+      return(update * g_mar(y = (tie_val + update), a = alpha))
+    }
+    if(update > 0){
+      return(update * g_mar(y = tie_val, a = alpha))
+    }
 }
 
 

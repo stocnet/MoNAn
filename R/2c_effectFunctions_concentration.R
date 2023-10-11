@@ -54,33 +54,41 @@ concentration_basic <- function(dep.var = 1, state, cache, i, j, edge, update, g
 concentration_GW <- function(dep.var = 1, state, cache, i, j, edge, update, 
                              getTargetContribution = FALSE, lambda = 2){
   if(lambda <= 0) stop("lambda parameter in concentration_GW function must be positive")
+  
+  if(i == j) return(0)
+  
   if(getTargetContribution){
-    nRessources <- cache[[dep.var]]$valuedNetwork[i, j]
-    if(nRessources == 0) return(0)
-    v <- list()
-    for(turn in 1:nRessources){
-      ind_cont <- 0
-      for(k in 1:turn){
-        ind_cont <- ind_cont + 2*(1 / (lambda)^(k))
+    
+    g_cum <- function(y, a){
+      contr <- 0
+      for(k in 0:y){
+        contr <- contr + (y-k) * exp(-log(a)*k)
       }
-      v[[turn]] <- ind_cont
+      contr - y
     }
-    return(sum(unlist(v)))
+    
+    nResources <- cache[[dep.var]]$valuedNetwork[i, j]
+    
+    return(g_cum(y = nResources, a = alpha))
   }
+  
   ### calculate change statistic
-  if (update > 0){
-    ind_cont <- 0
-    for(k in 1:(cache[[dep.var]]$valuedNetwork[i, j] + update)){
-      ind_cont <- ind_cont + 2*(1 / (lambda)^(k))
+  
+  g_mar <- function(y, a){
+    contr <- 0
+    for(k in 0:y){
+      contr <- contr + exp(-log(a)*k)
     }
-    return(ind_cont)
+    contr - 1
   }
-  if (update < 0){
-    ind_cont <- 0
-    for(k in 1:(cache[[dep.var]]$valuedNetwork[i, j])){
-      ind_cont <- ind_cont + 2*(1 / (lambda)^(k))
-    }
-    return(-ind_cont)
+  
+  tie_val <- cache[[dep.var]]$valuedNetwork[i, j]
+
+  if(update < 0){
+    return(update * g_mar(y = (tie_val + update), a = alpha))
+  }
+  if(update > 0){
+    return(update * g_mar(y = tie_val, a = alpha))
   }
 }
 

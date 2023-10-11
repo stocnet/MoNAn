@@ -46,14 +46,14 @@ concentration_basic <- function(dep.var = 1, state, cache, i, j, edge, update, g
 #' @param edge 
 #' @param update 
 #' @param getTargetContribution 
-#' @param lambda 
+#' @param alpha 
 #'
 #' @return Returns the change statistic or target statistic of the effect for 
 #' internal use by the estimation algorithm.
 #' @keywords internal
 concentration_GW <- function(dep.var = 1, state, cache, i, j, edge, update, 
-                             getTargetContribution = FALSE, lambda = 2){
-  if(lambda <= 0) stop("lambda parameter in concentration_GW function must be positive")
+                             getTargetContribution = FALSE, alpha = 2){
+  if(alpha < 1) stop("alpha parameter in concentration_GW function must be 1 or larger")
   
   if(i == j) return(0)
   
@@ -109,14 +109,14 @@ concentration_GW <- function(dep.var = 1, state, cache, i, j, edge, update,
 #' @param edge 
 #' @param update 
 #' @param getTargetContribution 
-#' @param lambda 
+#' @param alpha 
 #'
 #' @return Returns the change statistic or target statistic of the effect for 
 #' internal use by the estimation algorithm.
 #' @keywords internal
 concentration_GW_dyad_covar_bin <- function(dep.var = 1, attribute.index, state, cache, i, j, edge, update, 
-                                            getTargetContribution = FALSE, lambda = 2){
-  if(lambda <= 0) stop("lambda parameter in concentration_GW function must be positive")
+                                            getTargetContribution = FALSE, alpha = 2){
+  if(alpha < 1) stop("alpha parameter in concentration_GW function must be 1 or larger")
   if(!all(state[[attribute.index]]$data == t(state[[attribute.index]]$data))) stop("attribute.index in concentration_GW_dyad_covar_bin function must be symmetric")
   if(!all(state[[attribute.index]]$data %in% c(0,1))) stop("all values of attribute.index in concentration_GW_dyad_covar_bin function must be 0 or 1")
   if(dim(state[[attribute.index]]$data)[1] != dim(state[[attribute.index]]$data)[2]) stop("attribute.index in concentration_GW_dyad_covar_bin function must be a square matrix")

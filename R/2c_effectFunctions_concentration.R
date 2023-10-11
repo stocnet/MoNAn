@@ -122,36 +122,42 @@ concentration_GW_dyad_covar_bin <- function(dep.var = 1, attribute.index, state,
   if(dim(state[[attribute.index]]$data)[1] != dim(state[[attribute.index]]$data)[2]) stop("attribute.index in concentration_GW_dyad_covar_bin function must be a square matrix")
   if(length(dim(state[[attribute.index]]$data)) != 2) stop("attribute.index in concentration_GW_dyad_covar_bin function must be a square matrix")
   
+  if(i == j) return(0)
+  
   if(getTargetContribution){
-    nRessources <- cache[[dep.var]]$valuedNetwork[i, j] * state[[attribute.index]]$data[i, j]
-    if(nRessources == 0) return(0)
-    v <- list()
-    for(turn in 1:nRessources){
-      ind_cont <- 0
-      for(k in 1:turn){
-        ind_cont <- ind_cont + 2*(1 / (lambda)^(k))
+    
+    g_cum <- function(y, a){
+      contr <- 0
+      for(k in 0:y){
+        contr <- contr + (y-k) * exp(-log(a)*k)
       }
-      v[[turn]] <- ind_cont
+      contr - y
     }
-    return(sum(unlist(v)))
+    
+    nResources <- cache[[dep.var]]$valuedNetwork[i, j] * state[[attribute.index]]$data[i, j]
+    
+    return(g_cum(y = nResources, a = alpha))
   }
+  
   ### calculate change statistic
   
   if(state[[attribute.index]]$data[i, j] == 0) return(0)
   
-  if (update > 0){
-    ind_cont <- 0
-    for(k in 1:(cache[[dep.var]]$valuedNetwork[i, j] + update)){
-      ind_cont <- ind_cont + 2*(1 / (lambda)^(k))
+  g_mar <- function(y, a){
+    contr <- 0
+    for(k in 0:y){
+      contr <- contr + exp(-log(a)*k)
     }
-    return(ind_cont)
+    contr - 1
   }
-  if (update < 0){
-    ind_cont <- 0
-    for(k in 1:(cache[[dep.var]]$valuedNetwork[i, j])){
-      ind_cont <- ind_cont + 2*(1 / (lambda)^(k))
-    }
-    return(-ind_cont)
+  
+  tie_val <- cache[[dep.var]]$valuedNetwork[i, j] * state[[attribute.index]]$data[i, j]
+  
+  if(update < 0){
+    return(update * g_mar(y = (tie_val + update), a = alpha))
+  }
+  if(update > 0){
+    return(update * g_mar(y = tie_val, a = alpha))
   }
 }
 

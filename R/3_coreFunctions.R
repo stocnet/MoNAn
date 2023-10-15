@@ -350,6 +350,18 @@ createNetwork <-
     if (!is.matrix(m)) {
       stop("Not a matrix.")
     }
+    if (!is.numeric(m)) {
+      m <- matrix(as.numeric(m), ncol = ncol(m))
+    }
+    if (any(is.na(m))) {
+      stop(paste("Input matrix includes missing values or cannot be classified as numeric."))
+    }
+    if (nrow(m) != ncol(m)) {
+      stop("Input matrix should have the same number of rows as columns.")
+    }
+    # if ( ... ) {
+    #   stop("Input matrix should only contain values of zero and one.")
+    # }
     if (length(nodeSet) == 1) {
       nodeSet <- c(nodeSet, nodeSet)
     }

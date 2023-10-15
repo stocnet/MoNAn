@@ -10,7 +10,7 @@
 \title{Example Data for the MoNAn Package}
 \format{
 \code{mobilityEdgelist}
-A data frame with 743 rows and 2 columns.
+A data frame with 742 rows and 2 columns.
 
 \code{orgRegion}
 An object with 17 values.

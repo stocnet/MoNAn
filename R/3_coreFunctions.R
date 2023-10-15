@@ -214,6 +214,16 @@ createEdgelist <-
     if (dim(el)[2] != 2) {
       stop("Two columns expected in edge list creation.")
     }
+    if (!is.numeric(el)) {
+      el <- matrix(as.numeric(el), ncol = 2)
+    }
+    if (any(is.na(el))) {
+      stop(paste("Input data includes missing values or cannot be classified as numeric."))
+    }
+    if (min(el[, 1]) != 1 || max(el[, 1]) != length(unique(el[, 1]))) {
+      stop("Input data in the first column should be numbered from one to max. 
+           number of different locations.")
+    }
     if (length(nodeSet) == 1) {
       stop("Three node sets need to be specified for edge lists: nodes / nodes / edges")
     }

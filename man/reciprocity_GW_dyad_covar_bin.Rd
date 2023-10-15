@@ -14,7 +14,7 @@ reciprocity_GW_dyad_covar_bin(
   edge,
   update,
   getTargetContribution = FALSE,
-  lambda = 2
+  alpha = 2
 )
 }
 \arguments{
@@ -36,7 +36,7 @@ reciprocity_GW_dyad_covar_bin(
 
 \item{getTargetContribution}{}
 
-\item{lambda}{}
+\item{alpha}{}
 }
 \value{
 Returns the change statistic or target statistic of the effect for

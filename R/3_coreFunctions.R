@@ -470,9 +470,14 @@ createNodeVariable <-
            nodeSet = "actors",
            addSame = FALSE,
            addSim = FALSE) {
-    if (!is.numeric(values) &&
-      !all(is.na(values))) {
-      stop("Values not numeric.")
+    if (!(is.vector(values))) {
+      stop("Input data should be of class 'vector'.")
+    }
+    if (!is.numeric(values)) {
+      values <- as.numeric(values)
+    }
+    if (any(is.na(values))) {
+      stop(paste("Input vector includes missing values or cannot be classified as numeric."))
     }
     l <- list(
       data = values,

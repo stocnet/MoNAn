@@ -359,9 +359,6 @@ createNetwork <-
     if (nrow(m) != ncol(m)) {
       stop("Input matrix should have the same number of rows as columns.")
     }
-    if (any(!(m == 1 | m == 0))) {
-      stop("Input matrix should only contain values of zero and one.")
-    }
     if (length(nodeSet) == 1) {
       nodeSet <- c(nodeSet, nodeSet)
     }

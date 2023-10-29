@@ -224,8 +224,8 @@ createEdgelist <-
       stop("Input data in the first column should be numbered from one to max. 
            number of different locations.")
     }
-    if (length(nodeSet) == 1) {
-      stop("Three node sets need to be specified for edge lists: nodes / nodes / edges")
+    if (length(nodeSet) != 3) {
+      stop("Three nodesets need to be specified for edgelists: nodes / nodes / edges")
     }
     l <- list(
       data = el,

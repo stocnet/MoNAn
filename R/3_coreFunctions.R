@@ -565,7 +565,8 @@ createProcessState <- function(elements, dependentVariable) {
         "network.monan"
       )
     )) {
-      stop(paste("Unknown element of class", class(e)))
+      stop(paste0("Unknown element of class '", class(e), 
+           "'. Input objects should either be of classes 'edgelist.monan', 'nodeSet.monan', 'nodeVar.monan or 'network.monan'."))
     }
 
     # TODO CLEANUP from here. What is necessary, hat should be extended?

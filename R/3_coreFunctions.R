@@ -220,8 +220,8 @@ createEdgelist <-
     if (any(is.na(el))) {
       stop(paste("Input data includes missing values or cannot be classified as numeric."))
     }
-    if (min(el[, 1]) != 1 || max(el[, 1]) != length(unique(el[, 1]))) {
-      stop("Input data in the first column should be numbered from one to max. 
+    if (min(el) != 1 || max(el) != length(unique(as.numeric(el)))) {
+      stop("Input data should be numbered from one to max. 
            number of different locations.")
     }
     if (length(nodeSet) != 3) {

@@ -581,7 +581,7 @@ createProcessState <- function(elements, dependentVariable) {
   }
 
   # if no node sets were found, create a default
-  # TODO: the node set check should be based on the nodeSet names, not their size
+  # TODO: the node set check should be based on the nodeSet names, not their size => done by checkProcessState?
   if (length(nodeSetIDs) == 0) {
     if (length(unique(sizes)) != 1) {
       stop("Differing element sizes without defining node sets.")
@@ -591,11 +591,13 @@ createProcessState <- function(elements, dependentVariable) {
   }
 
   # check if all elements in 'linkedElementIDs' have a corresponding node set
-  # TODO implement
+  # TODO implement => done by checkProcessState?
   
   elements$dep.var <- dependentVariable
 
   class(elements) <- "processState.monan"
+  
+  checkProcessState(elements) # checks whether all input objects are correctly specified/valid
   elements
 }
 

@@ -247,7 +247,7 @@ loops_resource_covar <-
 #' This effect models loops for cases in which individuals have more than one 
 #' origin. The additional origin not specified in the mobility data is included
 #' as a resource.attribute.index.
-#' The question modelled is: Do individuals stay in the additional location of 
+#' The question modeled is: Do individuals stay in the additional location of 
 #' origin, compared to going to a different location?
 #'
 #' @param dep.var 
@@ -292,5 +292,58 @@ loops_additional_origin <-
   }
 
 
-
+#' loops_x_loops_additional_origin
+#' 
+#' This effect is specified for cases in which individuals have more than one 
+#' origin. The additional origin not specified in the mobility data is included
+#' as a resource.attribute.index.
+#' The question modeled is: Do individuals stay in the additional location of 
+#' origin if this is additionally their origin as specified in the mobility data, 
+#' compared to going to a different location?
+#'
+#' @param dep.var 
+#' @param resource.attribute.index 
+#' @param state 
+#' @param cache 
+#' @param i 
+#' @param j 
+#' @param edge 
+#' @param update 
+#' @param getTargetContribution 
+#'
+#' @return Returns the change statistic or target statistic of the effect for 
+#' internal use by the estimation algorithm.
+#' @keywords internal
+loops_x_loops_additional_origin <-
+  function(dep.var = 1,
+           resource.attribute.index,
+           state,
+           cache,
+           i,
+           j,
+           edge,
+           update,
+           getTargetContribution = FALSE) {
+    
+    if (getTargetContribution) {
+      if(i != j){
+        return(0)
+      }
+      res_index <- (state[[dep.var]]$data[,1] == i) * (state[[dep.var]]$data[,2] == j)
+      cont <- sum(res_index * (state[[resource.attribute.index]]$data == j))
+      return(cont)
+    }
+    
+    orig.of.res <- state[[dep.var]]$data[edge,1]
+    dest.of.res <- state[[dep.var]]$data[edge,2]
+    additional.orig.of.res <- state[[resource.attribute.index]]$data[edge]
+    
+    if(dest.of.res == additional.orig.of.res){
+      if(dest.of.res == orig.of.res){
+        return(update)
+      }
+    }
+    
+    return(0)
+  }
 

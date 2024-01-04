@@ -13,6 +13,10 @@ export(
   plot.gof.stats.monan, 
   plot.traces.monan, print.result.monan, print.scoretest.monan, scoreTest,
   
+  # test functions
+  target_change_match,
+  test_effect,
+  
   # effect functions: exogenous
   alter_covariate, dyadic_covariate,
   dyadic_covariate_resource_attribute,

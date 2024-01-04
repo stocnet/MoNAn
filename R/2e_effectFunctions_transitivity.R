@@ -1,6 +1,67 @@
 ########## effectFunctions: effects concerning transitivity (Neighbourhood dependence)
 
 
+#' transitivity_basic
+#' 
+#' Is mobility clustered in groups? This is represented by the count of
+#' transitive triads among three nodes. This effect is prone to degeneracy.
+#'
+#' @param dep.var 
+#' @param state 
+#' @param cache 
+#' @param i 
+#' @param j 
+#' @param edge 
+#' @param update 
+#' @param getTargetContribution 
+#'
+#' 
+#' @return Returns the change statistic or target statistic of the effect for 
+#' internal use by the estimation algorithm.
+#' @keywords internal
+transitivity_basic <-
+  function(dep.var = 1,
+           state,
+           cache,
+           i,
+           j,
+           edge,
+           update,
+           getTargetContribution = FALSE) {
+    if (i == j) {
+      return(0)
+    }
+    
+    net <- cache[[dep.var]]$valuedNetwork
+    diag(net) <- 0
+    
+    if (getTargetContribution) {
+      twoPaths <- apply(cbind(net[i, ], net[, j]), 1, prod)
+      triadValues <- mapply(prod, net[i, j], twoPaths)
+      return(sum(triadValues))
+    }
+    
+    ### change contribution in three parts
+    
+    # part 1: i,j closes two-path
+    
+    twoPaths <- apply(cbind(net[i, ], net[, j]), 1, prod)
+    ind_cont <- update * sum(twoPaths)
+    
+    # part 2: i,j closes instar
+    
+    inStars <- apply(cbind(net[i, ], net[j, ]), 1, prod)
+    ind_cont <- ind_cont + update * sum(inStars)
+    
+    # part 3: i,j closes outstar
+    
+    outStars <- apply(cbind(net[, i], net[, j]), 1, prod)
+    ind_cont <- ind_cont + update * sum(outStars)
+    
+    return(ind_cont)
+}
+
+
 #' transitivity_min
 #' 
 #' Is mobility clustered in groups? This is represented by the minimum of reciprocated 

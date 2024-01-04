@@ -26,7 +26,7 @@
 #' @rdname mobilityData
 #' @usage NULL
 #' @format `mobilityEdgelist`
-#' A data frame with 743 rows and 2 columns.
+#' A data frame with 742 rows and 2 columns.
 "mobilityEdgelist"
 
 

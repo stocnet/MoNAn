@@ -13,6 +13,10 @@ export(
   plot.gof.stats.monan, 
   plot.traces.monan, print.result.monan, print.scoretest.monan, scoreTest,
   
+  # test functions
+  target_change_match,
+  test_effect,
+  
   # effect functions: exogenous
   alter_covariate, dyadic_covariate,
   dyadic_covariate_resource_attribute,
@@ -21,7 +25,9 @@ export(
   
   # effect functions: loops
   loops, loops_GW, loops_node_covar, 
-  loops_resource_covar_node_covar, loops_resource_covar, 
+  loops_resource_covar_node_covar, loops_resource_covar,
+  loops_additional_origin,
+  loops_x_loops_additional_origin,
 
   # effect functions: concentration
   concentration_basic, concentration_GW, concentration_GW_dyad_covar_bin,
@@ -32,7 +38,7 @@ export(
   reciprocity_GW, reciprocity_GW_dyad_covar_bin,
   
   # effect functions: transitivity
-  transitivity_min, transitivity_netflow,
+  transitivity_basic, transitivity_min, transitivity_netflow,
   
   # effect functions: other
   crowding_out_prop_covar_bin,  

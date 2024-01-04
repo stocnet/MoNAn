@@ -214,8 +214,18 @@ createEdgelist <-
     if (dim(el)[2] != 2) {
       stop("Two columns expected in edge list creation.")
     }
-    if (length(nodeSet) == 1) {
-      stop("Three node sets need to be specified for edge lists: nodes / nodes / edges")
+    if (!is.numeric(el)) {
+      el <- matrix(as.numeric(el), ncol = 2)
+    }
+    if (any(is.na(el))) {
+      stop(paste("Input data includes missing values or cannot be classified as numeric."))
+    }
+    if (min(el) != 1 || max(el) != length(unique(as.numeric(el)))) {
+      stop("Input data should be numbered from one to max. 
+           number of different locations.")
+    }
+    if (length(nodeSet) != 3) {
+      stop("Three nodesets need to be specified for edgelists: nodes / nodes / edges")
     }
     l <- list(
       data = el,
@@ -340,6 +350,15 @@ createNetwork <-
     if (!is.matrix(m)) {
       stop("Not a matrix.")
     }
+    if (!is.numeric(m)) {
+      m <- matrix(as.numeric(m), ncol = ncol(m))
+    }
+    if (any(is.na(m))) {
+      stop(paste("Input matrix includes missing values or cannot be classified as numeric."))
+    }
+    if (nrow(m) != ncol(m)) {
+      stop("Input matrix should have the same number of rows as columns.")
+    }
     if (length(nodeSet) == 1) {
       nodeSet <- c(nodeSet, nodeSet)
     }
@@ -448,9 +467,14 @@ createNodeVariable <-
            nodeSet = "actors",
            addSame = FALSE,
            addSim = FALSE) {
-    if (!is.numeric(values) &&
-      !all(is.na(values))) {
-      stop("Values not numeric.")
+    if (!(is.vector(values))) {
+      stop("Input data should be of class 'vector'.")
+    }
+    if (!is.numeric(values)) {
+      values <- as.numeric(values)
+    }
+    if (any(is.na(values))) {
+      stop(paste("Input vector includes missing values or cannot be classified as numeric."))
     }
     l <- list(
       data = values,
@@ -541,7 +565,8 @@ createProcessState <- function(elements, dependentVariable) {
         "network.monan"
       )
     )) {
-      stop(paste("Unknown element of class", class(e)))
+      stop(paste0("Unknown element of class '", class(e), 
+           "'. Input objects should either be of classes 'edgelist.monan', 'nodeSet.monan', 'nodeVar.monan or 'network.monan'."))
     }
 
     # TODO CLEANUP from here. What is necessary, hat should be extended?
@@ -556,7 +581,7 @@ createProcessState <- function(elements, dependentVariable) {
   }
 
   # if no node sets were found, create a default
-  # TODO: the node set check should be based on the nodeSet names, not their size
+  # TODO: the node set check should be based on the nodeSet names, not their size => done by checkProcessState?
   if (length(nodeSetIDs) == 0) {
     if (length(unique(sizes)) != 1) {
       stop("Differing element sizes without defining node sets.")
@@ -566,11 +591,13 @@ createProcessState <- function(elements, dependentVariable) {
   }
 
   # check if all elements in 'linkedElementIDs' have a corresponding node set
-  # TODO implement
+  # TODO implement => done by checkProcessState?
   
   elements$dep.var <- dependentVariable
 
   class(elements) <- "processState.monan"
+  
+  checkProcessState(elements) # checks whether all input objects are correctly specified/valid
   elements
 }
 

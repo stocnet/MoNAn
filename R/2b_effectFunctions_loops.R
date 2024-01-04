@@ -71,23 +71,19 @@ loops_GW <- function(dep.var = 1,
     stop("Alpha parameter in GW loops weights function must be positive")
   }
   
+  g_cum <- function(y, a){
+    contr <- 0
+    for(k in 0:y){
+      contr <- contr + (y-k) * exp(-log(a)*k)
+    }
+    contr - y
+  }
+  
   if (getTargetContribution) {
     if (i == j) {
       nResources <- cache[[dep.var]]$valuedNetwork[i, i]
       
-      if (nResources == 0) {
-        return(0)
-      }
-      
-      v <- list()
-      for (turn in 1:nResources) {
-        ind_cont <- 0
-        for (k in 1:turn) {
-          ind_cont <- ind_cont + (1 / (alpha)^(k))
-        }
-        v[[turn]] <- ind_cont
-      }
-      return(sum(unlist(v)))
+      return(g_cum(y = nResources, a = alpha))
     }
     
     return(0)
@@ -97,27 +93,22 @@ loops_GW <- function(dep.var = 1,
     return(0)
   }
   
+  g_mar <- function(y, a){
+    contr <- 0
+    for(k in 0:y){
+      contr <- contr + exp(-log(a)*k)
+    }
+    contr - 1
+  }
+  
   if (i == j) {
-    value.old <- cache[[dep.var]]$valuedNetwork[i, i]
-    value.new <- cache[[dep.var]]$valuedNetwork[i, i] + update
-    
-    if (update > 0) {
-      ind_cont <- 0
-      for (k in 1:value.new) {
-        ind_cont <- ind_cont + (1 / (alpha)^(k))
-      }
-      v <- ind_cont
+    tie_val <- cache[[dep.var]]$valuedNetwork[i, i]
+    if(update < 0){
+      return(update * g_mar(y = (tie_val + update), a = alpha))
     }
-    
-    if (update < 0) {
-      ind_cont <- 0
-      for (k in 1:value.old) {
-        ind_cont <- ind_cont + (1 / (alpha)^(k))
-      }
-      v <- -ind_cont
+    if(update > 0){
+      return(update * g_mar(y = tie_val, a = alpha))
     }
-    
-    return(v)
   }
 }
 
@@ -251,8 +242,108 @@ loops_resource_covar <-
     return(update * state[[resource.attribute.index]]$data[edge])
   }
 
+#' loops_additional_origin
+#' 
+#' This effect models loops for cases in which individuals have more than one 
+#' origin. The additional origin not specified in the mobility data is included
+#' as a resource.attribute.index.
+#' The question modeled is: Do individuals stay in the additional location of 
+#' origin, compared to going to a different location?
+#'
+#' @param dep.var 
+#' @param resource.attribute.index 
+#' @param state 
+#' @param cache 
+#' @param i 
+#' @param j 
+#' @param edge 
+#' @param update 
+#' @param getTargetContribution 
+#'
+#' @return Returns the change statistic or target statistic of the effect for 
+#' internal use by the estimation algorithm.
+#' @keywords internal
+loops_additional_origin <-
+  function(dep.var = 1,
+           resource.attribute.index,
+           state,
+           cache,
+           i,
+           j,
+           edge,
+           update,
+           getTargetContribution = FALSE) {
+    
+    if (getTargetContribution) {
+      res_index <- (state[[dep.var]]$data[,1] == i) * (state[[dep.var]]$data[,2] == j)
+      cont <- sum(res_index * (state[[resource.attribute.index]]$data == j))
+      return(cont)
+    }
+    
+    dest.of.res <- j
+    additional.orig.of.res <- state[[resource.attribute.index]]$data[edge]
+    
+    if(dest.of.res == additional.orig.of.res){
+      return(update)
+    }
+    
+    return(0)
+    
+  }
 
 
-
-
+#' loops_x_loops_additional_origin
+#' 
+#' This effect is specified for cases in which individuals have more than one 
+#' origin. The additional origin not specified in the mobility data is included
+#' as a resource.attribute.index.
+#' The question modeled is: Do individuals stay in the additional location of 
+#' origin if this is additionally their origin as specified in the mobility data, 
+#' compared to going to a different location?
+#'
+#' @param dep.var 
+#' @param resource.attribute.index 
+#' @param state 
+#' @param cache 
+#' @param i 
+#' @param j 
+#' @param edge 
+#' @param update 
+#' @param getTargetContribution 
+#'
+#' @return Returns the change statistic or target statistic of the effect for 
+#' internal use by the estimation algorithm.
+#' @keywords internal
+loops_x_loops_additional_origin <-
+  function(dep.var = 1,
+           resource.attribute.index,
+           state,
+           cache,
+           i,
+           j,
+           edge,
+           update,
+           getTargetContribution = FALSE) {
+    
+    if (getTargetContribution) {
+      if(i != j){
+        return(0)
+      }
+      res_index <- (state[[dep.var]]$data[,1] == i) * (state[[dep.var]]$data[,2] == j)
+      cont <- sum(res_index * (state[[resource.attribute.index]]$data == j))
+      return(cont)
+    }
+    
+    orig.of.res <- state[[dep.var]]$data[edge,1]
+    dest.of.res <- j
+    additional.orig.of.res <- state[[resource.attribute.index]]$data[edge]
+    
+    if(dest.of.res == additional.orig.of.res){
+      if(dest.of.res == orig.of.res){
+        return(update)
+      }
+    }
+    
+    return(0)
+  }
 

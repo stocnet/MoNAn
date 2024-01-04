@@ -1,12 +1,13 @@
 Package: MoNAn
 Type: Package
 Title: Mobility Network Analysis
-Version: 0.1.2
+Version: 0.1.3
 Date: 2023-08-15
 Authors@R: c(person("Per", "Block", role = c("cre", "aut", "cph"), email = "block@soziologie.uzh.ch", 
         comment = c(ORCID = "0000-0002-7583-2392")), 
     person("Christoph", "Stadtfeld", role = "aut", comment = c(ORCID = "0000-0002-2704-2134")),
-    person("Nico", "Keiser", role = "aut"))
+    person("Nico", "Keiser", role = "aut"),
+    person("Marion", "Hoffman", role = "aut"))
 Description: Implements the method to analyse weighted mobility networks or distribution networks as outlined in: 
     Block, P., Stadtfeld, C., & Robins, G. (2022) <doi:10.1016/j.socnet.2021.08.003>. 
     The purpose of the model is to analyse the structure of mobility, 

@@ -13,7 +13,7 @@ reciprocity_GW(
   edge,
   update,
   getTargetContribution = FALSE,
-  lambda = 2
+  alpha = 2
 )
 }
 \arguments{
@@ -33,7 +33,7 @@ reciprocity_GW(
 
 \item{getTargetContribution}{}
 
-\item{lambda}{}
+\item{alpha}{}
 }
 \value{
 Returns the change statistic or target statistic of the effect for

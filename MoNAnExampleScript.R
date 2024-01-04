@@ -25,6 +25,14 @@ region <- createNodeVariable(orgRegion, nodeSet = "organisations")
 size <- createNodeVariable(orgSize, nodeSet = "organisations", addSim = TRUE)
 sex <- createNodeVariable(indSex, nodeSet = "people")
 
+# the following lines create an artificial second origin used for illustration
+# in the examples in the manual
+other_origin <- sample(1:17, 742, replace = T)
+resample <- as.logical(sample(0:1, 742, replace = T, prob = c(0.88, 0.12)))
+other_origin[resample] <- transfers$data[resample,2]
+
+second_or <- createNodeVariable(other_origin, nodeSet = "people")
+
 # combine created objects to the process state
 myState <- createProcessState(
   list(
@@ -34,7 +42,8 @@ myState <- createProcessState(
     sameRegion = sameRegion,
     region = region,
     size = size,
-    sex = sex), 
+    sex = sex,
+    second_or = second_or), 
   dependentVariable = "transfers")
 
 

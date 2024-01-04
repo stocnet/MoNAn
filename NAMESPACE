@@ -21,7 +21,9 @@ export(
   
   # effect functions: loops
   loops, loops_GW, loops_node_covar, 
-  loops_resource_covar_node_covar, loops_resource_covar, 
+  loops_resource_covar_node_covar, loops_resource_covar,
+  loops_additional_origin,
+  loops_x_loops_additional_origin,
 
   # effect functions: concentration
   concentration_basic, concentration_GW, concentration_GW_dyad_covar_bin,

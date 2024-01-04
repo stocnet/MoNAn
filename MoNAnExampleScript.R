@@ -25,6 +25,8 @@ region <- createNodeVariable(orgRegion, nodeSet = "organisations")
 size <- createNodeVariable(orgSize, nodeSet = "organisations", addSim = TRUE)
 sex <- createNodeVariable(indSex, nodeSet = "people")
 
+second_or <- createNodeVariable(other_origin, nodeSet = "people")
+
 # combine created objects to the process state
 myState <- createProcessState(
   list(
@@ -34,7 +36,8 @@ myState <- createProcessState(
     sameRegion = sameRegion,
     region = region,
     size = size,
-    sex = sex), 
+    sex = sex,
+    second_or = second_or), 
   dependentVariable = "transfers")
 
 

@@ -15,6 +15,7 @@ Authors:
 \itemize{
   \item Christoph Stadtfeld (\href{https://orcid.org/0000-0002-2704-2134}{ORCID})
   \item Nico Keiser
+  \item Marion Hoffman
 }
 
 }

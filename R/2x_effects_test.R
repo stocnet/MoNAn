@@ -87,7 +87,7 @@ target_change_match <- function(edge, j_new, effectName, ...){
                                   ...)
   myUpdtCache <- myCache
   myUpdtCache[[1]] <-
-    MoNAn:::updateWeightedCache(
+    updateWeightedCache(
       myCache[[1]],
       i_test,
       j_test,

@@ -280,10 +280,10 @@ loops_additional_origin <-
       return(cont)
     }
     
-    dest.of.res <- state[[dep.var]]$data[edge,2]
-    second.orig.of.res <- state[[resource.attribute.index]]$data[edge]
+    dest.of.res <- j
+    additional.orig.of.res <- state[[resource.attribute.index]]$data[edge]
     
-    if(dest.of.res == second.orig.of.res){
+    if(dest.of.res == additional.orig.of.res){
       return(update)
     }
     
@@ -335,7 +335,7 @@ loops_x_loops_additional_origin <-
     }
     
     orig.of.res <- state[[dep.var]]$data[edge,1]
-    dest.of.res <- state[[dep.var]]$data[edge,2]
+    dest.of.res <- j
     additional.orig.of.res <- state[[resource.attribute.index]]$data[edge]
     
     if(dest.of.res == additional.orig.of.res){

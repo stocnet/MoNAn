@@ -236,3 +236,178 @@ transitivity_netflow <-
   }
 
 
+#' triad120D
+#' 
+#' Models the prevalence of the 120D triad
+#'
+#' @param dep.var 
+#' @param state 
+#' @param cache 
+#' @param i 
+#' @param j 
+#' @param edge 
+#' @param update 
+#' @param getTargetContribution 
+#'
+#' @return Returns the change statistic or target statistic of the effect for 
+#' internal use by the estimation algorithm.
+#'
+#' @keywords internal
+triad120D <- function(dep.var = 1,
+                      state,
+                      cache,
+                      i,
+                      j,
+                      edge,
+                      update,
+                      getTargetContribution = FALSE){
+  
+  if (i == j) {
+    return(0)
+  }
+  
+  # the target contribution is calculated for the i-j pair that is reciprocated
+  net <- cache[[dep.var]]$valuedNetwork
+  diag(net) <- 0
+  
+  if (getTargetContribution) {
+    n_down_stars <- apply(cbind(net[, i], net[, j]), 1, prod)
+    triadValues <- mapply(prod, (net[i, j] * net[j, i]), n_down_stars)
+    return(sum(triadValues) / 2)
+  }
+  
+  # for the change stat, four contributions are needed, one for each tie var,
+  # but two are isomorphic
+  
+  # tie on the reciprocated dyad
+  n_down_stars <- apply(cbind(net[, i], net[, j]), 1, prod)
+  ind_cont <- update * sum(n_down_stars) * net[j,i]
+  
+  # tie on the down star
+  recip_net <- net * t(net)
+  n_recip_in_stars <- apply(cbind(net[i, ], recip_net[, j]), 1, prod)
+  ind_cont <- ind_cont + update * sum(n_recip_in_stars)
+  
+  return(ind_cont)
+}
+
+
+#' triad120U
+#' 
+#' Models the prevalence of the 120U triad
+#'
+#' @param dep.var 
+#' @param state 
+#' @param cache 
+#' @param i 
+#' @param j 
+#' @param edge 
+#' @param update 
+#' @param getTargetContribution 
+#'
+#' @return Returns the change statistic or target statistic of the effect for 
+#' internal use by the estimation algorithm.
+#'
+#' @keywords internal
+triad120U <- function(dep.var = 1,
+                      state,
+                      cache,
+                      i,
+                      j,
+                      edge,
+                      update,
+                      getTargetContribution = FALSE){
+  
+  if (i == j) {
+    return(0)
+  }
+  
+  # the target contribution is calculated for the i-j pair that is reciprocated
+  net <- cache[[dep.var]]$valuedNetwork
+  diag(net) <- 0
+  
+  if (getTargetContribution) {
+    n_up_stars <- apply(cbind(net[i, ], net[j, ]), 1, prod)
+    triadValues <- mapply(prod, (net[i, j] * net[j, i]), n_up_stars)
+    return(sum(triadValues) / 2)
+  }
+  
+  # for the change stat, four contributions are needed, one for each tie var,
+  # but two are isomorphic
+  
+  # tie on the reciprocated dyad
+  n_up_stars <- apply(cbind(net[i, ], net[j, ]), 1, prod)
+  ind_cont <- update * sum(n_up_stars) * net[j,i]
+  
+  # tie on the down star
+  recip_net <- net * t(net)
+  n_recip1_two_paths <- apply(cbind(net[, j], recip_net[i, ]), 1, prod)
+  ind_cont <- ind_cont + update * sum(n_recip1_two_paths)
+  
+  return(ind_cont)
+}
+
+
+#' triad120C
+#' 
+#' Models the prevalence of the 120C triad
+#'
+#' @param dep.var 
+#' @param state 
+#' @param cache 
+#' @param i 
+#' @param j 
+#' @param edge 
+#' @param update 
+#' @param getTargetContribution 
+#'
+#' @return Returns the change statistic or target statistic of the effect for 
+#' internal use by the estimation algorithm.
+#'
+#' @keywords internal
+triad120C <- function(dep.var = 1,
+                      state,
+                      cache,
+                      i,
+                      j,
+                      edge,
+                      update,
+                      getTargetContribution = FALSE){
+  
+  if (i == j) {
+    return(0)
+  }
+  
+  # the target contribution is calculated for the i-j pair that is reciprocated
+  net <- cache[[dep.var]]$valuedNetwork
+  diag(net) <- 0
+  
+  if (getTargetContribution) {
+    n_two_paths <- apply(cbind(net[i, ], net[, j]), 1, prod)
+    triadValues <- mapply(prod, (net[i, j] * net[j, i]), n_two_paths)
+    return(sum(triadValues))
+  }
+  
+  # for the change stat, four contributions are needed, one for each tie var
+
+  # tie on the reciprocated dyad; transitive closure
+  n_two_paths <- apply(cbind(net[i, ], net[, j]), 1, prod)
+  ind_cont <- update * sum(n_two_paths) * net[j,i]
+
+  # tie on the reciprocated dyad; cyclic closure
+  n_rev_two_paths <- apply(cbind(net[, i], net[j, ]), 1, prod)
+  ind_cont <- ind_cont + update * sum(n_rev_two_paths) * net[j,i]
+  
+  # tie on the first part of two-path
+  recip_net <- net * t(net)
+  n_recip1_two_paths <- apply(cbind(net[j, ], recip_net[i, ]), 1, prod)
+  ind_cont <- ind_cont + update * sum(n_recip1_two_paths)
+  
+  # tie on the second part of two-path
+  n_recip2_two_paths <- apply(cbind(net[, i], recip_net[, j]), 1, prod)
+  ind_cont <- ind_cont + update * sum(n_recip2_two_paths)
+  
+  return(ind_cont)
+}
+
+

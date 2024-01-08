@@ -134,6 +134,66 @@ reciprocity_min_resource_covar <-
   }
 
 
+#' reciprocity_min_dyad_covar
+#'
+#' Do individuals move to destinations that send more individuals to ego’s origin?
+#' This is weighted by a dydic covariate. 
+#' This version of the effect is the minimum of the moves in either direction, 
+#' thereby guarding against degeneracy and guaranteeing sample size consistency. 
+#' It counts the ‘raw’ number of reciprocated transitions in the mobility network.
+#'
+#' @param dep.var 
+#' @param attribute.index 
+#' @param state 
+#' @param cache 
+#' @param i 
+#' @param j 
+#' @param edge 
+#' @param update 
+#' @param getTargetContribution 
+#'
+#' @return Returns the change statistic or target statistic of the effect for 
+#' internal use by the estimation algorithm.
+#' @keywords internal
+reciprocity_min_dyad_covar_bin <-
+  function(dep.var = 1,
+           attribute.index,
+           state,
+           cache,
+           i,
+           j,
+           edge,
+           update,
+           getTargetContribution = FALSE) {
+    if(!all(state[[attribute.index]]$data == t(state[[attribute.index]]$data))) 
+      stop("attribute.index in reciprocity_min_dyad_covar function must be symmetric")
+    if(dim(state[[attribute.index]]$data)[1] != dim(state[[attribute.index]]$data)[2]) 
+      stop("attribute.index in reciprocity_min_dyad_covar function must be a square matrix")
+    if(length(dim(state[[attribute.index]]$data)) != 2) 
+      stop("attribute.index in reciprocity_min_dyad_covar function must be a square matrix")
+    
+    if (i == j) {
+      return(0)
+    }
+    
+    if (getTargetContribution) {
+      return(min(cache[[dep.var]]$minNetwork[i,j], 
+                 cache[[dep.var]]$minNetwork[j,i])*
+               state[[attribute.index]]$data[i,j] / 2) ##NEW!!!
+    }
+    
+    # simplified version that assumes that update are 1 or -1 and the network is an integer network
+    if (update > 0 &&
+        cache[[dep.var]]$netFlowsNetwork[i, j] < 0) {
+      return(update * state[[attribute.index]]$data[i,j])
+    }
+    if (update < 0 &&
+        cache[[dep.var]]$netFlowsNetwork[i, j] <= 0) {
+      return(update * state[[attribute.index]]$data[i,j])
+    }
+    return(0)
+  }
+
 #' reciprocity_GW
 #' 
 #' Do individuals move to destinations that send many individuals to ego’s origin? 

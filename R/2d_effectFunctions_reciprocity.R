@@ -316,6 +316,66 @@ reciprocity_GW_dyad_covar_bin <- function(dep.var = 1, attribute.index, state, c
   return(ind_cont)
 }
 
-
-
+#' reciprocity_GW_dyad_covar
+#' 
+#' Is reciprocity in mobility particularly prevalent between locations weighted 
+#' by a dyadic covariate? E.g., do workers move 
+#' to organisations similar in some way to ego’s origin?
+#' 
+#' @param dep.var 
+#' @param attribute.index 
+#' @param state 
+#' @param cache 
+#' @param i 
+#' @param j 
+#' @param edge 
+#' @param update 
+#' @param getTargetContribution 
+#' @param alpha 
+#'
+#' @return Returns the change statistic or target statistic of the effect for 
+#' internal use by the estimation algorithm.
+#' @keywords internal
+reciprocity_GW_dyad_covar <- function(dep.var = 1, attribute.index, state, cache, i, j, edge, update, 
+                                      getTargetContribution = FALSE, alpha = 2){
+  if(alpha < 1) stop("alpha parameter in reciprocity_GW_dyad_covar function must be 1 or larger")
+  if(!all(state[[attribute.index]]$data == t(state[[attribute.index]]$data))) stop("attribute.index in reciprocity_GW_dyad_covar function must be symmetric")
+  if(dim(state[[attribute.index]]$data)[1] != dim(state[[attribute.index]]$data)[2]) stop("attribute.index in reciprocity_GW_dyad_covar function must be a square matrix")
+  if(length(dim(state[[attribute.index]]$data)) != 2) stop("attribute.index in reciprocity_GW_dyad_covar function must be a square matrix")
+  
+  if(i==j) return(0)
+  
+  g_mar <- function(y, a){
+    contr <- 0
+    for(k in 0:y){
+      contr <- contr + exp(-log(a)*k)
+    }
+    contr - 1
+  }
+  
+  if(getTargetContribution){
+    
+    nOutgoing <- cache[[dep.var]]$valuedNetwork[i, j] 
+    nIncoming <- cache[[dep.var]]$valuedNetwork[j, i] 
+    
+    return(nOutgoing * g_mar(nIncoming, alpha) * state[[attribute.index]]$data[i,j]) ##NEW!!!
+  }
+  
+  ### calculate change statistic
+  
+  # first the part of the change statistic of the actor that moves
+  
+  nIncoming <- cache[[dep.var]]$valuedNetwork[j, i]
+  
+  ind_cont <- update * g_mar(nIncoming, alpha) * state[[attribute.index]]$data[i,j]
+  
+  # now the part of the change statistic for those that are incoming
+  
+  nOutgoing <- cache[[dep.var]]$valuedNetwork[i, j]
+  
+  ind_cont <- ind_cont + nIncoming * (g_mar((nOutgoing + (update)), alpha) * state[[attribute.index]]$data[j,i] - 
+                                        g_mar(nOutgoing , alpha) * state[[attribute.index]]$data[j,i])
+  
+  return(ind_cont) ##NEW!!!
+}
 

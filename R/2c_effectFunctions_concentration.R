@@ -219,7 +219,7 @@ concentration_prop <- function(dep.var = 1, state, cache, i, j, edge, update,
 #' concentration by origin characteristic.
 #' 
 #' @param dep.var 
-#' @param attribute.index
+#' @param attribute.index 
 #' @param state 
 #' @param cache 
 #' @param i 

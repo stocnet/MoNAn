@@ -185,8 +185,9 @@ concentration_GW_dyad_covar <- function(dep.var = 1, attribute.index, state, cac
 concentration_prop <- function(dep.var = 1, state, cache, i, j, edge, update, 
                                getTargetContribution = FALSE){
   if(getTargetContribution){
-    numerator <- 2*(cache[[dep.var]]$valuedNetwork[i, j])^2 - 
-      cache[[dep.var]]$valuedNetwork[i, j]*sum(cache[[dep.var]]$valuedNetwork[i,])
+    numerator <- 2 * (cache[[dep.var]]$valuedNetwork[i, j])^2 - 
+      cache[[dep.var]]$valuedNetwork[i, j] * sum(cache[[dep.var]]$valuedNetwork[i,]) - 
+      cache[[dep.var]]$valuedNetwork[i, j]
     denominator <- sum(cache[[dep.var]]$valuedNetwork[i,]) - 1
     if(denominator <= 0) {
       numerator <- 0
@@ -194,24 +195,69 @@ concentration_prop <- function(dep.var = 1, state, cache, i, j, edge, update,
     }
     return( numerator/denominator )
   }
+  
   ### calculate change statistic
-  numerator1 <- 2*(cache[[dep.var]]$valuedNetwork[i, j])^2 - 
-    cache[[dep.var]]$valuedNetwork[i, j]*sum(cache[[dep.var]]$valuedNetwork[i,])
-  numerator2 <- 2*(cache[[dep.var]]$valuedNetwork[i, j]+update)^2 - 
-    (cache[[dep.var]]$valuedNetwork[i, j]+update)*(sum(cache[[dep.var]]$valuedNetwork[i,])+update)
-  denominator1 <- sum(cache[[dep.var]]$valuedNetwork[i,]) - 1
-  denominator2 <- sum(cache[[dep.var]]$valuedNetwork[i,])+update - 1
-  if(denominator1 <= 0) {
-    numerator1 <- 0
-    denominator1 <- 1
+  
+  if(update == -1){
+    cont <- 2*(-2*cache[[dep.var]]$valuedNetwork[i, j] + 1 + sum(cache[[dep.var]]$valuedNetwork[i,]) ) /
+      (sum(cache[[dep.var]]$valuedNetwork[i,]) - 1)
   }
-  if(denominator2 <= 0) {
-    numerator2 <- 0
-    denominator2 <- 1
+  if(update == 1){
+    cont <- 2*(2*cache[[dep.var]]$valuedNetwork[i, j] - sum(cache[[dep.var]]$valuedNetwork[i,])) / 
+      sum(cache[[dep.var]]$valuedNetwork[i,])
   }
-  return(numerator2/denominator2 - numerator1/denominator1)
+  return(cont)
 }
 
+#' concentration_prop_orig_cov
+#' 
+#' Is there a bandwagon effect in mobility, i.e. do mobile individuals move to locations 
+#' that are the destination of many others from their origin? The functional form of this 
+#' statistic assumes that individuals consider the proportions of individuals (coming from
+#' the same origin) going to a certain destination, instead of the total number.
+#' This is weighted by an attribute of the origin, to model differences in 
+#' concentration by origin characteristic.
+#' 
+#' @param dep.var 
+#' @param attribute.index
+#' @param state 
+#' @param cache 
+#' @param i 
+#' @param j 
+#' @param edge 
+#' @param update 
+#' @param getTargetContribution 
+#'
+#' @return Returns the change statistic or target statistic of the effect for 
+#' internal use by the estimation algorithm. 
+#' @keywords internal
+concentration_prop_orig_cov <- function(dep.var = 1, attribute.index, state, cache, i, j, edge, update, 
+                               getTargetContribution = FALSE){
+  if(length(state[[attribute.index]]$nodeSet) != 1) stop("attribute in concentration_prop_orig_cov must be monadic")
+  if(getTargetContribution){
+    numerator <- 2 * (cache[[dep.var]]$valuedNetwork[i, j])^2 - 
+      cache[[dep.var]]$valuedNetwork[i, j] * sum(cache[[dep.var]]$valuedNetwork[i,]) - 
+      cache[[dep.var]]$valuedNetwork[i, j]
+    denominator <- sum(cache[[dep.var]]$valuedNetwork[i,]) - 1
+    if(denominator <= 0) {
+      numerator <- 0
+      denominator <- 1
+    }
+    return(state[[attribute.index]]$data[i] * numerator / denominator )
+  }
+  
+  ### calculate change statistic
+  
+  if(update == -1){
+    cont <- 2*(-2*cache[[dep.var]]$valuedNetwork[i, j] + 1 + sum(cache[[dep.var]]$valuedNetwork[i,]) ) /
+      (sum(cache[[dep.var]]$valuedNetwork[i,]) - 1)
+  }
+  if(update == 1){
+    cont <- 2*(2*cache[[dep.var]]$valuedNetwork[i, j] - sum(cache[[dep.var]]$valuedNetwork[i,])) / 
+      sum(cache[[dep.var]]$valuedNetwork[i,])
+  }
+  return(state[[attribute.index]]$data[i] * cont)
+}
 
 #' concentration_rankGW
 #' 

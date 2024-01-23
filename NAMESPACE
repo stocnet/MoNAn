@@ -35,7 +35,7 @@ export(
 
   # effect functions: reciprocity
   reciprocity_basic,
-  reciprocity_min, reciprocity_min_resource_covar, reciprocity_min_dyad_covar_bin,
+  reciprocity_min, reciprocity_min_resource_covar, reciprocity_min_dyad_covar,
   reciprocity_GW, reciprocity_GW_dyad_covar_bin, reciprocity_GW_dyad_covar,
   
   # effect functions: transitivity

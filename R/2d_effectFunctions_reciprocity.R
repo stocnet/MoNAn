@@ -155,7 +155,7 @@ reciprocity_min_resource_covar <-
 #' @return Returns the change statistic or target statistic of the effect for 
 #' internal use by the estimation algorithm.
 #' @keywords internal
-reciprocity_min_dyad_covar_bin <-
+reciprocity_min_dyad_covar <-
   function(dep.var = 1,
            attribute.index,
            state,

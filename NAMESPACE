@@ -30,7 +30,7 @@ export(
   loops_x_loops_additional_origin,
 
   # effect functions: concentration
-  concentration_basic, concentration_GW, concentration_GW_dyad_covar_bin,
+  concentration_basic, concentration_GW, concentration_GW_dyad_covar,
   concentration_prop, concentration_rankGW,
 
   # effect functions: reciprocity

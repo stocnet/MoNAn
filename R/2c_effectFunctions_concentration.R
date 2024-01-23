@@ -93,7 +93,7 @@ concentration_GW <- function(dep.var = 1, state, cache, i, j, edge, update,
 }
 
 
-#' concentration_GW_dyad_covar_bin
+#' concentration_GW_dyad_covar
 #' 
 #' Are bandwagon effects (concentration) particularly prevalent between locations 
 #' that share characteristics as encoded in a binary dyadic covariate? E.g., do 
@@ -114,11 +114,11 @@ concentration_GW <- function(dep.var = 1, state, cache, i, j, edge, update,
 #' @return Returns the change statistic or target statistic of the effect for 
 #' internal use by the estimation algorithm.
 #' @keywords internal
-concentration_GW_dyad_covar_bin <- function(dep.var = 1, attribute.index, state, cache, i, j, edge, update, 
+concentration_GW_dyad_covar <- function(dep.var = 1, attribute.index, state, cache, i, j, edge, update, 
                                             getTargetContribution = FALSE, alpha = 2){
   if(alpha < 1) stop("alpha parameter in concentration_GW function must be 1 or larger")
-  if(!all(state[[attribute.index]]$data == t(state[[attribute.index]]$data))) stop("attribute.index in concentration_GW_dyad_covar_bin function must be symmetric")
-  if(!all(state[[attribute.index]]$data %in% c(0,1))) stop("all values of attribute.index in concentration_GW_dyad_covar_bin function must be 0 or 1")
+  # if(!all(state[[attribute.index]]$data == t(state[[attribute.index]]$data))) stop("attribute.index in concentration_GW_dyad_covar_bin function must be symmetric")
+  # if(!all(state[[attribute.index]]$data %in% c(0,1))) stop("all values of attribute.index in concentration_GW_dyad_covar_bin function must be 0 or 1")
   if(dim(state[[attribute.index]]$data)[1] != dim(state[[attribute.index]]$data)[2]) stop("attribute.index in concentration_GW_dyad_covar_bin function must be a square matrix")
   if(length(dim(state[[attribute.index]]$data)) != 2) stop("attribute.index in concentration_GW_dyad_covar_bin function must be a square matrix")
   
@@ -134,9 +134,9 @@ concentration_GW_dyad_covar_bin <- function(dep.var = 1, attribute.index, state,
       contr - y
     }
     
-    nResources <- cache[[dep.var]]$valuedNetwork[i, j] * state[[attribute.index]]$data[i, j]
+    nResources <- cache[[dep.var]]$valuedNetwork[i, j] 
     
-    return(g_cum(y = nResources, a = alpha))
+    return(g_cum(y = nResources, a = alpha) * state[[attribute.index]]$data[i, j])
   }
   
   ### calculate change statistic
@@ -151,13 +151,13 @@ concentration_GW_dyad_covar_bin <- function(dep.var = 1, attribute.index, state,
     contr - 1
   }
   
-  tie_val <- cache[[dep.var]]$valuedNetwork[i, j] * state[[attribute.index]]$data[i, j]
+  tie_val <- cache[[dep.var]]$valuedNetwork[i, j] 
   
   if(update < 0){
-    return(update * g_mar(y = (tie_val + update), a = alpha))
+    return(update * g_mar(y = (tie_val + update), a = alpha) * state[[attribute.index]]$data[i, j])
   }
   if(update > 0){
-    return(update * g_mar(y = tie_val, a = alpha))
+    return(update * g_mar(y = tie_val, a = alpha) * state[[attribute.index]]$data[i, j])
   }
 }
 

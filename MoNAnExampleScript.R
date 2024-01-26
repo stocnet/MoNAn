@@ -81,7 +81,7 @@ myStatisticsFrame <- getMultinomialStatistics(myState, myCache, myEffects)
 # library(dfidx)
 # library(mlogit)
 # my.mlogit.dataframe <- dfidx(myStatisticsFrame,
-#                           shape = "long", 
+#                           shape = "long",
 #                           choice = "choice")
 # 
 # colnames(my.mlogit.dataframe) <- gsub(" ", "_", colnames(my.mlogit.dataframe))
@@ -125,7 +125,7 @@ myResDN_old <- myResDN
 # estimate mobility network model again based on previous results to improve convergence
 # with an adjusted algorithm
 myAlg <- createAlgorithm(myState, myEffects, multinomialProposal = TRUE, 
-                         initialIterationsN2 = 500, nsubN2 = 1, initGain = 0.02, iterationsN3 = 1000)
+                         initialIterationsN2 = 500, nsubN2 = 1, initGain = 0.05, iterationsN3 = 1000)
 
 myResDN <- estimateMobilityNetwork(
   myState, myCache, myEffects, myAlg,

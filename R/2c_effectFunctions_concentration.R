@@ -93,7 +93,7 @@ concentration_GW <- function(dep.var = 1, state, cache, i, j, edge, update,
 }
 
 
-#' concentration_GW_dyad_covar_bin
+#' concentration_GW_dyad_covar
 #' 
 #' Are bandwagon effects (concentration) particularly prevalent between locations 
 #' that share characteristics as encoded in a binary dyadic covariate? E.g., do 
@@ -114,11 +114,11 @@ concentration_GW <- function(dep.var = 1, state, cache, i, j, edge, update,
 #' @return Returns the change statistic or target statistic of the effect for 
 #' internal use by the estimation algorithm.
 #' @keywords internal
-concentration_GW_dyad_covar_bin <- function(dep.var = 1, attribute.index, state, cache, i, j, edge, update, 
+concentration_GW_dyad_covar <- function(dep.var = 1, attribute.index, state, cache, i, j, edge, update, 
                                             getTargetContribution = FALSE, alpha = 2){
   if(alpha < 1) stop("alpha parameter in concentration_GW function must be 1 or larger")
-  if(!all(state[[attribute.index]]$data == t(state[[attribute.index]]$data))) stop("attribute.index in concentration_GW_dyad_covar_bin function must be symmetric")
-  if(!all(state[[attribute.index]]$data %in% c(0,1))) stop("all values of attribute.index in concentration_GW_dyad_covar_bin function must be 0 or 1")
+  # if(!all(state[[attribute.index]]$data == t(state[[attribute.index]]$data))) stop("attribute.index in concentration_GW_dyad_covar_bin function must be symmetric")
+  # if(!all(state[[attribute.index]]$data %in% c(0,1))) stop("all values of attribute.index in concentration_GW_dyad_covar_bin function must be 0 or 1")
   if(dim(state[[attribute.index]]$data)[1] != dim(state[[attribute.index]]$data)[2]) stop("attribute.index in concentration_GW_dyad_covar_bin function must be a square matrix")
   if(length(dim(state[[attribute.index]]$data)) != 2) stop("attribute.index in concentration_GW_dyad_covar_bin function must be a square matrix")
   
@@ -134,9 +134,9 @@ concentration_GW_dyad_covar_bin <- function(dep.var = 1, attribute.index, state,
       contr - y
     }
     
-    nResources <- cache[[dep.var]]$valuedNetwork[i, j] * state[[attribute.index]]$data[i, j]
+    nResources <- cache[[dep.var]]$valuedNetwork[i, j] 
     
-    return(g_cum(y = nResources, a = alpha))
+    return(g_cum(y = nResources, a = alpha) * state[[attribute.index]]$data[i, j])
   }
   
   ### calculate change statistic
@@ -151,13 +151,13 @@ concentration_GW_dyad_covar_bin <- function(dep.var = 1, attribute.index, state,
     contr - 1
   }
   
-  tie_val <- cache[[dep.var]]$valuedNetwork[i, j] * state[[attribute.index]]$data[i, j]
+  tie_val <- cache[[dep.var]]$valuedNetwork[i, j] 
   
   if(update < 0){
-    return(update * g_mar(y = (tie_val + update), a = alpha))
+    return(update * g_mar(y = (tie_val + update), a = alpha) * state[[attribute.index]]$data[i, j])
   }
   if(update > 0){
-    return(update * g_mar(y = tie_val, a = alpha))
+    return(update * g_mar(y = tie_val, a = alpha) * state[[attribute.index]]$data[i, j])
   }
 }
 
@@ -185,8 +185,9 @@ concentration_GW_dyad_covar_bin <- function(dep.var = 1, attribute.index, state,
 concentration_prop <- function(dep.var = 1, state, cache, i, j, edge, update, 
                                getTargetContribution = FALSE){
   if(getTargetContribution){
-    numerator <- 2*(cache[[dep.var]]$valuedNetwork[i, j])^2 - 
-      cache[[dep.var]]$valuedNetwork[i, j]*sum(cache[[dep.var]]$valuedNetwork[i,])
+    numerator <- 2 * (cache[[dep.var]]$valuedNetwork[i, j])^2 - 
+      cache[[dep.var]]$valuedNetwork[i, j] * sum(cache[[dep.var]]$valuedNetwork[i,]) - 
+      cache[[dep.var]]$valuedNetwork[i, j]
     denominator <- sum(cache[[dep.var]]$valuedNetwork[i,]) - 1
     if(denominator <= 0) {
       numerator <- 0
@@ -194,24 +195,69 @@ concentration_prop <- function(dep.var = 1, state, cache, i, j, edge, update,
     }
     return( numerator/denominator )
   }
+  
   ### calculate change statistic
-  numerator1 <- 2*(cache[[dep.var]]$valuedNetwork[i, j])^2 - 
-    cache[[dep.var]]$valuedNetwork[i, j]*sum(cache[[dep.var]]$valuedNetwork[i,])
-  numerator2 <- 2*(cache[[dep.var]]$valuedNetwork[i, j]+update)^2 - 
-    (cache[[dep.var]]$valuedNetwork[i, j]+update)*(sum(cache[[dep.var]]$valuedNetwork[i,])+update)
-  denominator1 <- sum(cache[[dep.var]]$valuedNetwork[i,]) - 1
-  denominator2 <- sum(cache[[dep.var]]$valuedNetwork[i,])+update - 1
-  if(denominator1 <= 0) {
-    numerator1 <- 0
-    denominator1 <- 1
+  
+  if(update == -1){
+    cont <- 2*(-2*cache[[dep.var]]$valuedNetwork[i, j] + 1 + sum(cache[[dep.var]]$valuedNetwork[i,]) ) /
+      (sum(cache[[dep.var]]$valuedNetwork[i,]) - 1)
   }
-  if(denominator2 <= 0) {
-    numerator2 <- 0
-    denominator2 <- 1
+  if(update == 1){
+    cont <- 2*(2*cache[[dep.var]]$valuedNetwork[i, j] - sum(cache[[dep.var]]$valuedNetwork[i,])) / 
+      sum(cache[[dep.var]]$valuedNetwork[i,])
   }
-  return(numerator2/denominator2 - numerator1/denominator1)
+  return(cont)
 }
 
+#' concentration_prop_orig_cov
+#' 
+#' Is there a bandwagon effect in mobility, i.e. do mobile individuals move to locations 
+#' that are the destination of many others from their origin? The functional form of this 
+#' statistic assumes that individuals consider the proportions of individuals (coming from
+#' the same origin) going to a certain destination, instead of the total number.
+#' This is weighted by an attribute of the origin, to model differences in 
+#' concentration by origin characteristic.
+#' 
+#' @param dep.var 
+#' @param attribute.index 
+#' @param state 
+#' @param cache 
+#' @param i 
+#' @param j 
+#' @param edge 
+#' @param update 
+#' @param getTargetContribution 
+#'
+#' @return Returns the change statistic or target statistic of the effect for 
+#' internal use by the estimation algorithm. 
+#' @keywords internal
+concentration_prop_orig_cov <- function(dep.var = 1, attribute.index, state, cache, i, j, edge, update, 
+                               getTargetContribution = FALSE){
+  if(length(state[[attribute.index]]$nodeSet) != 1) stop("attribute in concentration_prop_orig_cov must be monadic")
+  if(getTargetContribution){
+    numerator <- 2 * (cache[[dep.var]]$valuedNetwork[i, j])^2 - 
+      cache[[dep.var]]$valuedNetwork[i, j] * sum(cache[[dep.var]]$valuedNetwork[i,]) - 
+      cache[[dep.var]]$valuedNetwork[i, j]
+    denominator <- sum(cache[[dep.var]]$valuedNetwork[i,]) - 1
+    if(denominator <= 0) {
+      numerator <- 0
+      denominator <- 1
+    }
+    return(state[[attribute.index]]$data[i] * numerator / denominator )
+  }
+  
+  ### calculate change statistic
+  
+  if(update == -1){
+    cont <- 2*(-2*cache[[dep.var]]$valuedNetwork[i, j] + 1 + sum(cache[[dep.var]]$valuedNetwork[i,]) ) /
+      (sum(cache[[dep.var]]$valuedNetwork[i,]) - 1)
+  }
+  if(update == 1){
+    cont <- 2*(2*cache[[dep.var]]$valuedNetwork[i, j] - sum(cache[[dep.var]]$valuedNetwork[i,])) / 
+      sum(cache[[dep.var]]$valuedNetwork[i,])
+  }
+  return(state[[attribute.index]]$data[i] * cont)
+}
 
 #' concentration_rankGW
 #' 

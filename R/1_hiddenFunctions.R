@@ -62,7 +62,7 @@ checkProcessState <- function(state) {
         stop(paste(covars[i], "must either be of class 'nodeVar.monan' or 'network.monan'."))
       }
       # nodeset names
-      if (!(any(names(state) == state[[covars[i]]]$nodeSet))) {
+      if (!(any(names(state) %in% state[[covars[i]]]$nodeSet))) {
         stop(paste("The nodeset of covar '", covars[i], "' has no corresponding object.",
                    "Nodesets assigned when creating covars must have a corresponding object with the same name."           ))
       }

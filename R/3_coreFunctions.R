@@ -79,7 +79,7 @@ createAlgorithm <-
            thinningN2 = NULL,
            initialIterationsN2 = 50,
            nsubN2 = 4,
-           initGain = 0.2,
+           initGain = 0.6,
            burnInN3 = NULL,
            thinningN3 = NULL,
            iterationsN3 = 500,

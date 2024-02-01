@@ -38,7 +38,8 @@ As of 30 Aug 2023, we have a CRAN release of the package. Nevertheless,
 the package and the documentation might still have bugs or errors, or
 you might not be able to do what you want. In that case, or if you are
 unsure please write the package maintainer under his institutional email
-address.
+address. We are currently on version 0.1.3, released to CRAN in Feb
+2024.
 
 # Installation
 
@@ -51,7 +52,7 @@ from GitHub using:
 
 ``` r
 # install.packages("remotes")
-remotes::install_github("perblock/MoNAn")
+remotes::install_github("stocnet/MoNAn")
 ```
 
 However, you can also get the (often slightly older) CRAN version with:

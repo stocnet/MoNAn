@@ -15,7 +15,7 @@ checkProcessState <- function(state) {
   dep.var <- state$dep.var
   
   # make sure that dependent variable has corresponding edgelist
-  if (!(any(names(state) == dep.var))) {
+  if (!(dep.var %in% names(state))) {
     stop("Dependent variable has no corresponding edgelist in the state object.")
   }
   
@@ -33,7 +33,7 @@ checkProcessState <- function(state) {
   
   # do nodeset names from edgelist have a corresponding nodeset and are they of class 'nodeset.monan'?
   for (i in 1:length(nodesets)) {
-    if (!(any(names(state) == nodesets[i]))) {
+    if (!(nodesets[i] %in% names(state))) {
       stop(paste(nodesets[i], "has no corresponding object.",
                  "Nodesets specified in the edgelist must have a corresponding object with the same name."))
     }
@@ -62,7 +62,7 @@ checkProcessState <- function(state) {
         stop(paste(covars[i], "must either be of class 'nodeVar.monan' or 'network.monan'."))
       }
       # nodeset names
-      if (!(any(names(state) %in% state[[covars[i]]]$nodeSet))) {
+      if (!(all(state[[covars[i]]]$nodeSet %in% names(state)))) {
         stop(paste("The nodeset of covar '", covars[i], "' has no corresponding object.",
                    "Nodesets assigned when creating covars must have a corresponding object with the same name."           ))
       }
@@ -72,7 +72,6 @@ checkProcessState <- function(state) {
       }
     }
   }
-  
 }
 
 

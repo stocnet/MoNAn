@@ -15,12 +15,12 @@ checkProcessState <- function(state) {
   dep.var <- state$dep.var
   
   # make sure that dependent variable has corresponding edgelist
-  if (!(any(names(state) == dep.var))) {
+  if (!(dep.var %in% names(state))) {
     stop("Dependent variable has no corresponding edgelist in the state object.")
   }
   
   # is edgelist of class 'edgelist.monan'?
-  if (!(class(state[[dep.var]]) == "edgelist.monan")) {
+  if (!(inherits(state[[dep.var]], "edgelist.monan"))) {
     stop("Dependent variable is not of class 'edgelist.monan'.")
   }
   
@@ -33,11 +33,11 @@ checkProcessState <- function(state) {
   
   # do nodeset names from edgelist have a corresponding nodeset and are they of class 'nodeset.monan'?
   for (i in 1:length(nodesets)) {
-    if (!(any(names(state) == nodesets[i]))) {
+    if (!(nodesets[i] %in% names(state))) {
       stop(paste(nodesets[i], "has no corresponding object.",
                  "Nodesets specified in the edgelist must have a corresponding object with the same name."))
     }
-    if (!(class(state[[nodesets[i]]]) == "nodeSet.monan")) {
+    if (!(inherits(state[[nodesets[i]]], "nodeSet.monan"))) {
       stop(paste(nodesets[i], "is not of class 'nodeSet.monan'."))
     }
   }
@@ -50,25 +50,28 @@ checkProcessState <- function(state) {
   # extract covar names
   covars <- names(state)[!(names(state) %in% c(dep.var, nodesets, "dep.var"))]
   
-  # are covars of class 'nodeVar.monan' or 'network.monan'? do they have correctly
-  # specified nodeset names and are these nodesets of the correct size?
-  for (i in 1:length(covars)) {
-    #class
-    if (!(class(state[[covars[i]]]) == "nodeVar.monan" || 
-          class(state[[covars[i]]]) == "network.monan")) {
-      stop(paste(covars[i], "must either be of class 'nodeVar.monan' or 'network.monan'."))
-    }
-    # nodeset names
-    if (!(any(names(state) == state[[covars[i]]]$nodeSet))) {
-      stop(paste("The nodeset of covar '", covars[i], "' has no corresponding object.",
-                 "Nodesets assigned when creating covars must have a corresponding object with the same name."           ))
-    }
-    # nodeset sizes
-    if (!(state[[covars[i]]]$size[1] == length(state[[state[[covars[i]]]$nodeSet[1]]]$ids))) {
-      stop(paste("The covar '", covars[i], "' is not of the same size as its assigned nodeset."))
+  # if there are covars, check them
+  if (length(covars) != 0) {
+    
+    # are covars of class 'nodeVar.monan' or 'network.monan'? do they have correctly
+    # specified nodeset names and are these nodesets of the correct size?
+    for (i in 1:length(covars)) {
+      #class
+      if (!(inherits(state[[covars[i]]], "nodeVar.monan") || 
+            inherits(state[[covars[i]]], "network.monan"))) {
+        stop(paste(covars[i], "must either be of class 'nodeVar.monan' or 'network.monan'."))
+      }
+      # nodeset names
+      if (!(all(state[[covars[i]]]$nodeSet %in% names(state)))) {
+        stop(paste("The nodeset of covar '", covars[i], "' has no corresponding object.",
+                   "Nodesets assigned when creating covars must have a corresponding object with the same name."           ))
+      }
+      # nodeset sizes
+      if (!(state[[covars[i]]]$size[1] == length(state[[state[[covars[i]]]$nodeSet[1]]]$ids))) {
+        stop(paste("The covar '", covars[i], "' is not of the same size as its assigned nodeset."))
+      }
     }
   }
-  
 }
 
 

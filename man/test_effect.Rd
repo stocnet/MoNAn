@@ -2,7 +2,10 @@
 % Please edit documentation in R/2x_effects_test.R
 \name{test_effect}
 \alias{test_effect}
-\title{test_effect}
+\title{test_effect
+
+Test for each person in the example data and one randomly selected
+alternative destination whether change and target statistics match.}
 \usage{
 test_effect(effectName, ...)
 }
@@ -20,6 +23,8 @@ In case the last column contains values that are not all "1",
 the tested function does not work properly.
 }
 \description{
+test_effect
+
 Test for each person in the example data and one randomly selected
 alternative destination whether change and target statistics match.
 }

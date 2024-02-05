@@ -18,7 +18,9 @@
 #'
 #' @keywords internal
 #' @examples
+#' \donttest{
 #' test_loop <- test_effect("loops")
+#' }
 test_effect <- function(effectName, ...){
   docu <- data.frame(orig = 0, dest = 0, new_dest = 0, 
                      change = 0, target_before = 0, target_after = 0, 

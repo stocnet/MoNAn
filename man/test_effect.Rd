@@ -29,6 +29,8 @@ Test for each person in the example data and one randomly selected
 alternative destination whether change and target statistics match.
 }
 \examples{
+\donttest{
 test_loop <- test_effect("loops")
+}
 }
 \keyword{internal}

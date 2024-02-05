@@ -92,7 +92,10 @@ mobility tables is estimated.
 \donttest{
 # estimate mobility network model
 
-myResDN <- estimateMobilityNetwork(myState, myCache, myEffects, myAlg,
+myAlg_short <- createAlgorithm(myState, myEffects, multinomialProposal = FALSE,
+                               nsubN2 = 1, iterationsN3 = 100)
+
+myResDN <- estimateMobilityNetwork(myState, myCache, myEffects, myAlg_short,
                                    initialParameters = NULL,
                                    # in case a pseudo-likelihood estimation was run, replace with
                                    # initialParameters = initEst,

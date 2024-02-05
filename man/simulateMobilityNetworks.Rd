@@ -73,8 +73,8 @@ mySimDN <- simulateMobilityNetworks(
   myEffects,
   parameters = c(2, 1, 1.5, 0.1, -1, -0.5),
   allowLoops = TRUE,
-  burnin = 4500,
-  thinning = 1500,
+  burnin = 450,
+  thinning = 150,
   nSimulations = 10
 )
 

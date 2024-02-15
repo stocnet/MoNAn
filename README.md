@@ -38,8 +38,10 @@ As of 30 Aug 2023, we have a CRAN release of the package. Nevertheless,
 the package and the documentation might still have bugs or errors, or
 you might not be able to do what you want. In that case, or if you are
 unsure please write the package maintainer under his institutional email
-address. We are currently on version 0.1.3, released to CRAN in Feb
-2024.
+address.
+
+We are currently (Feb 2024) on version 0.2.0 on github version 0.1.3 was
+released to CRAN in Feb 2024.
 
 # Installation
 

@@ -139,8 +139,40 @@ runPhase1 <- function(dep.var,
                       gainN1,
                       multinomialProposal = FALSE,
                       allowLoops,
-                      verbose = FALSE) {
+                      verbose = FALSE,
+                      parallel,
+                      cpus) {
   # simulate statistic matrix
+  
+  # initialize parallel computing
+  if (parallel && cpus > 1) {
+    sfInit(parallel = TRUE, cpus = cpus)
+    # TODO. Replace this long command with sfLibrary("NetDist") once the package is packaged
+    sfLibrary("MoNAn", character.only=TRUE)
+  } else {
+    parallel <- FALSE
+  }
+  
+  if(parallel){
+    cat(paste("Phase 1: \n burn-in", burnInN1, "steps\n", 
+              iterationsN1, " iterations\n thinning", 
+              thinningN1, "\n", cpus, "cpus\n"))
+    
+    statisticsMatrix <- sfLapply(1:cpus, simulateStatisticVectors, 
+                                 dep.var = dep.var, 
+                                 state = state, 
+                                 cache = cache, 
+                                 effects = effects, 
+                                 initialParameters = initialParameters, 
+                                 burnIn = burnInN1, 
+                                 iterations = round(iterationsN1 / cpus), 
+                                 thinning = thinningN1, 
+                                 multinomialProposal = multinomialProposal, 
+                                 allowLoops, 
+                                 verbose = verbose)
+    statisticsMatrix <- Reduce("rbind", statisticsMatrix)
+    sfStop()
+  } else {
   statisticsMatrix <-
     simulateStatisticVectors(
       dep.var,
@@ -155,6 +187,7 @@ runPhase1 <- function(dep.var,
       allowLoops,
       verbose = verbose
     )
+  }
 
   # calculate covariance matric
   covarianceMatrix <- getCovarianceMatrix(statisticsMatrix)
@@ -211,7 +244,6 @@ runPhase2 <- function(dep.var,
     parallel <- FALSE
   }
 
-
   # TODO PARALLEL: n burn-ins with n states
   # burn in
   if (parallel) {
@@ -250,7 +282,10 @@ runPhase2 <- function(dep.var,
   parameters <- initialParameters
   for (i in 1:nsubN2) {
     if (verbose) {
-      cat(paste("Starting sub phase", i, "\n"))
+      cat(paste("\n"))
+      cat(paste0("Sub phase", i, ":\n burn-in ", burnInN2, " steps\n ", 
+                iterations, " iterations\n thinning ", 
+                thinningN2, "\n ", cpus, " cpus\n"))
     }
 
     # TODO PARALLEL: sample n chains and pass averaged parameters 
@@ -313,6 +348,7 @@ runPhase2 <- function(dep.var,
     }
 
     if (verbose) {
+      cat(paste("\n"))
       cat(paste("New parameters:\n"))
     }
     if (verbose) {
@@ -320,7 +356,7 @@ runPhase2 <- function(dep.var,
     }
 
     # determine number of iterations
-    iterations <- iterations * 1.75
+    iterations <- round(iterations * 1.75)
     # determine gain
     gain <- gain / 2
   }

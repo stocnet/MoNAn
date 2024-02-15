@@ -105,7 +105,7 @@ createAlgorithm <-
     }
 
     if (is.null(iterationsN1)) {
-      algorithm[["iterationsN1"]] <- length(effects[["effectFormulas"]]) * 4
+      algorithm[["iterationsN1"]] <- length(effects[["effectFormulas"]]) * 8
     } else {
       algorithm[["iterationsN1"]] <- iterationsN1
     }
@@ -823,7 +823,9 @@ estimateMobilityNetwork <-
           gainN1,
           multinomialProposal,
           allowLoops,
-          verbose
+          verbose,
+          parallel,
+          cpus
         )
       initialParameters <- resPhase1$estimates
       sensitivityVector <- resPhase1$sensitivityVector
@@ -854,7 +856,10 @@ estimateMobilityNetwork <-
 
     # run phase 3 to get final covariance matrix and convergence check
     if (verbose) {
-      cat("Starting phase 3\n")
+      cat("Starting phase 3:\n")
+      cat(paste(" burn-in", burnInN3, "steps\n", 
+                iterationsN3, " iterations\n thinning", 
+                thinningN3, "\n", cpus, "cpus\n"))
     }
     resPhase3 <- runPhase3(
       dep.var,

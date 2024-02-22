@@ -209,3 +209,76 @@ staying_by_prop_bin_inflow <-
     change <- propAfter - propBefore
     return(change * loops)
   }
+
+
+
+
+#' joining_similar_avoiding_dissimilar_covar_bin
+#' 
+#' Do individuals with the same attribute tend to use the same paths and 
+#' individuals with different attributes to move to different places? 
+#' This statistic gives a positive contribution to all pairs of individuals
+#' with the same (binary) covariate who use the same path and a negative one
+#' to pairs of dissimilar individuals following the same path.
+#' 
+#' @param dep.var 
+#' @param resource.attribute.index,
+#' @param state 
+#' @param cache 
+#' @param i 
+#' @param j 
+#' @param edge 
+#' @param update 
+#' @param getTargetContribution 
+#'
+#' @return Returns the change statistic or target statistic of the effect for 
+#' internal use by the estimation algorithm. 
+#' @keywords internal
+joining_similar_avoiding_dissimilar_covar_bin <- function(dep.var = 1, 
+                                                          resource.attribute.index,
+                                                          state, 
+                                                          cache, 
+                                                          i, 
+                                                          j, 
+                                                          edge, 
+                                                          update, 
+                                                          getTargetContribution = FALSE){
+
+  nRessources <- cache[[dep.var]]$valuedNetwork[i, j]
+  nRessources_1 <- cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][i, j]
+    
+  ### calculate target statistic
+  if(getTargetContribution){
+    if(nRessources < 2) return(0)
+    numerator <- nRessources_1*(nRessources_1 - 1) + 
+      (nRessources - nRessources_1)*(nRessources - nRessources_1 - 1) -
+      2*nRessources_1*(nRessources - nRessources_1)
+    denominator <- nRessources - 1
+    return( numerator/denominator )
+  }
+  
+  ### calculate change statistic
+  if(update == -1){
+    if(nRessources < 2) return(0)
+    attr_removed <- state[[resource.attribute.index]]$data[edge]
+    if(attr_removed == 1){
+      cont <- (-2*(nRessources_1 - 1) + 2*(nRessources - nRessources_1) ) /
+      (nRessources - 1)
+    } else {
+      cont <- (-2*(nRessources - nRessources_1 - 1) + 2*(nRessources_1) ) /
+        (nRessources - 1)
+    }
+  }
+  if(update == 1){
+    if(nRessources < 1) return(0)
+    attr_added <- state[[resource.attribute.index]]$data[edge]
+    if(attr_added == 1){
+      cont <- (2*nRessources_1 - 2*(nRessources - nRessources_1) ) /
+        (nRessources)
+    } else {
+      cont <- (2*(nRessources - nRessources_1) - 2*(nRessources_1) ) /
+        (nRessources)
+    }
+  }
+  return(cont)
+}

@@ -42,11 +42,14 @@ export(
   transitivity_basic, transitivity_min, transitivity_netflow, transitivity_GW,
   triad120D, triad120U, triad120C,
   
+  # effect functions: endogeneous covariate based
+  crowding_out_prop_covar_bin, staying_by_prop_bin_inflow, 
+  joining_similar_avoiding_dissimilar_covar_bin,
+  
   # effect functions: other
-  crowding_out_prop_covar_bin,  
   in_ties_loops, in_weights_exponent, 
   in_weights_GW,
-  present_relations,  staying_by_prop_bin_inflow, 
+  present_relations,  
 
   # gof param functions
   getIndegree, getTieWeights

@@ -70,8 +70,8 @@ target_change_match <- function(edge, j_new, effectName, ...){
                                                state = myState, 
                                                cache = myCache, 
                                                i = i, j = j, 
-                                               edge = 1, 
-                                               update = 1, 
+                                               edge = 1,   
+                                               update = 1,
                                                getTargetContribution = T,
                                                ...)
     }

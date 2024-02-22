@@ -246,14 +246,16 @@ joining_similar_avoiding_dissimilar_covar_bin <- function(dep.var = 1,
 
   nRessources <- cache[[dep.var]]$valuedNetwork[i, j]
   nRessources_1 <- cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][i, j]
-    
+  origin_size <- sum(cache[[dep.var]]$valuedNetwork[i, ])
+  
+  
   ### calculate target statistic
   if(getTargetContribution){
     if(nRessources < 2) return(0)
     numerator <- nRessources_1*(nRessources_1 - 1) + 
       (nRessources - nRessources_1)*(nRessources - nRessources_1 - 1) -
       2*nRessources_1*(nRessources - nRessources_1)
-    denominator <- nRessources - 1
+    denominator <- origin_size - 1
     return( numerator/denominator )
   }
   
@@ -261,12 +263,12 @@ joining_similar_avoiding_dissimilar_covar_bin <- function(dep.var = 1,
   if(update == -1){
     if(nRessources < 2) return(0)
     attr_removed <- state[[resource.attribute.index]]$data[edge]
-    if(attr_removed == 1){
+    if(attr_removed == 1){ # then nRessources_1 > 0
       cont <- (-2*(nRessources_1 - 1) + 2*(nRessources - nRessources_1) ) /
-      (nRessources - 1)
-    } else {
-      cont <- (-2*(nRessources - nRessources_1 - 1) + 2*(nRessources_1) ) /
-        (nRessources - 1)
+        (origin_size - 1)
+    } else { # then nResssources-nRessources_1 > 0
+      cont <- (-2*(nRessources - nRessources_1 - 1) + 2*nRessources_1 ) /
+        (origin_size - 1)
     }
   }
   if(update == 1){
@@ -274,10 +276,10 @@ joining_similar_avoiding_dissimilar_covar_bin <- function(dep.var = 1,
     attr_added <- state[[resource.attribute.index]]$data[edge]
     if(attr_added == 1){
       cont <- (2*nRessources_1 - 2*(nRessources - nRessources_1) ) /
-        (nRessources)
+        (origin_size)
     } else {
       cont <- (2*(nRessources - nRessources_1) - 2*(nRessources_1) ) /
-        (nRessources)
+        (origin_size)
     }
   }
   return(cont)

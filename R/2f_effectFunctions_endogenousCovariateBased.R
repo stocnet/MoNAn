@@ -284,3 +284,72 @@ joining_similar_avoiding_dissimilar_covar_bin <- function(dep.var = 1,
   }
   return(cont)
 }
+
+
+#' avoiding_dissimilar_covar_bin
+#' 
+#' Do individuals with different attributes to move to different places? 
+#' This statistic gives a negative contribution to pairs of dissimilar 
+#' individuals following the same path.
+#' 
+#' @param dep.var 
+#' @param resource.attribute.index,
+#' @param state 
+#' @param cache 
+#' @param i 
+#' @param j 
+#' @param edge 
+#' @param update 
+#' @param getTargetContribution 
+#'
+#' @return Returns the change statistic or target statistic of the effect for 
+#' internal use by the estimation algorithm. 
+#' @keywords internal
+avoiding_dissimilar_covar_bin <- function(dep.var = 1, 
+                                          resource.attribute.index,
+                                          state, 
+                                          cache, 
+                                          i, 
+                                          j, 
+                                          edge, 
+                                          update, 
+                                          getTargetContribution = FALSE){
+  
+  nRessources <- cache[[dep.var]]$valuedNetwork[i, j]
+  nRessources_1 <- cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][i, j]
+  origin_size <- sum(cache[[dep.var]]$valuedNetwork[i, ])
+  
+  
+  ### calculate target statistic
+  if(getTargetContribution){
+    if(nRessources < 2) return(0)
+    numerator <- -2*nRessources_1*(nRessources - nRessources_1)
+    denominator <- origin_size - 1
+    return( numerator/denominator )
+  }
+  
+  ### calculate change statistic
+  if(update == -1){
+    if(nRessources < 2) return(0)
+    attr_removed <- state[[resource.attribute.index]]$data[edge]
+    if(attr_removed == 1){ # then nRessources_1 > 0
+      cont <- (2*(nRessources - nRessources_1)) /
+        (origin_size - 1)
+    } else { # then nResssources-nRessources_1 > 0
+      cont <- (2*nRessources_1) /
+        (origin_size - 1)
+    }
+  }
+  if(update == 1){
+    if(nRessources < 1) return(0)
+    attr_added <- state[[resource.attribute.index]]$data[edge]
+    if(attr_added == 1){
+      cont <- (-2*(nRessources - nRessources_1)) /
+        (origin_size)
+    } else {
+      cont <- (-2*(nRessources_1)) /
+        (origin_size)
+    }
+  }
+  return(cont)
+}

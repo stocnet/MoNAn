@@ -286,6 +286,98 @@ joining_similar_avoiding_dissimilar_covar_bin <- function(dep.var = 1,
 }
 
 
+#' joining_similar_avoiding_dissimilar_covar_cont
+#' 
+#' Do individuals with the same attribute tend to use the same paths and 
+#' individuals with different attributes to move to different places? 
+#' This statistic gives a contribution to all pairs of individuals who use the 
+#' same path that is weighted by the similarity between their continuous attribute. 
+#' This similarity weight is measured as the range of the attribute, minus twice 
+#' the absolute difference between their covariates, normalized by the range (the
+#' weight of a pair is equal to 1 if both individuals have the same attribute,
+#' and -1 if the absolute difference between their attributes is equal to the range).
+#' 
+#' @param dep.var 
+#' @param resource.attribute.index,
+#' @param state 
+#' @param cache 
+#' @param i 
+#' @param j 
+#' @param edge 
+#' @param update 
+#' @param getTargetContribution 
+#'
+#' @return Returns the change statistic or target statistic of the effect for 
+#' internal use by the estimation algorithm. 
+#' @keywords internal
+joining_similar_avoiding_dissimilar_covar_cont <- function(dep.var = 1, 
+                                                          resource.attribute.index,
+                                                          state, 
+                                                          cache, 
+                                                          i, 
+                                                          j, 
+                                                          edge, 
+                                                          update, 
+                                                          getTargetContribution = FALSE){
+  
+  nRessources <- cache[[dep.var]]$valuedNetwork[i, j]
+  
+  ### calculate target statistic
+  if(getTargetContribution){
+    
+    if(nRessources < 2) return(0)
+    allRessources <- state$transfers$data[,1] == i & state$transfers$data[,2] == j
+    attributesRessources <- state[[resource.attribute.index]]$data[allRessources]
+    attributeRange <- diff(range(state[[resource.attribute.index]]$data))
+    origin_size <- sum(cache[[dep.var]]$valuedNetwork[i, ])
+    
+    distmat <- as.matrix(dist(attributesRessources))
+    up <- upper.tri(distmat)
+    numerator <- sum( (attributeRange - 2*abs(as.numeric(distmat[up]))) / attributeRange ) 
+    denominator <- origin_size - 1
+    
+    return( numerator/denominator )
+    
+  }
+  
+  ### calculate change statistic
+  if(update == -1){
+    
+    if(nRessources < 2) return(0)
+    otherRessources <- state$transfers$data[,1] == i & state$transfers$data[,2] == j &
+      (1:state$transfers$size[1]) != edge
+    attributesRessources <- state[[resource.attribute.index]]$data[otherRessources]
+    attributeRange <- diff(range(state[[resource.attribute.index]]$data))
+    origin_size <- sum(cache[[dep.var]]$valuedNetwork[i, ])
+    
+    attr_removed <- state[[resource.attribute.index]]$data[edge]
+    cont <- - sum( (attributeRange - 2*abs(attr_removed-attributesRessources)) / attributeRange ) /
+      (origin_size - 1)
+    
+    #print("remove")
+    #print(attr_removed)
+    #print(attributesRessources)
+    #print(origin_size)
+    #print(cont)
+    
+  }
+  if(update == 1){
+    
+    if(nRessources < 1) return(0)
+    otherRessources <- state$transfers$data[,1] == i & state$transfers$data[,2] == j &
+        (1:state$transfers$size[1]) != edge
+    attributesRessources <- state[[resource.attribute.index]]$data[otherRessources]
+    attributeRange <- diff(range(state[[resource.attribute.index]]$data))
+    origin_size <- sum(cache[[dep.var]]$valuedNetwork[i, ])
+    
+    attr_added <- state[[resource.attribute.index]]$data[edge]
+    cont <- sum( (attributeRange - 2*abs(attr_added-attributesRessources)) / attributeRange ) /
+      (origin_size)
+  }
+  return(cont)
+}
+
+
 #' avoiding_dissimilar_covar_bin
 #' 
 #' Do individuals with different attributes to move to different places? 

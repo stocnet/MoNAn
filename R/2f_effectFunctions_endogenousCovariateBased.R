@@ -244,44 +244,55 @@ joining_similar_avoiding_dissimilar_covar_bin <- function(dep.var = 1,
                                                           update, 
                                                           getTargetContribution = FALSE){
 
-  nRessources <- cache[[dep.var]]$valuedNetwork[i, j]
-  nRessources_1 <- cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][i, j]
-  origin_size <- sum(cache[[dep.var]]$valuedNetwork[i, ])
-  
+  nResources <- cache[[dep.var]]$valuedNetwork[i, j]
   
   ### calculate target statistic
   if(getTargetContribution){
-    if(nRessources < 2) return(0)
-    numerator <- nRessources_1*(nRessources_1 - 1) + 
-      (nRessources - nRessources_1)*(nRessources - nRessources_1 - 1) -
-      2*nRessources_1*(nRessources - nRessources_1)
+    
+    if(nResources < 2) return(0)
+    nResources_1 <- cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][i, j]
+    origin_size <- sum(cache[[dep.var]]$valuedNetwork[i, ])
+    
+    numerator <- nResources_1*(nResources_1 - 1) + 
+      (nResources - nResources_1)*(nResources - nResources_1 - 1) -
+      2*nResources_1*(nResources - nResources_1)
     denominator <- origin_size - 1
     return( numerator/denominator )
   }
   
   ### calculate change statistic
   if(update == -1){
-    if(nRessources < 2) return(0)
+    
+    if(nResources < 2) return(0)
+    nResources_1 <- cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][i, j]
+    origin_size <- sum(cache[[dep.var]]$valuedNetwork[i, ])
+    
     attr_removed <- state[[resource.attribute.index]]$data[edge]
-    if(attr_removed == 1){ # then nRessources_1 > 0
-      cont <- (-2*(nRessources_1 - 1) + 2*(nRessources - nRessources_1) ) /
+    if(attr_removed == 1){ # then nResources_1 > 0
+      cont <- (-2*(nResources_1 - 1) + 2*(nResources - nResources_1) ) /
         (origin_size - 1)
-    } else { # then nResssources-nRessources_1 > 0
-      cont <- (-2*(nRessources - nRessources_1 - 1) + 2*nRessources_1 ) /
+    } else { # then nResources-nResources_1 > 0
+      cont <- (-2*(nResources - nResources_1 - 1) + 2*nResources_1 ) /
         (origin_size - 1)
     }
+    
   }
   if(update == 1){
-    if(nRessources < 1) return(0)
+    
+    if(nResources < 1) return(0)
+    nResources_1 <- cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][i, j]
+    origin_size <- sum(cache[[dep.var]]$valuedNetwork[i, ]) + 1
+    
     attr_added <- state[[resource.attribute.index]]$data[edge]
     if(attr_added == 1){
-      cont <- (2*nRessources_1 - 2*(nRessources - nRessources_1) ) /
-        (origin_size)
+      cont <- (2*nResources_1 - 2*(nResources - nResources_1) ) /
+        (origin_size - 1)
     } else {
-      cont <- (2*(nRessources - nRessources_1) - 2*(nRessources_1) ) /
-        (origin_size)
+      cont <- (2*(nResources - nResources_1) - 2*(nResources_1) ) /
+        (origin_size - 1)
     }
   }
+  
   return(cont)
 }
 
@@ -320,18 +331,18 @@ joining_similar_avoiding_dissimilar_covar_cont <- function(dep.var = 1,
                                                           update, 
                                                           getTargetContribution = FALSE){
   
-  nRessources <- cache[[dep.var]]$valuedNetwork[i, j]
+  nResources <- cache[[dep.var]]$valuedNetwork[i, j]
   
   ### calculate target statistic
   if(getTargetContribution){
     
-    if(nRessources < 2) return(0)
-    allRessources <- state$transfers$data[,1] == i & state$transfers$data[,2] == j
-    attributesRessources <- state[[resource.attribute.index]]$data[allRessources]
+    if(nResources < 2) return(0)
+    allResources <- state$transfers$data[,1] == i & state$transfers$data[,2] == j
+    attributesResources <- state[[resource.attribute.index]]$data[allResources]
     attributeRange <- diff(range(state[[resource.attribute.index]]$data))
     origin_size <- sum(cache[[dep.var]]$valuedNetwork[i, ])
     
-    distmat <- as.matrix(dist(attributesRessources))
+    distmat <- as.matrix(dist(attributesResources))
     up <- upper.tri(distmat)
     numerator <- sum( (attributeRange - 2*abs(as.numeric(distmat[up]))) / attributeRange ) 
     denominator <- origin_size - 1
@@ -343,30 +354,30 @@ joining_similar_avoiding_dissimilar_covar_cont <- function(dep.var = 1,
   ### calculate change statistic
   if(update == -1){
     
-    if(nRessources < 2) return(0)
-    otherRessources <- state$transfers$data[,1] == i & state$transfers$data[,2] == j &
+    if(nResources < 2) return(0)
+    otherResources <- state$transfers$data[,1] == i & state$transfers$data[,2] == j &
       (1:state$transfers$size[1]) != edge
-    attributesRessources <- state[[resource.attribute.index]]$data[otherRessources]
+    attributesResources <- state[[resource.attribute.index]]$data[otherResources]
     attributeRange <- diff(range(state[[resource.attribute.index]]$data))
     origin_size <- sum(cache[[dep.var]]$valuedNetwork[i, ])
     
     attr_removed <- state[[resource.attribute.index]]$data[edge]
-    cont <- - sum( (attributeRange - 2*abs(attr_removed-attributesRessources)) / attributeRange ) /
+    cont <- - sum( (attributeRange - 2*abs(attr_removed-attributesResources)) / attributeRange ) /
       (origin_size - 1)
     
   }
   if(update == 1){
     
-    if(nRessources < 1) return(0)
-    otherRessources <- state$transfers$data[,1] == i & state$transfers$data[,2] == j &
+    if(nResources < 1) return(0)
+    otherResources <- state$transfers$data[,1] == i & state$transfers$data[,2] == j &
         (1:state$transfers$size[1]) != edge
-    attributesRessources <- state[[resource.attribute.index]]$data[otherRessources]
+    attributesResources <- state[[resource.attribute.index]]$data[otherResources]
     attributeRange <- diff(range(state[[resource.attribute.index]]$data))
-    origin_size <- sum(cache[[dep.var]]$valuedNetwork[i, ])
+    origin_size <- sum(cache[[dep.var]]$valuedNetwork[i, ]) + 1
     
     attr_added <- state[[resource.attribute.index]]$data[edge]
-    cont <- sum( (attributeRange - 2*abs(attr_added-attributesRessources)) / attributeRange ) /
-      (origin_size)
+    cont <- sum( (attributeRange - 2*abs(attr_added-attributesResources)) / attributeRange ) /
+      (origin_size - 1)
   }
   return(cont)
 }
@@ -401,41 +412,53 @@ avoiding_dissimilar_covar_bin <- function(dep.var = 1,
                                           update, 
                                           getTargetContribution = FALSE){
   
-  nRessources <- cache[[dep.var]]$valuedNetwork[i, j]
-  nRessources_1 <- cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][i, j]
-  origin_size <- sum(cache[[dep.var]]$valuedNetwork[i, ])
-  
-  
+  nResources <- cache[[dep.var]]$valuedNetwork[i, j]
+
   ### calculate target statistic
   if(getTargetContribution){
-    if(nRessources < 2) return(0)
-    numerator <- -2*nRessources_1*(nRessources - nRessources_1)
+    
+    if(nResources < 2) return(0)
+    nResources_1 <- cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][i, j]
+    origin_size <- sum(cache[[dep.var]]$valuedNetwork[i, ])
+    
+    numerator <- -2*nResources_1*(nResources - nResources_1)
     denominator <- origin_size - 1
     return( numerator/denominator )
+    
   }
   
   ### calculate change statistic
   if(update == -1){
-    if(nRessources < 2) return(0)
+    
+    if(nResources < 2) return(0)
+    nResources_1 <- cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][i, j]
+    origin_size <- sum(cache[[dep.var]]$valuedNetwork[i, ])
+    
     attr_removed <- state[[resource.attribute.index]]$data[edge]
-    if(attr_removed == 1){ # then nRessources_1 > 0
-      cont <- (2*(nRessources - nRessources_1)) /
+    if(attr_removed == 1){ # then nResources_1 > 0
+      cont <- (2*(nResources - nResources_1)) /
         (origin_size - 1)
-    } else { # then nResssources-nRessources_1 > 0
-      cont <- (2*nRessources_1) /
+    } else { # then nResources-nResources_1 > 0
+      cont <- (2*nResources_1) /
         (origin_size - 1)
     }
+    
   }
   if(update == 1){
-    if(nRessources < 1) return(0)
+    
+    if(nResources < 1) return(0)
+    nResources_1 <- cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][i, j]
+    origin_size <- sum(cache[[dep.var]]$valuedNetwork[i, ]) + 1
+    
     attr_added <- state[[resource.attribute.index]]$data[edge]
     if(attr_added == 1){
-      cont <- (-2*(nRessources - nRessources_1)) /
-        (origin_size)
+      cont <- (-2*(nResources - nResources_1)) /
+        (origin_size - 1)
     } else {
-      cont <- (-2*(nRessources_1)) /
-        (origin_size)
+      cont <- (-2*(nResources_1)) /
+        (origin_size - 1)
     }
+    
   }
   return(cont)
 }
@@ -470,18 +493,18 @@ avoiding_dissimilar_covar_cont <- function(dep.var = 1,
                                            update, 
                                            getTargetContribution = FALSE){
   
-  nRessources <- cache[[dep.var]]$valuedNetwork[i, j]
+  nResources <- cache[[dep.var]]$valuedNetwork[i, j]
   
   ### calculate target statistic
   if(getTargetContribution){
     
-    if(nRessources < 2) return(0)
-    allRessources <- state$transfers$data[,1] == i & state$transfers$data[,2] == j
-    attributesRessources <- state[[resource.attribute.index]]$data[allRessources]
+    if(nResources < 2) return(0)
+    allResources <- state$transfers$data[,1] == i & state$transfers$data[,2] == j
+    attributesResources <- state[[resource.attribute.index]]$data[allResources]
     attributeRange <- diff(range(state[[resource.attribute.index]]$data))
     origin_size <- sum(cache[[dep.var]]$valuedNetwork[i, ])
     
-    distmat <- as.matrix(dist(attributesRessources))
+    distmat <- as.matrix(dist(attributesResources))
     up <- upper.tri(distmat)
     numerator <- sum( abs(as.numeric(distmat[up])) ) 
     denominator <- origin_size - 1
@@ -493,30 +516,30 @@ avoiding_dissimilar_covar_cont <- function(dep.var = 1,
   ### calculate change statistic
   if(update == -1){
     
-    if(nRessources < 2) return(0)
-    otherRessources <- state$transfers$data[,1] == i & state$transfers$data[,2] == j &
+    if(nResources < 2) return(0)
+    otherResources <- state$transfers$data[,1] == i & state$transfers$data[,2] == j &
       (1:state$transfers$size[1]) != edge
-    attributesRessources <- state[[resource.attribute.index]]$data[otherRessources]
+    attributesResources <- state[[resource.attribute.index]]$data[otherResources]
     attributeRange <- diff(range(state[[resource.attribute.index]]$data))
     origin_size <- sum(cache[[dep.var]]$valuedNetwork[i, ])
     
     attr_removed <- state[[resource.attribute.index]]$data[edge]
-    cont <- - sum( abs(attr_removed-attributesRessources) ) /
+    cont <- - sum( abs(attr_removed-attributesResources) ) /
       (origin_size - 1)
     
   }
   if(update == 1){
     
-    if(nRessources < 1) return(0)
-    otherRessources <- state$transfers$data[,1] == i & state$transfers$data[,2] == j &
+    if(nResources < 1) return(0)
+    otherResources <- state$transfers$data[,1] == i & state$transfers$data[,2] == j &
       (1:state$transfers$size[1]) != edge
-    attributesRessources <- state[[resource.attribute.index]]$data[otherRessources]
+    attributesResources <- state[[resource.attribute.index]]$data[otherResources]
     attributeRange <- diff(range(state[[resource.attribute.index]]$data))
-    origin_size <- sum(cache[[dep.var]]$valuedNetwork[i, ])
+    origin_size <- sum(cache[[dep.var]]$valuedNetwork[i, ]) + 1
     
     attr_added <- state[[resource.attribute.index]]$data[edge]
-    cont <- sum( abs(attr_added-attributesRessources) ) /
-      (origin_size)
+    cont <- sum( abs(attr_added-attributesResources) ) /
+      (origin_size - 1)
   }
   return(cont)
 }

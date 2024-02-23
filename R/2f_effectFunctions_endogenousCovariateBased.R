@@ -354,12 +354,6 @@ joining_similar_avoiding_dissimilar_covar_cont <- function(dep.var = 1,
     cont <- - sum( (attributeRange - 2*abs(attr_removed-attributesRessources)) / attributeRange ) /
       (origin_size - 1)
     
-    #print("remove")
-    #print(attr_removed)
-    #print(attributesRessources)
-    #print(origin_size)
-    #print(cont)
-    
   }
   if(update == 1){
     
@@ -442,6 +436,87 @@ avoiding_dissimilar_covar_bin <- function(dep.var = 1,
       cont <- (-2*(nRessources_1)) /
         (origin_size)
     }
+  }
+  return(cont)
+}
+
+
+#' avoiding_dissimilar_covar_cont
+#' 
+#' Do individuals with different attributes tend to move to different places? 
+#' This statistic gives a contribution to all pairs of individuals who use the 
+#' same path that is weighted by the absolute difference between their continuous attribute. 
+#' 
+#' @param dep.var 
+#' @param resource.attribute.index,
+#' @param state 
+#' @param cache 
+#' @param i 
+#' @param j 
+#' @param edge 
+#' @param update 
+#' @param getTargetContribution 
+#'
+#' @return Returns the change statistic or target statistic of the effect for 
+#' internal use by the estimation algorithm. 
+#' @keywords internal
+avoiding_dissimilar_covar_cont <- function(dep.var = 1, 
+                                           resource.attribute.index,
+                                           state, 
+                                           cache, 
+                                           i, 
+                                           j, 
+                                           edge, 
+                                           update, 
+                                           getTargetContribution = FALSE){
+  
+  nRessources <- cache[[dep.var]]$valuedNetwork[i, j]
+  
+  ### calculate target statistic
+  if(getTargetContribution){
+    
+    if(nRessources < 2) return(0)
+    allRessources <- state$transfers$data[,1] == i & state$transfers$data[,2] == j
+    attributesRessources <- state[[resource.attribute.index]]$data[allRessources]
+    attributeRange <- diff(range(state[[resource.attribute.index]]$data))
+    origin_size <- sum(cache[[dep.var]]$valuedNetwork[i, ])
+    
+    distmat <- as.matrix(dist(attributesRessources))
+    up <- upper.tri(distmat)
+    numerator <- sum( abs(as.numeric(distmat[up])) ) 
+    denominator <- origin_size - 1
+    
+    return( numerator/denominator )
+    
+  }
+  
+  ### calculate change statistic
+  if(update == -1){
+    
+    if(nRessources < 2) return(0)
+    otherRessources <- state$transfers$data[,1] == i & state$transfers$data[,2] == j &
+      (1:state$transfers$size[1]) != edge
+    attributesRessources <- state[[resource.attribute.index]]$data[otherRessources]
+    attributeRange <- diff(range(state[[resource.attribute.index]]$data))
+    origin_size <- sum(cache[[dep.var]]$valuedNetwork[i, ])
+    
+    attr_removed <- state[[resource.attribute.index]]$data[edge]
+    cont <- - sum( abs(attr_removed-attributesRessources) ) /
+      (origin_size - 1)
+    
+  }
+  if(update == 1){
+    
+    if(nRessources < 1) return(0)
+    otherRessources <- state$transfers$data[,1] == i & state$transfers$data[,2] == j &
+      (1:state$transfers$size[1]) != edge
+    attributesRessources <- state[[resource.attribute.index]]$data[otherRessources]
+    attributeRange <- diff(range(state[[resource.attribute.index]]$data))
+    origin_size <- sum(cache[[dep.var]]$valuedNetwork[i, ])
+    
+    attr_added <- state[[resource.attribute.index]]$data[edge]
+    cont <- sum( abs(attr_added-attributesRessources) ) /
+      (origin_size)
   }
   return(cont)
 }

@@ -47,6 +47,7 @@ export(
   joining_similar_avoiding_dissimilar_covar_bin,
   joining_similar_avoiding_dissimilar_covar_cont,
   avoiding_dissimilar_covar_bin,
+  avoiding_dissimilar_covar_cont,
   
   # effect functions: other
   in_ties_loops, in_weights_exponent, 

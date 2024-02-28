@@ -26,10 +26,7 @@ checkProcessState <- function(state) {
   
   
   # extract nodeset names defined in edgelist
-  nodesets <- c()
-  nodesets[1] <- state[[dep.var]]$nodeSet[1]
-  nodesets[2] <- state[[dep.var]]$nodeSet[2]
-  nodesets[3] <- state[[dep.var]]$nodeSet[3]
+  nodesets <- state[[dep.var]]$nodeSet
   
   # do nodeset names from edgelist have a corresponding nodeset and are they of class 'nodeset.monan'?
   for (i in 1:length(nodesets)) {

@@ -4,7 +4,9 @@ export(
   # core functions
   createAlgorithm, createEdgelist, createEffectsObject, createNetwork, 
   createNodeSet, createNodeVariable, createProcessState, createWeightedCache,
-  estimateMobilityNetwork, estimateDistributionNetwork, 
+  createEffects, addEffect,
+  monanDataCreate, monanAlgorithmCreate,
+  estimateMobilityNetwork, estimateDistributionNetwork, monan07,
   simulateMobilityNetworks, simulateDistributionNetworks,
   
   # auxiliary functions

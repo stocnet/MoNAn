@@ -188,6 +188,10 @@ createAlgorithm <-
     algorithm
   }
 
+#' monanAlgorithmCreate
+#'
+#' @rdname createAlgorithm
+monanAlgorithmCreate <- createAlgorithm
 
 #' createEdgelist
 #'
@@ -601,6 +605,11 @@ createProcessState <- function(elements, dependentVariable) {
   elements
 }
 
+#' monanDataCreate
+#'
+#' @rdname createProcessState
+monanDataCreate <- createProcessState
+
 
 #' createWeightedCache
 #'
@@ -913,6 +922,12 @@ estimateMobilityNetwork <-
 #'
 #' @rdname estimateMobilityNetwork
 estimateDistributionNetwork <- estimateMobilityNetwork
+
+
+#' monan07
+#'
+#' @rdname estimateMobilityNetwork
+monan07 <- estimateMobilityNetwork
 
 
 #' simulateMobilityNetworks

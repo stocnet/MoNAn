@@ -61,7 +61,7 @@ export(
 )
 
 importFrom("graphics", "boxplot", "lines")
-importFrom("stats", "as.formula", "ecdf", "pnorm", "runif", "sd")
+importFrom("stats", "as.formula", "ecdf", "pnorm", "runif", "sd", "dist")
 importFrom("methods", "is")
 importFrom("snowfall", "sfInit", "sfExport", "sfLapply", "sfLibrary", "sfStop")
 

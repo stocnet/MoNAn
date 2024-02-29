@@ -222,7 +222,7 @@ staying_by_prop_bin_inflow <-
 #' to pairs of dissimilar individuals following the same path.
 #' 
 #' @param dep.var 
-#' @param resource.attribute.index,
+#' @param resource.attribute.index 
 #' @param state 
 #' @param cache 
 #' @param i 
@@ -309,7 +309,7 @@ joining_similar_avoiding_dissimilar_covar_bin <- function(dep.var = 1,
 #' and -1 if the absolute difference between their attributes is equal to the range).
 #' 
 #' @param dep.var 
-#' @param resource.attribute.index,
+#' @param resource.attribute.index 
 #' @param state 
 #' @param cache 
 #' @param i 
@@ -390,7 +390,7 @@ joining_similar_avoiding_dissimilar_covar_cont <- function(dep.var = 1,
 #' individuals following the same path.
 #' 
 #' @param dep.var 
-#' @param resource.attribute.index,
+#' @param resource.attribute.index 
 #' @param state 
 #' @param cache 
 #' @param i 
@@ -471,7 +471,7 @@ avoiding_dissimilar_covar_bin <- function(dep.var = 1,
 #' same path that is weighted by the absolute difference between their continuous attribute. 
 #' 
 #' @param dep.var 
-#' @param resource.attribute.index,
+#' @param resource.attribute.index 
 #' @param state 
 #' @param cache 
 #' @param i 

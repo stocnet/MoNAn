@@ -19,6 +19,8 @@ avoiding_dissimilar_covar_cont(
 \arguments{
 \item{dep.var}{}
 
+\item{resource.attribute.index}{}
+
 \item{state}{}
 
 \item{cache}{}

@@ -92,7 +92,8 @@ myStatisticsFrame <- getMultinomialStatistics(myState, myCache, myEffects)
 ##### create algorithm object #####
 
 # define algorithm based on state and effects characteristics
-myAlg <- monanAlgorithmCreate(myState, myEffects, multinomialProposal = FALSE)
+myAlg <- monanAlgorithmCreate(myState, myEffects, nsubN2 = 3,
+                              multinomialProposal = FALSE)
 
 
 ##### estimate mobility network model #####

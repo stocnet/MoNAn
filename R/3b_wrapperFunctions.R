@@ -38,7 +38,7 @@ createEffects <- function(state){
 #' @examples
 #' # Create effects object and add effects
 #' myE1 <- createEffects(myState)
-#' myE1 <- addEffect(myE1, loops")
+#' myE1 <- addEffect(myE1, loops)
 #' myE1 <- addEffect(myE1, reciprocity_basic)
 #' myE1 <- addEffect(myE1, effectName = same_covariate, attribute.index = "region")
 #' 

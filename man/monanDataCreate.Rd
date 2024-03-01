@@ -22,6 +22,20 @@ about the data that will be used in the estimation. This includes the
 outcome variable (edgelist), the nodesets, and all covariates.
 }
 \examples{
+#' # create objects (which are later combined to the process state)
+transfers <- createEdgelist(mobilityEdgelist,
+  nodeSet = c("organisations", "organisations", "people")
+)
+people <- createNodeSet(1:nrow(mobilityEdgelist))
+organisations <- createNodeSet(1:length(orgRegion))
+sameRegion <- outer(orgRegion, orgRegion, "==") * 1
+sameRegion <- createNetwork(sameRegion,
+  nodeSet = c("organisations", "organisations")
+)
+region <- createNodeVariable(orgRegion, nodeSet = "organisations")
+size <- createNodeVariable(orgSize, nodeSet = "organisations", addSim = TRUE)
+sex <- createNodeVariable(indSex, nodeSet = "people")
+
 monanDataCreate(transfers, people, organisations, 
                 sameRegion, region, size, sex)
 }

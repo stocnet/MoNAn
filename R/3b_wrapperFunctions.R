@@ -1,26 +1,6 @@
 ####### wrapperFunctions
 
 
-#' createEffects
-#'
-#' Generates an empty effects object to which new effects can be added 
-#' consecutively
-#'
-#' @param state The state to which the model applies.
-#'
-#' @return An empty effects object of class effectsList.monan
-#' @export
-#'
-#' @examples
-#' #' myE1 <- createEffects(myState)
-createEffects <- function(state){
-  l <- list(effectFormulas = list(),
-            name = c(),
-            state = deparse(substitute(state)))
-  class(l) <- "effectsList.monan"
-  l
-}
-
 #' addEffect
 #' 
 #' A function to add addtional effects to a moman effects object
@@ -61,6 +41,29 @@ addEffect <- function(effectsObject, effectName, ...){
 }
 
 
+
+#' createEffects
+#'
+#' Generates an empty effects object to which new effects can be added 
+#' consecutively
+#'
+#' @param state The state to which the model applies.
+#'
+#' @return An empty effects object of class effectsList.monan
+#' @export
+#'
+#' @examples
+#' #' myE1 <- createEffects(myState)
+createEffects <- function(state){
+  l <- list(effectFormulas = list(),
+            name = c(),
+            state = deparse(substitute(state)))
+  class(l) <- "effectsList.monan"
+  l
+}
+
+
+
 #' monanDataCreate
 #'
 #' A function to create a moman process state, i.e., 
@@ -77,6 +80,20 @@ addEffect <- function(effectsObject, effectName, ...){
 #' @export
 #'
 #' @examples
+#' #' # create objects (which are later combined to the process state)
+#' transfers <- createEdgelist(mobilityEdgelist,
+#'   nodeSet = c("organisations", "organisations", "people")
+#' )
+#' people <- createNodeSet(1:nrow(mobilityEdgelist))
+#' organisations <- createNodeSet(1:length(orgRegion))
+#' sameRegion <- outer(orgRegion, orgRegion, "==") * 1
+#' sameRegion <- createNetwork(sameRegion,
+#'   nodeSet = c("organisations", "organisations")
+#' )
+#' region <- createNodeVariable(orgRegion, nodeSet = "organisations")
+#' size <- createNodeVariable(orgSize, nodeSet = "organisations", addSim = TRUE)
+#' sex <- createNodeVariable(indSex, nodeSet = "people")
+#' 
 #' monanDataCreate(transfers, people, organisations, 
 #'                 sameRegion, region, size, sex)
 monanDataCreate <- function(...){

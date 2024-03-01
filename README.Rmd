@@ -111,7 +111,8 @@ N_org <- length(unique(as.numeric(mobilityEdgelist)))
 # create monan objects
 people <- createNodeSet(N_ind)
 organisations <- createNodeSet(N_org)
-transfers <- createEdgelist(mobilityEdgelist, nodeSet = c("organisations", "organisations", "people"))
+transfers <- createEdgelist(mobilityEdgelist, nodeSet = c("organisations", "organisations", 
+                                                          "people"))
 sameRegion <- outer(orgRegion, orgRegion, "==") * 1
 sameRegion <- createNetwork(sameRegion, nodeSet = c("organisations", "organisations"))
 region <- createNodeVariable(orgRegion, nodeSet = "organisations")
@@ -191,7 +192,8 @@ myStatisticsFrame <- getMultinomialStatistics(myState, myCache, myEffects)
 # 
 # form <- as.formula(paste("choice ~ 1 + ", paste(IVs, collapse = " + "), "| 0"))
 # 
-# my.mlogit.results <- mlogit(formula = eval(form), data = my.mlogit.dataframe, heterosc = FALSE)
+# my.mlogit.results <- mlogit(formula = eval(form), data = my.mlogit.dataframe, 
+#                             heterosc = FALSE)
 # 
 # summary(my.mlogit.results)
 #

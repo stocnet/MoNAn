@@ -36,11 +36,19 @@ createEffects <- function(state){
 #' @export
 #'
 #' @examples
+#' # Create effects object and add effects
 #' myE1 <- createEffects(myState)
-#' myE1 <- addEffect(myE1, "loops")
-#' myE1 <- addEffect(myE1, "reciprocity_basic")
-#' myE1 <- addEffect(myE1, effectName = "same_covariate", attribute.index = "region")
+#' myE1 <- addEffect(myE1, loops")
+#' myE1 <- addEffect(myE1, reciprocity_basic)
+#' myE1 <- addEffect(myE1, effectName = same_covariate, attribute.index = "region")
+#' 
+#' # Or simpler
+#' myE1 <- createEffects(myState) |>
+#'   addEffect(loops) |>
+#'   addEffect(reciprocity_basic) |>
+#'   addEffect(same_covariate, attribute.index = "region")
 addEffect <- function(effectsObject, effectName, ...){
+  effectName <- deparse(substitute(effectName))
   eff.state <- effectsObject$state
   nEffects.prev <- length(effectsObject$effectFormulas)
   
@@ -51,3 +59,52 @@ addEffect <- function(effectsObject, effectName, ...){
   effectsObject$name[(nEffects.prev + 1)] <- new.eff$name[1]
   effectsObject
 }
+
+
+#' monanDataCreate
+#'
+#' A function to create a moman process state, i.e., 
+#' a MoNAn object that stores all information
+#' about the data that will be used in the estimation. This includes the
+#' outcome variable (edgelist), the nodesets, and all covariates.
+#'
+#' @param ... The monan objects to be included in the process State. 
+#' This must include exactly one edgelist (dependent variable) and the
+#' two nodesets associated with the edgelist.
+#' Further allowed elements are (monadic or dyadic) covariates of locations and people
+#'
+#' @return An object of class "processState.monan".
+#' @export
+#'
+#' @examples
+#' monanDataCreate(transfers, people, organisations, 
+#'                 sameRegion, region, size, sex)
+monanDataCreate <- function(...){
+  
+  # create the named list to be transferred to createProcessState
+  varnames <- unlist(lapply(substitute(list(...))[-1], deparse))
+  elements <- list(...)
+  names(elements) <- varnames
+  
+  # extract dependent variable
+  dep.var <- NULL
+  for (i in 1:length(elements)) {
+    e <- elements[[i]]
+    if (inherits(e, "edgelist.monan")){
+      if(is.null(dep.var)) {
+        dep.var <- names(elements)[i]
+      } else {
+        stop("More than one edgelist included; only one dependent variable possible")
+      }
+    }
+  }
+  if(is.null(dep.var)){
+    stop("No dependent variable (edgelist) included in input objects")
+  }
+  
+  # transfer both to createProcessState
+  state <- createProcessState(elements, dep.var)
+  state
+}
+
+

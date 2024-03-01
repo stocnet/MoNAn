@@ -605,11 +605,6 @@ createProcessState <- function(elements, dependentVariable) {
   elements
 }
 
-#' monanDataCreate
-#'
-#' @rdname createProcessState
-monanDataCreate <- createProcessState
-
 
 #' createWeightedCache
 #'

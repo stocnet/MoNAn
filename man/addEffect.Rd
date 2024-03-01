@@ -23,8 +23,15 @@ An object of type effectsList.monan
 A function to add addtional effects to a moman effects object
 }
 \examples{
+# Create effects object and add effects
 myE1 <- createEffects(myState)
-myE1 <- addEffect(myE1, "loops")
-myE1 <- addEffect(myE1, "reciprocity_basic")
-myE1 <- addEffect(myE1, effectName = "same_covariate", attribute.index = "region")
+myE1 <- addEffect(myE1, loops)
+myE1 <- addEffect(myE1, reciprocity_basic)
+myE1 <- addEffect(myE1, effectName = same_covariate, attribute.index = "region")
+
+# Or simpler
+myE1 <- createEffects(myState) |>
+  addEffect(loops) |>
+  addEffect(reciprocity_basic) |>
+  addEffect(same_covariate, attribute.index = "region")
 }

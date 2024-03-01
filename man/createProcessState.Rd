@@ -2,12 +2,9 @@
 % Please edit documentation in R/3_coreFunctions.R
 \name{createProcessState}
 \alias{createProcessState}
-\alias{monanDataCreate}
 \title{createProcessState}
 \usage{
 createProcessState(elements, dependentVariable)
-
-monanDataCreate(elements, dependentVariable)
 }
 \arguments{
 \item{elements}{A named list of the outcome variable (edgelist), the nodesets,

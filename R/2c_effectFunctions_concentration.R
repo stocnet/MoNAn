@@ -184,26 +184,30 @@ concentration_GW_dyad_covar <- function(dep.var = 1, attribute.index, state, cac
 #' @keywords internal
 concentration_prop <- function(dep.var = 1, state, cache, i, j, edge, update, 
                                getTargetContribution = FALSE){
+  ### if only one person is in the origin, 
+  ### this origin contributes 0 to the statistic
+  if(sum(cache[[dep.var]]$valuedNetwork[i,]) < 2){
+    return(0)
+  }
+  
+  ### calculate target statistic
   if(getTargetContribution){
     numerator <- 2 * (cache[[dep.var]]$valuedNetwork[i, j])^2 - 
       cache[[dep.var]]$valuedNetwork[i, j] * sum(cache[[dep.var]]$valuedNetwork[i,]) - 
       cache[[dep.var]]$valuedNetwork[i, j]
     denominator <- sum(cache[[dep.var]]$valuedNetwork[i,]) - 1
-    if(denominator <= 0) {
-      numerator <- 0
-      denominator <- 1
-    }
     return( numerator/denominator )
   }
   
   ### calculate change statistic
-  
   if(update == -1){
-    cont <- 2*(-2*cache[[dep.var]]$valuedNetwork[i, j] + 1 + sum(cache[[dep.var]]$valuedNetwork[i,]) ) /
+    cont <- 2*(-2*cache[[dep.var]]$valuedNetwork[i, j] + 1 + 
+                 sum(cache[[dep.var]]$valuedNetwork[i,]) ) /
       (sum(cache[[dep.var]]$valuedNetwork[i,]) - 1)
   }
   if(update == 1){
-    cont <- 2*(2*cache[[dep.var]]$valuedNetwork[i, j] - sum(cache[[dep.var]]$valuedNetwork[i,])) / 
+    cont <- 2*(2*cache[[dep.var]]$valuedNetwork[i, j] - 
+                 sum(cache[[dep.var]]$valuedNetwork[i,])) / 
       sum(cache[[dep.var]]$valuedNetwork[i,])
   }
   return(cont)

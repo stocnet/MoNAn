@@ -26,10 +26,7 @@ checkProcessState <- function(state) {
   
   
   # extract nodeset names defined in edgelist
-  nodesets <- c()
-  nodesets[1] <- state[[dep.var]]$nodeSet[1]
-  nodesets[2] <- state[[dep.var]]$nodeSet[2]
-  nodesets[3] <- state[[dep.var]]$nodeSet[3]
+  nodesets <- state[[dep.var]]$nodeSet
   
   # do nodeset names from edgelist have a corresponding nodeset and are they of class 'nodeset.monan'?
   for (i in 1:length(nodesets)) {
@@ -536,9 +533,27 @@ runSubphase2 <- function(dep.var,
     cat("\n")
   }
 
-  # return mean of the parameters
+  ### return mean of the parameters discarding the 
+  ### initial dk that are clearly before convergence
+  # find the smaller of two numbers: 
+  # 25% of the number of iterations OR
+  # when the expected residual of the step-size is less than 0.05
+  dk1 <- round(iterations/4)
+  
+  dk2 <- 1
+  res <- (1-gain)
+  
+  repeat{
+    if(dk2 > 100) break
+    if(res < 0.05) break
+    dk2 <- dk2 + 1
+    res <- res*(1-gain)
+  }
+  
+  dk <- min(dk1, dk2)
+  
   return(list(
-    parameters = colMeans(parameters),
+    parameters = colMeans(parameters[dk:iterations,]),
     state = state,
     cache = cache
   ))

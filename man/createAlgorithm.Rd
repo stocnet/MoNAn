@@ -2,9 +2,29 @@
 % Please edit documentation in R/3_coreFunctions.R
 \name{createAlgorithm}
 \alias{createAlgorithm}
+\alias{monanAlgorithmCreate}
 \title{createAlgorithm}
 \usage{
 createAlgorithm(
+  state,
+  effects,
+  multinomialProposal = FALSE,
+  burnInN1 = NULL,
+  thinningN1 = NULL,
+  iterationsN1 = NULL,
+  gainN1 = 0.1,
+  burnInN2 = NULL,
+  thinningN2 = NULL,
+  initialIterationsN2 = 50,
+  nsubN2 = 4,
+  initGain = 0.6,
+  burnInN3 = NULL,
+  thinningN3 = NULL,
+  iterationsN3 = 500,
+  allowLoops = NULL
+)
+
+monanAlgorithmCreate(
   state,
   effects,
   multinomialProposal = FALSE,

@@ -3,6 +3,7 @@
 \name{estimateMobilityNetwork}
 \alias{estimateMobilityNetwork}
 \alias{estimateDistributionNetwork}
+\alias{monan07}
 \alias{print.result.monan}
 \title{estimateMobilityNetwork}
 \usage{
@@ -21,6 +22,20 @@ estimateMobilityNetwork(
 )
 
 estimateDistributionNetwork(
+  state,
+  cache,
+  effects,
+  algorithm,
+  initialParameters = NULL,
+  prevAns = NULL,
+  parallel = FALSE,
+  cpus = 1,
+  verbose = FALSE,
+  returnDeps = FALSE,
+  fish = FALSE
+)
+
+monan07(
   state,
   cache,
   effects,

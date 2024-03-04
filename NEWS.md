@@ -1,3 +1,5 @@
+# MoNAn 0.3.0
+
 # MoNAn 0.2.0
 
 Implementation of paralellization in Phase 1 of the estimation.

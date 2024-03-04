@@ -34,17 +34,14 @@ other_origin[resample] <- transfers$data[resample,2]
 second_or <- createNodeVariable(other_origin, nodeSet = "people")
 
 # combine created objects to the process state
-myState <- createProcessState(
-  list(
-    transfers = transfers,
-    people = people,
-    organisations = organisations,
-    sameRegion = sameRegion,
-    region = region,
-    size = size,
-    sex = sex,
-    second_or = second_or), 
-  dependentVariable = "transfers")
+myState <- monanDataCreate(transfers,
+                           people,
+                           organisations,
+                           sameRegion,
+                           region,
+                           size,
+                           sex,
+                           second_or)
 
 
 ##### create cache #####
@@ -56,20 +53,15 @@ myCache <- createWeightedCache(myState, resourceCovariates = c("sex"))
 ##### create effects object #####
 
 # effects object
-myEffects <- createEffectsObject(
-  list(
-    list("loops"),
-    list("reciprocity_min"),
-    list("dyadic_covariate", attribute.index = "sameRegion"),
-    list("alter_covariate", attribute.index = "size"),
-    list("resource_covar_to_node_covar",
-         attribute.index = "region",
-         resource.attribute.index = "sex"
-    ),
-    list("loops_resource_covar", resource.attribute.index = "sex")
-  ), 
-  checkProcessState = myState  
-)
+myEffects <- createEffects(myState) |>
+  addEffect(loops) |>
+  addEffect(reciprocity_min) |>
+  addEffect(dyadic_covariate, attribute.index = "sameRegion") |>
+  addEffect(alter_covariate, attribute.index = "size") |>
+  addEffect(resource_covar_to_node_covar,
+     attribute.index = "region",
+     resource.attribute.index = "sex") |>
+  addEffect(loops_resource_covar, resource.attribute.index = "sex")
 
 
 ##### get multinomial statistics to estimate initial parameters using pseudo-likelihood estimation #####
@@ -100,12 +92,13 @@ myStatisticsFrame <- getMultinomialStatistics(myState, myCache, myEffects)
 ##### create algorithm object #####
 
 # define algorithm based on state and effects characteristics
-myAlg <- createAlgorithm(myState, myEffects, multinomialProposal = FALSE)
+myAlg <- monanAlgorithmCreate(myState, myEffects, nsubN2 = 3,
+                              multinomialProposal = FALSE)
 
 
 ##### estimate mobility network model #####
 
-# mobility network model
+# mobility network model 
 myResDN <- estimateMobilityNetwork(
   myState, myCache, myEffects, myAlg,
   initialParameters = NULL,
@@ -124,10 +117,11 @@ myResDN_old <- myResDN
 
 # estimate mobility network model again based on previous results to improve convergence
 # with an adjusted algorithm
-myAlg <- createAlgorithm(myState, myEffects, multinomialProposal = TRUE, 
-                         initialIterationsN2 = 500, nsubN2 = 1, initGain = 0.05, iterationsN3 = 1000)
+myAlg <- monanAlgorithmCreate(myState, myEffects, multinomialProposal = TRUE, 
+                              initialIterationsN2 = 500, nsubN2 = 1, initGain = 0.05, iterationsN3 = 1000)
 
-myResDN <- estimateMobilityNetwork(
+# monan07 is an alias for estimateMobilityNetwork
+myResDN <- monan07(
   myState, myCache, myEffects, myAlg,
   prevAns = myResDN,
   parallel = TRUE, cpus = 4,
@@ -153,12 +147,8 @@ plot(traces)
 
 ##### test whether other effects should be included #####
 
-myEffects2 <- createEffectsObject(
-  list(
-    list("transitivity_min")
-  ),
-  checkProcessState = myState
-)
+myEffects2 <- createEffects(myState) |>
+  addEffect(transitivity_min)
 
 test_ME.2 <- scoreTest(myResDN, myEffects2)
 test_ME.2

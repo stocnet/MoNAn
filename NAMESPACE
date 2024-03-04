@@ -4,7 +4,9 @@ export(
   # core functions
   createAlgorithm, createEdgelist, createEffectsObject, createNetwork, 
   createNodeSet, createNodeVariable, createProcessState, createWeightedCache,
-  estimateMobilityNetwork, estimateDistributionNetwork, 
+  createEffects, addEffect,
+  monanDataCreate, monanAlgorithmCreate,
+  estimateMobilityNetwork, estimateDistributionNetwork, monan07,
   simulateMobilityNetworks, simulateDistributionNetworks,
   
   # auxiliary functions
@@ -42,18 +44,24 @@ export(
   transitivity_basic, transitivity_min, transitivity_netflow, transitivity_GW,
   triad120D, triad120U, triad120C,
   
+  # effect functions: endogeneous covariate based
+  crowding_out_prop_covar_bin, staying_by_prop_bin_inflow, 
+  joining_similar_avoiding_dissimilar_covar_bin,
+  joining_similar_avoiding_dissimilar_covar_cont,
+  avoiding_dissimilar_covar_bin,
+  avoiding_dissimilar_covar_cont,
+  
   # effect functions: other
-  crowding_out_prop_covar_bin,  
   in_ties_loops, in_weights_exponent, 
   in_weights_GW,
-  present_relations,  staying_by_prop_bin_inflow, 
+  present_relations,  
 
   # gof param functions
   getIndegree, getTieWeights
 )
 
 importFrom("graphics", "boxplot", "lines")
-importFrom("stats", "as.formula", "ecdf", "pnorm", "runif", "sd")
+importFrom("stats", "as.formula", "ecdf", "pnorm", "runif", "sd", "dist")
 importFrom("methods", "is")
 importFrom("snowfall", "sfInit", "sfExport", "sfLapply", "sfLibrary", "sfStop")
 

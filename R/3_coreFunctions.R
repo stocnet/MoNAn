@@ -188,6 +188,10 @@ createAlgorithm <-
     algorithm
   }
 
+#' monanAlgorithmCreate
+#'
+#' @rdname createAlgorithm
+monanAlgorithmCreate <- createAlgorithm
 
 #' createEdgelist
 #'
@@ -913,6 +917,12 @@ estimateMobilityNetwork <-
 #'
 #' @rdname estimateMobilityNetwork
 estimateDistributionNetwork <- estimateMobilityNetwork
+
+
+#' monan07
+#'
+#' @rdname estimateMobilityNetwork
+monan07 <- estimateMobilityNetwork
 
 
 #' simulateMobilityNetworks

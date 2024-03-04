@@ -1,3 +1,5 @@
+# MoNAn 1.0.0
+
 # MoNAn 0.3.0
 
 New functions to specify the model: createEffects and addEffect

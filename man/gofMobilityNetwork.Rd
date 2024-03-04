@@ -6,18 +6,15 @@
 \alias{plot.gof.stats.monan}
 \title{gofMobilityNetwork}
 \usage{
-gofMobilityNetwork(ans, simulations, gofFunction, lvls = NULL)
+gofMobilityNetwork(ans, gofFunction, lvls = NULL)
 
-gofDistributionNetwork(ans, simulations, gofFunction, lvls = NULL)
+gofDistributionNetwork(ans, gofFunction, lvls = NULL)
 
 \method{plot}{gof.stats.monan}(x, lvls, ...)
 }
 \arguments{
-\item{ans}{An object of class "result.monan" resulting from an estimation with the function \code{\link[=estimateMobilityNetwork]{estimateMobilityNetwork()}}.}
-
-\item{simulations}{The simulated outcomes with which the observed statistics are compared.
-Usually, they are stored in the ans$deps, in case deps = TRUE was specified in the
-estimation.}
+\item{ans}{An object of class "result.monan" resulting from an estimation
+with the function \code{\link[=estimateMobilityNetwork]{estimateMobilityNetwork()}} using the option deps = TRUE.}
 
 \item{gofFunction}{A gof function that specifies which auxiliary outcome should be used,
 e.g., "getIndegree" or "getTieWeights".}
@@ -44,12 +41,10 @@ Hunter et al. (2008) and Lospinoso and Snijders (2019).
 \examples{
 # goodness of fit
 myGofIndegree <- gofMobilityNetwork(ans = myResDN, 
-                                        simulations = myResDN$deps, 
                                         gofFunction = getIndegree, 
                                         lvls = 1:100)
 
 myGofTieWeight <- gofMobilityNetwork(ans = myResDN, 
-                                         simulations = myResDN$deps, 
                                          gofFunction = getTieWeights, 
                                          lvls = 1:30)
 plot(myGofIndegree,  lvls = 20:70)

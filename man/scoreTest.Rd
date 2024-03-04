@@ -35,18 +35,8 @@ not the case, it is likely that including them will result in significant estima
 \examples{
 \donttest{
 # test whether other effects should be included
-myEffects2 <- createEffectsObject(
-  list(
-    list("loops"),
-    list("reciprocity_min"),
-    list("dyadic_covariate", attribute.index = "sameRegion"),
-    list("alter_covariate", attribute.index = "size"),
-    list("resource_covar_to_node_covar", attribute.index = "region", 
-          resource.attribute.index = "sex"),
-    list("loops_resource_covar", resource.attribute.index = "sex"),
-    list("transitivity_min")
-  )
-)
+myEffects2 <- createEffects(myState) |>
+  addEffect(transitivity_min)
 
 test_ME.2 <- scoreTest(myResDN, myEffects2)
 }

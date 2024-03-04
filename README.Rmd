@@ -14,6 +14,17 @@ knitr::opts_chunk$set(
 ```
 
 
+## Imortant:
+
+This is version 1.0.0 of MoNAn. This update includes many changes, including
+some that mean old code written for older versions will not work anymore!
+
+Code use has been simplified, notably in
+- gofMobilityNetwork (no need to specify "simulations" anymore)
+- new functions to specify the model: createEffects and addEffect
+- new function to generate the process state: monanDataCreate
+
+
 # MoNAn
 
 <!-- badges: start -->
@@ -43,7 +54,7 @@ not be able to do what you want. In that case, or if you are unsure
 please write the package
 maintainer under his institutional email address.
 
-We are currently (Feb 2024) on version 0.2.0 on github. 
+We are currently (Mar 2024) on version 1.0.0 on github. 
 Version 0.1.3 was released to CRAN in Feb 2024.
 
 # Installation
@@ -253,7 +264,7 @@ If convergence is too high, update algorithm, re-run estimation with previous re
 # estimate mobility network model again based on previous results to improve convergence
 # with an adjusted algorithm
 myAlg <- createAlgorithm(myState, myEffects, multinomialProposal = TRUE, 
-                         initialIterationsN2 = 500, nsubN2 = 1, initGain = 0.02, iterationsN3 = 1000)
+                         initialIterationsN2 = 200, nsubN2 = 1, initGain = 0.02, iterationsN3 = 1000)
 
 # for users of other stocnet packages, we can also use monan07 to run an estimation 
 # (it is an alias for estimateMobilityNetwork)
@@ -317,10 +328,10 @@ The interpretation is that there appears to be some transitive clustering in the
 Akin to ERGMs, goodness of fit testing is available to see whether auxiliary statistics are well captured by the model.
 
 ```{r}
-myGofIndegree <- gofMobilityNetwork(ans = myResDN, simulations = myResDN$deps, gofFunction = getIndegree, lvls = 1:70)
+myGofIndegree <- gofMobilityNetwork(ans = myResDN, gofFunction = getIndegree, lvls = 1:70)
 plot(myGofIndegree, lvls = 1:70)
 
-myGofTieWeight <- gofMobilityNetwork(ans = myResDN, simulations = myResDN$deps, gofFunction = getTieWeights, lvls = 1:20)
+myGofTieWeight <- gofMobilityNetwork(ans = myResDN, gofFunction = getTieWeights, lvls = 1:20)
 plot(myGofTieWeight, lvls = 1:20)
 ```
 

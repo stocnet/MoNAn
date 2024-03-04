@@ -118,7 +118,7 @@ myResDN_old <- myResDN
 # estimate mobility network model again based on previous results to improve convergence
 # with an adjusted algorithm
 myAlg <- monanAlgorithmCreate(myState, myEffects, multinomialProposal = TRUE, 
-                              initialIterationsN2 = 500, nsubN2 = 1, initGain = 0.05, iterationsN3 = 1000)
+                              initialIterationsN2 = 100, nsubN2 = 1, initGain = 0.05, iterationsN3 = 1000)
 
 # monan07 is an alias for estimateMobilityNetwork
 myResDN <- monan07(
@@ -156,10 +156,10 @@ test_ME.2
 
 ##### goodness of fit #####
 
-myGofIndegree <- gofMobilityNetwork(ans = myResDN, simulations = myResDN$deps, gofFunction = getIndegree, lvls = 1:100)
+myGofIndegree <- gofMobilityNetwork(ans = myResDN, gofFunction = getIndegree, lvls = 1:100)
 plot(myGofIndegree,  lvls = 20:70)
 
-myGofTieWeight <- gofMobilityNetwork(ans = myResDN, simulations = myResDN$deps, gofFunction = getTieWeights, lvls = 1:30)
+myGofTieWeight <- gofMobilityNetwork(ans = myResDN, gofFunction = getTieWeights, lvls = 1:30)
 plot(myGofTieWeight, lvls = 1:15)
 
 

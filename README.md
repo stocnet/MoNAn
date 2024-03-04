@@ -1,6 +1,17 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
+## Imortant:
+
+This is version 1.0.0 of MoNAn. This update includes many changes,
+including some that mean old code written for older versions will not
+work anymore!
+
+Code use has been simplified, notably in - gofMobilityNetwork (no need
+to specify “simulations” anymore) - new functions to specify the model:
+createEffects and addEffect - new function to generate the process
+state: monanDataCreate
+
 # MoNAn
 
 <!-- badges: start -->
@@ -40,7 +51,7 @@ you might not be able to do what you want. In that case, or if you are
 unsure please write the package maintainer under his institutional email
 address.
 
-We are currently (Feb 2024) on version 0.2.0 on github. Version 0.1.3
+We are currently (Mar 2024) on version 1.0.0 on github. Version 0.1.3
 was released to CRAN in Feb 2024.
 
 # Installation
@@ -308,7 +319,7 @@ estimates), another run is necessary.
 
 ``` r
 max(abs(myResDN$convergenceStatistics))
-#> [1] 0.07226843
+#> [1] 0.1026806
 ```
 
 If convergence is too high, update algorithm, re-run estimation with
@@ -318,7 +329,7 @@ previous results as starting values and check convergence:
 # estimate mobility network model again based on previous results to improve convergence
 # with an adjusted algorithm
 myAlg <- createAlgorithm(myState, myEffects, multinomialProposal = TRUE, 
-                         initialIterationsN2 = 500, nsubN2 = 1, initGain = 0.02, iterationsN3 = 1000)
+                         initialIterationsN2 = 200, nsubN2 = 1, initGain = 0.02, iterationsN3 = 1000)
 
 # for users of other stocnet packages, we can also use monan07 to run an estimation 
 # (it is an alias for estimateMobilityNetwork)
@@ -338,23 +349,23 @@ myResDN <- monan07(
 #> 
 #> Sub phase1:
 #>  burn-in 742 steps
-#>  500 iterations
+#>  200 iterations
 #>  thinning 742
 #>  4 cpus
 #> 
 #> New parameters:
 #> loops 
-#>  2.58522934635626 
+#>  2.59299294369683 
 #>  reciprocity_min 
-#>  0.829499883393086 
+#>  0.838548197136427 
 #>  dyadic_covariate sameRegion 
-#>  1.69646689842373 
+#>  1.70165827823519 
 #>  alter_covariate size 
-#>  0.0383754175917996 
+#>  0.0357500412277818 
 #>  resource_covar_to_node_covar region sex 
-#>  -0.654017214432335 
+#>  -0.65648333072572 
 #>  loops_resource_covar sex 
-#>  -0.37043967802181
+#>  -0.366741255974742
 #> 
 #> Stopping cluster
 #> Starting phase 3:
@@ -372,7 +383,7 @@ myResDN <- monan07(
 ``` r
 # check convergence
 max(abs(myResDN$convergenceStatistics))
-#> [1] 0.06472579
+#> [1] 0.1050786
 ```
 
 In case convergence is still poor, updating the algorithm might be
@@ -385,19 +396,19 @@ convergence ratio. All values in the final column should be below 0.1
 myResDN
 #> Results
 #>                                   Effects   Estimates StandardErrors
-#> 1                                   loops  2.58522935     0.17745518
-#> 2                         reciprocity_min  0.82949988     0.17812274
-#> 3             dyadic_covariate sameRegion  1.69646690     0.11057678
-#> 4                    alter_covariate size  0.03837542     0.02208014
-#> 5 resource_covar_to_node_covar region sex -0.65401721     0.16516292
-#> 6                loops_resource_covar sex -0.37043968     0.21572325
-#>    Convergence
-#> 1 -0.011470208
-#> 2 -0.058098986
-#> 3 -0.041528927
-#> 4 -0.002504119
-#> 5 -0.064725793
-#> 6 -0.034787744
+#> 1                                   loops  2.59299294     0.17984152
+#> 2                         reciprocity_min  0.83854820     0.18075663
+#> 3             dyadic_covariate sameRegion  1.70165828     0.11191179
+#> 4                    alter_covariate size  0.03575004     0.02438788
+#> 5 resource_covar_to_node_covar region sex -0.65648333     0.16448516
+#> 6                loops_resource_covar sex -0.36674126     0.21809113
+#>     Convergence
+#> 1  0.0163661508
+#> 2 -0.0009785653
+#> 3 -0.0332593156
+#> 4 -0.1050786348
+#> 5 -0.0239118089
+#> 6  0.0021444659
 ```
 
 ## Diagnostics of the estimated model
@@ -411,7 +422,7 @@ problematic and indicate that a higher thinning is needed.
 
 ``` r
 autoCorrelationTest(myResDN)
-#> [1] 0.2147633
+#> [1] 0.2151613
 ```
 
 The output of extractTraces indicates the correlation of statistics
@@ -443,7 +454,7 @@ test_ME.2 <- scoreTest(myResDN, myEffects2)
 test_ME.2
 #> Results
 #>            Effects pValuesParametric pValuesNonParametric
-#> 1 transitivity_min      5.208735e-09                    0
+#> 1 transitivity_min      1.656091e-08                    0
 #> 
 #>  Parametric p-values: small = more significant 
 #>  Non-parametric p-values: further away from 0.5 = more significant
@@ -459,7 +470,7 @@ Akin to ERGMs, goodness of fit testing is available to see whether
 auxiliary statistics are well captured by the model.
 
 ``` r
-myGofIndegree <- gofMobilityNetwork(ans = myResDN, simulations = myResDN$deps, gofFunction = getIndegree, lvls = 1:70)
+myGofIndegree <- gofMobilityNetwork(ans = myResDN, gofFunction = getIndegree, lvls = 1:70)
 plot(myGofIndegree, lvls = 1:70)
 ```
 
@@ -467,7 +478,7 @@ plot(myGofIndegree, lvls = 1:70)
 
 ``` r
 
-myGofTieWeight <- gofMobilityNetwork(ans = myResDN, simulations = myResDN$deps, gofFunction = getTieWeights, lvls = 1:20)
+myGofTieWeight <- gofMobilityNetwork(ans = myResDN, gofFunction = getTieWeights, lvls = 1:20)
 plot(myGofTieWeight, lvls = 1:20)
 ```
 

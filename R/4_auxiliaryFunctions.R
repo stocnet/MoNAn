@@ -30,7 +30,7 @@ autoCorrelationTest <- function(ans) {
   means <- c()
   for (i in 1:nSims) {
     means[i] <-
-      mean(ans$deps[[i]]$state[[dep.var]]$data[, 2] == ans$deps[[(i + 1)]]$state[[dep.var]]$data[, 2])
+      mean(ans$deps[[i]]$data[, 2] == ans$deps[[(i + 1)]]$data[, 2])
   }
 
   mean(means)
@@ -65,25 +65,25 @@ extractTraces <- function(ans, effects) {
   if (is.null(ans$deps)) {
     stop("ans object does not have simulated states stored; use returnDeps = TRUE in estimation")
   }
-
+  
   # get statistics of the observed network using state and cache from ans object
   obsStats <-
     getNetworkStatistics(dep.var, ans$state, ans$cache, effects)
-
+  
   # get a matrix of statistics from the simulated data in the ans object
   simStatsMatrix <-
     Reduce("rbind", lapply(ans$deps, function(x) {
-      getNetworkStatistics(dep.var, x$state, x$cache, effects)
+      getNetStatsFromDeps(dep.var, x, ans, effects)
     }))
-
+  
   results <- list(
     observedStats = obsStats,
     simulatedStats = simStatsMatrix,
     effectNames = effects$name
   )
-
+  
   class(results) <- "traces.monan"
-
+  
   results
 }
 
@@ -190,10 +190,8 @@ getMultinomialStatistics <-
 #' statistics are well captured by the model. The logic behind gof testing for network models is outlined in 
 #' Hunter et al. (2008) and Lospinoso and Snijders (2019).
 #'
-#' @param ans An object of class "result.monan" resulting from an estimation with the function [estimateMobilityNetwork()].
-#' @param simulations The simulated outcomes with which the observed statistics are compared.
-#' Usually, they are stored in the ans$deps, in case deps = TRUE was specified in the 
-#' estimation.
+#' @param ans An object of class "result.monan" resulting from an estimation 
+#' with the function [estimateMobilityNetwork()] using the option deps = TRUE.
 #' @param gofFunction A gof function that specifies which auxiliary outcome should be used, 
 #' e.g., "getIndegree" or "getTieWeights".
 #' @param lvls The values for which the gofFunction should be calculated/plotted.
@@ -215,33 +213,32 @@ getMultinomialStatistics <-
 #' @examples
 #' # goodness of fit
 #' myGofIndegree <- gofMobilityNetwork(ans = myResDN, 
-#'                                         simulations = myResDN$deps, 
 #'                                         gofFunction = getIndegree, 
 #'                                         lvls = 1:100)
 #' 
 #' myGofTieWeight <- gofMobilityNetwork(ans = myResDN, 
-#'                                          simulations = myResDN$deps, 
 #'                                          gofFunction = getTieWeights, 
 #'                                          lvls = 1:30)
 gofMobilityNetwork <-
   function(ans,
-           simulations,
            gofFunction,
            lvls = NULL) {
     dep.var <- ans$state$dep.var
-
+    
     # generate a list that contains all states for the dep.var with the observed in first place
     allStates <- list()
     allStates[[1]] <- ans$state
-    for (i in 2:(length(simulations) + 1)) {
-      allStates[[i]] <- simulations[[i - 1]]$state
+    for (i in 2:(length(ans$deps) + 1)) {
+      allStates[[i]] <- allStates[[1]]
+      allStates[[i]][[dep.var]] <- ans$deps[[(i-1)]]
     }
     allCaches <- list()
     allCaches[[1]] <- ans$cache
-    for (i in 2:(length(simulations) + 1)) {
-      allCaches[[i]] <- simulations[[i - 1]]$cache
+    resCovsInCache <- names(ans$cache[[dep.var]]$resourceNetworks)
+    for (i in 2:(length(ans$deps) + 1)) {
+      allCaches[[i]] <- createWeightedCache(allStates[[i]], resourceCovariates = resCovsInCache)
     }
-
+    
     gofStats <-
       lapply(1:length(allCaches), function(i) {
         gofFunction(
@@ -372,18 +369,8 @@ print.result.monan <- function(x, covMat = FALSE, ...) {
 #' @examples
 #' \donttest{
 #' # test whether other effects should be included
-#' myEffects2 <- createEffectsObject(
-#'   list(
-#'     list("loops"),
-#'     list("reciprocity_min"),
-#'     list("dyadic_covariate", attribute.index = "sameRegion"),
-#'     list("alter_covariate", attribute.index = "size"),
-#'     list("resource_covar_to_node_covar", attribute.index = "region", 
-#'           resource.attribute.index = "sex"),
-#'     list("loops_resource_covar", resource.attribute.index = "sex"),
-#'     list("transitivity_min")
-#'   )
-#' )
+#' myEffects2 <- createEffects(myState) |>
+#'   addEffect(transitivity_min)
 #' 
 #' test_ME.2 <- scoreTest(myResDN, myEffects2)
 #' }
@@ -401,9 +388,9 @@ scoreTest <- function(ans, effects) {
   # get a matrix of statistics from the simulated data in the ans object
   simStatsMatrix <-
     Reduce("rbind", lapply(ans$deps, function(x) {
-      getNetworkStatistics(dep.var, x$state, x$cache, effects)
+      getNetStatsFromDeps(dep.var, x, ans, effects)
     }))
-
+  
   # get parametric p-values using mean and sd
   p.vals.par <-
     2 * pnorm(-abs(((obsStats - colMeans(simStatsMatrix)) / apply(simStatsMatrix, 2, sd)

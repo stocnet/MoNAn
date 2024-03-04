@@ -88,6 +88,19 @@ getCovarianceMatrix <- function(statistics) {
   return(covMatrix)
 }
 
+# getNetStatsFromDeps
+getNetStatsFromDeps <- function(dep.var, oneDep, ans, effects){
+  depState <- ans$state
+  depState[[dep.var]] <- oneDep
+  
+  resCovsInCache <- names(ans$cache[[dep.var]]$resourceNetworks)
+  if(is.null(resCovsInCache)){
+    depCache <- createWeightedCache(depState)
+  } else {
+    depCache <- createWeightedCache(depState, resourceCovariates = resCovsInCache)
+  }
+  getNetworkStatistics(dep.var, depState, depCache, effects)
+}
 
 # getNetworkStatistics
 getNetworkStatistics <- function(dep.var, state, cache, effects) {
@@ -469,9 +482,12 @@ runPhase3 <- function(dep.var,
 
   # create empty object for the deps
   deps <- NULL
-
+  
+  # extract only the dependent var to return from deps
   if (returnDeps) {
-    deps <- stats[[2]]
+    deps <- lapply(stats[[2]], function(x){
+      x$state[[dep.var]]
+    })
   }
 
   # returns covariance matrix and convergence statistics

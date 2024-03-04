@@ -5,6 +5,8 @@ New function to generate the process state: monanDataCreate
 
 Creation of alias: monanAlgorithmCreate and monan07
 
+Implementation of various effects
+
 # MoNAn 0.2.0
 
 Implementation of paralellization in Phase 1 of the estimation.

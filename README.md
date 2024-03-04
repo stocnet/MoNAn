@@ -7,10 +7,13 @@ This is version 1.0.0 of MoNAn. This update includes many changes,
 including some that mean old code written for older versions will not
 work anymore!
 
-Code use has been simplified, notably in - gofMobilityNetwork (no need
-to specify “simulations” anymore) - new functions to specify the model:
-createEffects and addEffect - new function to generate the process
-state: monanDataCreate
+Code use has been simplified, notably in
+
+- gofMobilityNetwork (no need to specify “simulations” anymore)
+
+- new functions to specify the model: createEffects and addEffect
+
+- new function to generate the process state: monanDataCreate
 
 # MoNAn
 
@@ -319,7 +322,7 @@ estimates), another run is necessary.
 
 ``` r
 max(abs(myResDN$convergenceStatistics))
-#> [1] 0.1026806
+#> [1] 0.1005239
 ```
 
 If convergence is too high, update algorithm, re-run estimation with
@@ -341,49 +344,12 @@ myResDN <- monan07(
   returnDeps = TRUE,
   fish = FALSE
 )
-#> skipping phase 1 and taking values from prevAns
-#> Starting phase 2
-#> snowfall 1.84-6.3 initialized (using snow 0.4-4): parallel execution on 4 CPUs.
-#> Library MoNAn loaded.
-#> Library MoNAn loaded in cluster.
-#> 
-#> Sub phase1:
-#>  burn-in 742 steps
-#>  200 iterations
-#>  thinning 742
-#>  4 cpus
-#> 
-#> New parameters:
-#> loops 
-#>  2.59299294369683 
-#>  reciprocity_min 
-#>  0.838548197136427 
-#>  dyadic_covariate sameRegion 
-#>  1.70165827823519 
-#>  alter_covariate size 
-#>  0.0357500412277818 
-#>  resource_covar_to_node_covar region sex 
-#>  -0.65648333072572 
-#>  loops_resource_covar sex 
-#>  -0.366741255974742
-#> 
-#> Stopping cluster
-#> Starting phase 3:
-#>  burn-in 2226 steps
-#>  1000  iterations
-#>  thinning 1484 
-#>  4 cpus
-#> snowfall 1.84-6.3 initialized (using snow 0.4-4): parallel execution on 4 CPUs.
-#> Library MoNAn loaded.
-#> Library MoNAn loaded in cluster.
-#> 
-#> Stopping cluster
 ```
 
 ``` r
 # check convergence
 max(abs(myResDN$convergenceStatistics))
-#> [1] 0.1050786
+#> [1] 0.1005239
 ```
 
 In case convergence is still poor, updating the algorithm might be
@@ -396,19 +362,19 @@ convergence ratio. All values in the final column should be below 0.1
 myResDN
 #> Results
 #>                                   Effects   Estimates StandardErrors
-#> 1                                   loops  2.59299294     0.17984152
-#> 2                         reciprocity_min  0.83854820     0.18075663
-#> 3             dyadic_covariate sameRegion  1.70165828     0.11191179
-#> 4                    alter_covariate size  0.03575004     0.02438788
-#> 5 resource_covar_to_node_covar region sex -0.65648333     0.16448516
-#> 6                loops_resource_covar sex -0.36674126     0.21809113
-#>     Convergence
-#> 1  0.0163661508
-#> 2 -0.0009785653
-#> 3 -0.0332593156
-#> 4 -0.1050786348
-#> 5 -0.0239118089
-#> 6  0.0021444659
+#> 1                                   loops  2.58541329      0.1794334
+#> 2                         reciprocity_min  0.82385764      0.1746387
+#> 3             dyadic_covariate sameRegion  1.69090537      0.1139059
+#> 4                    alter_covariate size  0.03707403      0.0245380
+#> 5 resource_covar_to_node_covar region sex -0.65093432      0.1640843
+#> 6                loops_resource_covar sex -0.36752278      0.2165180
+#>   Convergence
+#> 1  0.05945026
+#> 2 -0.02056073
+#> 3 -0.06325726
+#> 4  0.02725419
+#> 5 -0.08685311
+#> 6  0.10052390
 ```
 
 ## Diagnostics of the estimated model
@@ -422,7 +388,7 @@ problematic and indicate that a higher thinning is needed.
 
 ``` r
 autoCorrelationTest(myResDN)
-#> [1] 0.2151613
+#> [1] 0.09337543
 ```
 
 The output of extractTraces indicates the correlation of statistics
@@ -454,7 +420,7 @@ test_ME.2 <- scoreTest(myResDN, myEffects2)
 test_ME.2
 #> Results
 #>            Effects pValuesParametric pValuesNonParametric
-#> 1 transitivity_min      1.656091e-08                    0
+#> 1 transitivity_min      1.359211e-08                    0
 #> 
 #>  Parametric p-values: small = more significant 
 #>  Non-parametric p-values: further away from 0.5 = more significant

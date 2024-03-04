@@ -20,8 +20,11 @@ This is version 1.0.0 of MoNAn. This update includes many changes, including
 some that mean old code written for older versions will not work anymore!
 
 Code use has been simplified, notably in
+
 - gofMobilityNetwork (no need to specify "simulations" anymore)
+
 - new functions to specify the model: createEffects and addEffect
+
 - new function to generate the process state: monanDataCreate
 
 
@@ -260,7 +263,7 @@ max(abs(myResDN$convergenceStatistics))
 
 If convergence is too high, update algorithm, re-run estimation with previous results as starting values and check convergence:
 
-```{r}
+```{r, eval=FALSE}
 # estimate mobility network model again based on previous results to improve convergence
 # with an adjusted algorithm
 myAlg <- createAlgorithm(myState, myEffects, multinomialProposal = TRUE, 

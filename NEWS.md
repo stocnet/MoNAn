@@ -1,13 +1,24 @@
 # MoNAn 1.0.0
 
+!! Backward breaking change !!
+
+The following functions are used differently:
+
+- gofMobilityNetwork does not require the specification of simulations anymore!
+
+Further changes:
+
+The results objects are much smaller and contain less redundant information.
+
 # MoNAn 0.3.0
 
 New functions to specify the model: createEffects and addEffect
 New function to generate the process state: monanDataCreate
 
-Creation of alias: monanAlgorithmCreate and monan07
+Creation of alias: monanAlgorithmCreate for createAlgorithm
+Creation of alias: monan07 for estimateMobilityNetwork
 
-Implementation of various effects
+Implementation of new effects
 
 # MoNAn 0.2.0
 

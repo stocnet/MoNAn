@@ -213,17 +213,27 @@ getMultinomialStatistics <-
 #' @examples
 #' # goodness of fit
 #' myGofIndegree <- gofMobilityNetwork(ans = myResDN, 
-#'                                         gofFunction = getIndegree, 
-#'                                         lvls = 1:100)
+#'                                     gofFunction = getIndegree, 
+#'                                     lvls = 1:100)
 #' 
 #' myGofTieWeight <- gofMobilityNetwork(ans = myResDN, 
-#'                                          gofFunction = getTieWeights, 
-#'                                          lvls = 1:30)
+#'                                      gofFunction = getTieWeights, 
+#'                                      lvls = 1:30)
 gofMobilityNetwork <-
   function(ans,
            gofFunction,
-           lvls = NULL) {
+           lvls = NULL,
+           simulations = NULL) {
     dep.var <- ans$state$dep.var
+    
+    if(!is.null(simulations)){
+      warning("parameter simulations does not need to be specified anymore 
+              since MoNAn version 1.0.0")
+    }
+    if (is.null(ans$deps)) {
+      stop("ans object does not have simulated states stored; 
+           use returnDeps = TRUE in estimation")
+    }
     
     # generate a list that contains all states for the dep.var with the observed in first place
     allStates <- list()

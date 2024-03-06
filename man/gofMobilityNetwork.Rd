@@ -21,6 +21,8 @@ e.g., "getIndegree" or "getTieWeights".}
 
 \item{lvls}{The values for which the gofFunction should be calculated/plotted.}
 
+\item{simulations}{outdated parameter, no need to specify}
+
 \item{x}{An object of class "gof.stats.monan".}
 
 \item{...}{Additional plotting parameters, use discouraged.}

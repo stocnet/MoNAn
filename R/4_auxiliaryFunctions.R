@@ -204,6 +204,7 @@ getMultinomialStatistics <-
 #' @param gofFunction A gof function that specifies which auxiliary outcome should be used, 
 #' e.g., "getIndegree" or "getTieWeights".
 #' @param lvls The values for which the gofFunction should be calculated/plotted.
+#' @param simulations outdated parameter, no need to specify
 #'
 #' @return The function `gofMobilityNetwork` returns a list containing 
 #' (1) the observed values of the auxiliary statistics and

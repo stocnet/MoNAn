@@ -14,6 +14,7 @@ export(
   getMultinomialStatistics, gofDistributionNetwork, gofMobilityNetwork, 
   plot.gof.stats.monan, 
   plot.traces.monan, print.result.monan, print.scoretest.monan, scoreTest,
+  print.processState.monan,
   
   # test functions
   target_change_match,
@@ -70,3 +71,4 @@ S3method(print, result.monan)
 S3method(plot, traces.monan)
 S3method(plot, gof.stats.monan)
 S3method(print, scoretest.monan)
+S3method(print, processState.monan)

@@ -6,9 +6,9 @@
 \alias{plot.gof.stats.monan}
 \title{gofMobilityNetwork}
 \usage{
-gofMobilityNetwork(ans, gofFunction, lvls = NULL)
+gofMobilityNetwork(ans, gofFunction, lvls = NULL, simulations = NULL)
 
-gofDistributionNetwork(ans, gofFunction, lvls = NULL)
+gofDistributionNetwork(ans, gofFunction, lvls = NULL, simulations = NULL)
 
 \method{plot}{gof.stats.monan}(x, lvls, ...)
 }
@@ -41,12 +41,12 @@ Hunter et al. (2008) and Lospinoso and Snijders (2019).
 \examples{
 # goodness of fit
 myGofIndegree <- gofMobilityNetwork(ans = myResDN, 
-                                        gofFunction = getIndegree, 
-                                        lvls = 1:100)
+                                    gofFunction = getIndegree, 
+                                    lvls = 1:100)
 
 myGofTieWeight <- gofMobilityNetwork(ans = myResDN, 
-                                         gofFunction = getTieWeights, 
-                                         lvls = 1:30)
+                                     gofFunction = getTieWeights, 
+                                     lvls = 1:30)
 plot(myGofIndegree,  lvls = 20:70)
 plot(myGofTieWeight, lvls = 1:15)
 }

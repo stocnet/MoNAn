@@ -256,7 +256,7 @@ gofMobilityNetwork <-
     allCaches[[1]] <- ans$cache
     resCovsInCache <- names(ans$cache[[dep.var]]$resourceNetworks)
     for (i in 2:(length(ans$deps) + 1)) {
-      allCaches[[i]] <- createWeightedCache(allStates[[i]], resourceCovariates = resCovsInCache)
+      allCaches[[i]] <- createInternalCache(allStates[[i]], resourceCovariates = resCovsInCache)
     }
     
     gofStats <-

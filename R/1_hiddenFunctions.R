@@ -165,9 +165,9 @@ getNetStatsFromDeps <- function(dep.var, oneDep, ans, effects){
   
   resCovsInCache <- names(ans$cache[[dep.var]]$resourceNetworks)
   if(is.null(resCovsInCache)){
-    depCache <- createWeightedCache(depState)
+    depCache <- createInternalCache(depState)
   } else {
-    depCache <- createWeightedCache(depState, resourceCovariates = resCovsInCache)
+    depCache <- createInternalCache(depState, resourceCovariates = resCovsInCache)
   }
   getNetworkStatistics(dep.var, depState, depCache, effects)
 }

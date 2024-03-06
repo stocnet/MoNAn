@@ -57,7 +57,10 @@ addEffect <- function(effectsObject, effectName, ...){
 createEffects <- function(state){
   l <- list(effectFormulas = list(),
             name = c(),
-            state = deparse(substitute(state)))
+            state = deparse(substitute(state)),
+            nodeset1 = state[[state$dep.var]]$nodeSet[1],
+            nodeset2 = state[[state$dep.var]]$nodeSet[3]
+            )
   class(l) <- "effectsList.monan"
   l
 }

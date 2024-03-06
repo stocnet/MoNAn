@@ -151,7 +151,9 @@ test_ME.2
 
 ##### goodness of fit #####
 
-myGofIndegree <- gofMobilityNetwork(ans = myResDN, gofFunction = getIndegree, lvls = 1:100)
+myGofIndegree <- gofMobilityNetwork(ans = myResDN, 
+                                    gofFunction = getIndegree, 
+                                    lvls = 1:100)
 plot(myGofIndegree,  lvls = 20:70)
 
 myGofTieWeight <- gofMobilityNetwork(ans = myResDN, gofFunction = getTieWeights, lvls = 1:30)

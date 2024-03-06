@@ -97,7 +97,6 @@ extractTraces <- function(ans, effects) {
 #' convergence in the first run of the estimation considerably.
 #'
 #' @param state An object of class "processState.monan" that stores all information to be used in the model.
-#' @param cache A cache object that contains intermediate information used for estimation.
 #' @param effects An object of class "effectsList.monan" for which the statistics of a multinomial
 #' model should be calculated.
 #'
@@ -105,14 +104,24 @@ extractTraces <- function(ans, effects) {
 #' that specifies for each observation the statistics associated with moving to this location.
 #' @export
 #'
-#' @seealso [createProcessState()], [createWeightedCache()], [createEffectsObject()]
+#' @seealso [createProcessState()], [createEffectsObject()]
 #' 
 #' @examples
-#' myStatisticsFrame <- getMultinomialStatistics(myState, myCache, myEffects)
+#' myStatisticsFrame <- getMultinomialStatistics(myState, myEffects)
 getMultinomialStatistics <-
-  function(state, cache, effects) {
+  function(state, effects, cache = NULL) {
+    
+    if(!is.null(cache)){
+      warning(paste("The cache object is automatically included in the process state", 
+                    "since MoNAn version 1.0.0 and does not need to be specified anymore."))
+    }
+    if(is.null(state$cache)){
+      stop(paste("The cache object is automatically included in the process state", 
+                    "since MoNAn version 1.0.0. Please recreate your process state."))
+    }
     
     dep.var <- state$dep.var
+    cache <- state$cache
     # create a list that will store all statistics
     statsVec <- list()
     
@@ -336,7 +345,7 @@ print.processState.monan <- function(x) {
   
   dep.var <- x$dep.var
   nodesets <- x[[dep.var]]$nodeSet
-  covars <- names(x)[!(names(x) %in% c(dep.var, nodesets, "dep.var"))]
+  covars <- names(x)[!(names(x) %in% c(dep.var, nodesets, "dep.var", "cache"))]
   
   cat(paste("dependent variable:", dep.var, "with",
             length(x[[nodesets[3]]]$ids), nodesets[3], "mobile between",

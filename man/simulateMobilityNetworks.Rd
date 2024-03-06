@@ -7,24 +7,24 @@
 \usage{
 simulateMobilityNetworks(
   state,
-  cache,
   effects,
   parameters,
   allowLoops,
   burnin,
   thinning,
-  nSimulations
+  nSimulations,
+  cache = NULL
 )
 
 simulateDistributionNetworks(
   state,
-  cache,
   effects,
   parameters,
   allowLoops,
   burnin,
   thinning,
-  nSimulations
+  nSimulations,
+  cache = NULL
 )
 }
 \arguments{
@@ -32,9 +32,6 @@ simulateDistributionNetworks(
 nodesets, and covariates. Further, an edgelist of the dependent variable needs
 to be specified with the initial mobility network as starting value for the
 simulation. For a large enough burn-in, any initial mobility network is allowed.}
-
-\item{cache}{A cache object created from the same state object that is
-used in the simulation.}
 
 \item{effects}{An object of class "effectsList.monan" that specifies the model.}
 
@@ -69,7 +66,6 @@ do counter-factual simulations.
 # in real cases, choose values aprrox. times 10
 mySimDN <- simulateMobilityNetworks(
   myState,
-  myCache,
   myEffects,
   parameters = c(2, 1, 1.5, 0.1, -1, -0.5),
   allowLoops = TRUE,

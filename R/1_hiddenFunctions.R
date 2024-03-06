@@ -72,6 +72,76 @@ checkProcessState <- function(state) {
 }
 
 
+# createInternalCache
+createInternalCache <-
+  function(processState,
+           resourceCovariates = NULL) {
+    cache <- list()
+    
+    cacheObjectNames <- processState$dep.var
+    
+    for (name in cacheObjectNames) {
+      if (!(class(processState[[name]]) %in% c("network.monan", "edgelist.monan"))) {
+        stop(paste(name, "is not a network or edgelist."))
+      }
+      
+      nodeSet1 <- processState[[processState[[name]]$nodeSet[1]]]$ids
+      nodeSet2 <- processState[[processState[[name]]$nodeSet[2]]]$ids
+      nActors1 <- length(nodeSet1)
+      nActors2 <- length(nodeSet2)
+      
+      cache[[name]] <- list()
+      if (is(processState[[name]], "network.monan")) {
+        cache[[name]]$valuedNetwork <- processState[[name]]$data
+      }
+      if (is(processState[[name]], "edgelist.monan")) {
+        # create valued network from edge list
+        m <- matrix(0, nActors1, nActors2)
+        
+        # create weighted resource networks
+        m.resource <-
+          lapply(resourceCovariates, function(v) {
+            matrix(0, nrow = nActors1, ncol = nActors2)
+          })
+        names(m.resource) <- resourceCovariates
+        
+        for (i in 1:processState[[name]]$size[1]) {
+          sender <- processState[[name]]$data[i, 1]
+          receiver <- processState[[name]]$data[i, 2]
+          v <- m[sender, receiver]
+          m[sender, receiver] <- v + 1
+          
+          # cache network * resource covariate matrices
+          for (ressCovar in resourceCovariates) {
+            v <- m.resource[[ressCovar]][sender, receiver]
+            m.resource[[ressCovar]][sender, receiver] <- v +
+              processState[[ressCovar]]$data[i]
+          }
+        }
+        cache[[name]]$valuedNetwork <- m
+        cache[[name]]$resourceNetworks <- m.resource
+        
+        # edge ids
+        edgeSet <- processState[[processState[[name]]$nodeSet[3]]]$ids
+        nEdges <- length(edgeSet)
+      }
+      if (nActors1 == nActors2) {
+        cache[[name]]$netFlowsNetwork <-
+          cache[[name]]$valuedNetwork - t(cache[[name]]$valuedNetwork)
+        cache[[name]]$minNetwork <-
+          matrix(
+            mapply(min, cache[[name]]$valuedNetwork, t(cache[[name]]$valuedNetwork)),
+            nActors1,
+            nActors2
+          )
+        diag(cache[[name]]$minNetwork) <- 0
+      }
+    } # end for loop
+    
+    cache
+  }
+
+
 # getCovarianceMatrix
 getCovarianceMatrix <- function(statistics) {
   meanStatistics <- colMeans(statistics)

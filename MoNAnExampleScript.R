@@ -44,12 +44,6 @@ myState <- monanDataCreate(transfers,
                            second_or)
 
 
-##### create cache #####
-
-# cache object
-myCache <- createWeightedCache(myState, resourceCovariates = c("sex"))
-
-
 ##### create effects object #####
 
 # effects object
@@ -67,7 +61,7 @@ myEffects <- createEffects(myState) |>
 ##### get multinomial statistics to estimate initial parameters using pseudo-likelihood estimation #####
 
 # create statistics object, to be used, e.g., with the mlogit package
-myStatisticsFrame <- getMultinomialStatistics(myState, myCache, myEffects)
+myStatisticsFrame <- getMultinomialStatistics(myState, myEffects)
 
 ### additional script to get pseudo-likelihood estimates
 # library(dfidx)
@@ -100,7 +94,7 @@ myAlg <- monanAlgorithmCreate(myState, myEffects, nsubN2 = 3,
 
 # mobility network model 
 myResDN <- estimateMobilityNetwork(
-  myState, myCache, myEffects, myAlg,
+  myState, myEffects, myAlg,
   initialParameters = NULL,
   # in case a pseudo-likelihood estimation was run, replace with
   # initialParameters = initEst,
@@ -122,7 +116,7 @@ myAlg <- monanAlgorithmCreate(myState, myEffects, multinomialProposal = TRUE,
 
 # monan07 is an alias for estimateMobilityNetwork
 myResDN <- monan07(
-  myState, myCache, myEffects, myAlg,
+  myState, myEffects, myAlg,
   prevAns = myResDN,
   parallel = TRUE, cpus = 4,
   verbose = TRUE,
@@ -166,7 +160,6 @@ plot(myGofTieWeight, lvls = 1:15)
 ##### simulate mobility network #####
 
 mySimDN <- simulateMobilityNetworks(myState,
-                                    myCache,
                                     myEffects,
                                     parameters = c(2, 1, 1.5, 0.1, -1, -0.5),
                                     allowLoops = TRUE,

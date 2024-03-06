@@ -3,7 +3,8 @@
 library(MoNAn)
 
 
-##### create data objects from internal data files, which are later combined to the process state #####
+##### create data objects from internal data files, 
+# which are later combined to the process state #####
 
 # extract number of individuals and organisations from the mobility data
 

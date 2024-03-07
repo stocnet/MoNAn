@@ -3,12 +3,15 @@
 \name{gofMobilityNetwork}
 \alias{gofMobilityNetwork}
 \alias{gofDistributionNetwork}
+\alias{monanGOF}
 \alias{plot.gof.stats.monan}
 \title{gofMobilityNetwork}
 \usage{
 gofMobilityNetwork(ans, gofFunction, lvls = NULL, simulations = NULL)
 
 gofDistributionNetwork(ans, gofFunction, lvls = NULL, simulations = NULL)
+
+monanGOF(ans, gofFunction, lvls = NULL, simulations = NULL)
 
 \method{plot}{gof.stats.monan}(x, lvls, ...)
 }

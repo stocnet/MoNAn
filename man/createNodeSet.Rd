@@ -2,9 +2,15 @@
 % Please edit documentation in R/3_coreFunctions.R
 \name{createNodeSet}
 \alias{createNodeSet}
+\alias{monanEdges}
+\alias{monanNodes}
 \title{createNodeSet}
 \usage{
 createNodeSet(x = NULL, isPresent = NULL, considerWhenSampling = NULL)
+
+monanEdges(x = NULL, isPresent = NULL, considerWhenSampling = NULL)
+
+monanNodes(x = NULL, isPresent = NULL, considerWhenSampling = NULL)
 }
 \arguments{
 \item{x}{Either a single number indicating how many items are in this nodeset

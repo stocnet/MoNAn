@@ -3,6 +3,7 @@
 \name{simulateMobilityNetworks}
 \alias{simulateMobilityNetworks}
 \alias{simulateDistributionNetworks}
+\alias{monanSimulate}
 \title{simulateMobilityNetworks}
 \usage{
 simulateMobilityNetworks(
@@ -17,6 +18,17 @@ simulateMobilityNetworks(
 )
 
 simulateDistributionNetworks(
+  state,
+  effects,
+  parameters,
+  allowLoops,
+  burnin,
+  thinning,
+  nSimulations,
+  cache = NULL
+)
+
+monanSimulate(
   state,
   effects,
   parameters,

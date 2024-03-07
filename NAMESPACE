@@ -1,17 +1,22 @@
 # functions to be exported
 export(
   
-  # core functions
-  createAlgorithm, createEdgelist, createEffectsObject, createNetwork, 
-  createNodeSet, createNodeVariable, createProcessState, createWeightedCache,
-  createEffects, addEffect,
-  monanDataCreate, monanAlgorithmCreate,
-  estimateMobilityNetwork, estimateDistributionNetwork, monan07,
-  simulateMobilityNetworks, simulateDistributionNetworks,
+  # core functions and aliases
+  createAlgorithm, monanAlgorithmCreate,
+  createEdgelist, monanDependent, 
+  createEffectsObject, createEffects, addEffect,
+  createNetwork, dyadicCovar,
+  createNodeSet, monanNodes, monanEdges,
+  createNodeVariable, monadicCovar,
+  createProcessState, monanDataCreate,
+  createWeightedCache,
+  estimateMobilityNetwork, estimateDistributionNetwork, monan07, monanEstimate,
+  simulateMobilityNetworks, simulateDistributionNetworks, monanSimulate,
   
   # auxiliary functions
   autoCorrelationTest, extractTraces, 
-  getMultinomialStatistics, gofDistributionNetwork, gofMobilityNetwork, 
+  getMultinomialStatistics, 
+  gofDistributionNetwork, gofMobilityNetwork, monanGOF,
   plot.gof.stats.monan, 
   plot.traces.monan, print.result.monan, print.scoretest.monan, scoreTest,
   print.processState.monan,

@@ -204,7 +204,11 @@ monanAlgorithmCreate <- createAlgorithm
 #' @param nodeSet The nodesets of the edgelists. This is a vector with three 
 #' entries referencing the names of the nodesets of locations and individuals 
 #' of the form c(location, location, individuals).
-#'
+#' @param nodes Alternative way to specify the nodeSet by naming nodes and edges: 
+#' nodes denote the locations in the edgelist
+#' @param edges Alternative way to specify the nodeSet by naming nodes and edges: 
+#' edges denote the individuals in the edgelist
+#' 
 #' @return An object of class "edgelist.monan".
 #' @export
 #'
@@ -214,7 +218,7 @@ monanAlgorithmCreate <- createAlgorithm
 #' # create an object of class edgelist.monan
 #' transfers <- createEdgelist(mobilityEdgelist, c("organisations", "organisations", "people"))
 createEdgelist <-
-  function(el, nodeSet = c("location", "location", "individuals")) {
+  function(el, nodeSet = NULL, nodes = NULL, edges = NULL) {
     if (dim(el)[2] != 2) {
       stop("Two columns expected in edge list creation.")
     }
@@ -228,8 +232,22 @@ createEdgelist <-
       stop("Input data should be numbered from one to max. 
            number of different locations.")
     }
+    # update nodeSet name according to which the user specified
+    if(is.null(nodeSet)){
+      if(is.null(nodes)){
+        stop("Either nodeSet or nodes and edges need to be specified")
+      }
+      if(is.null(edges)){
+        stop("Either nodeSet or nodes and edges need to be specified")
+      }
+      nodeSet <- c(nodes, nodes, edges)
+    }
+    
     if (length(nodeSet) != 3) {
       stop("Three nodesets need to be specified for edgelists: nodes / nodes / edges")
+    }
+    if(!inherits(nodeSet, "character")){
+      stop("nodeSet or nodes and edges need to be class character")
     }
     l <- list(
       data = el,
@@ -239,6 +257,11 @@ createEdgelist <-
     class(l) <- "edgelist.monan"
     l
   }
+
+#' monanDependent
+#'
+#' @rdname createEdgelist
+monanDependent <- createEdgelist
 
 
 #' createEffectsObject
@@ -336,6 +359,8 @@ createEffectsObject <-
 #' @param isBipartite Currently not in use.
 #' @param nodeSet Which nodeset are the nodes of the network. Usually this will
 #' be the locations in the data.
+#' @param nodes Alternative way to specify the nodeSet by naming nodes: 
+#' nodes denote the locations in the edgelist
 #'
 #' @return An object of class "network.monan".
 #' @export
@@ -350,7 +375,8 @@ createNetwork <-
   function(m,
            isSymmetric = FALSE,
            isBipartite = FALSE,
-           nodeSet = c("actors", "actors")) {
+           nodeSet = NULL,
+           nodes = NULL) {
     if (!is.matrix(m)) {
       stop("Not a matrix.")
     }
@@ -363,8 +389,18 @@ createNetwork <-
     if (nrow(m) != ncol(m)) {
       stop("Input matrix should have the same number of rows as columns.")
     }
+    # update nodeSet name according to which the user specified
+    if(is.null(nodeSet)){
+      if(is.null(nodes)){
+        stop("Either nodeSet or nodes need to be specified")
+      }
+      nodeSet <- nodes
+    }
     if (length(nodeSet) == 1) {
       nodeSet <- c(nodeSet, nodeSet)
+    }
+    if(!inherits(nodeSet, "character")){
+      stop("nodeSet or nodes need to be class character")
     }
     l <- list(
       data = m,
@@ -376,6 +412,11 @@ createNetwork <-
     class(l) <- "network.monan"
     l
   }
+
+#' dyadicCovar
+#' 
+#' @rdname createNetwork
+dyadicCovar <- createNetwork
 
 
 #' createNodeSet
@@ -441,6 +482,17 @@ createNodeSet <-
     l
   }
 
+#' monanEdges
+#' 
+#' @rdname createNodeSet
+monanEdges <- createNodeSet
+
+
+#' monanNodes
+#' 
+#' @rdname createNodeSet
+monanNodes <- createNodeSet
+
 
 #' createNodeVariable
 #'
@@ -454,7 +506,11 @@ createNodeSet <-
 #' with the same_covariate effect)? In this case, addSame needs to be set to TRUE.
 #' @param addSim Will the variable be used to model continuous homophily (e.g.,
 #' with the sim_covariate effect)? In this case, addSim needs to be set to TRUE.
-#'
+#' @param nodes Alternative way to specify the nodeSet by naming nodes or edges: 
+#' nodes denote the locations in the edgelist
+#' @param edges Alternative way to specify the nodeSet by naming nodes or edges: 
+#' edges denote the individuals in the edgelist
+#' 
 #' @return An object of class "nodeVar.monan".
 #' @export
 #'
@@ -468,9 +524,11 @@ createNodeSet <-
 createNodeVariable <-
   function(values,
            range = NULL,
-           nodeSet = "actors",
-           addSame = FALSE,
-           addSim = FALSE) {
+           nodeSet = NULL,
+           nodes = NULL,
+           edges = NULL,
+           addSame = TRUE,
+           addSim = TRUE) {
     if (!(is.vector(values))) {
       stop("Input data should be of class 'vector'.")
     }
@@ -479,6 +537,19 @@ createNodeVariable <-
     }
     if (any(is.na(values))) {
       stop(paste("Input vector includes missing values or cannot be classified as numeric."))
+    }
+    
+    # update nodeSet name according to which the user specified
+    if(is.null(nodeSet)){
+      if(is.null(nodes)){
+        if(is.null(edges)){
+          stop("Either nodeSet or nodes and edges need to be specified")
+        } else {nodeSet <- edges}
+      } else {nodeSet <- nodes}
+    }
+    
+    if(!inherits(nodeSet, "character")){
+      stop("nodeSet, nodes, or edges (whichever is used) need to be class character")
     }
     l <- list(
       data = values,
@@ -498,6 +569,11 @@ createNodeVariable <-
     class(l) <- "nodeVar.monan"
     l
   }
+
+#' monadicCovar
+#' 
+#' @rdname createNodeVariable
+monadicCovar <- createNodeVariable
 
 
 #' createProcessState
@@ -896,6 +972,11 @@ estimateDistributionNetwork <- estimateMobilityNetwork
 #' @rdname estimateMobilityNetwork
 monan07 <- estimateMobilityNetwork
 
+#' monanEstimate
+#'
+#' @rdname estimateMobilityNetwork
+monanEstimate <- estimateMobilityNetwork
+
 
 #' simulateMobilityNetworks
 #'
@@ -1011,3 +1092,9 @@ simulateMobilityNetworks <-
 #'
 #' @rdname simulateMobilityNetworks
 simulateDistributionNetworks <- simulateMobilityNetworks
+
+#' monanSimulate
+#'
+#' @rdname simulateMobilityNetworks
+monanSimulate <- simulateMobilityNetworks
+

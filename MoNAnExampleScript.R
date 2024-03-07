@@ -16,15 +16,35 @@ N_org <- length(unique(as.numeric(mobilityEdgelist)))
 transfers <- createEdgelist(mobilityEdgelist,
                             nodeSet = c("organisations", "organisations", "people")
 )
+
+# # alternative syntax doing the same
+# transfers <- monanDependent(mobilityEdgelist,
+#                             nodes = "organisations",
+#                             edges = "people")
+
 people <- createNodeSet(N_ind)
 organisations <- createNodeSet(N_org)
+
+# # alternative syntax doing the same
+# people <- monanEdges(N_ind)
+# organisations <- monanNodes(N_org)
+
 sameRegion <- outer(orgRegion, orgRegion, "==") * 1
 sameRegion <- createNetwork(sameRegion,
                             nodeSet = c("organisations", "organisations")
 )
+# # alternative syntax doing the same
+# sameRegion <- dyadicCovariate(sameRegion, nodes = "organisations")
+
 region <- createNodeVariable(orgRegion, nodeSet = "organisations")
-size <- createNodeVariable(orgSize, nodeSet = "organisations", addSim = TRUE)
+size <- createNodeVariable(orgSize, nodeSet = "organisations")
 sex <- createNodeVariable(indSex, nodeSet = "people")
+
+# # alternative syntax doing the same
+# region <- monadicCovar(orgRegion, nodes = "organisations")
+# size <- monadicCovar(orgSize, nodes = "organisations")
+# sex <- monadicCovar(indSex, edges = "people")
+
 
 # the following lines create an artificial second origin used for illustration
 # in the examples in the manual
@@ -33,6 +53,9 @@ resample <- as.logical(sample(0:1, 742, replace = T, prob = c(0.88, 0.12)))
 other_origin[resample] <- transfers$data[resample,2]
 
 second_or <- createNodeVariable(other_origin, nodeSet = "people")
+# # alternative syntax doing the same
+# second_or <- monadicCovar(other_origin, edges = "people")
+
 
 # combine created objects to the process state
 myState <- monanDataCreate(transfers,
@@ -94,7 +117,7 @@ myAlg <- monanAlgorithmCreate(myState, myEffects, nsubN2 = 3,
 ##### estimate mobility network model #####
 
 # mobility network model 
-myResDN <- estimateMobilityNetwork(
+myResDN <- monanEstimate(
   myState, myEffects, myAlg,
   initialParameters = NULL,
   # in case a pseudo-likelihood estimation was run, replace with
@@ -115,7 +138,7 @@ myResDN_old <- myResDN
 myAlg <- monanAlgorithmCreate(myState, myEffects, multinomialProposal = TRUE, 
                               initialIterationsN2 = 100, nsubN2 = 1, initGain = 0.05, iterationsN3 = 1000)
 
-# monan07 is an alias for estimateMobilityNetwork
+# monan07 is an alias for monanEstimate
 myResDN <- monan07(
   myState, myEffects, myAlg,
   prevAns = myResDN,
@@ -156,19 +179,21 @@ myGofIndegree <- gofMobilityNetwork(ans = myResDN,
                                     lvls = 1:100)
 plot(myGofIndegree,  lvls = 20:70)
 
-myGofTieWeight <- gofMobilityNetwork(ans = myResDN, gofFunction = getTieWeights, lvls = 1:30)
+myGofTieWeight <- gofMobilityNetwork(ans = myResDN, 
+                                     gofFunction = getTieWeights, 
+                                     lvls = 1:30)
 plot(myGofTieWeight, lvls = 1:15)
 
 
 ##### simulate mobility network #####
 
-mySimDN <- simulateMobilityNetworks(myState,
-                                    myEffects,
-                                    parameters = c(2, 1, 1.5, 0.1, -1, -0.5),
-                                    allowLoops = TRUE,
-                                    burnin = 45000,
-                                    thinning = 15000,
-                                    nSimulations = 10
+mySimDN <- monanSimulate(myState,
+                         myEffects,
+                         parameters = c(2, 1, 1.5, 0.1, -1, -0.5),
+                         allowLoops = TRUE,
+                         burnin = 45000,
+                         thinning = 15000,
+                         nSimulations = 10
 )
 
 mySimDN[[1]]

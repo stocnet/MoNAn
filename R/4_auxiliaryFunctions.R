@@ -281,6 +281,13 @@ gofMobilityNetwork <-
 #' @rdname gofMobilityNetwork
 gofDistributionNetwork <- gofMobilityNetwork
 
+
+#' monanGOF
+#'
+#' @rdname gofMobilityNetwork
+monanGOF <- gofMobilityNetwork
+
+
 #' plot.gof.stats.monan
 #'
 #' @rdname gofMobilityNetwork

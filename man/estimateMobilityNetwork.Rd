@@ -18,6 +18,7 @@ estimateMobilityNetwork(
   verbose = FALSE,
   returnDeps = FALSE,
   fish = FALSE,
+  saveAlg = FALSE,
   cache = NULL
 )
 
@@ -32,6 +33,7 @@ estimateDistributionNetwork(
   verbose = FALSE,
   returnDeps = FALSE,
   fish = FALSE,
+  saveAlg = FALSE,
   cache = NULL
 )
 
@@ -46,6 +48,7 @@ monan07(
   verbose = FALSE,
   returnDeps = FALSE,
   fish = FALSE,
+  saveAlg = FALSE,
   cache = NULL
 )
 
@@ -79,6 +82,9 @@ This is necessary to run GoF tests.
 Note that this might result in very large objects.}
 
 \item{fish}{Logical: display a fish?}
+
+\item{saveAlg}{Specify whether the algorithm object should be saved in the
+results object. Defaults to FALSE.}
 
 \item{cache}{Outdated parameter, no need to specify.}
 

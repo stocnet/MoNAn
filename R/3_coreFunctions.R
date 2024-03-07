@@ -675,6 +675,8 @@ createWeightedCache <-
 #' This is necessary to run GoF tests.
 #' Note that this might result in very large objects.
 #' @param fish Logical: display a fish?
+#' @param saveAlg Specify whether the algorithm object should be saved in the
+#' results object. Defaults to FALSE.
 #' @param cache Outdated parameter, no need to specify.
 #'
 #' @return The function `estimateMobilityNetwork` returns an object of class "result.monan" that contains the estimates, standard errors,
@@ -719,6 +721,7 @@ estimateMobilityNetwork <-
            verbose = FALSE,
            returnDeps = FALSE,
            fish = FALSE,
+           saveAlg = FALSE,
            cache = NULL) {
     
     if(!is.null(cache)){
@@ -870,6 +873,10 @@ estimateMobilityNetwork <-
         cache = cache,
         deps = resPhase3$deps
       )
+    }
+    
+    if (saveAlg) {
+      result[["algorithm"]] <- algorithm
     }
 
     class(result) <- "result.monan"

@@ -11,6 +11,8 @@ getMultinomialStatistics(state, effects, cache = NULL)
 
 \item{effects}{An object of class "effectsList.monan" for which the statistics of a multinomial
 model should be calculated.}
+
+\item{cache}{Outdated parameter, no need to specify.}
 }
 \value{
 A data frame with N * M rows (N = mobile individuals, M = number of locations)

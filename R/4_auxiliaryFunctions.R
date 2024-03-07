@@ -99,6 +99,7 @@ extractTraces <- function(ans, effects) {
 #' @param state An object of class "processState.monan" that stores all information to be used in the model.
 #' @param effects An object of class "effectsList.monan" for which the statistics of a multinomial
 #' model should be calculated.
+#' @param cache Outdated parameter, no need to specify.
 #'
 #' @return A data frame with N * M rows (N = mobile individuals, M = number of locations)
 #' that specifies for each observation the statistics associated with moving to this location.

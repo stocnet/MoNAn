@@ -49,6 +49,8 @@ n_locations.}
 network. A recommended value for the lower bound is n_Individuals * n_locations.}
 
 \item{nSimulations}{The number of mobility networks to be simulated.}
+
+\item{cache}{Outdated parameter, no need to specify.}
 }
 \value{
 An object of class "sims.monan" with nSimulations entries, where each entry contains a further list with the

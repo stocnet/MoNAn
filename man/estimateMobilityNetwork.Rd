@@ -80,6 +80,8 @@ Note that this might result in very large objects.}
 
 \item{fish}{Logical: display a fish?}
 
+\item{cache}{Outdated parameter, no need to specify.}
+
 \item{x}{An object of class "result.monan".}
 
 \item{covMat}{Logical: indicating whether the covariance matrix should be printed.}

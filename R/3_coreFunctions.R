@@ -675,6 +675,7 @@ createWeightedCache <-
 #' This is necessary to run GoF tests.
 #' Note that this might result in very large objects.
 #' @param fish Logical: display a fish?
+#' @param cache Outdated parameter, no need to specify.
 #'
 #' @return The function `estimateMobilityNetwork` returns an object of class "result.monan" that contains the estimates, standard errors,
 #' and convergence statistics. Furthermore, the covariance matrix used to calculate
@@ -910,6 +911,7 @@ monan07 <- estimateMobilityNetwork
 #' @param thinning The number of simulation steps that are taken between two draws of a
 #' network. A recommended value for the lower bound is n_Individuals * n_locations.
 #' @param nSimulations The number of mobility networks to be simulated.
+#' @param cache Outdated parameter, no need to specify.
 #'
 #' @return An object of class "sims.monan" with nSimulations entries, where each entry contains a further list with the
 #' state and the cache of the current simulation stored.

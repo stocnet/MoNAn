@@ -74,12 +74,12 @@ myState <- monanDataCreate(transfers,
 myEffects <- createEffects(myState) |>
   addEffect(loops) |>
   addEffect(reciprocity_min) |>
-  addEffect(dyadic_covariate, attribute.index = "sameRegion") |>
-  addEffect(alter_covariate, attribute.index = "size") |>
+  addEffect(dyadic_covariate, node.attribute = "sameRegion") |>
+  addEffect(alter_covariate, node.attribute = "size") |>
   addEffect(resource_covar_to_node_covar,
-     attribute.index = "region",
-     resource.attribute.index = "sex") |>
-  addEffect(loops_resource_covar, resource.attribute.index = "sex")
+            node.attribute = "region",
+            edge.attribute = "sex") |>
+  addEffect(loops_resource_covar, edge.attribute = "sex")
 
 
 ##### get multinomial statistics to estimate initial parameters using pseudo-likelihood estimation #####
@@ -174,14 +174,14 @@ test_ME.2
 
 ##### goodness of fit #####
 
-myGofIndegree <- gofMobilityNetwork(ans = myResDN, 
-                                    gofFunction = getIndegree, 
-                                    lvls = 1:100)
+myGofIndegree <- monanGOF(ans = myResDN, 
+                          gofFunction = getIndegree, 
+                          lvls = 1:100)
 plot(myGofIndegree,  lvls = 20:70)
 
-myGofTieWeight <- gofMobilityNetwork(ans = myResDN, 
-                                     gofFunction = getTieWeights, 
-                                     lvls = 1:30)
+myGofTieWeight <- monanGOF(ans = myResDN, 
+                           gofFunction = getTieWeights, 
+                           lvls = 1:30)
 plot(myGofTieWeight, lvls = 1:15)
 
 

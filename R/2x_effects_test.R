@@ -113,7 +113,7 @@ target_change_match <- function(edge, j_new, effectName, ...){
   myNewState[[1]]$data[edge,2] <- j_new
   
   # create cache
-  myNewCache <- createWeightedCache(myNewState, resourceCovariates = c("sex"))
+  myNewCache <- createInternalCache(myNewState, resourceCovariates = c("sex"))
   
   count2 <- 0
   

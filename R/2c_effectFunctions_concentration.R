@@ -93,6 +93,80 @@ concentration_GW <- function(dep.var = 1, state, cache, i, j, edge, update,
 }
 
 
+#' concentration_GW_resource_covar_bin
+#' 
+#' Is there a bandwaggon effect in mobility, akin to the concentration_GW
+#' effect, but where people of group 1 only consider others of group 1
+#' in their decision to move?
+#' 
+#' @param dep.var 
+#' @param state 
+#' @param resource.attribute.index 
+#' @param cache 
+#' @param i 
+#' @param j 
+#' @param edge 
+#' @param update 
+#' @param getTargetContribution 
+#' @param alpha 
+#'
+#' @return Returns the change statistic or target statistic of the effect for 
+#' internal use by the estimation algorithm.
+#' @keywords internal
+concentration_GW_resource_covar_bin <- function(dep.var = 1, 
+                                                state,
+                                                resource.attribute.index,
+                                                cache, i, j, 
+                                                edge,
+                                                update, 
+                                                getTargetContribution = FALSE, 
+                                                alpha = 2){
+  if(alpha < 1) stop("alpha parameter in concentration_GW function must be 1 or larger")
+  
+  if(i == j) return(0)
+  
+  if(getTargetContribution){
+    
+    g_cum <- function(y, a){
+      contr <- 0
+      for(k in 0:y){
+        contr <- contr + (y-k) * exp(-log(a)*k)
+      }
+      contr - y
+    }
+    
+    nResources <- cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][i, j]
+    
+    return(g_cum(y = nResources, a = alpha))
+  }
+  
+  ### calculate change statistic
+  
+  # if resource is of type 0, it cannot contribute
+  
+  if(state[[resource.attribute.index]]$data[edge] == 0){
+    return(0)
+  }
+  
+  g_mar <- function(y, a){
+    contr <- 0
+    for(k in 0:y){
+      contr <- contr + exp(-log(a)*k)
+    }
+    contr - 1
+  }
+  
+  tie_val <- cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][i, j]
+  
+  if(update < 0){
+    return(update * g_mar(y = (tie_val + update), a = alpha))
+  }
+  if(update > 0){
+    return(update * g_mar(y = tie_val, a = alpha))
+  }
+}
+
+
 #' concentration_GW_dyad_covar
 #' 
 #' Are bandwagon effects (concentration) particularly prevalent between locations 

@@ -39,6 +39,7 @@ export(
 
   # effect functions: concentration
   concentration_basic, concentration_GW, concentration_GW_dyad_covar,
+  concentration_GW_resource_covar_bin,
   concentration_prop, concentration_prop_orig_cov, concentration_rankGW,
 
   # effect functions: reciprocity

@@ -74,21 +74,10 @@ checkProcessState <- function(state) {
 
 # createInternalCache
 createInternalCache <-
-  function(processState) {
+  function(processState,
+           resourceCovariates = NULL) {
     cache <- list()
     cacheObjectNames <- processState$dep.var
-    
-    # extract covariates describing who is mobile:
-    mobs <- processState[[name]]$nodeSet[3]
-    allObj <- names(processState)
-    resourceCovariates <- c()
-    for(ob in allObj){
-      if(inherits(processState[[ob]], "nodeVar.monan")){
-        if(processState[[ob]]$nodeSet == mobs){
-          resourceCovariates[(length(resourceCovariates) + 1)] <- ob
-        }
-      }
-    }
     
     for (name in cacheObjectNames) {
       if (!(class(processState[[name]]) %in% c("network.monan", "edgelist.monan"))) {

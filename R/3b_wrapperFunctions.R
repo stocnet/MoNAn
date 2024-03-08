@@ -32,8 +32,16 @@ addEffect <- function(effectsObject, effectName, ...){
   eff.state <- effectsObject$state
   nEffects.prev <- length(effectsObject$effectFormulas)
   
-  new.eff <- createEffectsObject(effectInit = list(list(effectName, ...)),
-                                 checkProcessState = eval(parse(text = eff.state)))
+  dots <- list(...)
+  effect_arg <- c(effectName, dots)
+  
+  names(effect_arg)[names(effect_arg) == "node.attribute"] <- "attribute.index"
+  names(effect_arg)[names(effect_arg) == "edge.attribute"] <- "resource.attribute.index"
+  
+  new.eff <- do.call(createEffectsObject, 
+                     list( effectInit = list(effect_arg) , 
+                           checkProcessState = eval(parse(text = eff.state)) ))
+  
   effectsObject$effectFormulas[[(nEffects.prev + 1)]] <- new.eff$effectFormulas[[1]]
   if(new.eff$name[1] %in% effectsObject$name) stop(paste("Effect", new.eff$name[1], "already included in the effects object"))
   effectsObject$name[(nEffects.prev + 1)] <- new.eff$name[1]

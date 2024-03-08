@@ -343,6 +343,7 @@ plot.traces.monan <- function(x, ...) {
 #' print.processState.monan
 #'
 #' @param x An object of class "processState.monan".
+#' @param ... For internal use only.
 #'
 #' @return The function `print.processState.monan` gives an overview of the information 
 #' included in the state object.
@@ -350,7 +351,7 @@ plot.traces.monan <- function(x, ...) {
 #'
 #' @examples
 #' myState
-print.processState.monan <- function(x) {
+print.processState.monan <- function(x, ...) {
   
   dep.var <- x$dep.var
   nodesets <- x[[dep.var]]$nodeSet

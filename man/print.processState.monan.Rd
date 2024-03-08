@@ -4,10 +4,12 @@
 \alias{print.processState.monan}
 \title{print.processState.monan}
 \usage{
-\method{print}{processState.monan}(x)
+\method{print}{processState.monan}(x, ...)
 }
 \arguments{
 \item{x}{An object of class "processState.monan".}
+
+\item{...}{For internal use only.}
 }
 \value{
 The function \code{print.processState.monan} gives an overview of the information

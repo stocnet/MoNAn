@@ -34,7 +34,7 @@ sameRegion <- createNetwork(sameRegion,
                             nodeSet = c("organisations", "organisations")
 )
 # # alternative syntax doing the same
-# sameRegion <- dyadicCovariate(sameRegion, nodes = "organisations")
+# sameRegion <- dyadicCovar(sameRegion, nodes = "organisations")
 
 region <- createNodeVariable(orgRegion, nodeSet = "organisations")
 size <- createNodeVariable(orgSize, nodeSet = "organisations")

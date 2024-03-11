@@ -5,7 +5,7 @@
 #' 
 #' A function to add addtional effects to a moman effects object
 #'
-#' @param effectsObject The moman Effects object to which another
+#' @param effectsObject The monan Effects object to which another
 #' effect should be added.
 #' @param effectName The name of the effect that should be added
 #' as a character in quotes (e.g. "loops")

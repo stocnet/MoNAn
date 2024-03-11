@@ -343,6 +343,7 @@ plot.traces.monan <- function(x, ...) {
 #' print.effectsList.monan
 #'
 #' @param x An object of class "effectsList.monan".
+#' @param ... For internal use only.
 #'
 #' @return The function `print.effectsList.monan` gives an overview of the 
 #' specified effects.
@@ -350,7 +351,7 @@ plot.traces.monan <- function(x, ...) {
 #'
 #' @examples
 #' myEffects
-print.effectsList.monan <- function(x) {
+print.effectsList.monan <- function(x, ...) {
   
   df <- as.data.frame(matrix(nrow = 0, ncol = 4))
   colnames(df) <- c("name", paste0("covariate_", x$nodeset1), paste0("covariate_", x$nodeset2), "parameter")
@@ -385,9 +386,33 @@ print.effectsList.monan <- function(x) {
   }
   rownames(df) <- c(1:nrow(df))
   
+  colnames(df) <- c("effect name", paste0("cov. ", x$nodeset1), paste0("cov. ", x$nodeset2), "parameter")
+  
+  names(df)[1] <- format(names(df)[1], 
+                          width = max(nchar(names(df[1])), max(nchar(df[,1]))),
+                          justify = "left")
+  names(df)[2] <- format(names(df)[2], 
+                          width = max(nchar(names(df[2])), max(nchar(df[,2]))),
+                          justify = "centre")
+  names(df)[3] <- format(names(df)[3], 
+                          width = max(nchar(names(df[3])), max(nchar(df[,3]))),
+                          justify = "centre")
+  names(df)[4] <- format(names(df)[4], 
+                         width = max(nchar(names(df[3])), max(nchar(df[,3]))),
+                         justify = "centre")
+  df[,2] <- format(df[,2], 
+                  width = max(nchar(names(df[2])), max(nchar(df[,2]))),
+                  justify = "centre")
+  df[,3] <- format(df[,3], 
+                  width = max(nchar(names(df[3])), max(nchar(df[,3]))),
+                  justify = "centre")
+  df[,4] <- format(df[,4], 
+                  width = max(nchar(names(df[3])), max(nchar(df[,3]))),
+                  justify = "centre")
+  df[,1] <- format(df[,1], justify = "left")
   
   cat("Effects\n")
-  print(df)
+  print(df, row.names = FALSE)
 }
 
 
@@ -415,7 +440,7 @@ print.processState.monan <- function(x, ...) {
 
   # covariates of nodeset 1
   df1 <- as.data.frame(matrix(nrow = 0, ncol = 3))
-  colnames(df1) <- c("name", "range", "mean")
+  colnames(df1) <- c("cov. name", "range", "mean")
 
   # fill table
   if(length(covars) > 0){
@@ -423,9 +448,9 @@ print.processState.monan <- function(x, ...) {
       
       if (nodesets[1] %in% x[[covars[i]]]$nodeSet) {
         
-        df1[nrow(df1) + 1, ]$name <- covars[i]
+        df1[nrow(df1) + 1, ]$'cov. name' <- covars[i]
         df1[nrow(df1), ]$range <-
-          paste0(round(min(x[[covars[i]]]$data, na.rm = TRUE), digits = 2), ", ",
+          paste0(round(min(x[[covars[i]]]$data, na.rm = TRUE), digits = 2), "-",
                  round(max(x[[covars[i]]]$data, na.rm = TRUE), digits = 2))
         df1[nrow(df1), ]$mean <- round(mean(x[[covars[i]]]$data, na.rm = TRUE),
                                        digits = 2)
@@ -435,21 +460,32 @@ print.processState.monan <- function(x, ...) {
   }
 
   cat(paste("covariates of", nodesets[1]), "\n")
-  print(df1)
+  names(df1)[1] <- format(names(df1)[1], 
+                          width = max(nchar(names(df1[1])), max(nchar(df1[,1]))),
+                          justify = "left")
+  names(df1)[2] <- format(names(df1)[2], 
+                          width = max(nchar(names(df1[2])), max(nchar(df1[,2]))),
+                          justify = "centre")
+  names(df1)[3] <- format(names(df1)[3], 
+                          width = max(nchar(names(df1[3])), max(nchar(df1[,3]))),
+                          justify = "centre")
+  df1[,2:3] <- format(df1[,2:3], justify = "centre")
+  df1[,1] <- format(df1[,1], justify = "left")
+  print(df1, row.names = FALSE)
   cat("\n")
 
   # covariates of nodeset 2
   df2 <- as.data.frame(matrix(nrow = 0, ncol = 3))
-  colnames(df2) <- c("name", "range", "mean")
+  colnames(df2) <- c("cov. name", "range", "mean")
   # fill table
   if(length(covars) > 0){
     for (i in 1:length(covars)) {
       
       if (nodesets[3] %in% x[[covars[i]]]$nodeSet) {
         
-        df2[nrow(df2) + 1, ]$name <- covars[i]
+        df2[nrow(df2) + 1, ]$'cov. name' <- covars[i]
         df2[nrow(df2), ]$range <-
-          paste0(round(min(x[[covars[i]]]$data, na.rm = TRUE), digits = 2), ", ",
+          paste0(round(min(x[[covars[i]]]$data, na.rm = TRUE), digits = 2), "-",
                  round(max(x[[covars[i]]]$data, na.rm = TRUE), digits = 2))
         df2[nrow(df2), ]$mean <- round(mean(x[[covars[i]]]$data, na.rm = TRUE),
                                        digits = 2)
@@ -459,7 +495,19 @@ print.processState.monan <- function(x, ...) {
   }
 
   cat(paste("covariates of", nodesets[3]), "\n")
-  print(df2)
+  names(df2)[1] <- format(names(df2)[1], 
+                          width = max(nchar(names(df2[1])), max(nchar(df2[,1]))),
+                          justify = "left")
+  names(df2)[2] <- format(names(df2)[2], 
+                          width = max(nchar(names(df2[2])), max(nchar(df2[,2]))),
+                          justify = "centre")
+  names(df2)[3] <- format(names(df2)[3], 
+                          width = max(nchar(names(df2[3])), max(nchar(df2[,3]))),
+                          justify = "centre")
+  
+  df2[,2:3] <- format(df2[,2:3], justify = "centre")
+  df2[,1] <- format(df2[,1], justify = "left")
+  print(df2, row.names = FALSE)
 }
 
 

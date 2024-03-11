@@ -4,10 +4,12 @@
 \alias{print.effectsList.monan}
 \title{print.effectsList.monan}
 \usage{
-\method{print}{effectsList.monan}(x)
+\method{print}{effectsList.monan}(x, ...)
 }
 \arguments{
 \item{x}{An object of class "effectsList.monan".}
+
+\item{...}{For internal use only.}
 }
 \value{
 The function \code{print.effectsList.monan} gives an overview of the

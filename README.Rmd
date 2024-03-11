@@ -147,6 +147,9 @@ myState <- monanDataCreate(transfers,
                            region,
                            size,
                            sex)
+
+# inspect the created object
+myState
 ```
 
 
@@ -180,6 +183,9 @@ myEffects <- createEffects(myState) |>
             node.attribute = "region",
             edge.attribute = "sex") |>
   addEffect(loops_resource_covar, edge.attribute = "sex")
+
+# inspect the created object
+myEffects
 ```
 
 

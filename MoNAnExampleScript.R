@@ -67,6 +67,8 @@ myState <- monanDataCreate(transfers,
                            sex,
                            second_or)
 
+# inspect the created object
+myState
 
 ##### create effects object #####
 
@@ -81,6 +83,8 @@ myEffects <- createEffects(myState) |>
             edge.attribute = "sex") |>
   addEffect(loops_resource_covar, edge.attribute = "sex")
 
+# inspect the created object
+myEffects
 
 ##### get multinomial statistics to estimate initial parameters using pseudo-likelihood estimation #####
 

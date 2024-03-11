@@ -19,7 +19,7 @@ estimateMobilityNetwork(
   verbose = FALSE,
   returnDeps = FALSE,
   fish = FALSE,
-  saveAlg = FALSE,
+  saveAlg = TRUE,
   cache = NULL
 )
 
@@ -34,7 +34,7 @@ estimateDistributionNetwork(
   verbose = FALSE,
   returnDeps = FALSE,
   fish = FALSE,
-  saveAlg = FALSE,
+  saveAlg = TRUE,
   cache = NULL
 )
 
@@ -49,7 +49,7 @@ monan07(
   verbose = FALSE,
   returnDeps = FALSE,
   fish = FALSE,
-  saveAlg = FALSE,
+  saveAlg = TRUE,
   cache = NULL
 )
 
@@ -64,7 +64,7 @@ monanEstimate(
   verbose = FALSE,
   returnDeps = FALSE,
   fish = FALSE,
-  saveAlg = FALSE,
+  saveAlg = TRUE,
   cache = NULL
 )
 

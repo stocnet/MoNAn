@@ -15,5 +15,5 @@ createWeightedCache(processState, resourceCovariates = NULL)
 Outdated.
 }
 \description{
-Since MoNAn version 1.0.0, this function is no longer exists
+Since MoNAn version 1.0.0, this function no longer exists.
 }

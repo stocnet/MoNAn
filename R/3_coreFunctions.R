@@ -703,7 +703,7 @@ createProcessState <- function(elements, dependentVariable) {
 
 #' createWeightedCache
 #'
-#' Since MoNAn version 1.0.0, this function is no longer exists
+#' Since MoNAn version 1.0.0, this function no longer exists.
 #'
 #' @param processState Outdated.
 #' @param resourceCovariates Outdated.
@@ -787,7 +787,7 @@ estimateMobilityNetwork <-
            verbose = FALSE,
            returnDeps = FALSE,
            fish = FALSE,
-           saveAlg = FALSE,
+           saveAlg = TRUE,
            cache = NULL) {
     
     if(!is.null(cache)){

@@ -7,8 +7,7 @@
 #'
 #' @param effectsObject The monan Effects object to which another
 #' effect should be added.
-#' @param effectName The name of the effect that should be added
-#' as a character in quotes (e.g. "loops")
+#' @param effectName The name of the effect that should be added (e.g. loops).
 #' @param ... Additional parameters of the effect, for example alpha,
 #' attribute.index, or resource.attribute.index
 #'

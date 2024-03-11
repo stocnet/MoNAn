@@ -701,25 +701,13 @@ createProcessState <- function(elements, dependentVariable) {
 
 #' createWeightedCache
 #'
-#' Creates a necessary internal object used in simulating the chains in the
-#' simulation and estimation of the model.
-#' In case variables of the individuals in the data are included in the state,
-#' they need to be explicitly mentioned in the creation of the cache under
-#' “resourceCovariates”.
+#' Since MoNAn version 1.0.0, this function is no longer exists
 #'
-#' @param processState The processs state that provides the data basis for
-#' creating the cache.
-#' @param resourceCovariates A vector of resource covariates that will be
-#' used in the model specification.
+#' @param processState Outdated.
+#' @param resourceCovariates Outdated.
 #'
-#' @return A cache object provided as a list.
+#' @return Outdated.
 #' @export
-#'
-#' @seealso [createProcessState()]
-#'
-#' @examples
-#' # create cache object
-#' myCache <- createWeightedCache(myState, resourceCovariates = c("sex"))
 createWeightedCache <-
   function(processState,
            resourceCovariates = NULL) {

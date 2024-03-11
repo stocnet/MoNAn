@@ -685,9 +685,11 @@ createProcessState <- function(elements, dependentVariable) {
   nodesets <- elements[[dep.var]]$nodeSet
   covars <- names(elements)[!(names(elements) %in% c(dep.var, nodesets, "dep.var"))]
   resourceCovariates <- c()
-  for (i in 1:length(covars)) {
-    if (nodesets[3] %in% elements[[covars[i]]]$nodeSet) {
-      resourceCovariates[length(resourceCovariates) + 1] <- covars[i]
+  if(length(covars) > 0){
+    for (i in 1:length(covars)) {
+      if (nodesets[3] %in% elements[[covars[i]]]$nodeSet) {
+        resourceCovariates[length(resourceCovariates) + 1] <- covars[i]
+      }
     }
   }
     

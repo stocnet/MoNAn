@@ -407,56 +407,59 @@ print.processState.monan <- function(x, ...) {
   dep.var <- x$dep.var
   nodesets <- x[[dep.var]]$nodeSet
   covars <- names(x)[!(names(x) %in% c(dep.var, nodesets, "dep.var", "cache"))]
-  
+
   cat(paste("dependent variable:", dep.var, "with",
             length(x[[nodesets[3]]]$ids), nodesets[3], "mobile between",
             length(x[[nodesets[1]]]$ids), nodesets[1]), "\n")
   cat("\n")
-  
+
   # covariates of nodeset 1
   df1 <- as.data.frame(matrix(nrow = 0, ncol = 3))
   colnames(df1) <- c("name", "range", "mean")
-  
+
   # fill table
-  for (i in 1:length(covars)) {
-    
-    if (nodesets[1] %in% x[[covars[i]]]$nodeSet) {
+  if(length(covars) > 0){
+    for (i in 1:length(covars)) {
       
-      df1[nrow(df1) + 1, ]$name <- covars[i]
-      df1[nrow(df1), ]$range <- 
-        paste0(round(min(x[[covars[i]]]$data, na.rm = TRUE), digits = 2), ", ", 
-               round(max(x[[covars[i]]]$data, na.rm = TRUE), digits = 2))
-      df1[nrow(df1), ]$mean <- round(mean(x[[covars[i]]]$data, na.rm = TRUE),
-                                     digits = 2)
+      if (nodesets[1] %in% x[[covars[i]]]$nodeSet) {
+        
+        df1[nrow(df1) + 1, ]$name <- covars[i]
+        df1[nrow(df1), ]$range <-
+          paste0(round(min(x[[covars[i]]]$data, na.rm = TRUE), digits = 2), ", ",
+                 round(max(x[[covars[i]]]$data, na.rm = TRUE), digits = 2))
+        df1[nrow(df1), ]$mean <- round(mean(x[[covars[i]]]$data, na.rm = TRUE),
+                                       digits = 2)
+      }
     }
+    rownames(df1) <- c(1:nrow(df1))
   }
-  rownames(df1) <- c(1:nrow(df1))
-  
+
   cat(paste("covariates of", nodesets[1]), "\n")
   print(df1)
   cat("\n")
-  
+
   # covariates of nodeset 2
   df2 <- as.data.frame(matrix(nrow = 0, ncol = 3))
   colnames(df2) <- c("name", "range", "mean")
   # fill table
-  for (i in 1:length(covars)) {
-    
-    if (nodesets[3] %in% x[[covars[i]]]$nodeSet) {
+  if(length(covars) > 0){
+    for (i in 1:length(covars)) {
       
-      df2[nrow(df2) + 1, ]$name <- covars[i]
-      df2[nrow(df2), ]$range <- 
-        paste0(round(min(x[[covars[i]]]$data, na.rm = TRUE), digits = 2), ", ", 
-               round(max(x[[covars[i]]]$data, na.rm = TRUE), digits = 2))
-      df2[nrow(df2), ]$mean <- round(mean(x[[covars[i]]]$data, na.rm = TRUE), 
-                                     digits = 2)
+      if (nodesets[3] %in% x[[covars[i]]]$nodeSet) {
+        
+        df2[nrow(df2) + 1, ]$name <- covars[i]
+        df2[nrow(df2), ]$range <-
+          paste0(round(min(x[[covars[i]]]$data, na.rm = TRUE), digits = 2), ", ",
+                 round(max(x[[covars[i]]]$data, na.rm = TRUE), digits = 2))
+        df2[nrow(df2), ]$mean <- round(mean(x[[covars[i]]]$data, na.rm = TRUE),
+                                       digits = 2)
+      }
     }
+    rownames(df2) <- c(1:nrow(df2))
   }
-  rownames(df2) <- c(1:nrow(df2))
-  
+
   cat(paste("covariates of", nodesets[3]), "\n")
   print(df2)
-  
 }
 
 

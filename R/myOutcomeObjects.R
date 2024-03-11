@@ -15,15 +15,9 @@
 
 #' @rdname myOutcomeObjects
 #' @usage NULL
-#' @format `myCache`
-#' A "list" created by the function [createWeightedCache()].
-"myCache"
-
-
-#' @rdname myOutcomeObjects
-#' @usage NULL
 #' @format `myEffects`
-#' An object of class "effectsList.monan" created by the function [createEffectsObject()].
+#' An object of class "effectsList.monan" created by the function [createEffectsObject()]
+#' or [createEffects()].
 "myEffects"
 
 

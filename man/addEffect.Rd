@@ -7,7 +7,7 @@
 addEffect(effectsObject, effectName, ...)
 }
 \arguments{
-\item{effectsObject}{The moman Effects object to which another
+\item{effectsObject}{The monan Effects object to which another
 effect should be added.}
 
 \item{effectName}{The name of the effect that should be added

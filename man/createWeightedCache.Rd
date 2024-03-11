@@ -7,26 +7,13 @@
 createWeightedCache(processState, resourceCovariates = NULL)
 }
 \arguments{
-\item{processState}{The processs state that provides the data basis for
-creating the cache.}
+\item{processState}{Outdated.}
 
-\item{resourceCovariates}{A vector of resource covariates that will be
-used in the model specification.}
+\item{resourceCovariates}{Outdated.}
 }
 \value{
-A cache object provided as a list.
+Outdated.
 }
 \description{
-Creates a necessary internal object used in simulating the chains in the
-simulation and estimation of the model.
-In case variables of the individuals in the data are included in the state,
-they need to be explicitly mentioned in the creation of the cache under
-“resourceCovariates”.
-}
-\examples{
-# create cache object
-myCache <- createWeightedCache(myState, resourceCovariates = c("sex"))
-}
-\seealso{
-\code{\link[=createProcessState]{createProcessState()}}
+Since MoNAn version 1.0.0, this function is no longer exists
 }

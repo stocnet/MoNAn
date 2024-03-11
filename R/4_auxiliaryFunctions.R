@@ -340,6 +340,57 @@ plot.traces.monan <- function(x, ...) {
 }
 
 
+#' print.effectsList.monan
+#'
+#' @param x An object of class "effectsList.monan".
+#'
+#' @return The function `print.effectsList.monan` gives an overview of the 
+#' specified effects.
+#' @export
+#'
+#' @examples
+#' myEffects
+print.effectsList.monan <- function(x) {
+  
+  df <- as.data.frame(matrix(nrow = 0, ncol = 4))
+  colnames(df) <- c("name", paste0("covariate_", x$nodeset1), paste0("covariate_", x$nodeset2), "parameter")
+  
+  # fill table
+  for (i in 1:length(x[["name"]])) {
+    
+    df[nrow(df) + 1, ]$name <- strsplit(x[["name"]][i], split = " ")[[1]][1]
+    
+    if (!is.null(formals(x[["effectFormulas"]][[i]])[["attribute.index"]])) {
+      df[nrow(df), paste0("covariate_", x$nodeset1)] <- formals(x[["effectFormulas"]][[i]])[["attribute.index"]]
+    } else {
+      df[nrow(df), paste0("covariate_", x$nodeset1)] <- "-"
+    }
+    
+    if (!is.null(formals(x[["effectFormulas"]][[i]])[["resource.attribute.index"]])) {
+      df[nrow(df), paste0("covariate_", x$nodeset2)] <- formals(x[["effectFormulas"]][[i]])[["resource.attribute.index"]]
+    } else {
+      df[nrow(df), paste0("covariate_", x$nodeset2)] <- "-"
+    }
+    
+    if (!is.null(formals(x[["effectFormulas"]][[i]])[["alpha"]])) {
+      df[nrow(df), ]$parameter <- formals(x[["effectFormulas"]][[i]])[["alpha"]]
+    } 
+    if (!is.null(formals(x[["effectFormulas"]][[i]])[["lambda"]])) {
+      df[nrow(df), ]$parameter <- formals(x[["effectFormulas"]][[i]])[["lambda"]]
+    }
+    if (is.na(df[nrow(df), ]$parameter)) {
+      df[nrow(df), ]$parameter <- "-"
+    }
+    
+  }
+  rownames(df) <- c(1:nrow(df))
+  
+  
+  cat("Effects\n")
+  print(df)
+}
+
+
 #' print.processState.monan
 #'
 #' @param x An object of class "processState.monan".

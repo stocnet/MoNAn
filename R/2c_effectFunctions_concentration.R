@@ -438,7 +438,7 @@ concentration_basic_squared <- function(dep.var = 1, state, cache, i, j, edge, u
 concentration_norm <- function(dep.var = 1, state, cache, i, j, edge, update, getTargetContribution = FALSE){
   if(getTargetContribution){
     return( cache[[dep.var]]$valuedNetwork[i,j]^2 / 
-            (sum(cache[[dep.var]]$valuedNetwork[i,]) - 1) )
+              (sum(cache[[dep.var]]$valuedNetwork[i,]) - 1) )
   } else {
     if(update == -1){
       cont <- ((cache[[dep.var]]$valuedNetwork[i,j]-1)^2 -
@@ -454,30 +454,40 @@ concentration_norm <- function(dep.var = 1, state, cache, i, j, edge, update, ge
   }
 }
 
-#' #' concentration_basic_squared
-#' #' 
-#' #' Is there a bandwagon effect in mobility, i.e. do mobile individuals move to 
-#' #' locations that are the destination of many others from their origin?
-#' #' 
-#' #' @param dep.var 
-#' #' @param state 
-#' #' @param cache 
-#' #' @param i 
-#' #' @param j 
-#' #' @param edge 
-#' #' @param update 
-#' #' @param getTargetContribution 
-#' #'
-#' #' @return Returns the change statistic or target statistic of the effect for 
-#' #' internal use by the estimation algorithm.
-#' #' @keywords internal
-#' concentration_basic_squared <- function(dep.var = 1, state, cache, i, j, edge, update, getTargetContribution = FALSE){
-#'   if(getTargetContribution){
-#'     return( sum(cache[[dep.var]]$valuedNetwork[i, j]^2 * cache[[dep.var]]$valuedNetwork^2) )
-#'   } else {
-#'     v <- sum(((cache[[dep.var]]$valuedNetwork[i, j] + update)^2 - 
-#'                cache[[dep.var]]$valuedNetwork[i, j]^2) * 
-#'                cache[[dep.var]]$valuedNetwork^2)
-#'     return(v)
-#'   }
-#' }
+#' concentration_norm_squared
+#' 
+#' Is there a bandwagon effect in mobility, i.e. do mobile individuals move to 
+#' locations that are the destination of many others from their origin?
+#' 
+#' @param dep.var 
+#' @param state 
+#' @param cache 
+#' @param i 
+#' @param j 
+#' @param edge 
+#' @param update 
+#' @param getTargetContribution 
+#'
+#' @return Returns the change statistic or target statistic of the effect for 
+#' internal use by the estimation algorithm.
+#' @keywords internal
+concentration_norm_squared <- function(dep.var = 1, state, cache, i, j, edge, update, getTargetContribution = FALSE){
+  if(getTargetContribution){
+    return( sum(cache[[dep.var]]$valuedNetwork[i,j]^2 * cache[[dep.var]]$valuedNetwork[i,]^2 / 
+            (sum(cache[[dep.var]]$valuedNetwork[i,]) - 1)^2 ))
+  } else {
+    previous_rows <- cache[[dep.var]]$valuedNetwork[i,]
+    new_rows <- previous_rows
+    if(update == -1){
+      new_rows[j] <- new_rows[j] - 1
+      cont <- ((sum(new_rows^2 / (sum(cache[[dep.var]]$valuedNetwork[i,]) - 1)))^2 - 
+               (sum(previous_rows^2 / (sum(cache[[dep.var]]$valuedNetwork[i,]) - 1)))^2) 
+    }
+    if(update == 1){
+      new_rows[j] <- new_rows[j] + 1
+      cont <- ((sum(new_rows^2 / (sum(cache[[dep.var]]$valuedNetwork[i,]))))^2 - 
+               (sum(previous_rows^2 / (sum(cache[[dep.var]]$valuedNetwork[i,]))))^2) 
+    }
+    return(cont)
+  }
+}

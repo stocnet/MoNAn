@@ -28,7 +28,7 @@ the analysis of mobility tables as weighted networks with an application
 to faculty hiring networks. Social Networks, 68, 264-278.
 
 [Link to the study in Social
-Networks](https://www.sciencedirect.com/science/article/pii/S0378873321000654).
+Networks](https://doi.org/10.1016/j.socnet.2021.08.003).
 
 [Pre-print with minor differences to the journal
 version](https://osf.io/preprints/socarxiv/n86rx/).
@@ -301,7 +301,7 @@ myResDN <- monanEstimate(
   fish = FALSE
 )
 #> Starting phase 1
-#> R Version:  R version 4.3.1 (2023-06-16)
+#> R Version:  R version 4.2.3 (2023-03-15 ucrt)
 #> snowfall 1.84-6.3 initialized (using snow 0.4-4): parallel execution on 4 CPUs.
 #> Library MoNAn loaded.
 #> Library MoNAn loaded in cluster.
@@ -325,17 +325,17 @@ myResDN <- monanEstimate(
 #> 
 #> New parameters:
 #> loops 
-#>  2.46396686901172 
+#>  2.442221628881 
 #>  reciprocity_min 
-#>  0.841726185531432 
+#>  0.814088551714832 
 #>  dyadic_covariate sameRegion 
-#>  1.67267047987559 
+#>  1.68106241441549 
 #>  alter_covariate size 
-#>  0.0390441265668085 
+#>  0.0381178059989281 
 #>  resource_covar_to_node_covar region sex 
-#>  -0.699526791016032 
+#>  -0.693799226921759 
 #>  loops_resource_covar sex 
-#>  -0.661677407486189 
+#>  -0.768988633051589 
 #> 
 #> Sub phase2:
 #>  burn-in 12614 steps
@@ -345,17 +345,17 @@ myResDN <- monanEstimate(
 #> 
 #> New parameters:
 #> loops 
-#>  2.58945551927677 
+#>  2.615529364412 
 #>  reciprocity_min 
-#>  0.822649502726496 
+#>  0.816463533865339 
 #>  dyadic_covariate sameRegion 
-#>  1.68941893211365 
+#>  1.69729348816156 
 #>  alter_covariate size 
-#>  0.0377791832157455 
+#>  0.0365807086442701 
 #>  resource_covar_to_node_covar region sex 
-#>  -0.646629953302649 
+#>  -0.658570679586027 
 #>  loops_resource_covar sex 
-#>  -0.38756770740513 
+#>  -0.381282530934528 
 #> 
 #> Sub phase3:
 #>  burn-in 12614 steps
@@ -365,17 +365,17 @@ myResDN <- monanEstimate(
 #> 
 #> New parameters:
 #> loops 
-#>  2.58295031015221 
+#>  2.5910989797839 
 #>  reciprocity_min 
-#>  0.823066219155376 
+#>  0.811886839843449 
 #>  dyadic_covariate sameRegion 
-#>  1.68182799583606 
+#>  1.69010031133568 
 #>  alter_covariate size 
-#>  0.0360266312274088 
+#>  0.038053152454337 
 #>  resource_covar_to_node_covar region sex 
-#>  -0.64507836617328 
+#>  -0.642777824450907 
 #>  loops_resource_covar sex 
-#>  -0.364952198083325
+#>  -0.35696782871491
 #> 
 #> Stopping cluster
 #> Starting phase 3:
@@ -410,7 +410,7 @@ estimates), another run is necessary.
 
 ``` r
 max(abs(myResDN$convergenceStatistics))
-#> [1] 0.1776716
+#> [1] 0.1785702
 ```
 
 If convergence is too high, update algorithm, re-run estimation with
@@ -437,7 +437,7 @@ myResDN <- monan07(
 ``` r
 # check convergence
 max(abs(myResDN$convergenceStatistics))
-#> [1] 0.1776716
+#> [1] 0.1785702
 ```
 
 In case convergence is still poor, updating the algorithm might be
@@ -450,19 +450,19 @@ convergence ratio. All values in the final column should be below 0.1
 myResDN
 #> Results
 #>                                   Effects   Estimates StandardErrors
-#> 1                                   loops  2.58295031     0.19060758
-#> 2                         reciprocity_min  0.82306622     0.17990564
-#> 3             dyadic_covariate sameRegion  1.68182800     0.11604643
-#> 4                    alter_covariate size  0.03602663     0.02403609
-#> 5 resource_covar_to_node_covar region sex -0.64507837     0.16794888
-#> 6                loops_resource_covar sex -0.36495220     0.22056637
-#>   Convergence
-#> 1 -0.14376262
-#> 2  0.17767159
-#> 3  0.07507506
-#> 4 -0.02198822
-#> 5  0.02559527
-#> 6 -0.09638885
+#> 1                                   loops  2.59109898     0.18517339
+#> 2                         reciprocity_min  0.81188684     0.18116939
+#> 3             dyadic_covariate sameRegion  1.69010031     0.10921098
+#> 4                    alter_covariate size  0.03805315     0.02418066
+#> 5 resource_covar_to_node_covar region sex -0.64277782     0.16996505
+#> 6                loops_resource_covar sex -0.35696783     0.21709701
+#>     Convergence
+#> 1  0.0727756157
+#> 2 -0.1323062248
+#> 3 -0.0009534606
+#> 4  0.1785702475
+#> 5 -0.0169035033
+#> 6  0.0643966510
 ```
 
 ## Diagnostics of the estimated model
@@ -476,7 +476,7 @@ problematic and indicate that a higher thinning is needed.
 
 ``` r
 autoCorrelationTest(myResDN)
-#> [1] 0.09352938
+#> [1] 0.09450437
 ```
 
 The output of extractTraces indicates the correlation of statistics
@@ -508,7 +508,7 @@ test_ME.2 <- scoreTest(myResDN, myEffects2)
 test_ME.2
 #> Results
 #>            Effects pValuesParametric pValuesNonParametric
-#> 1 transitivity_min      7.781315e-09                    0
+#> 1 transitivity_min       5.30274e-09                    0
 #> 
 #>  Parametric p-values: small = more significant 
 #>  Non-parametric p-values: further away from 0.5 = more significant

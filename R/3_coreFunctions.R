@@ -527,8 +527,8 @@ createNodeVariable <-
            nodeSet = NULL,
            nodes = NULL,
            edges = NULL,
-           addSame = TRUE,
-           addSim = TRUE) {
+           addSame = NULL,
+           addSim = NULL) {
     if (!(is.vector(values))) {
       stop("Input data should be of class 'vector'.")
     }
@@ -557,6 +557,25 @@ createNodeVariable <-
       nodeSet = nodeSet,
       size = length(values)
     )
+    
+    # add same and sim for nodesets that refer to loactions, usually 
+    # smaller nodesets (i.e. < 500)
+    
+    if(is.null(addSame)){
+      if(length(values) < 501){
+        addSame <- TRUE
+      } else {
+        addSame <- FALSE
+      }
+    }
+    
+    if(is.null(addSim)){
+      if(length(values) < 501){
+        addSim <- TRUE
+      } else {
+        addSim <- FALSE
+      }
+    }
 
     if (addSame) {
       l[["same"]] <- outer(values, values, "==") * 1

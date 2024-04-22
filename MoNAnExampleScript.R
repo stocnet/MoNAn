@@ -13,37 +13,19 @@ N_org <- length(unique(as.numeric(mobilityEdgelist)))
 
 # Create a process state out of the mobility data objects:
 # create objects (which are later combined to the process state)
-transfers <- createEdgelist(mobilityEdgelist,
-                            nodeSet = c("organisations", "organisations", "people")
-)
+transfers <- monanDependent(mobilityEdgelist,
+                            nodes = "organisations",
+                            edges = "people")
 
-# # alternative syntax doing the same
-# transfers <- monanDependent(mobilityEdgelist,
-#                             nodes = "organisations",
-#                             edges = "people")
-
-people <- createNodeSet(N_ind)
-organisations <- createNodeSet(N_org)
-
-# # alternative syntax doing the same
-# people <- monanEdges(N_ind)
-# organisations <- monanNodes(N_org)
+people <- monanEdges(N_ind)
+organisations <- monanNodes(N_org)
 
 sameRegion <- outer(orgRegion, orgRegion, "==") * 1
-sameRegion <- createNetwork(sameRegion,
-                            nodeSet = c("organisations", "organisations")
-)
-# # alternative syntax doing the same
-# sameRegion <- dyadicCovar(sameRegion, nodes = "organisations")
+sameRegion <- dyadicCovar(sameRegion, nodes = "organisations")
 
-region <- createNodeVariable(orgRegion, nodeSet = "organisations")
-size <- createNodeVariable(orgSize, nodeSet = "organisations")
-sex <- createNodeVariable(indSex, nodeSet = "people")
-
-# # alternative syntax doing the same
-# region <- monadicCovar(orgRegion, nodes = "organisations")
-# size <- monadicCovar(orgSize, nodes = "organisations")
-# sex <- monadicCovar(indSex, edges = "people")
+region <- monadicCovar(orgRegion, nodes = "organisations")
+size <- monadicCovar(orgSize, nodes = "organisations")
+sex <- monadicCovar(indSex, edges = "people")
 
 
 # the following lines create an artificial second origin used for illustration
@@ -51,10 +33,7 @@ sex <- createNodeVariable(indSex, nodeSet = "people")
 other_origin <- sample(1:17, 742, replace = T)
 resample <- as.logical(sample(0:1, 742, replace = T, prob = c(0.88, 0.12)))
 other_origin[resample] <- transfers$data[resample,2]
-
-second_or <- createNodeVariable(other_origin, nodeSet = "people")
-# # alternative syntax doing the same
-# second_or <- monadicCovar(other_origin, edges = "people")
+second_or <- monadicCovar(other_origin, edges = "people")
 
 
 # combine created objects to the process state

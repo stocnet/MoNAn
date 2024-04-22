@@ -407,7 +407,8 @@ concentration_rankGW <- function(dep.var = 1, state, cache, i, j, edge, update,
 #' @keywords internal
 concentration_basic_squared <- function(dep.var = 1, state, cache, i, j, edge, update, getTargetContribution = FALSE){
   if(getTargetContribution){
-    return( sum(cache[[dep.var]]$valuedNetwork[i,j]^2 * cache[[dep.var]]$valuedNetwork[i,]^2) )
+    return( sum(cache[[dep.var]]$valuedNetwork[i,j]^2 * 
+                  cache[[dep.var]]$valuedNetwork[i,]^2) )
   } else {
     previous_rows <- cache[[dep.var]]$valuedNetwork[i,]
     new_rows <- previous_rows

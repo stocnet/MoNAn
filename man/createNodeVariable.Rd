@@ -11,8 +11,8 @@ createNodeVariable(
   nodeSet = NULL,
   nodes = NULL,
   edges = NULL,
-  addSame = TRUE,
-  addSim = TRUE
+  addSame = NULL,
+  addSim = NULL
 )
 
 monadicCovar(
@@ -21,8 +21,8 @@ monadicCovar(
   nodeSet = NULL,
   nodes = NULL,
   edges = NULL,
-  addSame = TRUE,
-  addSim = TRUE
+  addSame = NULL,
+  addSim = NULL
 )
 }
 \arguments{

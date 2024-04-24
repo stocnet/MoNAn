@@ -3,7 +3,8 @@
 library(MoNAn)
 
 
-##### create data objects from internal data files, which are later combined to the process state #####
+##### create data objects from internal data files, 
+# which are later combined to the process state #####
 
 # extract number of individuals and organisations from the mobility data
 
@@ -12,26 +13,28 @@ N_org <- length(unique(as.numeric(mobilityEdgelist)))
 
 # Create a process state out of the mobility data objects:
 # create objects (which are later combined to the process state)
-transfers <- createEdgelist(mobilityEdgelist,
-                            nodeSet = c("organisations", "organisations", "people")
-)
-people <- createNodeSet(N_ind)
-organisations <- createNodeSet(N_org)
+transfers <- monanDependent(mobilityEdgelist,
+                            nodes = "organisations",
+                            edges = "people")
+
+people <- monanEdges(N_ind)
+organisations <- monanNodes(N_org)
+
 sameRegion <- outer(orgRegion, orgRegion, "==") * 1
-sameRegion <- createNetwork(sameRegion,
-                            nodeSet = c("organisations", "organisations")
-)
-region <- createNodeVariable(orgRegion, nodeSet = "organisations")
-size <- createNodeVariable(orgSize, nodeSet = "organisations", addSim = TRUE)
-sex <- createNodeVariable(indSex, nodeSet = "people")
+sameRegion <- dyadicCovar(sameRegion, nodes = "organisations")
+
+region <- monadicCovar(orgRegion, nodes = "organisations")
+size <- monadicCovar(orgSize, nodes = "organisations")
+sex <- monadicCovar(indSex, edges = "people")
+
 
 # the following lines create an artificial second origin used for illustration
 # in the examples in the manual
 other_origin <- sample(1:17, 742, replace = T)
 resample <- as.logical(sample(0:1, 742, replace = T, prob = c(0.88, 0.12)))
 other_origin[resample] <- transfers$data[resample,2]
+second_or <- monadicCovar(other_origin, edges = "people")
 
-second_or <- createNodeVariable(other_origin, nodeSet = "people")
 
 # combine created objects to the process state
 myState <- monanDataCreate(transfers,
@@ -43,12 +46,8 @@ myState <- monanDataCreate(transfers,
                            sex,
                            second_or)
 
-
-##### create cache #####
-
-# cache object
-myCache <- createWeightedCache(myState, resourceCovariates = c("sex"))
-
+# inspect the created object
+myState
 
 ##### create effects object #####
 
@@ -56,18 +55,20 @@ myCache <- createWeightedCache(myState, resourceCovariates = c("sex"))
 myEffects <- createEffects(myState) |>
   addEffect(loops) |>
   addEffect(reciprocity_min) |>
-  addEffect(dyadic_covariate, attribute.index = "sameRegion") |>
-  addEffect(alter_covariate, attribute.index = "size") |>
+  addEffect(dyadic_covariate, node.attribute = "sameRegion") |>
+  addEffect(alter_covariate, node.attribute = "size") |>
   addEffect(resource_covar_to_node_covar,
-     attribute.index = "region",
-     resource.attribute.index = "sex") |>
-  addEffect(loops_resource_covar, resource.attribute.index = "sex")
+            node.attribute = "region",
+            edge.attribute = "sex") |>
+  addEffect(loops_resource_covar, edge.attribute = "sex")
 
+# inspect the created object
+myEffects
 
 ##### get multinomial statistics to estimate initial parameters using pseudo-likelihood estimation #####
 
 # create statistics object, to be used, e.g., with the mlogit package
-myStatisticsFrame <- getMultinomialStatistics(myState, myCache, myEffects)
+myStatisticsFrame <- getMultinomialStatistics(myState, myEffects)
 
 ### additional script to get pseudo-likelihood estimates
 # library(dfidx)
@@ -99,8 +100,8 @@ myAlg <- monanAlgorithmCreate(myState, myEffects, nsubN2 = 3,
 ##### estimate mobility network model #####
 
 # mobility network model 
-myResDN <- estimateMobilityNetwork(
-  myState, myCache, myEffects, myAlg,
+myResDN <- monanEstimate(
+  myState, myEffects, myAlg,
   initialParameters = NULL,
   # in case a pseudo-likelihood estimation was run, replace with
   # initialParameters = initEst,
@@ -118,11 +119,11 @@ myResDN_old <- myResDN
 # estimate mobility network model again based on previous results to improve convergence
 # with an adjusted algorithm
 myAlg <- monanAlgorithmCreate(myState, myEffects, multinomialProposal = TRUE, 
-                              initialIterationsN2 = 500, nsubN2 = 1, initGain = 0.05, iterationsN3 = 1000)
+                              initialIterationsN2 = 100, nsubN2 = 1, initGain = 0.05, iterationsN3 = 1000)
 
-# monan07 is an alias for estimateMobilityNetwork
+# monan07 is an alias for monanEstimate
 myResDN <- monan07(
-  myState, myCache, myEffects, myAlg,
+  myState, myEffects, myAlg,
   prevAns = myResDN,
   parallel = TRUE, cpus = 4,
   verbose = TRUE,
@@ -156,23 +157,26 @@ test_ME.2
 
 ##### goodness of fit #####
 
-myGofIndegree <- gofMobilityNetwork(ans = myResDN, simulations = myResDN$deps, gofFunction = getIndegree, lvls = 1:100)
+myGofIndegree <- monanGOF(ans = myResDN, 
+                          gofFunction = getIndegree, 
+                          lvls = 1:100)
 plot(myGofIndegree,  lvls = 20:70)
 
-myGofTieWeight <- gofMobilityNetwork(ans = myResDN, simulations = myResDN$deps, gofFunction = getTieWeights, lvls = 1:30)
+myGofTieWeight <- monanGOF(ans = myResDN, 
+                           gofFunction = getTieWeights, 
+                           lvls = 1:30)
 plot(myGofTieWeight, lvls = 1:15)
 
 
 ##### simulate mobility network #####
 
-mySimDN <- simulateMobilityNetworks(myState,
-                                    myCache,
-                                    myEffects,
-                                    parameters = c(2, 1, 1.5, 0.1, -1, -0.5),
-                                    allowLoops = TRUE,
-                                    burnin = 45000,
-                                    thinning = 15000,
-                                    nSimulations = 10
+mySimDN <- monanSimulate(myState,
+                         myEffects,
+                         parameters = c(2, 1, 1.5, 0.1, -1, -0.5),
+                         allowLoops = TRUE,
+                         burnin = 45000,
+                         thinning = 15000,
+                         nSimulations = 10
 )
 
 mySimDN[[1]]

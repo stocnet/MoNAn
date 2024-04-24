@@ -4,15 +4,15 @@
 \alias{getMultinomialStatistics}
 \title{getMultinomialStatistics}
 \usage{
-getMultinomialStatistics(state, cache, effects)
+getMultinomialStatistics(state, effects, cache = NULL)
 }
 \arguments{
 \item{state}{An object of class "processState.monan" that stores all information to be used in the model.}
 
-\item{cache}{A cache object that contains intermediate information used for estimation.}
-
 \item{effects}{An object of class "effectsList.monan" for which the statistics of a multinomial
 model should be calculated.}
+
+\item{cache}{Outdated parameter, no need to specify.}
 }
 \value{
 A data frame with N * M rows (N = mobile individuals, M = number of locations)
@@ -26,8 +26,8 @@ estimates for the full mobility model, which increases the chances of model
 convergence in the first run of the estimation considerably.
 }
 \examples{
-myStatisticsFrame <- getMultinomialStatistics(myState, myCache, myEffects)
+myStatisticsFrame <- getMultinomialStatistics(myState, myEffects)
 }
 \seealso{
-\code{\link[=createProcessState]{createProcessState()}}, \code{\link[=createWeightedCache]{createWeightedCache()}}, \code{\link[=createEffectsObject]{createEffectsObject()}}
+\code{\link[=createProcessState]{createProcessState()}}, \code{\link[=createEffectsObject]{createEffectsObject()}}
 }

@@ -7,11 +7,10 @@
 addEffect(effectsObject, effectName, ...)
 }
 \arguments{
-\item{effectsObject}{The moman Effects object to which another
+\item{effectsObject}{The monan Effects object to which another
 effect should be added.}
 
-\item{effectName}{The name of the effect that should be added
-as a character in quotes (e.g. "loops")}
+\item{effectName}{The name of the effect that should be added (e.g. loops).}
 
 \item{...}{Additional parameters of the effect, for example alpha,
 attribute.index, or resource.attribute.index}

@@ -204,7 +204,11 @@ monanAlgorithmCreate <- createAlgorithm
 #' @param nodeSet The nodesets of the edgelists. This is a vector with three 
 #' entries referencing the names of the nodesets of locations and individuals 
 #' of the form c(location, location, individuals).
-#'
+#' @param nodes Alternative way to specify the nodeSet by naming nodes and edges: 
+#' nodes denote the locations in the edgelist
+#' @param edges Alternative way to specify the nodeSet by naming nodes and edges: 
+#' edges denote the individuals in the edgelist
+#' 
 #' @return An object of class "edgelist.monan".
 #' @export
 #'
@@ -214,7 +218,7 @@ monanAlgorithmCreate <- createAlgorithm
 #' # create an object of class edgelist.monan
 #' transfers <- createEdgelist(mobilityEdgelist, c("organisations", "organisations", "people"))
 createEdgelist <-
-  function(el, nodeSet = c("location", "location", "individuals")) {
+  function(el, nodeSet = NULL, nodes = NULL, edges = NULL) {
     if (dim(el)[2] != 2) {
       stop("Two columns expected in edge list creation.")
     }
@@ -228,8 +232,22 @@ createEdgelist <-
       stop("Input data should be numbered from one to max. 
            number of different locations.")
     }
+    # update nodeSet name according to which the user specified
+    if(is.null(nodeSet)){
+      if(is.null(nodes)){
+        stop("Either nodeSet or nodes and edges need to be specified")
+      }
+      if(is.null(edges)){
+        stop("Either nodeSet or nodes and edges need to be specified")
+      }
+      nodeSet <- c(nodes, nodes, edges)
+    }
+    
     if (length(nodeSet) != 3) {
       stop("Three nodesets need to be specified for edgelists: nodes / nodes / edges")
+    }
+    if(!inherits(nodeSet, "character")){
+      stop("nodeSet or nodes and edges need to be class character")
     }
     l <- list(
       data = el,
@@ -239,6 +257,11 @@ createEdgelist <-
     class(l) <- "edgelist.monan"
     l
   }
+
+#' monanDependent
+#'
+#' @rdname createEdgelist
+monanDependent <- createEdgelist
 
 
 #' createEffectsObject
@@ -336,6 +359,8 @@ createEffectsObject <-
 #' @param isBipartite Currently not in use.
 #' @param nodeSet Which nodeset are the nodes of the network. Usually this will
 #' be the locations in the data.
+#' @param nodes Alternative way to specify the nodeSet by naming nodes: 
+#' nodes denote the locations in the edgelist
 #'
 #' @return An object of class "network.monan".
 #' @export
@@ -350,7 +375,8 @@ createNetwork <-
   function(m,
            isSymmetric = FALSE,
            isBipartite = FALSE,
-           nodeSet = c("actors", "actors")) {
+           nodeSet = NULL,
+           nodes = NULL) {
     if (!is.matrix(m)) {
       stop("Not a matrix.")
     }
@@ -363,8 +389,18 @@ createNetwork <-
     if (nrow(m) != ncol(m)) {
       stop("Input matrix should have the same number of rows as columns.")
     }
+    # update nodeSet name according to which the user specified
+    if(is.null(nodeSet)){
+      if(is.null(nodes)){
+        stop("Either nodeSet or nodes need to be specified")
+      }
+      nodeSet <- nodes
+    }
     if (length(nodeSet) == 1) {
       nodeSet <- c(nodeSet, nodeSet)
+    }
+    if(!inherits(nodeSet, "character")){
+      stop("nodeSet or nodes need to be class character")
     }
     l <- list(
       data = m,
@@ -376,6 +412,11 @@ createNetwork <-
     class(l) <- "network.monan"
     l
   }
+
+#' dyadicCovar
+#' 
+#' @rdname createNetwork
+dyadicCovar <- createNetwork
 
 
 #' createNodeSet
@@ -441,6 +482,17 @@ createNodeSet <-
     l
   }
 
+#' monanEdges
+#' 
+#' @rdname createNodeSet
+monanEdges <- createNodeSet
+
+
+#' monanNodes
+#' 
+#' @rdname createNodeSet
+monanNodes <- createNodeSet
+
 
 #' createNodeVariable
 #'
@@ -454,7 +506,11 @@ createNodeSet <-
 #' with the same_covariate effect)? In this case, addSame needs to be set to TRUE.
 #' @param addSim Will the variable be used to model continuous homophily (e.g.,
 #' with the sim_covariate effect)? In this case, addSim needs to be set to TRUE.
-#'
+#' @param nodes Alternative way to specify the nodeSet by naming nodes or edges: 
+#' nodes denote the locations in the edgelist
+#' @param edges Alternative way to specify the nodeSet by naming nodes or edges: 
+#' edges denote the individuals in the edgelist
+#' 
 #' @return An object of class "nodeVar.monan".
 #' @export
 #'
@@ -468,9 +524,11 @@ createNodeSet <-
 createNodeVariable <-
   function(values,
            range = NULL,
-           nodeSet = "actors",
-           addSame = FALSE,
-           addSim = FALSE) {
+           nodeSet = NULL,
+           nodes = NULL,
+           edges = NULL,
+           addSame = NULL,
+           addSim = NULL) {
     if (!(is.vector(values))) {
       stop("Input data should be of class 'vector'.")
     }
@@ -480,12 +538,44 @@ createNodeVariable <-
     if (any(is.na(values))) {
       stop(paste("Input vector includes missing values or cannot be classified as numeric."))
     }
+    
+    # update nodeSet name according to which the user specified
+    if(is.null(nodeSet)){
+      if(is.null(nodes)){
+        if(is.null(edges)){
+          stop("Either nodeSet or nodes and edges need to be specified")
+        } else {nodeSet <- edges}
+      } else {nodeSet <- nodes}
+    }
+    
+    if(!inherits(nodeSet, "character")){
+      stop("nodeSet, nodes, or edges (whichever is used) need to be class character")
+    }
     l <- list(
       data = values,
       range = range,
       nodeSet = nodeSet,
       size = length(values)
     )
+    
+    # add same and sim for nodesets that refer to loactions, usually 
+    # smaller nodesets (i.e. < 500)
+    
+    if(is.null(addSame)){
+      if(length(values) < 501){
+        addSame <- TRUE
+      } else {
+        addSame <- FALSE
+      }
+    }
+    
+    if(is.null(addSim)){
+      if(length(values) < 501){
+        addSim <- TRUE
+      } else {
+        addSim <- FALSE
+      }
+    }
 
     if (addSame) {
       l[["same"]] <- outer(values, values, "==") * 1
@@ -498,6 +588,11 @@ createNodeVariable <-
     class(l) <- "nodeVar.monan"
     l
   }
+
+#' monadicCovar
+#' 
+#' @rdname createNodeVariable
+monadicCovar <- createNodeVariable
 
 
 #' createProcessState
@@ -602,97 +697,43 @@ createProcessState <- function(elements, dependentVariable) {
   class(elements) <- "processState.monan"
   
   checkProcessState(elements) # checks whether all input objects are correctly specified/valid
+  
+  
+  # define resource covariates
+  dep.var <- elements$dep.var
+  nodesets <- elements[[dep.var]]$nodeSet
+  covars <- names(elements)[!(names(elements) %in% c(dep.var, nodesets, "dep.var"))]
+  resourceCovariates <- c()
+  if(length(covars) > 0){
+    for (i in 1:length(covars)) {
+      if (nodesets[3] %in% elements[[covars[i]]]$nodeSet) {
+        resourceCovariates[length(resourceCovariates) + 1] <- covars[i]
+      }
+    }
+  }
+    
+  # attach cache object
+  elements$cache <- createInternalCache(elements, resourceCovariates = resourceCovariates)
+  
+  
   elements
 }
 
 
 #' createWeightedCache
 #'
-#' Creates a necessary internal object used in simulating the chains in the
-#' simulation and estimation of the model.
-#' In case variables of the individuals in the data are included in the state,
-#' they need to be explicitly mentioned in the creation of the cache under
-#' “resourceCovariates”.
+#' Since MoNAn version 1.0.0, this function no longer exists.
 #'
-#' @param processState The processs state that provides the data basis for
-#' creating the cache.
-#' @param resourceCovariates A vector of resource covariates that will be
-#' used in the model specification.
+#' @param processState Outdated.
+#' @param resourceCovariates Outdated.
 #'
-#' @return A cache object provided as a list.
+#' @return Outdated.
 #' @export
-#'
-#' @seealso [createProcessState()]
-#'
-#' @examples
-#' # create cache object
-#' myCache <- createWeightedCache(myState, resourceCovariates = c("sex"))
 createWeightedCache <-
   function(processState,
            resourceCovariates = NULL) {
-    cache <- list()
-    
-    cacheObjectNames <- processState$dep.var
-
-    for (name in cacheObjectNames) {
-      if (!(class(processState[[name]]) %in% c("network.monan", "edgelist.monan"))) {
-        stop(paste(name, "is not a network or edgelist."))
-      }
-
-      nodeSet1 <- processState[[processState[[name]]$nodeSet[1]]]$ids
-      nodeSet2 <- processState[[processState[[name]]$nodeSet[2]]]$ids
-      nActors1 <- length(nodeSet1)
-      nActors2 <- length(nodeSet2)
-
-      cache[[name]] <- list()
-      if (is(processState[[name]], "network.monan")) {
-        cache[[name]]$valuedNetwork <- processState[[name]]$data
-      }
-      if (is(processState[[name]], "edgelist.monan")) {
-        # create valued network from edge list
-        m <- matrix(0, nActors1, nActors2)
-
-        # create weighted resource networks
-        m.resource <-
-          lapply(resourceCovariates, function(v) {
-            matrix(0, nrow = nActors1, ncol = nActors2)
-          })
-        names(m.resource) <- resourceCovariates
-
-        for (i in 1:processState[[name]]$size[1]) {
-          sender <- processState[[name]]$data[i, 1]
-          receiver <- processState[[name]]$data[i, 2]
-          v <- m[sender, receiver]
-          m[sender, receiver] <- v + 1
-
-          # cache network * resource covariate matrices
-          for (ressCovar in resourceCovariates) {
-            v <- m.resource[[ressCovar]][sender, receiver]
-            m.resource[[ressCovar]][sender, receiver] <- v +
-              processState[[ressCovar]]$data[i]
-          }
-        }
-        cache[[name]]$valuedNetwork <- m
-        cache[[name]]$resourceNetworks <- m.resource
-
-        # edge ids
-        edgeSet <- processState[[processState[[name]]$nodeSet[3]]]$ids
-        nEdges <- length(edgeSet)
-      }
-      if (nActors1 == nActors2) {
-        cache[[name]]$netFlowsNetwork <-
-          cache[[name]]$valuedNetwork - t(cache[[name]]$valuedNetwork)
-        cache[[name]]$minNetwork <-
-          matrix(
-            mapply(min, cache[[name]]$valuedNetwork, t(cache[[name]]$valuedNetwork)),
-            nActors1,
-            nActors2
-          )
-        diag(cache[[name]]$minNetwork) <- 0
-      }
-    } # end for loop
-
-    cache
+    cat(paste0("This function is not needed anymore since MoNAn version 1.0.0.", "\n", 
+               "The cache is automatically created and included in the process state."))
   }
 
 
@@ -703,8 +744,6 @@ createWeightedCache <-
 #'
 #' @param state An object of class "processState.monan" which contains all relevant information about
 #' the outcome in the form of an edgelist, the nodesets, and covariates.
-#' @param cache A cache object created from the same state object that is
-#' used in the estimation.
 #' @param effects An object of class "effectsList.monan" that specifies the model.
 #' @param algorithm An object of class "algorithm.monan" which specifies the algorithm used in the estimation.
 #' @param initialParameters Starting values for the parameters. Using starting
@@ -721,6 +760,9 @@ createWeightedCache <-
 #' This is necessary to run GoF tests.
 #' Note that this might result in very large objects.
 #' @param fish Logical: display a fish?
+#' @param saveAlg Specify whether the algorithm object should be saved in the
+#' results object. Defaults to FALSE.
+#' @param cache Outdated parameter, no need to specify.
 #'
 #' @return The function `estimateMobilityNetwork` returns an object of class "result.monan" that contains the estimates, standard errors,
 #' and convergence statistics. Furthermore, the covariance matrix used to calculate
@@ -728,8 +770,7 @@ createWeightedCache <-
 #' In case returnDeps = TRUE, the simulations of Phase 3 are included, too.
 #' @export
 #'
-#' @seealso [createProcessState()], [createWeightedCache()],
-#' [createEffectsObject()], [createAlgorithm()]
+#' @seealso [createProcessState()], [createEffectsObject()], [createAlgorithm()]
 #'
 #' @examples
 #' \donttest{
@@ -738,7 +779,7 @@ createWeightedCache <-
 #' myAlg_short <- createAlgorithm(myState, myEffects, multinomialProposal = FALSE,
 #'                                nsubN2 = 1, iterationsN3 = 100)
 #' 
-#' myResDN <- estimateMobilityNetwork(myState, myCache, myEffects, myAlg_short,
+#' myResDN <- estimateMobilityNetwork(myState, myEffects, myAlg_short,
 #'                                    initialParameters = NULL,
 #'                                    # in case a pseudo-likelihood estimation was run, replace with
 #'                                    # initialParameters = initEst,
@@ -756,7 +797,6 @@ createWeightedCache <-
 #' }
 estimateMobilityNetwork <-
   function(state,
-           cache,
            effects,
            algorithm,
            initialParameters = NULL,
@@ -765,8 +805,21 @@ estimateMobilityNetwork <-
            cpus = 1,
            verbose = FALSE,
            returnDeps = FALSE,
-           fish = FALSE) {
+           fish = FALSE,
+           saveAlg = TRUE,
+           cache = NULL) {
+    
+    if(!is.null(cache)){
+      warning(paste("The cache object is automatically included in the process state", 
+              "since MoNAn version 1.0.0 and does not need to be specified anymore."))
+    }
+    if(is.null(state$cache)){
+      stop(paste("The cache object is automatically included in the process state", 
+                    "since MoNAn version 1.0.0. Please recreate your process state."))
+    }
+    
     dep.var <- state$dep.var
+    cache <- state$cache
     
     # extract parameters from algorithm object
     
@@ -906,6 +959,10 @@ estimateMobilityNetwork <-
         deps = resPhase3$deps
       )
     }
+    
+    if (saveAlg) {
+      result[["algorithm"]] <- algorithm
+    }
 
     class(result) <- "result.monan"
 
@@ -924,6 +981,11 @@ estimateDistributionNetwork <- estimateMobilityNetwork
 #' @rdname estimateMobilityNetwork
 monan07 <- estimateMobilityNetwork
 
+#' monanEstimate
+#'
+#' @rdname estimateMobilityNetwork
+monanEstimate <- estimateMobilityNetwork
+
 
 #' simulateMobilityNetworks
 #'
@@ -935,8 +997,6 @@ monan07 <- estimateMobilityNetwork
 #' nodesets, and covariates. Further, an edgelist of the dependent variable needs
 #' to be specified with the initial mobility network as starting value for the
 #' simulation. For a large enough burn-in, any initial mobility network is allowed.
-#' @param cache A cache object created from the same state object that is
-#' used in the simulation.
 #' @param effects An object of class "effectsList.monan" that specifies the model.
 #' @param parameters The parameters associated with the effects that shall be used
 #' in the simulations.
@@ -948,6 +1008,7 @@ monan07 <- estimateMobilityNetwork
 #' @param thinning The number of simulation steps that are taken between two draws of a
 #' network. A recommended value for the lower bound is n_Individuals * n_locations.
 #' @param nSimulations The number of mobility networks to be simulated.
+#' @param cache Outdated parameter, no need to specify.
 #'
 #' @return An object of class "sims.monan" with nSimulations entries, where each entry contains a further list with the
 #' state and the cache of the current simulation stored.
@@ -960,7 +1021,6 @@ monan07 <- estimateMobilityNetwork
 #' # in real cases, choose values aprrox. times 10
 #' mySimDN <- simulateMobilityNetworks(
 #'   myState,
-#'   myCache,
 #'   myEffects,
 #'   parameters = c(2, 1, 1.5, 0.1, -1, -0.5),
 #'   allowLoops = TRUE,
@@ -973,14 +1033,25 @@ monan07 <- estimateMobilityNetwork
 #' }
 simulateMobilityNetworks <-
   function(state,
-           cache,
            effects,
            parameters,
            allowLoops,
            burnin,
            thinning,
-           nSimulations) {
+           nSimulations,
+           cache = NULL) {
+    
+    if(!is.null(cache)){
+      warning(paste("The cache object is automatically included in the process state", 
+                    "since MoNAn version 1.0.0 and does not need to be specified anymore."))
+    }
+    if(is.null(state$cache)){
+      stop(paste("The cache object is automatically included in the process state", 
+                    "since MoNAn version 1.0.0. Please recreate your process state."))
+    }
+    
     dep.var <- state$dep.var
+    cache <- state$cache
     
     # generate a state and cache after burnin with parameters
     r <-
@@ -994,7 +1065,7 @@ simulateMobilityNetworks <-
         n = burnin
       )
 
-    # extract state amd cache
+    # extract state and cache
     simState <- r$state
     simCache <- r$cache
 
@@ -1030,3 +1101,9 @@ simulateMobilityNetworks <-
 #'
 #' @rdname simulateMobilityNetworks
 simulateDistributionNetworks <- simulateMobilityNetworks
+
+#' monanSimulate
+#'
+#' @rdname simulateMobilityNetworks
+monanSimulate <- simulateMobilityNetworks
+

@@ -4,12 +4,12 @@
 \alias{estimateMobilityNetwork}
 \alias{estimateDistributionNetwork}
 \alias{monan07}
+\alias{monanEstimate}
 \alias{print.result.monan}
 \title{estimateMobilityNetwork}
 \usage{
 estimateMobilityNetwork(
   state,
-  cache,
   effects,
   algorithm,
   initialParameters = NULL,
@@ -18,12 +18,13 @@ estimateMobilityNetwork(
   cpus = 1,
   verbose = FALSE,
   returnDeps = FALSE,
-  fish = FALSE
+  fish = FALSE,
+  saveAlg = TRUE,
+  cache = NULL
 )
 
 estimateDistributionNetwork(
   state,
-  cache,
   effects,
   algorithm,
   initialParameters = NULL,
@@ -32,12 +33,13 @@ estimateDistributionNetwork(
   cpus = 1,
   verbose = FALSE,
   returnDeps = FALSE,
-  fish = FALSE
+  fish = FALSE,
+  saveAlg = TRUE,
+  cache = NULL
 )
 
 monan07(
   state,
-  cache,
   effects,
   algorithm,
   initialParameters = NULL,
@@ -46,7 +48,24 @@ monan07(
   cpus = 1,
   verbose = FALSE,
   returnDeps = FALSE,
-  fish = FALSE
+  fish = FALSE,
+  saveAlg = TRUE,
+  cache = NULL
+)
+
+monanEstimate(
+  state,
+  effects,
+  algorithm,
+  initialParameters = NULL,
+  prevAns = NULL,
+  parallel = FALSE,
+  cpus = 1,
+  verbose = FALSE,
+  returnDeps = FALSE,
+  fish = FALSE,
+  saveAlg = TRUE,
+  cache = NULL
 )
 
 \method{print}{result.monan}(x, covMat = FALSE, ...)
@@ -54,9 +73,6 @@ monan07(
 \arguments{
 \item{state}{An object of class "processState.monan" which contains all relevant information about
 the outcome in the form of an edgelist, the nodesets, and covariates.}
-
-\item{cache}{A cache object created from the same state object that is
-used in the estimation.}
 
 \item{effects}{An object of class "effectsList.monan" that specifies the model.}
 
@@ -82,6 +98,11 @@ This is necessary to run GoF tests.
 Note that this might result in very large objects.}
 
 \item{fish}{Logical: display a fish?}
+
+\item{saveAlg}{Specify whether the algorithm object should be saved in the
+results object. Defaults to FALSE.}
+
+\item{cache}{Outdated parameter, no need to specify.}
 
 \item{x}{An object of class "result.monan".}
 
@@ -110,7 +131,7 @@ mobility tables is estimated.
 myAlg_short <- createAlgorithm(myState, myEffects, multinomialProposal = FALSE,
                                nsubN2 = 1, iterationsN3 = 100)
 
-myResDN <- estimateMobilityNetwork(myState, myCache, myEffects, myAlg_short,
+myResDN <- estimateMobilityNetwork(myState, myEffects, myAlg_short,
                                    initialParameters = NULL,
                                    # in case a pseudo-likelihood estimation was run, replace with
                                    # initialParameters = initEst,
@@ -129,6 +150,5 @@ myResDN
 myResDN
 }
 \seealso{
-\code{\link[=createProcessState]{createProcessState()}}, \code{\link[=createWeightedCache]{createWeightedCache()}},
-\code{\link[=createEffectsObject]{createEffectsObject()}}, \code{\link[=createAlgorithm]{createAlgorithm()}}
+\code{\link[=createProcessState]{createProcessState()}}, \code{\link[=createEffectsObject]{createEffectsObject()}}, \code{\link[=createAlgorithm]{createAlgorithm()}}
 }

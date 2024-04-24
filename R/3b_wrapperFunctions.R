@@ -5,10 +5,9 @@
 #' 
 #' A function to add addtional effects to a moman effects object
 #'
-#' @param effectsObject The moman Effects object to which another
+#' @param effectsObject The monan Effects object to which another
 #' effect should be added.
-#' @param effectName The name of the effect that should be added
-#' as a character in quotes (e.g. "loops")
+#' @param effectName The name of the effect that should be added (e.g. loops).
 #' @param ... Additional parameters of the effect, for example alpha,
 #' attribute.index, or resource.attribute.index
 #'
@@ -32,8 +31,16 @@ addEffect <- function(effectsObject, effectName, ...){
   eff.state <- effectsObject$state
   nEffects.prev <- length(effectsObject$effectFormulas)
   
-  new.eff <- createEffectsObject(effectInit = list(list(effectName, ...)),
-                                 checkProcessState = eval(parse(text = eff.state)))
+  dots <- list(...)
+  effect_arg <- c(effectName, dots)
+  
+  names(effect_arg)[names(effect_arg) == "node.attribute"] <- "attribute.index"
+  names(effect_arg)[names(effect_arg) == "edge.attribute"] <- "resource.attribute.index"
+  
+  new.eff <- do.call(createEffectsObject, 
+                     list( effectInit = list(effect_arg) , 
+                           checkProcessState = eval(parse(text = eff.state)) ))
+  
   effectsObject$effectFormulas[[(nEffects.prev + 1)]] <- new.eff$effectFormulas[[1]]
   if(new.eff$name[1] %in% effectsObject$name) stop(paste("Effect", new.eff$name[1], "already included in the effects object"))
   effectsObject$name[(nEffects.prev + 1)] <- new.eff$name[1]
@@ -57,7 +64,10 @@ addEffect <- function(effectsObject, effectName, ...){
 createEffects <- function(state){
   l <- list(effectFormulas = list(),
             name = c(),
-            state = deparse(substitute(state)))
+            state = deparse(substitute(state)),
+            nodeset1 = state[[state$dep.var]]$nodeSet[1],
+            nodeset2 = state[[state$dep.var]]$nodeSet[3]
+            )
   class(l) <- "effectsList.monan"
   l
 }

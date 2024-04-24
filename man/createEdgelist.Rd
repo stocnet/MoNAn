@@ -2,9 +2,12 @@
 % Please edit documentation in R/3_coreFunctions.R
 \name{createEdgelist}
 \alias{createEdgelist}
+\alias{monanDependent}
 \title{createEdgelist}
 \usage{
-createEdgelist(el, nodeSet = c("location", "location", "individuals"))
+createEdgelist(el, nodeSet = NULL, nodes = NULL, edges = NULL)
+
+monanDependent(el, nodeSet = NULL, nodes = NULL, edges = NULL)
 }
 \arguments{
 \item{el}{An edgelist in the form of a matrix with two columns and N rows.
@@ -14,6 +17,12 @@ Each row represents one observation.}
 \item{nodeSet}{The nodesets of the edgelists. This is a vector with three
 entries referencing the names of the nodesets of locations and individuals
 of the form c(location, location, individuals).}
+
+\item{nodes}{Alternative way to specify the nodeSet by naming nodes and edges:
+nodes denote the locations in the edgelist}
+
+\item{edges}{Alternative way to specify the nodeSet by naming nodes and edges:
+edges denote the individuals in the edgelist}
 }
 \value{
 An object of class "edgelist.monan".

@@ -32,7 +32,7 @@ test_effect <- function(effectName, ...){
     if(x[4] !=1 ){
       paste("edge = ", edge, ", sug_dest = ", sug_dest, ": NO PRECISE MATCH")
     }
-    docu[edge,] <- c(myState[[1]]$data[edge,1], myState[[1]]$data[edge,2], sug_dest, x)
+    docu[edge,] <- c(lililiState[[1]]$data[edge,1], lililiState[[1]]$data[edge,2], sug_dest, x)
   }
   if(all(docu[,7] == 1)){
     print("No mis-match found")
@@ -59,16 +59,16 @@ test_effect <- function(effectName, ...){
 #'
 #' @keywords internal
 target_change_match <- function(edge, j_new, effectName, ...){
-  i_test <- myState[[1]]$data[edge,1]
-  j_test <- myState[[1]]$data[edge,2]
+  i_test <- lililiState[[1]]$data[edge,1]
+  j_test <- lililiState[[1]]$data[edge,2]
   
   count1 <- 0
   
   for(i in 1:17){
     for(j in 1:17){
       count1 <- count1 + match.fun(effectName)(dep.var = 1,
-                                               state = myState, 
-                                               cache = myCache, 
+                                               state = lililiState, 
+                                               cache = lililiCache, 
                                                i = i, j = j, 
                                                edge = 1,   
                                                update = 1,
@@ -80,48 +80,48 @@ target_change_match <- function(edge, j_new, effectName, ...){
   count1
 
   change <- match.fun(effectName)(dep.var = 1,
-                                  state = myState, 
-                                  cache = myCache, 
+                                  state = lililiState, 
+                                  cache = lililiCache, 
                                   i = i_test, j = j_test, 
                                   edge = edge, 
                                   update = -1,
                                   getTargetContribution = F,
                                   ...)
-  myUpdtCache <- myCache
-  myUpdtCache[[1]] <-
+  lililiUpdtCache <- lililiCache
+  lililiUpdtCache[[1]] <-
     updateWeightedCache(
-      myCache[[1]],
+      lililiCache[[1]],
       i_test,
       j_test,
       resourceID = edge,
-      state = myState,
+      state = lililiState,
       dep.var = 1,
       update = -1
     )
   
   change <- change + match.fun(effectName)(dep.var = 1,
-                                           state = myState, 
-                                           cache = myUpdtCache, 
+                                           state = lililiState, 
+                                           cache = lililiUpdtCache, 
                                            i = i_test, j = j_new, 
                                            edge = edge, 
                                            update = 1,
                                            getTargetContribution = F,
                                            ...)
   
-  myNewState <- myState
+  lililiNewState <- lililiState
   
-  myNewState[[1]]$data[edge,2] <- j_new
+  lililiNewState[[1]]$data[edge,2] <- j_new
   
   # create cache
-  myNewCache <- createWeightedCache(myNewState, resourceCovariates = c("sex"))
+  lililiNewCache <- createInternalCache(lililiNewState, resourceCovariates = c("sex"))
   
   count2 <- 0
   
   for(i in 1:17){
     for(j in 1:17){
       count2 <- count2 + match.fun(effectName)(dep.var = 1,
-                                               state = myNewState, 
-                                               cache = myNewCache, 
+                                               state = lililiNewState, 
+                                               cache = lililiNewCache, 
                                                i = i, j = j, 
                                                edge = 1, 
                                                update = 1, 

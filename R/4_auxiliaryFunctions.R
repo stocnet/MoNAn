@@ -30,7 +30,7 @@ autoCorrelationTest <- function(ans) {
   means <- c()
   for (i in 1:nSims) {
     means[i] <-
-      mean(ans$deps[[i]]$state[[dep.var]]$data[, 2] == ans$deps[[(i + 1)]]$state[[dep.var]]$data[, 2])
+      mean(ans$deps[[i]]$data[, 2] == ans$deps[[(i + 1)]]$data[, 2])
   }
 
   mean(means)
@@ -65,25 +65,25 @@ extractTraces <- function(ans, effects) {
   if (is.null(ans$deps)) {
     stop("ans object does not have simulated states stored; use returnDeps = TRUE in estimation")
   }
-
+  
   # get statistics of the observed network using state and cache from ans object
   obsStats <-
     getNetworkStatistics(dep.var, ans$state, ans$cache, effects)
-
+  
   # get a matrix of statistics from the simulated data in the ans object
   simStatsMatrix <-
     Reduce("rbind", lapply(ans$deps, function(x) {
-      getNetworkStatistics(dep.var, x$state, x$cache, effects)
+      getNetStatsFromDeps(dep.var, x, ans, effects)
     }))
-
+  
   results <- list(
     observedStats = obsStats,
     simulatedStats = simStatsMatrix,
     effectNames = effects$name
   )
-
+  
   class(results) <- "traces.monan"
-
+  
   results
 }
 
@@ -97,22 +97,32 @@ extractTraces <- function(ans, effects) {
 #' convergence in the first run of the estimation considerably.
 #'
 #' @param state An object of class "processState.monan" that stores all information to be used in the model.
-#' @param cache A cache object that contains intermediate information used for estimation.
 #' @param effects An object of class "effectsList.monan" for which the statistics of a multinomial
 #' model should be calculated.
+#' @param cache Outdated parameter, no need to specify.
 #'
 #' @return A data frame with N * M rows (N = mobile individuals, M = number of locations)
 #' that specifies for each observation the statistics associated with moving to this location.
 #' @export
 #'
-#' @seealso [createProcessState()], [createWeightedCache()], [createEffectsObject()]
+#' @seealso [createProcessState()], [createEffectsObject()]
 #' 
 #' @examples
-#' myStatisticsFrame <- getMultinomialStatistics(myState, myCache, myEffects)
+#' myStatisticsFrame <- getMultinomialStatistics(myState, myEffects)
 getMultinomialStatistics <-
-  function(state, cache, effects) {
+  function(state, effects, cache = NULL) {
+    
+    if(!is.null(cache)){
+      warning(paste("The cache object is automatically included in the process state", 
+                    "since MoNAn version 1.0.0 and does not need to be specified anymore."))
+    }
+    if(is.null(state$cache)){
+      stop(paste("The cache object is automatically included in the process state", 
+                    "since MoNAn version 1.0.0. Please recreate your process state."))
+    }
     
     dep.var <- state$dep.var
+    cache <- state$cache
     # create a list that will store all statistics
     statsVec <- list()
     
@@ -190,13 +200,12 @@ getMultinomialStatistics <-
 #' statistics are well captured by the model. The logic behind gof testing for network models is outlined in 
 #' Hunter et al. (2008) and Lospinoso and Snijders (2019).
 #'
-#' @param ans An object of class "result.monan" resulting from an estimation with the function [estimateMobilityNetwork()].
-#' @param simulations The simulated outcomes with which the observed statistics are compared.
-#' Usually, they are stored in the ans$deps, in case deps = TRUE was specified in the 
-#' estimation.
+#' @param ans An object of class "result.monan" resulting from an estimation 
+#' with the function [estimateMobilityNetwork()] using the option deps = TRUE.
 #' @param gofFunction A gof function that specifies which auxiliary outcome should be used, 
 #' e.g., "getIndegree" or "getTieWeights".
 #' @param lvls The values for which the gofFunction should be calculated/plotted.
+#' @param simulations outdated parameter, no need to specify
 #'
 #' @return The function `gofMobilityNetwork` returns a list containing 
 #' (1) the observed values of the auxiliary statistics and
@@ -215,33 +224,42 @@ getMultinomialStatistics <-
 #' @examples
 #' # goodness of fit
 #' myGofIndegree <- gofMobilityNetwork(ans = myResDN, 
-#'                                         simulations = myResDN$deps, 
-#'                                         gofFunction = getIndegree, 
-#'                                         lvls = 1:100)
+#'                                     gofFunction = getIndegree, 
+#'                                     lvls = 1:100)
 #' 
 #' myGofTieWeight <- gofMobilityNetwork(ans = myResDN, 
-#'                                          simulations = myResDN$deps, 
-#'                                          gofFunction = getTieWeights, 
-#'                                          lvls = 1:30)
+#'                                      gofFunction = getTieWeights, 
+#'                                      lvls = 1:30)
 gofMobilityNetwork <-
   function(ans,
-           simulations,
            gofFunction,
-           lvls = NULL) {
+           lvls = NULL,
+           simulations = NULL) {
     dep.var <- ans$state$dep.var
-
+    
+    if(!is.null(simulations)){
+      warning("parameter simulations does not need to be specified anymore 
+              since MoNAn version 1.0.0")
+    }
+    if (is.null(ans$deps)) {
+      stop("ans object does not have simulated states stored; 
+           use returnDeps = TRUE in estimation")
+    }
+    
     # generate a list that contains all states for the dep.var with the observed in first place
     allStates <- list()
     allStates[[1]] <- ans$state
-    for (i in 2:(length(simulations) + 1)) {
-      allStates[[i]] <- simulations[[i - 1]]$state
+    for (i in 2:(length(ans$deps) + 1)) {
+      allStates[[i]] <- allStates[[1]]
+      allStates[[i]][[dep.var]] <- ans$deps[[(i-1)]]
     }
     allCaches <- list()
     allCaches[[1]] <- ans$cache
-    for (i in 2:(length(simulations) + 1)) {
-      allCaches[[i]] <- simulations[[i - 1]]$cache
+    resCovsInCache <- names(ans$cache[[dep.var]]$resourceNetworks)
+    for (i in 2:(length(ans$deps) + 1)) {
+      allCaches[[i]] <- createInternalCache(allStates[[i]], resourceCovariates = resCovsInCache)
     }
-
+    
     gofStats <-
       lapply(1:length(allCaches), function(i) {
         gofFunction(
@@ -262,6 +280,13 @@ gofMobilityNetwork <-
 #'
 #' @rdname gofMobilityNetwork
 gofDistributionNetwork <- gofMobilityNetwork
+
+
+#' monanGOF
+#'
+#' @rdname gofMobilityNetwork
+monanGOF <- gofMobilityNetwork
+
 
 #' plot.gof.stats.monan
 #'
@@ -312,6 +337,177 @@ plot.traces.monan <- function(x, ...) {
       col = "red"
     )
   }
+}
+
+
+#' print.effectsList.monan
+#'
+#' @param x An object of class "effectsList.monan".
+#' @param ... For internal use only.
+#'
+#' @return The function `print.effectsList.monan` gives an overview of the 
+#' specified effects.
+#' @export
+#'
+#' @examples
+#' myEffects
+print.effectsList.monan <- function(x, ...) {
+  
+  df <- as.data.frame(matrix(nrow = 0, ncol = 4))
+  colnames(df) <- c("name", paste0("covariate_", x$nodeset1), paste0("covariate_", x$nodeset2), "parameter")
+  
+  # fill table
+  for (i in 1:length(x[["name"]])) {
+    
+    df[nrow(df) + 1, ]$name <- strsplit(x[["name"]][i], split = " ")[[1]][1]
+    
+    if (!is.null(formals(x[["effectFormulas"]][[i]])[["attribute.index"]])) {
+      df[nrow(df), paste0("covariate_", x$nodeset1)] <- formals(x[["effectFormulas"]][[i]])[["attribute.index"]]
+    } else {
+      df[nrow(df), paste0("covariate_", x$nodeset1)] <- "-"
+    }
+    
+    if (!is.null(formals(x[["effectFormulas"]][[i]])[["resource.attribute.index"]])) {
+      df[nrow(df), paste0("covariate_", x$nodeset2)] <- formals(x[["effectFormulas"]][[i]])[["resource.attribute.index"]]
+    } else {
+      df[nrow(df), paste0("covariate_", x$nodeset2)] <- "-"
+    }
+    
+    if (!is.null(formals(x[["effectFormulas"]][[i]])[["alpha"]])) {
+      df[nrow(df), ]$parameter <- formals(x[["effectFormulas"]][[i]])[["alpha"]]
+    } 
+    if (!is.null(formals(x[["effectFormulas"]][[i]])[["lambda"]])) {
+      df[nrow(df), ]$parameter <- formals(x[["effectFormulas"]][[i]])[["lambda"]]
+    }
+    if (is.na(df[nrow(df), ]$parameter)) {
+      df[nrow(df), ]$parameter <- "-"
+    }
+    
+  }
+  rownames(df) <- c(1:nrow(df))
+  
+  colnames(df) <- c("effect name", paste0("cov. ", x$nodeset1), paste0("cov. ", x$nodeset2), "parameter")
+  
+  names(df)[1] <- format(names(df)[1], 
+                          width = max(nchar(names(df[1])), max(nchar(df[,1]))),
+                          justify = "left")
+  names(df)[2] <- format(names(df)[2], 
+                          width = max(nchar(names(df[2])), max(nchar(df[,2]))),
+                          justify = "centre")
+  names(df)[3] <- format(names(df)[3], 
+                          width = max(nchar(names(df[3])), max(nchar(df[,3]))),
+                          justify = "centre")
+  names(df)[4] <- format(names(df)[4], 
+                         width = max(nchar(names(df[3])), max(nchar(df[,3]))),
+                         justify = "centre")
+  df[,2] <- format(df[,2], 
+                  width = max(nchar(names(df[2])), max(nchar(df[,2]))),
+                  justify = "centre")
+  df[,3] <- format(df[,3], 
+                  width = max(nchar(names(df[3])), max(nchar(df[,3]))),
+                  justify = "centre")
+  df[,4] <- format(df[,4], 
+                  width = max(nchar(names(df[3])), max(nchar(df[,3]))),
+                  justify = "centre")
+  df[,1] <- format(df[,1], justify = "left")
+  
+  cat("Effects\n")
+  print(df, row.names = FALSE)
+}
+
+
+#' print.processState.monan
+#'
+#' @param x An object of class "processState.monan".
+#' @param ... For internal use only.
+#'
+#' @return The function `print.processState.monan` gives an overview of the information 
+#' included in the state object.
+#' @export
+#'
+#' @examples
+#' myState
+print.processState.monan <- function(x, ...) {
+  
+  dep.var <- x$dep.var
+  nodesets <- x[[dep.var]]$nodeSet
+  covars <- names(x)[!(names(x) %in% c(dep.var, nodesets, "dep.var", "cache"))]
+
+  cat(paste("dependent variable:", dep.var, "with",
+            length(x[[nodesets[3]]]$ids), nodesets[3], "mobile between",
+            length(x[[nodesets[1]]]$ids), nodesets[1]), "\n")
+  cat("\n")
+
+  # covariates of nodeset 1
+  df1 <- as.data.frame(matrix(nrow = 0, ncol = 3))
+  colnames(df1) <- c("cov. name", "range", "mean")
+
+  # fill table
+  if(length(covars) > 0){
+    for (i in 1:length(covars)) {
+      
+      if (nodesets[1] %in% x[[covars[i]]]$nodeSet) {
+        
+        df1[nrow(df1) + 1, ]$'cov. name' <- covars[i]
+        df1[nrow(df1), ]$range <-
+          paste0(round(min(x[[covars[i]]]$data, na.rm = TRUE), digits = 2), "-",
+                 round(max(x[[covars[i]]]$data, na.rm = TRUE), digits = 2))
+        df1[nrow(df1), ]$mean <- round(mean(x[[covars[i]]]$data, na.rm = TRUE),
+                                       digits = 2)
+      }
+    }
+    rownames(df1) <- c(1:nrow(df1))
+  }
+
+  cat(paste("covariates of", nodesets[1]), "\n")
+  names(df1)[1] <- format(names(df1)[1], 
+                          width = max(nchar(names(df1[1])), max(nchar(df1[,1]))),
+                          justify = "left")
+  names(df1)[2] <- format(names(df1)[2], 
+                          width = max(nchar(names(df1[2])), max(nchar(df1[,2]))),
+                          justify = "centre")
+  names(df1)[3] <- format(names(df1)[3], 
+                          width = max(nchar(names(df1[3])), max(nchar(df1[,3]))),
+                          justify = "centre")
+  df1[,2:3] <- format(df1[,2:3], justify = "centre")
+  df1[,1] <- format(df1[,1], justify = "left")
+  print(df1, row.names = FALSE)
+  cat("\n")
+
+  # covariates of nodeset 2
+  df2 <- as.data.frame(matrix(nrow = 0, ncol = 3))
+  colnames(df2) <- c("cov. name", "range", "mean")
+  # fill table
+  if(length(covars) > 0){
+    for (i in 1:length(covars)) {
+      
+      if (nodesets[3] %in% x[[covars[i]]]$nodeSet) {
+        
+        df2[nrow(df2) + 1, ]$'cov. name' <- covars[i]
+        df2[nrow(df2), ]$range <-
+          paste0(round(min(x[[covars[i]]]$data, na.rm = TRUE), digits = 2), "-",
+                 round(max(x[[covars[i]]]$data, na.rm = TRUE), digits = 2))
+        df2[nrow(df2), ]$mean <- round(mean(x[[covars[i]]]$data, na.rm = TRUE),
+                                       digits = 2)
+      }
+    }
+    rownames(df2) <- c(1:nrow(df2))
+  }
+
+  cat(paste("covariates of", nodesets[3]), "\n")
+  names(df2)[1] <- format(names(df2)[1], 
+                          width = max(nchar(names(df2[1])), max(nchar(df2[,1]))),
+                          justify = "left")
+  names(df2)[2] <- format(names(df2)[2], 
+                          width = max(nchar(names(df2[2])), max(nchar(df2[,2]))),
+                          justify = "centre")
+  names(df2)[3] <- format(names(df2)[3], 
+                          width = max(nchar(names(df2[3])), max(nchar(df2[,3]))),
+                          justify = "centre")
+  
+  df2[,2:3] <- format(df2[,2:3], justify = "centre")
+  df2[,1] <- format(df2[,1], justify = "left")
+  print(df2, row.names = FALSE)
 }
 
 
@@ -372,18 +568,8 @@ print.result.monan <- function(x, covMat = FALSE, ...) {
 #' @examples
 #' \donttest{
 #' # test whether other effects should be included
-#' myEffects2 <- createEffectsObject(
-#'   list(
-#'     list("loops"),
-#'     list("reciprocity_min"),
-#'     list("dyadic_covariate", attribute.index = "sameRegion"),
-#'     list("alter_covariate", attribute.index = "size"),
-#'     list("resource_covar_to_node_covar", attribute.index = "region", 
-#'           resource.attribute.index = "sex"),
-#'     list("loops_resource_covar", resource.attribute.index = "sex"),
-#'     list("transitivity_min")
-#'   )
-#' )
+#' myEffects2 <- createEffects(myState) |>
+#'   addEffect(transitivity_min)
 #' 
 #' test_ME.2 <- scoreTest(myResDN, myEffects2)
 #' }
@@ -401,9 +587,9 @@ scoreTest <- function(ans, effects) {
   # get a matrix of statistics from the simulated data in the ans object
   simStatsMatrix <-
     Reduce("rbind", lapply(ans$deps, function(x) {
-      getNetworkStatistics(dep.var, x$state, x$cache, effects)
+      getNetStatsFromDeps(dep.var, x, ans, effects)
     }))
-
+  
   # get parametric p-values using mean and sd
   p.vals.par <-
     2 * pnorm(-abs(((obsStats - colMeans(simStatsMatrix)) / apply(simStatsMatrix, 2, sd)

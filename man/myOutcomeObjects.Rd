@@ -4,7 +4,6 @@
 \name{myOutcomeObjects}
 \alias{myOutcomeObjects}
 \alias{myState}
-\alias{myCache}
 \alias{myEffects}
 \alias{myAlg}
 \alias{myResDN}
@@ -14,11 +13,9 @@
 \code{myState}
 An object of class "processState.monan" created by the function \code{\link[=createProcessState]{createProcessState()}}.
 
-\code{myCache}
-A "list" created by the function \code{\link[=createWeightedCache]{createWeightedCache()}}.
-
 \code{myEffects}
-An object of class "effectsList.monan" created by the function \code{\link[=createEffectsObject]{createEffectsObject()}}.
+An object of class "effectsList.monan" created by the function \code{\link[=createEffectsObject]{createEffectsObject()}}
+or \code{\link[=createEffects]{createEffects()}}.
 
 \code{myAlg}
 An object of class "algorithm.monan" created by the function \code{\link[=createAlgorithm]{createAlgorithm()}}.

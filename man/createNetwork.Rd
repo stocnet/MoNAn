@@ -2,13 +2,23 @@
 % Please edit documentation in R/3_coreFunctions.R
 \name{createNetwork}
 \alias{createNetwork}
+\alias{dyadicCovar}
 \title{createNetwork}
 \usage{
 createNetwork(
   m,
   isSymmetric = FALSE,
   isBipartite = FALSE,
-  nodeSet = c("actors", "actors")
+  nodeSet = NULL,
+  nodes = NULL
+)
+
+dyadicCovar(
+  m,
+  isSymmetric = FALSE,
+  isBipartite = FALSE,
+  nodeSet = NULL,
+  nodes = NULL
 )
 }
 \arguments{
@@ -20,6 +30,9 @@ createNetwork(
 
 \item{nodeSet}{Which nodeset are the nodes of the network. Usually this will
 be the locations in the data.}
+
+\item{nodes}{Alternative way to specify the nodeSet by naming nodes:
+nodes denote the locations in the edgelist}
 }
 \value{
 An object of class "network.monan".

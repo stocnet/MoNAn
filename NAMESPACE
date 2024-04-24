@@ -1,19 +1,25 @@
 # functions to be exported
 export(
   
-  # core functions
-  createAlgorithm, createEdgelist, createEffectsObject, createNetwork, 
-  createNodeSet, createNodeVariable, createProcessState, createWeightedCache,
-  createEffects, addEffect,
-  monanDataCreate, monanAlgorithmCreate,
-  estimateMobilityNetwork, estimateDistributionNetwork, monan07,
-  simulateMobilityNetworks, simulateDistributionNetworks,
+  # core functions and aliases
+  createAlgorithm, monanAlgorithmCreate,
+  createEdgelist, monanDependent, 
+  createEffectsObject, createEffects, addEffect,
+  createNetwork, dyadicCovar,
+  createNodeSet, monanNodes, monanEdges,
+  createNodeVariable, monadicCovar,
+  createProcessState, monanDataCreate,
+  createWeightedCache,
+  estimateMobilityNetwork, estimateDistributionNetwork, monan07, monanEstimate,
+  simulateMobilityNetworks, simulateDistributionNetworks, monanSimulate,
   
   # auxiliary functions
   autoCorrelationTest, extractTraces, 
-  getMultinomialStatistics, gofDistributionNetwork, gofMobilityNetwork, 
+  getMultinomialStatistics, 
+  gofDistributionNetwork, gofMobilityNetwork, monanGOF,
   plot.gof.stats.monan, 
   plot.traces.monan, print.result.monan, print.scoretest.monan, scoreTest,
+  print.processState.monan, print.effectsList.monan,
   
   # test functions
   target_change_match,
@@ -33,7 +39,11 @@ export(
 
   # effect functions: concentration
   concentration_basic, concentration_GW, concentration_GW_dyad_covar,
+  concentration_GW_resource_covar_bin,
   concentration_prop, concentration_prop_orig_cov, concentration_rankGW,
+  concentration_basic_squared,
+  concentration_norm, 
+  concentration_norm_squared,
 
   # effect functions: reciprocity
   reciprocity_basic,
@@ -70,3 +80,5 @@ S3method(print, result.monan)
 S3method(plot, traces.monan)
 S3method(plot, gof.stats.monan)
 S3method(print, scoretest.monan)
+S3method(print, processState.monan)
+S3method(print, effectsList.monan)

@@ -2,14 +2,27 @@
 % Please edit documentation in R/3_coreFunctions.R
 \name{createNodeVariable}
 \alias{createNodeVariable}
+\alias{monadicCovar}
 \title{createNodeVariable}
 \usage{
 createNodeVariable(
   values,
   range = NULL,
-  nodeSet = "actors",
-  addSame = FALSE,
-  addSim = FALSE
+  nodeSet = NULL,
+  nodes = NULL,
+  edges = NULL,
+  addSame = NULL,
+  addSim = NULL
+)
+
+monadicCovar(
+  values,
+  range = NULL,
+  nodeSet = NULL,
+  nodes = NULL,
+  edges = NULL,
+  addSame = NULL,
+  addSim = NULL
 )
 }
 \arguments{
@@ -18,6 +31,12 @@ createNodeVariable(
 \item{range}{The range of possible values, currently not in use.}
 
 \item{nodeSet}{The nodeset to which the covariate applies.}
+
+\item{nodes}{Alternative way to specify the nodeSet by naming nodes or edges:
+nodes denote the locations in the edgelist}
+
+\item{edges}{Alternative way to specify the nodeSet by naming nodes or edges:
+edges denote the individuals in the edgelist}
 
 \item{addSame}{Will the variable be used to model categorical homophily (e.g.,
 with the same_covariate effect)? In this case, addSame needs to be set to TRUE.}

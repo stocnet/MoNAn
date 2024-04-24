@@ -1,6 +1,25 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
+## Imortant:
+
+This is version 1.0.0 of MoNAn. This update includes many changes,
+including some that mean old code written for older versions will not
+work anymore!
+
+Code use has been simplified; the most important changes are:
+
+- the cache is now hidden from the user and does not need to be create
+  or specified in functions anymore
+
+- there is a new way to specify the model with createEffects and
+  addEffect
+
+- in gofMobilityNetwork there is no need to specify “simulations”
+  anymore
+
+- new way to generate the process state using monanDataCreate
+
 # MoNAn
 
 <!-- badges: start -->
@@ -14,7 +33,7 @@ the analysis of mobility tables as weighted networks with an application
 to faculty hiring networks. Social Networks, 68, 264-278.
 
 [Link to the study in Social
-Networks](https://www.sciencedirect.com/science/article/pii/S0378873321000654).
+Networks](https://doi.org/10.1016/j.socnet.2021.08.003).
 
 [Pre-print with minor differences to the journal
 version](https://osf.io/preprints/socarxiv/n86rx/).
@@ -40,7 +59,7 @@ you might not be able to do what you want. In that case, or if you are
 unsure please write the package maintainer under his institutional email
 address.
 
-We are currently (Feb 2024) on version 0.2.0 on github. Version 0.1.3
+We are currently (Mar 2024) on version 1.0.0 on github. Version 0.1.3
 was released to CRAN in Feb 2024.
 
 # Installation
@@ -132,15 +151,18 @@ N_ind <- nrow(mobilityEdgelist)
 N_org <- length(unique(as.numeric(mobilityEdgelist)))
 
 # create monan objects
-people <- createNodeSet(N_ind)
-organisations <- createNodeSet(N_org)
-transfers <- createEdgelist(mobilityEdgelist, nodeSet = c("organisations", "organisations", 
-                                                          "people"))
+people <- monanEdges(N_ind)
+organisations <- monanNodes(N_org)
+transfers <- monanDependent(mobilityEdgelist, 
+                            nodes = "organisations", 
+                            edges = "people")
+
 sameRegion <- outer(orgRegion, orgRegion, "==") * 1
-sameRegion <- createNetwork(sameRegion, nodeSet = c("organisations", "organisations"))
-region <- createNodeVariable(orgRegion, nodeSet = "organisations")
-size <- createNodeVariable(orgSize, nodeSet = "organisations", addSim = TRUE)
-sex <- createNodeVariable(indSex, nodeSet = "people")
+sameRegion <- dyadicCovar(sameRegion, nodeSet = c("organisations", "organisations"))
+
+region <- monadicCovar(orgRegion, nodeSet = "organisations")
+size <- monadicCovar(orgSize, nodeSet = "organisations")
+sex <- monadicCovar(indSex, nodeSet = "people", addSame = F, addSim = F)
 ```
 
 We combine the data objects into the process state, i.e., a MoNAn object
@@ -156,15 +178,20 @@ myState <- monanDataCreate(transfers,
                            region,
                            size,
                            sex)
-```
 
-We create a cache (a necessary object used in the estimation of the
-model). In case variables of the individuals in the data are included in
-the state (here: “sex”), they need to be explicitly mentioned in the
-creation of the cache under “resourceCovariates”.
-
-``` r
-myCache <- createWeightedCache(myState, resourceCovariates = c("sex"))
+# inspect the created object
+myState
+#> dependent variable: transfers with 742 people mobile between 17 organisations 
+#> 
+#> covariates of organisations 
+#>  cov. name    range    mean
+#>  sameRegion    0-1     0.52
+#>  region        0-1     0.41
+#>  size       2.85-10.45 7.09
+#> 
+#> covariates of people 
+#>  cov. name range mean
+#>        sex   0-1 0.53
 ```
 
 ### Specifying the model
@@ -186,16 +213,29 @@ myEffects <- addEffect(myEffects, resource_covar_to_node_covar,
                        resource.attribute.index = "sex")
 myEffects <- addEffect(myEffects, loops_resource_covar, resource.attribute.index = "sex")
 
-# or simpler:
+# There is also a simpler way using pipes (|>) and using the more intuitive
+# node.attribute & edge.attribute instead of the older 
+# attribute.index & resource.attribute.index:
 myEffects <- createEffects(myState) |>
   addEffect(loops) |>
   addEffect(reciprocity_min) |>
-  addEffect(dyadic_covariate, attribute.index = "sameRegion") |>
-  addEffect(alter_covariate, attribute.index = "size") |>
+  addEffect(dyadic_covariate, node.attribute = "sameRegion") |>
+  addEffect(alter_covariate, node.attribute = "size") |>
   addEffect(resource_covar_to_node_covar,
-     attribute.index = "region",
-     resource.attribute.index = "sex") |>
-  addEffect(loops_resource_covar, resource.attribute.index = "sex")
+            node.attribute = "region",
+            edge.attribute = "sex") |>
+  addEffect(loops_resource_covar, edge.attribute = "sex")
+
+# inspect the created object
+myEffects
+#> Effects
+#>  effect name                  cov. organisations cov. people  parameter 
+#>  loops                                -               -           -     
+#>  reciprocity_min                      -               -           -     
+#>  dyadic_covariate                 sameRegion          -           -     
+#>  alter_covariate                     size             -           -     
+#>  resource_covar_to_node_covar       region           sex          -     
+#>  loops_resource_covar                 -              sex          -
 ```
 
 ### Optional: Pre-estimation
@@ -209,7 +249,7 @@ use functions from other libraries to estimate a multinomial logit model
 
 ``` r
 # create multinomial statistics object pseudo-likelihood estimation
-myStatisticsFrame <- getMultinomialStatistics(myState, myCache, myEffects)
+myStatisticsFrame <- getMultinomialStatistics(myState, myEffects)
 
 ### additional script to get pseudo-likelihood estimates, requires the dfidx and mlogit package
 # library(dfidx)
@@ -239,31 +279,33 @@ simulation of the chain. Most values are generated by default from the
 state and the effects object.
 
 ``` r
-myAlg <- createAlgorithm(myState, myEffects, nsubN2 = 3, multinomialProposal = FALSE)
+myAlg <- monanAlgorithmCreate(myState, myEffects, nsubN2 = 3, 
+                              multinomialProposal = FALSE)
 ```
 
 ### Estimation
 
-Now we can estimate the model. The first two lines indicate the
-dependent variable, data (state), cache, and effects. The third line
-specifies the initial estimates, where the previously obtained
-pseudo-likelihood estimates can be used. The remaining lines define
-whether parallel computing should be used, how much console output is
-desired during the estimation, and whether the simulations from phase 3
-should be stored.
+Now we can estimate the model. The first two lines indicate the data
+(state), effects, and algorithm. The third line specifies the initial
+estimates, where the previously obtained pseudo-likelihood estimates can
+be used. The remaining lines define whether parallel computing should be
+used, how much console output is desired during the estimation, and
+whether the simulations from phase 3 should be stored.
 
 Running the model takes a while (up to 10 minutes for this data with
 parallel computing).
 
 ``` r
-myResDN <- estimateMobilityNetwork(
-  myState, myCache, myEffects, myAlg,
+myResDN <- monanEstimate(
+  myState, myEffects, 
+  myAlg,
   initialParameters = NULL,
   parallel = TRUE, cpus = 4,
-  verbose = FALSE,
+  verbose = TRUE,
   returnDeps = TRUE,
   fish = FALSE
 )
+#> Starting phase 1
 #> R Version:  R version 4.3.1 (2023-06-16)
 #> snowfall 1.84-6.3 initialized (using snow 0.4-4): parallel execution on 4 CPUs.
 #> Library MoNAn loaded.
@@ -275,12 +317,77 @@ myResDN <- estimateMobilityNetwork(
 #>  4 cpus
 #> 
 #> Stopping cluster
-#> 
+#> Starting phase 2
 #> snowfall 1.84-6.3 initialized (using snow 0.4-4): parallel execution on 4 CPUs.
 #> Library MoNAn loaded.
 #> Library MoNAn loaded in cluster.
 #> 
+#> Sub phase1:
+#>  burn-in 12614 steps
+#>  50 iterations
+#>  thinning 6307
+#>  4 cpus
+#> 
+#> New parameters:
+#> loops 
+#>  2.35671714042876 
+#>  reciprocity_min 
+#>  0.841180998558736 
+#>  dyadic_covariate sameRegion 
+#>  1.66900791985062 
+#>  alter_covariate size 
+#>  0.0376992925190262 
+#>  resource_covar_to_node_covar region sex 
+#>  -0.69056309719851 
+#>  loops_resource_covar sex 
+#>  -0.712033493718721 
+#> 
+#> Sub phase2:
+#>  burn-in 12614 steps
+#>  88 iterations
+#>  thinning 6307
+#>  4 cpus
+#> 
+#> New parameters:
+#> loops 
+#>  2.58352757124622 
+#>  reciprocity_min 
+#>  0.802446745369365 
+#>  dyadic_covariate sameRegion 
+#>  1.68393282434589 
+#>  alter_covariate size 
+#>  0.0369954708799643 
+#>  resource_covar_to_node_covar region sex 
+#>  -0.663292740436628 
+#>  loops_resource_covar sex 
+#>  -0.385951029245808 
+#> 
+#> Sub phase3:
+#>  burn-in 12614 steps
+#>  154 iterations
+#>  thinning 6307
+#>  4 cpus
+#> 
+#> New parameters:
+#> loops 
+#>  2.6144780296132 
+#>  reciprocity_min 
+#>  0.820270450132527 
+#>  dyadic_covariate sameRegion 
+#>  1.69265061362288 
+#>  alter_covariate size 
+#>  0.0366425475638277 
+#>  resource_covar_to_node_covar region sex 
+#>  -0.643065310837314 
+#>  loops_resource_covar sex 
+#>  -0.393933228691711
+#> 
 #> Stopping cluster
+#> Starting phase 3:
+#>  burn-in 37842 steps
+#>  500  iterations
+#>  thinning 12614 
+#>  4 cpus
 #> snowfall 1.84-6.3 initialized (using snow 0.4-4): parallel execution on 4 CPUs.
 #> Library MoNAn loaded.
 #> Library MoNAn loaded in cluster.
@@ -292,8 +399,8 @@ In case pseudo-likelihood estimates have been obtained previously, this
 can be specified by
 
 ``` r
-myResDN <- estimateMobilityNetwork(
-  myState, myCache, myEffects, myAlg,
+myResDN <- monanEstimate(
+  myState, myEffects, myAlg,
   initialParameters = initEst,
   parallel = TRUE, cpus = 4,
   verbose = TRUE,
@@ -308,7 +415,7 @@ estimates), another run is necessary.
 
 ``` r
 max(abs(myResDN$convergenceStatistics))
-#> [1] 0.07226843
+#> [1] 0.09635964
 ```
 
 If convergence is too high, update algorithm, re-run estimation with
@@ -317,62 +424,25 @@ previous results as starting values and check convergence:
 ``` r
 # estimate mobility network model again based on previous results to improve convergence
 # with an adjusted algorithm
-myAlg <- createAlgorithm(myState, myEffects, multinomialProposal = TRUE, 
-                         initialIterationsN2 = 500, nsubN2 = 1, initGain = 0.02, iterationsN3 = 1000)
+myAlg <- monanAlgorithmCreate(myState, myEffects, multinomialProposal = TRUE, 
+                              initialIterationsN2 = 200, nsubN2 = 1, initGain = 0.02, iterationsN3 = 1000)
 
 # for users of other stocnet packages, we can also use monan07 to run an estimation 
 # (it is an alias for estimateMobilityNetwork)
 myResDN <- monan07(
-  myState, myCache, myEffects, myAlg,
+  myState, myEffects, myAlg,
   prevAns = myResDN,
   parallel = TRUE, cpus = 4,
   verbose = TRUE,
   returnDeps = TRUE,
   fish = FALSE
 )
-#> skipping phase 1 and taking values from prevAns
-#> Starting phase 2
-#> snowfall 1.84-6.3 initialized (using snow 0.4-4): parallel execution on 4 CPUs.
-#> Library MoNAn loaded.
-#> Library MoNAn loaded in cluster.
-#> 
-#> Sub phase1:
-#>  burn-in 742 steps
-#>  500 iterations
-#>  thinning 742
-#>  4 cpus
-#> 
-#> New parameters:
-#> loops 
-#>  2.58522934635626 
-#>  reciprocity_min 
-#>  0.829499883393086 
-#>  dyadic_covariate sameRegion 
-#>  1.69646689842373 
-#>  alter_covariate size 
-#>  0.0383754175917996 
-#>  resource_covar_to_node_covar region sex 
-#>  -0.654017214432335 
-#>  loops_resource_covar sex 
-#>  -0.37043967802181
-#> 
-#> Stopping cluster
-#> Starting phase 3:
-#>  burn-in 2226 steps
-#>  1000  iterations
-#>  thinning 1484 
-#>  4 cpus
-#> snowfall 1.84-6.3 initialized (using snow 0.4-4): parallel execution on 4 CPUs.
-#> Library MoNAn loaded.
-#> Library MoNAn loaded in cluster.
-#> 
-#> Stopping cluster
 ```
 
 ``` r
 # check convergence
 max(abs(myResDN$convergenceStatistics))
-#> [1] 0.06472579
+#> [1] 0.09635964
 ```
 
 In case convergence is still poor, updating the algorithm might be
@@ -385,19 +455,19 @@ convergence ratio. All values in the final column should be below 0.1
 myResDN
 #> Results
 #>                                   Effects   Estimates StandardErrors
-#> 1                                   loops  2.58522935     0.17745518
-#> 2                         reciprocity_min  0.82949988     0.17812274
-#> 3             dyadic_covariate sameRegion  1.69646690     0.11057678
-#> 4                    alter_covariate size  0.03837542     0.02208014
-#> 5 resource_covar_to_node_covar region sex -0.65401721     0.16516292
-#> 6                loops_resource_covar sex -0.37043968     0.21572325
-#>    Convergence
-#> 1 -0.011470208
-#> 2 -0.058098986
-#> 3 -0.041528927
-#> 4 -0.002504119
-#> 5 -0.064725793
-#> 6 -0.034787744
+#> 1                                   loops  2.61447803     0.18107343
+#> 2                         reciprocity_min  0.82027045     0.17508278
+#> 3             dyadic_covariate sameRegion  1.69265061     0.11615797
+#> 4                    alter_covariate size  0.03664255     0.02306784
+#> 5 resource_covar_to_node_covar region sex -0.64306531     0.16722402
+#> 6                loops_resource_covar sex -0.39393323     0.21452057
+#>   Convergence
+#> 1  0.04961280
+#> 2  0.03348093
+#> 3  0.01693830
+#> 4 -0.06503536
+#> 5  0.09635964
+#> 6 -0.07243402
 ```
 
 ## Diagnostics of the estimated model
@@ -411,7 +481,7 @@ problematic and indicate that a higher thinning is needed.
 
 ``` r
 autoCorrelationTest(myResDN)
-#> [1] 0.2147633
+#> [1] 0.0949095
 ```
 
 The output of extractTraces indicates the correlation of statistics
@@ -426,7 +496,7 @@ par(mfrow = c(1,2))
 plot(traces)
 ```
 
-<img src="man/figures/README-unnamed-chunk-19-1.png" width="100%" /><img src="man/figures/README-unnamed-chunk-19-2.png" width="100%" /><img src="man/figures/README-unnamed-chunk-19-3.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-18-1.png" width="100%" /><img src="man/figures/README-unnamed-chunk-18-2.png" width="100%" /><img src="man/figures/README-unnamed-chunk-18-3.png" width="100%" />
 
 ## Score-tests to check model specification
 
@@ -443,7 +513,7 @@ test_ME.2 <- scoreTest(myResDN, myEffects2)
 test_ME.2
 #> Results
 #>            Effects pValuesParametric pValuesNonParametric
-#> 1 transitivity_min      5.208735e-09                    0
+#> 1 transitivity_min      4.790818e-09                    0
 #> 
 #>  Parametric p-values: small = more significant 
 #>  Non-parametric p-values: further away from 0.5 = more significant
@@ -459,19 +529,19 @@ Akin to ERGMs, goodness of fit testing is available to see whether
 auxiliary statistics are well captured by the model.
 
 ``` r
-myGofIndegree <- gofMobilityNetwork(ans = myResDN, simulations = myResDN$deps, gofFunction = getIndegree, lvls = 1:70)
-plot(myGofIndegree, lvls = 1:70)
+myGofIndegree <- monanGOF(ans = myResDN, gofFunction = getIndegree, lvls = 1:70)
+plot(myGofIndegree, lvls = 20:70)
 ```
 
-<img src="man/figures/README-unnamed-chunk-21-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-20-1.png" width="100%" />
 
 ``` r
 
-myGofTieWeight <- gofMobilityNetwork(ans = myResDN, simulations = myResDN$deps, gofFunction = getTieWeights, lvls = 1:20)
+myGofTieWeight <- monanGOF(ans = myResDN, gofFunction = getTieWeights, lvls = 1:20)
 plot(myGofTieWeight, lvls = 1:20)
 ```
 
-<img src="man/figures/README-unnamed-chunk-21-2.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-20-2.png" width="100%" />
 
 ## Simulation
 
@@ -480,9 +550,8 @@ mobility networks based on the data and the specified effects and
 parameters.
 
 ``` r
-mySimDN <- simulateMobilityNetworks(
+mySimDN <- monanSimulate(
   myState,
-  myCache,
   myEffects,
   parameters = c(2, 1, 1.5, 0.1, -1, -0.5),
   allowLoops = TRUE,

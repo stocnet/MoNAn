@@ -44,6 +44,7 @@ statistics are well captured by the model. The logic behind gof testing for netw
 Hunter et al. (2008) and Lospinoso and Snijders (2019).
 }
 \examples{
+\donttest{
 # goodness of fit
 myGofIndegree <- gofMobilityNetwork(ans = myResDN, 
                                     gofFunction = getIndegree, 
@@ -52,6 +53,7 @@ myGofIndegree <- gofMobilityNetwork(ans = myResDN,
 myGofTieWeight <- gofMobilityNetwork(ans = myResDN, 
                                      gofFunction = getTieWeights, 
                                      lvls = 1:30)
+}
 plot(myGofIndegree,  lvls = 20:70)
 plot(myGofTieWeight, lvls = 1:15)
 }

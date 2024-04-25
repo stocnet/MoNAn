@@ -302,8 +302,10 @@ monanGOF <- gofMobilityNetwork
 #' @export
 #'
 #' @examples
+#' \donttest{
 #' plot(myGofIndegree,  lvls = 20:70)
 #' plot(myGofTieWeight, lvls = 1:15)
+#' }
 plot.gof.stats.monan <- function(x, lvls, ...) {
   if (is.null(lvls)) {
     lvls <- 1:length(x$observed)

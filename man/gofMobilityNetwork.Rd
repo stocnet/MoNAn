@@ -54,8 +54,10 @@ myGofTieWeight <- gofMobilityNetwork(ans = myResDN,
                                      gofFunction = getTieWeights, 
                                      lvls = 1:30)
 }
+\donttest{
 plot(myGofIndegree,  lvls = 20:70)
 plot(myGofTieWeight, lvls = 1:15)
+}
 }
 \references{
 Hunter, D. R., Goodreau, S. M., & Handcock, M. S. (2008). Goodness of fit of social network models.

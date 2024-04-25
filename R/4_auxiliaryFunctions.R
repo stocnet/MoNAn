@@ -222,6 +222,7 @@ getMultinomialStatistics <-
 #' 
 #' 
 #' @examples
+#' \donttest{
 #' # goodness of fit
 #' myGofIndegree <- gofMobilityNetwork(ans = myResDN, 
 #'                                     gofFunction = getIndegree, 
@@ -230,6 +231,7 @@ getMultinomialStatistics <-
 #' myGofTieWeight <- gofMobilityNetwork(ans = myResDN, 
 #'                                      gofFunction = getTieWeights, 
 #'                                      lvls = 1:30)
+#' }
 gofMobilityNetwork <-
   function(ans,
            gofFunction,

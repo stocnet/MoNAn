@@ -1,7 +1,7 @@
 Package: MoNAn
 Type: Package
 Title: Mobility Network Analysis
-Version: 1.0.0
+Version: 1.0.1
 Date: 2024-04-24
 Authors@R: c(person("Per", "Block", role = c("cre", "aut", "cph"), email = "block@soziologie.uzh.ch", 
         comment = c(ORCID = "0000-0002-7583-2392")), 

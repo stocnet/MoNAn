@@ -1,9 +1,13 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
+<<<<<<< HEAD
 ## Imortant:
 
 # MoNAn <img src="https://raw.githubusercontent.com/stocnet/MoNAn/main/MoNAn_logo.pdf" align="right" width="150"/>
+=======
+# MoNAn <img src="https://raw.githubusercontent.com/stocnet/MoNAn/main/MoNAn_logo.png" align="right" width="150"/>
+>>>>>>> cd9defa (Readme update)
 
 <!-- badges: start -->
 <!-- badges: end -->
@@ -34,7 +38,24 @@ Announcements about workshops etc. can be found
 The **MoNAn Manual** is available here on github in the manual folder or
 on [SocArXiv](https://osf.io/preprints/socarxiv/8q2xu/)
 
-# Note from the developers
+## Note from the developers
+
+This is version 1.0.0 of MoNAn. This update includes many changes,
+including some that mean old code written for older versions will not
+work anymore!
+
+Code use has been simplified; the most important changes are:
+
+- the cache is now hidden from the user and does not need to be create
+  or specified in functions anymore
+
+- there is a new way to specify the model with createEffects and
+  addEffect
+
+- in gofMobilityNetwork there is no need to specify “simulations”
+  anymore
+
+- new way to generate the process state using monanDataCreate
 
 This is version 1.0.0 of MoNAn. This update includes many changes,
 including some that mean old code written for older versions will not

@@ -352,7 +352,7 @@ myResDN <- monan07(
 ``` r
 # check convergence
 max(abs(myResDN$convergenceStatistics))
-#> [1] 0.1139582
+#> [1] 0.0956881
 ```
 
 In case convergence is still poor, updating the algorithm might be

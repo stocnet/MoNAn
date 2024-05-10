@@ -16,21 +16,10 @@ knitr::opts_chunk$set(
 
 ## Imortant:
 
-This is version 1.0.0 of MoNAn. This update includes many changes, including
-some that mean old code written for older versions will not work anymore!
-
-Code use has been simplified; the most important changes are:
-
-- the cache is now hidden from the user and does not need to be create or specified in functions anymore
-
-- there is a new way to specify the model with createEffects and addEffect
-
-- in gofMobilityNetwork there is no need to specify "simulations" anymore
-
-- new way to generate the process state using monanDataCreate
 
 
-# MoNAn
+
+# MoNAn <img src="https://raw.githubusercontent.com/stocnet/MoNAn/main/MoNAn_logo.pdf" align="right" width="150"/>
 
 <!-- badges: start -->
 <!-- badges: end -->
@@ -52,6 +41,19 @@ The **MoNAn Manual** is available here on github in the manual folder or on [Soc
 
 # Note from the developers
 
+This is version 1.0.0 of MoNAn. This update includes many changes, including
+some that mean old code written for older versions will not work anymore!
+
+Code use has been simplified; the most important changes are:
+
+- the cache is now hidden from the user and does not need to be create or specified in functions anymore
+
+- there is a new way to specify the model with createEffects and addEffect
+
+- in gofMobilityNetwork there is no need to specify "simulations" anymore
+
+- new way to generate the process state using monanDataCreate
+
 As of 30 Aug 2023, we have a CRAN release of the package.
 Nevertheless, the package and the documentation might still have bugs or errors,
 or you might
@@ -59,8 +61,8 @@ not be able to do what you want. In that case, or if you are unsure
 please write the package
 maintainer under his institutional email address.
 
-We are currently (Mar 2024) on version 1.0.0 on github. 
-Version 0.1.3 was released to CRAN in Feb 2024.
+We are currently (May 2024) on version 1.0.1 on github. 
+Version 1.0.0 was released to CRAN in Apr 2024.
 
 # Installation
 

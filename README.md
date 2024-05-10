@@ -3,24 +3,7 @@
 
 ## Imortant:
 
-This is version 1.0.0 of MoNAn. This update includes many changes,
-including some that mean old code written for older versions will not
-work anymore!
-
-Code use has been simplified; the most important changes are:
-
-- the cache is now hidden from the user and does not need to be create
-  or specified in functions anymore
-
-- there is a new way to specify the model with createEffects and
-  addEffect
-
-- in gofMobilityNetwork there is no need to specify “simulations”
-  anymore
-
-- new way to generate the process state using monanDataCreate
-
-# MoNAn
+# MoNAn <img src="https://raw.githubusercontent.com/stocnet/MoNAn/main/MoNAn_logo.pdf" align="right" width="150"/>
 
 <!-- badges: start -->
 <!-- badges: end -->
@@ -53,14 +36,31 @@ on [SocArXiv](https://osf.io/preprints/socarxiv/8q2xu/)
 
 # Note from the developers
 
+This is version 1.0.0 of MoNAn. This update includes many changes,
+including some that mean old code written for older versions will not
+work anymore!
+
+Code use has been simplified; the most important changes are:
+
+- the cache is now hidden from the user and does not need to be create
+  or specified in functions anymore
+
+- there is a new way to specify the model with createEffects and
+  addEffect
+
+- in gofMobilityNetwork there is no need to specify “simulations”
+  anymore
+
+- new way to generate the process state using monanDataCreate
+
 As of 30 Aug 2023, we have a CRAN release of the package. Nevertheless,
 the package and the documentation might still have bugs or errors, or
 you might not be able to do what you want. In that case, or if you are
 unsure please write the package maintainer under his institutional email
 address.
 
-We are currently (Mar 2024) on version 1.0.0 on github. Version 0.1.3
-was released to CRAN in Feb 2024.
+We are currently (May 2024) on version 1.0.1 on github. Version 1.0.0
+was released to CRAN in Apr 2024.
 
 # Installation
 
@@ -330,17 +330,17 @@ myResDN <- monanEstimate(
 #> 
 #> New parameters:
 #> loops 
-#>  2.35671714042876 
+#>  2.51763435258541 
 #>  reciprocity_min 
-#>  0.841180998558736 
+#>  0.834828250636214 
 #>  dyadic_covariate sameRegion 
-#>  1.66900791985062 
+#>  1.64181328087909 
 #>  alter_covariate size 
-#>  0.0376992925190262 
+#>  0.0372435416394513 
 #>  resource_covar_to_node_covar region sex 
-#>  -0.69056309719851 
+#>  -0.641789313709824 
 #>  loops_resource_covar sex 
-#>  -0.712033493718721 
+#>  -0.383957699841637 
 #> 
 #> Sub phase2:
 #>  burn-in 12614 steps
@@ -350,17 +350,17 @@ myResDN <- monanEstimate(
 #> 
 #> New parameters:
 #> loops 
-#>  2.58352757124622 
+#>  2.5806800378646 
 #>  reciprocity_min 
-#>  0.802446745369365 
+#>  0.817646745095517 
 #>  dyadic_covariate sameRegion 
-#>  1.68393282434589 
+#>  1.67785458916978 
 #>  alter_covariate size 
-#>  0.0369954708799643 
+#>  0.0348426449336017 
 #>  resource_covar_to_node_covar region sex 
-#>  -0.663292740436628 
+#>  -0.647149981003057 
 #>  loops_resource_covar sex 
-#>  -0.385951029245808 
+#>  -0.368013471832615 
 #> 
 #> Sub phase3:
 #>  burn-in 12614 steps
@@ -370,17 +370,17 @@ myResDN <- monanEstimate(
 #> 
 #> New parameters:
 #> loops 
-#>  2.6144780296132 
+#>  2.58360255204794 
 #>  reciprocity_min 
-#>  0.820270450132527 
+#>  0.816263032267627 
 #>  dyadic_covariate sameRegion 
-#>  1.69265061362288 
+#>  1.68497720615453 
 #>  alter_covariate size 
-#>  0.0366425475638277 
+#>  0.0373784468598572 
 #>  resource_covar_to_node_covar region sex 
-#>  -0.643065310837314 
+#>  -0.649421687382978 
 #>  loops_resource_covar sex 
-#>  -0.393933228691711
+#>  -0.359785173336673
 #> 
 #> Stopping cluster
 #> Starting phase 3:
@@ -415,7 +415,7 @@ estimates), another run is necessary.
 
 ``` r
 max(abs(myResDN$convergenceStatistics))
-#> [1] 0.09635964
+#> [1] 0.1277985
 ```
 
 If convergence is too high, update algorithm, re-run estimation with
@@ -442,7 +442,7 @@ myResDN <- monan07(
 ``` r
 # check convergence
 max(abs(myResDN$convergenceStatistics))
-#> [1] 0.09635964
+#> [1] 0.1277985
 ```
 
 In case convergence is still poor, updating the algorithm might be
@@ -455,19 +455,19 @@ convergence ratio. All values in the final column should be below 0.1
 myResDN
 #> Results
 #>                                   Effects   Estimates StandardErrors
-#> 1                                   loops  2.61447803     0.18107343
-#> 2                         reciprocity_min  0.82027045     0.17508278
-#> 3             dyadic_covariate sameRegion  1.69265061     0.11615797
-#> 4                    alter_covariate size  0.03664255     0.02306784
-#> 5 resource_covar_to_node_covar region sex -0.64306531     0.16722402
-#> 6                loops_resource_covar sex -0.39393323     0.21452057
-#>   Convergence
-#> 1  0.04961280
-#> 2  0.03348093
-#> 3  0.01693830
-#> 4 -0.06503536
-#> 5  0.09635964
-#> 6 -0.07243402
+#> 1                                   loops  2.58360255     0.19347153
+#> 2                         reciprocity_min  0.81626303     0.17821469
+#> 3             dyadic_covariate sameRegion  1.68497721     0.11555656
+#> 4                    alter_covariate size  0.03737845     0.02405928
+#> 5 resource_covar_to_node_covar region sex -0.64942169     0.16686630
+#> 6                loops_resource_covar sex -0.35978517     0.22256681
+#>    Convergence
+#> 1 -0.013508063
+#> 2 -0.005882665
+#> 3 -0.036478874
+#> 4  0.048883634
+#> 5 -0.127798534
+#> 6  0.061687170
 ```
 
 ## Diagnostics of the estimated model
@@ -481,7 +481,7 @@ problematic and indicate that a higher thinning is needed.
 
 ``` r
 autoCorrelationTest(myResDN)
-#> [1] 0.0949095
+#> [1] 0.09385618
 ```
 
 The output of extractTraces indicates the correlation of statistics
@@ -513,7 +513,7 @@ test_ME.2 <- scoreTest(myResDN, myEffects2)
 test_ME.2
 #> Results
 #>            Effects pValuesParametric pValuesNonParametric
-#> 1 transitivity_min      4.790818e-09                    0
+#> 1 transitivity_min      9.420474e-09                    0
 #> 
 #>  Parametric p-values: small = more significant 
 #>  Non-parametric p-values: further away from 0.5 = more significant

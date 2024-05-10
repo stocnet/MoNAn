@@ -14,16 +14,7 @@ knitr::opts_chunk$set(
 ```
 
 
-<<<<<<< HEAD
-## Imortant:
-
-
-
-
-# MoNAn <img src="https://raw.githubusercontent.com/stocnet/MoNAn/main/MoNAn_logo.pdf" align="right" width="150"/>
-=======
 # MoNAn <img src="https://raw.githubusercontent.com/stocnet/MoNAn/main/MoNAn_logo.png" align="right" width="150"/>
->>>>>>> cd9defa (Readme update)
 
 <!-- badges: start -->
 <!-- badges: end -->

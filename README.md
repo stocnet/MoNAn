@@ -1,13 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-<<<<<<< HEAD
-## Imortant:
-
-# MoNAn <img src="https://raw.githubusercontent.com/stocnet/MoNAn/main/MoNAn_logo.pdf" align="right" width="150"/>
-=======
 # MoNAn <img src="https://raw.githubusercontent.com/stocnet/MoNAn/main/MoNAn_logo.png" align="right" width="150"/>
->>>>>>> cd9defa (Readme update)
 
 <!-- badges: start -->
 <!-- badges: end -->
@@ -351,17 +345,17 @@ myResDN <- monanEstimate(
 #> 
 #> New parameters:
 #> loops 
-#>  2.51763435258541 
+#>  2.47719008038019 
 #>  reciprocity_min 
-#>  0.834828250636214 
+#>  0.8170014961106 
 #>  dyadic_covariate sameRegion 
-#>  1.64181328087909 
+#>  1.65624354045776 
 #>  alter_covariate size 
-#>  0.0372435416394513 
+#>  0.0383984510107496 
 #>  resource_covar_to_node_covar region sex 
-#>  -0.641789313709824 
+#>  -0.672156963303597 
 #>  loops_resource_covar sex 
-#>  -0.383957699841637 
+#>  -0.50026437729971 
 #> 
 #> Sub phase2:
 #>  burn-in 12614 steps
@@ -371,17 +365,17 @@ myResDN <- monanEstimate(
 #> 
 #> New parameters:
 #> loops 
-#>  2.5806800378646 
+#>  2.57881245708676 
 #>  reciprocity_min 
-#>  0.817646745095517 
+#>  0.82059507772354 
 #>  dyadic_covariate sameRegion 
-#>  1.67785458916978 
+#>  1.68265805697851 
 #>  alter_covariate size 
-#>  0.0348426449336017 
+#>  0.0382791491105974 
 #>  resource_covar_to_node_covar region sex 
-#>  -0.647149981003057 
+#>  -0.650749744567186 
 #>  loops_resource_covar sex 
-#>  -0.368013471832615 
+#>  -0.360063776775848 
 #> 
 #> Sub phase3:
 #>  burn-in 12614 steps
@@ -391,17 +385,17 @@ myResDN <- monanEstimate(
 #> 
 #> New parameters:
 #> loops 
-#>  2.58360255204794 
+#>  2.58722933629602 
 #>  reciprocity_min 
-#>  0.816263032267627 
+#>  0.80719881123667 
 #>  dyadic_covariate sameRegion 
-#>  1.68497720615453 
+#>  1.68653299328539 
 #>  alter_covariate size 
-#>  0.0373784468598572 
+#>  0.0371499839110027 
 #>  resource_covar_to_node_covar region sex 
-#>  -0.649421687382978 
+#>  -0.63972540316634 
 #>  loops_resource_covar sex 
-#>  -0.359785173336673
+#>  -0.363743582563876
 #> 
 #> Stopping cluster
 #> Starting phase 3:
@@ -436,7 +430,7 @@ estimates), another run is necessary.
 
 ``` r
 max(abs(myResDN$convergenceStatistics))
-#> [1] 0.1277985
+#> [1] 0.04657673
 ```
 
 If convergence is too high, update algorithm, re-run estimation with
@@ -463,7 +457,7 @@ myResDN <- monan07(
 ``` r
 # check convergence
 max(abs(myResDN$convergenceStatistics))
-#> [1] 0.1277985
+#> [1] 0.04657673
 ```
 
 In case convergence is still poor, updating the algorithm might be
@@ -476,19 +470,19 @@ convergence ratio. All values in the final column should be below 0.1
 myResDN
 #> Results
 #>                                   Effects   Estimates StandardErrors
-#> 1                                   loops  2.58360255     0.19347153
-#> 2                         reciprocity_min  0.81626303     0.17821469
-#> 3             dyadic_covariate sameRegion  1.68497721     0.11555656
-#> 4                    alter_covariate size  0.03737845     0.02405928
-#> 5 resource_covar_to_node_covar region sex -0.64942169     0.16686630
-#> 6                loops_resource_covar sex -0.35978517     0.22256681
-#>    Convergence
-#> 1 -0.013508063
-#> 2 -0.005882665
-#> 3 -0.036478874
-#> 4  0.048883634
-#> 5 -0.127798534
-#> 6  0.061687170
+#> 1                                   loops  2.58722934     0.18243245
+#> 2                         reciprocity_min  0.80719881     0.17690206
+#> 3             dyadic_covariate sameRegion  1.68653299     0.11852636
+#> 4                    alter_covariate size  0.03714998     0.02344898
+#> 5 resource_covar_to_node_covar region sex -0.63972540     0.16871726
+#> 6                loops_resource_covar sex -0.36374358     0.21404293
+#>   Convergence
+#> 1  0.04657673
+#> 2 -0.03117671
+#> 3 -0.02457890
+#> 4  0.04143081
+#> 5 -0.03745728
+#> 6  0.03644100
 ```
 
 ## Diagnostics of the estimated model
@@ -502,7 +496,7 @@ problematic and indicate that a higher thinning is needed.
 
 ``` r
 autoCorrelationTest(myResDN)
-#> [1] 0.09385618
+#> [1] 0.09443415
 ```
 
 The output of extractTraces indicates the correlation of statistics
@@ -534,7 +528,7 @@ test_ME.2 <- scoreTest(myResDN, myEffects2)
 test_ME.2
 #> Results
 #>            Effects pValuesParametric pValuesNonParametric
-#> 1 transitivity_min      9.420474e-09                    0
+#> 1 transitivity_min      6.184879e-09                    0
 #> 
 #>  Parametric p-values: small = more significant 
 #>  Non-parametric p-values: further away from 0.5 = more significant

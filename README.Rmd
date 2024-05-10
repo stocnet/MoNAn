@@ -49,19 +49,6 @@ Code use has been simplified; the most important changes are:
 
 - new way to generate the process state using monanDataCreate
 
-This is version 1.0.0 of MoNAn. This update includes many changes, including
-some that mean old code written for older versions will not work anymore!
-
-Code use has been simplified; the most important changes are:
-
-- the cache is now hidden from the user and does not need to be create or specified in functions anymore
-
-- there is a new way to specify the model with createEffects and addEffect
-
-- in gofMobilityNetwork there is no need to specify "simulations" anymore
-
-- new way to generate the process state using monanDataCreate
-
 As of 30 Aug 2023, we have a CRAN release of the package.
 Nevertheless, the package and the documentation might still have bugs or errors,
 or you might
@@ -246,7 +233,7 @@ Now we can estimate the model. The first two lines indicate the  data (state), e
 
 Running the model takes a while (up to 10 minutes for this data with parallel computing).
 
-```{r}
+```{r, eval=FALSE}
 myResDN <- monanEstimate(
   myState, myEffects, 
   myAlg,

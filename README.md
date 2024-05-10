@@ -51,23 +51,6 @@ Code use has been simplified; the most important changes are:
 
 - new way to generate the process state using monanDataCreate
 
-This is version 1.0.0 of MoNAn. This update includes many changes,
-including some that mean old code written for older versions will not
-work anymore!
-
-Code use has been simplified; the most important changes are:
-
-- the cache is now hidden from the user and does not need to be create
-  or specified in functions anymore
-
-- there is a new way to specify the model with createEffects and
-  addEffect
-
-- in gofMobilityNetwork there is no need to specify “simulations”
-  anymore
-
-- new way to generate the process state using monanDataCreate
-
 As of 30 Aug 2023, we have a CRAN release of the package. Nevertheless,
 the package and the documentation might still have bugs or errors, or
 you might not be able to do what you want. In that case, or if you are
@@ -320,94 +303,6 @@ myResDN <- monanEstimate(
   returnDeps = TRUE,
   fish = FALSE
 )
-#> Starting phase 1
-#> R Version:  R version 4.3.1 (2023-06-16)
-#> snowfall 1.84-6.3 initialized (using snow 0.4-4): parallel execution on 4 CPUs.
-#> Library MoNAn loaded.
-#> Library MoNAn loaded in cluster.
-#> Phase 1: 
-#>  burn-in 12614 steps
-#>  48  iterations
-#>  thinning 6307 
-#>  4 cpus
-#> 
-#> Stopping cluster
-#> Starting phase 2
-#> snowfall 1.84-6.3 initialized (using snow 0.4-4): parallel execution on 4 CPUs.
-#> Library MoNAn loaded.
-#> Library MoNAn loaded in cluster.
-#> 
-#> Sub phase1:
-#>  burn-in 12614 steps
-#>  50 iterations
-#>  thinning 6307
-#>  4 cpus
-#> 
-#> New parameters:
-#> loops 
-#>  2.47719008038019 
-#>  reciprocity_min 
-#>  0.8170014961106 
-#>  dyadic_covariate sameRegion 
-#>  1.65624354045776 
-#>  alter_covariate size 
-#>  0.0383984510107496 
-#>  resource_covar_to_node_covar region sex 
-#>  -0.672156963303597 
-#>  loops_resource_covar sex 
-#>  -0.50026437729971 
-#> 
-#> Sub phase2:
-#>  burn-in 12614 steps
-#>  88 iterations
-#>  thinning 6307
-#>  4 cpus
-#> 
-#> New parameters:
-#> loops 
-#>  2.57881245708676 
-#>  reciprocity_min 
-#>  0.82059507772354 
-#>  dyadic_covariate sameRegion 
-#>  1.68265805697851 
-#>  alter_covariate size 
-#>  0.0382791491105974 
-#>  resource_covar_to_node_covar region sex 
-#>  -0.650749744567186 
-#>  loops_resource_covar sex 
-#>  -0.360063776775848 
-#> 
-#> Sub phase3:
-#>  burn-in 12614 steps
-#>  154 iterations
-#>  thinning 6307
-#>  4 cpus
-#> 
-#> New parameters:
-#> loops 
-#>  2.58722933629602 
-#>  reciprocity_min 
-#>  0.80719881123667 
-#>  dyadic_covariate sameRegion 
-#>  1.68653299328539 
-#>  alter_covariate size 
-#>  0.0371499839110027 
-#>  resource_covar_to_node_covar region sex 
-#>  -0.63972540316634 
-#>  loops_resource_covar sex 
-#>  -0.363743582563876
-#> 
-#> Stopping cluster
-#> Starting phase 3:
-#>  burn-in 37842 steps
-#>  500  iterations
-#>  thinning 12614 
-#>  4 cpus
-#> snowfall 1.84-6.3 initialized (using snow 0.4-4): parallel execution on 4 CPUs.
-#> Library MoNAn loaded.
-#> Library MoNAn loaded in cluster.
-#> 
-#> Stopping cluster
 ```
 
 In case pseudo-likelihood estimates have been obtained previously, this
@@ -430,7 +325,7 @@ estimates), another run is necessary.
 
 ``` r
 max(abs(myResDN$convergenceStatistics))
-#> [1] 0.04657673
+#> [1] 0.1139582
 ```
 
 If convergence is too high, update algorithm, re-run estimation with
@@ -457,7 +352,7 @@ myResDN <- monan07(
 ``` r
 # check convergence
 max(abs(myResDN$convergenceStatistics))
-#> [1] 0.04657673
+#> [1] 0.1139582
 ```
 
 In case convergence is still poor, updating the algorithm might be
@@ -470,19 +365,19 @@ convergence ratio. All values in the final column should be below 0.1
 myResDN
 #> Results
 #>                                   Effects   Estimates StandardErrors
-#> 1                                   loops  2.58722934     0.18243245
-#> 2                         reciprocity_min  0.80719881     0.17690206
-#> 3             dyadic_covariate sameRegion  1.68653299     0.11852636
-#> 4                    alter_covariate size  0.03714998     0.02344898
-#> 5 resource_covar_to_node_covar region sex -0.63972540     0.16871726
-#> 6                loops_resource_covar sex -0.36374358     0.21404293
-#>   Convergence
-#> 1  0.04657673
-#> 2 -0.03117671
-#> 3 -0.02457890
-#> 4  0.04143081
-#> 5 -0.03745728
-#> 6  0.03644100
+#> 1                                   loops  2.59354872      0.1827159
+#> 2                         reciprocity_min  0.82442789      0.1830364
+#> 3             dyadic_covariate sameRegion  1.68684201      0.1107805
+#> 4                    alter_covariate size  0.03634042      0.0234508
+#> 5 resource_covar_to_node_covar region sex -0.66139043      0.1634842
+#> 6                loops_resource_covar sex -0.36497904      0.2028804
+#>    Convergence
+#> 1  0.001441213
+#> 2  0.067114163
+#> 3  0.001477124
+#> 4 -0.086525984
+#> 5 -0.113958248
+#> 6  0.017199722
 ```
 
 ## Diagnostics of the estimated model
@@ -496,7 +391,7 @@ problematic and indicate that a higher thinning is needed.
 
 ``` r
 autoCorrelationTest(myResDN)
-#> [1] 0.09443415
+#> [1] 0.09451788
 ```
 
 The output of extractTraces indicates the correlation of statistics
@@ -528,7 +423,7 @@ test_ME.2 <- scoreTest(myResDN, myEffects2)
 test_ME.2
 #> Results
 #>            Effects pValuesParametric pValuesNonParametric
-#> 1 transitivity_min      6.184879e-09                    0
+#> 1 transitivity_min      5.186418e-09                    0
 #> 
 #>  Parametric p-values: small = more significant 
 #>  Non-parametric p-values: further away from 0.5 = more significant

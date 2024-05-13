@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# MoNAn <img src="https://raw.githubusercontent.com/stocnet/MoNAn/develop/MoNAn_logo.png" align="right" width="150"/>
+# MoNAn <img src="https://raw.githubusercontent.com/stocnet/MoNAn/main/MoNAn_logo.png" align="right" width="150"/>
 
 <!-- badges: start -->
 <!-- badges: end -->

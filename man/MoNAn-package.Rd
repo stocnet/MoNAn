@@ -14,7 +14,7 @@ Implements the method to analyse weighted mobility networks or distribution netw
 Authors:
 \itemize{
   \item Christoph Stadtfeld (\href{https://orcid.org/0000-0002-2704-2134}{ORCID})
-  \item Nico Keiser
+  \item Nico Keiser (\href{https://orcid.org/0009-0007-3403-278X}{ORCID})
   \item Marion Hoffman
 }
 

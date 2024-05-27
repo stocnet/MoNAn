@@ -360,63 +360,70 @@ print.effectsList.monan <- function(x, ...) {
   df <- as.data.frame(matrix(nrow = 0, ncol = 4))
   colnames(df) <- c("name", paste0("covariate_", x$nodeset1), paste0("covariate_", x$nodeset2), "parameter")
   
-  # fill table
-  for (i in 1:length(x[["name"]])) {
+  if (length(x$name) != 0) { # if the effects object includes effects, fill table
     
-    df[nrow(df) + 1, ]$name <- strsplit(x[["name"]][i], split = " ")[[1]][1]
-    
-    if (!is.null(formals(x[["effectFormulas"]][[i]])[["attribute.index"]])) {
-      df[nrow(df), paste0("covariate_", x$nodeset1)] <- formals(x[["effectFormulas"]][[i]])[["attribute.index"]]
-    } else {
-      df[nrow(df), paste0("covariate_", x$nodeset1)] <- "-"
+    for (i in 1:length(x[["name"]])) {
+      
+      df[nrow(df) + 1, ]$name <- strsplit(x[["name"]][i], split = " ")[[1]][1]
+      
+      if (!is.null(formals(x[["effectFormulas"]][[i]])[["attribute.index"]])) {
+        df[nrow(df), paste0("covariate_", x$nodeset1)] <- formals(x[["effectFormulas"]][[i]])[["attribute.index"]]
+      } else {
+        df[nrow(df), paste0("covariate_", x$nodeset1)] <- "-"
+      }
+      
+      if (!is.null(formals(x[["effectFormulas"]][[i]])[["resource.attribute.index"]])) {
+        df[nrow(df), paste0("covariate_", x$nodeset2)] <- formals(x[["effectFormulas"]][[i]])[["resource.attribute.index"]]
+      } else {
+        df[nrow(df), paste0("covariate_", x$nodeset2)] <- "-"
+      }
+      
+      if (!is.null(formals(x[["effectFormulas"]][[i]])[["alpha"]])) {
+        df[nrow(df), ]$parameter <- formals(x[["effectFormulas"]][[i]])[["alpha"]]
+      } 
+      if (!is.null(formals(x[["effectFormulas"]][[i]])[["lambda"]])) {
+        df[nrow(df), ]$parameter <- formals(x[["effectFormulas"]][[i]])[["lambda"]]
+      }
+      if (is.na(df[nrow(df), ]$parameter)) {
+        df[nrow(df), ]$parameter <- "-"
+      }
+      
     }
+    rownames(df) <- c(1:nrow(df))
     
-    if (!is.null(formals(x[["effectFormulas"]][[i]])[["resource.attribute.index"]])) {
-      df[nrow(df), paste0("covariate_", x$nodeset2)] <- formals(x[["effectFormulas"]][[i]])[["resource.attribute.index"]]
-    } else {
-      df[nrow(df), paste0("covariate_", x$nodeset2)] <- "-"
-    }
+    colnames(df) <- c("effect name", paste0("cov. ", x$nodeset1), paste0("cov. ", x$nodeset2), "parameter")
     
-    if (!is.null(formals(x[["effectFormulas"]][[i]])[["alpha"]])) {
-      df[nrow(df), ]$parameter <- formals(x[["effectFormulas"]][[i]])[["alpha"]]
-    } 
-    if (!is.null(formals(x[["effectFormulas"]][[i]])[["lambda"]])) {
-      df[nrow(df), ]$parameter <- formals(x[["effectFormulas"]][[i]])[["lambda"]]
-    }
-    if (is.na(df[nrow(df), ]$parameter)) {
-      df[nrow(df), ]$parameter <- "-"
-    }
+    names(df)[1] <- format(names(df)[1], 
+                           width = max(nchar(names(df[1])), max(nchar(df[,1]))),
+                           justify = "left")
+    names(df)[2] <- format(names(df)[2], 
+                           width = max(nchar(names(df[2])), max(nchar(df[,2]))),
+                           justify = "centre")
+    names(df)[3] <- format(names(df)[3], 
+                           width = max(nchar(names(df[3])), max(nchar(df[,3]))),
+                           justify = "centre")
+    names(df)[4] <- format(names(df)[4], 
+                           width = max(nchar(names(df[3])), max(nchar(df[,3]))),
+                           justify = "centre")
+    df[,2] <- format(df[,2], 
+                     width = max(nchar(names(df[2])), max(nchar(df[,2]))),
+                     justify = "centre")
+    df[,3] <- format(df[,3], 
+                     width = max(nchar(names(df[3])), max(nchar(df[,3]))),
+                     justify = "centre")
+    df[,4] <- format(df[,4], 
+                     width = max(nchar(names(df[3])), max(nchar(df[,3]))),
+                     justify = "centre")
+    df[,1] <- format(df[,1], justify = "left")
     
+    cat("Effects\n")
+    print(df, row.names = FALSE)
+    
+  } else {
+    cat("Effects\n")
+    cat("The effects object does not contain any effects.\n")
   }
-  rownames(df) <- c(1:nrow(df))
   
-  colnames(df) <- c("effect name", paste0("cov. ", x$nodeset1), paste0("cov. ", x$nodeset2), "parameter")
-  
-  names(df)[1] <- format(names(df)[1], 
-                          width = max(nchar(names(df[1])), max(nchar(df[,1]))),
-                          justify = "left")
-  names(df)[2] <- format(names(df)[2], 
-                          width = max(nchar(names(df[2])), max(nchar(df[,2]))),
-                          justify = "centre")
-  names(df)[3] <- format(names(df)[3], 
-                          width = max(nchar(names(df[3])), max(nchar(df[,3]))),
-                          justify = "centre")
-  names(df)[4] <- format(names(df)[4], 
-                         width = max(nchar(names(df[3])), max(nchar(df[,3]))),
-                         justify = "centre")
-  df[,2] <- format(df[,2], 
-                  width = max(nchar(names(df[2])), max(nchar(df[,2]))),
-                  justify = "centre")
-  df[,3] <- format(df[,3], 
-                  width = max(nchar(names(df[3])), max(nchar(df[,3]))),
-                  justify = "centre")
-  df[,4] <- format(df[,4], 
-                  width = max(nchar(names(df[3])), max(nchar(df[,3]))),
-                  justify = "centre")
-  df[,1] <- format(df[,1], justify = "left")
-  
-  cat("Effects\n")
-  print(df, row.names = FALSE)
 }
 
 

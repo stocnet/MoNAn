@@ -419,6 +419,7 @@ concentration_basic_squared <- function(dep.var = 1, state, cache, i, j, edge, u
 }
 
 
+
 #' concentration_norm
 #' 
 #' Is there a bandwagon effect in mobility, i.e. do mobile individuals move to 
@@ -492,3 +493,32 @@ concentration_norm_squared <- function(dep.var = 1, state, cache, i, j, edge, up
     return(cont)
   }
 }
+
+
+#' concentration_basic_cube
+#' 
+#' Is there a bandwagon effect in mobility, i.e. do mobile individuals move to 
+#' locations that are the destination of many others from their origin?
+#' 
+#' @param dep.var 
+#' @param state 
+#' @param cache 
+#' @param i 
+#' @param j 
+#' @param edge 
+#' @param update 
+#' @param getTargetContribution 
+#'
+#' @return Returns the change statistic or target statistic of the effect for 
+#' internal use by the estimation algorithm.
+#' @keywords internal
+concentration_basic_cube <- function(dep.var = 1, state, cache, i, j, edge, update, getTargetContribution = FALSE){
+  if(getTargetContribution){
+    return( (cache[[dep.var]]$valuedNetwork[i, j])^3 )
+  } else {
+    v <- (cache[[dep.var]]$valuedNetwork[i, j] + update)^3 - 
+      (cache[[dep.var]]$valuedNetwork[i, j])^3
+    return(v)
+  }
+}
+

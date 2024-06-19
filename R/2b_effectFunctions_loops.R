@@ -73,10 +73,12 @@ loops_GW <- function(dep.var = 1,
   
   g_cum <- function(y, a){
     contr <- 0
-    for(k in 0:y){
-      contr <- contr + (y-k) * exp(-log(a)*k)
+    if(y>1){
+      for(k in 1:(y-1)){
+        contr <- contr + (1 - (1-1/a)^(k))
+      }
     }
-    contr - y
+    return(contr)
   }
   
   if (getTargetContribution) {
@@ -95,10 +97,12 @@ loops_GW <- function(dep.var = 1,
   
   g_mar <- function(y, a){
     contr <- 0
-    for(k in 0:y){
-      contr <- contr + exp(-log(a)*k)
+    if(y>0) {
+      contr <-  (1 - (1-1/a)^(y)) 
+    } else {
+      contr <- 0
     }
-    contr - 1
+    return(contr)
   }
   
   if (i == j) {

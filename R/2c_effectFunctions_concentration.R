@@ -61,10 +61,18 @@ concentration_GW <- function(dep.var = 1, state, cache, i, j, edge, update,
     
     g_cum <- function(y, a){
       contr <- 0
-      for(k in 0:y){
-        contr <- contr + (y-k) * exp(-log(a)*k)
+      
+      #for(k in 0:y){
+      #  contr <- contr + (y-k) * exp(-log(a)*k)
+      #}
+      #contr - y
+      
+      if(y>1){
+        for(k in 1:(y-1)){
+          contr <- contr + (1 - (1-1/a)^(k))
+        }
       }
-      contr - y
+      return(contr)
     }
     
     nResources <- cache[[dep.var]]$valuedNetwork[i, j]
@@ -76,10 +84,18 @@ concentration_GW <- function(dep.var = 1, state, cache, i, j, edge, update,
   
   g_mar <- function(y, a){
     contr <- 0
-    for(k in 0:y){
-      contr <- contr + exp(-log(a)*k)
+    
+    #for(k in 0:y){
+    #  contr <- contr + exp(-log(a)*k)
+    #}
+    #contr - 1
+    
+    if(y>0) {
+      contr <-  (1 - (1-1/a)^(y)) 
+    } else {
+      contr <- 0
     }
-    contr - 1
+    return(contr)
   }
   
   tie_val <- cache[[dep.var]]$valuedNetwork[i, j]
@@ -129,10 +145,18 @@ concentration_GW_resource_covar_bin <- function(dep.var = 1,
     
     g_cum <- function(y, a){
       contr <- 0
-      for(k in 0:y){
-        contr <- contr + (y-k) * exp(-log(a)*k)
+      
+      #for(k in 0:y){
+      #  contr <- contr + (y-k) * exp(-log(a)*k)
+      #}
+      #contr - y
+      
+      if(y>1){
+        for(k in 1:(y-1)){
+          contr <- contr + (1 - (1-1/a)^(k))
+        }
       }
-      contr - y
+      return(contr)
     }
     
     nResources <- cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][i, j]
@@ -150,10 +174,18 @@ concentration_GW_resource_covar_bin <- function(dep.var = 1,
   
   g_mar <- function(y, a){
     contr <- 0
-    for(k in 0:y){
-      contr <- contr + exp(-log(a)*k)
+    
+    #for(k in 0:y){
+    #  contr <- contr + exp(-log(a)*k)
+    #}
+    #contr - 1
+    
+    if(y>0) {
+      contr <-  (1 - (1-1/a)^(y)) 
+    } else {
+      contr <- 0
     }
-    contr - 1
+    return(contr)
   }
   
   tie_val <- cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][i, j]
@@ -202,10 +234,18 @@ concentration_GW_dyad_covar <- function(dep.var = 1, attribute.index, state, cac
     
     g_cum <- function(y, a){
       contr <- 0
-      for(k in 0:y){
-        contr <- contr + (y-k) * exp(-log(a)*k)
+      
+      #for(k in 0:y){
+      #  contr <- contr + (y-k) * exp(-log(a)*k)
+      #}
+      #contr - y
+      
+      if(y>1){
+        for(k in 1:(y-1)){
+          contr <- contr + (1 - (1-1/a)^(k))
+        }
       }
-      contr - y
+      return(contr)
     }
     
     nResources <- cache[[dep.var]]$valuedNetwork[i, j] 
@@ -219,10 +259,18 @@ concentration_GW_dyad_covar <- function(dep.var = 1, attribute.index, state, cac
   
   g_mar <- function(y, a){
     contr <- 0
-    for(k in 0:y){
-      contr <- contr + exp(-log(a)*k)
+    
+    #for(k in 0:y){
+    #  contr <- contr + exp(-log(a)*k)
+    #}
+    #contr - 1
+    
+    if(y>0) {
+      contr <-  (1 - (1-1/a)^(y)) 
+    } else {
+      contr <- 0
     }
-    contr - 1
+    return(contr)
   }
   
   tie_val <- cache[[dep.var]]$valuedNetwork[i, j] 

@@ -221,10 +221,12 @@ reciprocity_GW <- function(dep.var = 1, state, cache, i, j, edge, update,
   
   g_mar <- function(y, a){
     contr <- 0
-    for(k in 0:y){
-      contr <- contr + exp(-log(a)*k)
+    if(y>0) {
+      contr <-  (1 - (1-1/a)^(y)) 
+    } else {
+      contr <- 0
     }
-    contr - 1
+    return(contr)
   }
   
   if(getTargetContribution){
@@ -284,10 +286,12 @@ reciprocity_GW_dyad_covar_bin <- function(dep.var = 1, attribute.index, state, c
   
   g_mar <- function(y, a){
     contr <- 0
-    for(k in 0:y){
-      contr <- contr + exp(-log(a)*k)
+    if(y>0) {
+      contr <-  (1 - (1-1/a)^(y)) 
+    } else {
+      contr <- 0
     }
-    contr - 1
+    return(contr)
   }
   
   if(getTargetContribution){
@@ -347,10 +351,12 @@ reciprocity_GW_dyad_covar <- function(dep.var = 1, attribute.index, state, cache
   
   g_mar <- function(y, a){
     contr <- 0
-    for(k in 0:y){
-      contr <- contr + exp(-log(a)*k)
+    if(y>0) {
+      contr <-  (1 - (1-1/a)^(y)) 
+    } else {
+      contr <- 0
     }
-    contr - 1
+    return(contr)
   }
   
   if(getTargetContribution){

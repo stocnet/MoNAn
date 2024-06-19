@@ -272,10 +272,12 @@ transitivity_GW <-
     
     g_mar <- function(y, a){
       contr <- 0
-      for(k in 0:y){
-        contr <- contr + exp(-log(a)*k)
+      if(y>0) {
+        contr <-  (1 - (1-1/a)^(y)) 
+      } else {
+        contr <- 0
       }
-      contr - 1
+      return(contr)
     }
     
     net <- cache[[dep.var]]$valuedNetwork

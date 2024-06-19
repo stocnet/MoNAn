@@ -128,10 +128,12 @@ in_weights_GW <-
     if (getTargetContribution) {
       g_cum <- function(y, a){
         contr <- 0
-        for(k in 0:y){
-          contr <- contr + (y-k) * exp(-log(a)*k)
+        if(y>1){
+          for(k in 1:(y-1)){
+            contr <- contr + (1 - (1-1/a)^(k))
+          }
         }
-        contr - y
+        return(contr)
       }
       
       return(g_cum(y = in_weight, a = alpha) / (length(cache[[dep.var]]$valuedNetwork[, j])))
@@ -139,10 +141,12 @@ in_weights_GW <-
 
     g_mar <- function(y, a){
       contr <- 0
-      for(k in 0:y){
-        contr <- contr + exp(-log(a)*k)
+      if(y>0) {
+        contr <-  (1 - (1-1/a)^(y)) 
+      } else {
+        contr <- 0
       }
-      contr - 1
+      return(contr)
     }
     
     if(update < 0){

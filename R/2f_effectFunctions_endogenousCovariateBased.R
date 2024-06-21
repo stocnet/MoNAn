@@ -546,7 +546,7 @@ avoiding_dissimilar_covar_cont <- function(dep.var = 1,
 
 
 
-#' joining_similar_avoiding_dissimilar_covar_bin
+#' associativity_all_GW_covar_bin
 #' 
 #' Do individuals with the same attribute tend to use the same paths and 
 #' individuals with different attributes to move to different places? 
@@ -623,6 +623,88 @@ associativity_all_GW_covar_bin <- function(dep.var = 1,
       return(update * g_mar(y = nResources_1, a = alpha))
     } else {
       return(update * g_mar(y = nResources - nResources_1, a = alpha))
+    }
+  }
+  
+}
+
+
+#' associativity_one_GW_covar_bin
+#' 
+#' Do individuals with the same attribute tend to use the same paths and 
+#' individuals with different attributes to move to different places? 
+#' This statistic gives a positive contribution to all cliques of individuals
+#' with the value 1 of a binary covariate who use the same path.
+#' It's a geometrically-weighted statistic, so the more cliques we add, the
+#' less they matter.
+#' 
+#' @param dep.var 
+#' @param resource.attribute.index 
+#' @param state 
+#' @param cache 
+#' @param i 
+#' @param j 
+#' @param edge 
+#' @param update 
+#' @param getTargetContribution 
+#'
+#' @return Returns the change statistic or target statistic of the effect for 
+#' internal use by the estimation algorithm. 
+#' @keywords internal
+associativity_one_GW_covar_bin <- function(dep.var = 1, 
+                                           resource.attribute.index,
+                                           state, 
+                                           cache, 
+                                           i, 
+                                           j, 
+                                           edge, 
+                                           update, 
+                                           getTargetContribution = FALSE){
+  
+  nResources <- cache[[dep.var]]$valuedNetwork[i, j]
+  nResources_1 <- cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][i, j]
+  
+  ### calculate target statistic
+  if(getTargetContribution){
+    
+    g_cum <- function(y, a){
+      contr <- 0
+      if(y>1){
+        for(k in 1:(y-1)){
+          contr <- contr + (1 - (1-1/a)^(k))
+        }
+      }
+      return(contr)
+    }
+    
+    return( g_cum(nResources_1, a = alpha) )
+  }
+  
+  ### calculate change statistic
+  g_mar <- function(y, a){
+    contr <- 0
+    if(y>0) {
+      contr <-  (1 - (1-1/a)^(y)) 
+    } else {
+      contr <- 0
+    }
+    return(contr)
+  }
+  
+  if(update < 0){
+    attr_removed <- state[[resource.attribute.index]]$data[edge]
+    if(attr_removed == 1) {
+      return(update * g_mar(y = (nResources_1 + update), a = alpha))
+    } else {
+      return(0)
+    }
+  }
+  if(update > 0){
+    attr_added <- state[[resource.attribute.index]]$data[edge]
+    if(attr_added == 1) {
+      return(update * g_mar(y = nResources_1, a = alpha))
+    } else {
+      return(0)
     }
   }
   

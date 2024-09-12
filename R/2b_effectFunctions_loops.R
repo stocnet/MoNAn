@@ -37,7 +37,7 @@ loops <-
   }
 
 
-#' loops_GW
+#' loops_AC
 #' 
 #' Do individuals stay in their current location, in case many other from their 
 #' current location also stay? This effect tests whether the ‘benefit’ of staying 
@@ -58,7 +58,7 @@ loops <-
 #' @return Returns the change statistic or target statistic of the effect for 
 #' internal use by the estimation algorithm.
 #' @keywords internal
-loops_GW <- function(dep.var = 1,
+loops_AC <- function(dep.var = 1,
                      state,
                      cache,
                      i,
@@ -115,6 +115,83 @@ loops_GW <- function(dep.var = 1,
     }
   }
 }
+
+
+#' loops_GW
+#' 
+#' Do individuals stay in their current location, in case many other from their 
+#' current location also stay? This effect tests whether the ‘benefit’ of staying 
+#' in the origin location depends on the number of others also staying. Note that 
+#' this effect should be modelled alongside the loops effect.
+#'
+#' @param dep.var 
+#' @param state 
+#' @param cache 
+#' @param i 
+#' @param j 
+#' @param edge 
+#' @param update 
+#' @param getTargetContribution 
+#' @param alpha 
+#'
+#' 
+#' @return Returns the change statistic or target statistic of the effect for 
+#' internal use by the estimation algorithm.
+#' @keywords internal
+loops_GW <- function(dep.var = 1,
+                     state,
+                     cache,
+                     i,
+                     j,
+                     edge,
+                     update,
+                     getTargetContribution = FALSE,
+                     alpha = 2) {
+  if (alpha <= 0) {
+    stop("Alpha parameter in GW loops weights function must be positive")
+  }
+  
+  g_cum <- function(y, a){
+    contr <- 0
+    for(k in 0:y){
+      contr <- contr + (y-k) * exp(-log(a)*k)
+    }
+    contr - y
+  }
+  
+  if (getTargetContribution) {
+    if (i == j) {
+      nResources <- cache[[dep.var]]$valuedNetwork[i, i]
+      
+      return(g_cum(y = nResources, a = alpha))
+    }
+    
+    return(0)
+  }
+  
+  if (i != j) {
+    return(0)
+  }
+  
+  g_mar <- function(y, a){
+    contr <- 0
+    for(k in 0:y){
+      contr <- contr + exp(-log(a)*k)
+    }
+    contr - 1
+  }
+  
+  if (i == j) {
+    tie_val <- cache[[dep.var]]$valuedNetwork[i, i]
+    if(update < 0){
+      return(update * g_mar(y = (tie_val + update), a = alpha))
+    }
+    if(update > 0){
+      return(update * g_mar(y = tie_val, a = alpha))
+    }
+  }
+}
+
 
 
 #' loops_node_covar

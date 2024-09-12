@@ -236,6 +236,87 @@ transitivity_netflow <-
   }
 
 
+#' transitivity_AC
+#'
+#' Is mobility clustered in groups? This is represented by the count of
+#' transitive triads among three nodes, where the number of two-paths is
+#' geometrically weighted down to avoid degeneracy.
+#' 
+#' @param dep.var 
+#' @param state 
+#' @param cache 
+#' @param i 
+#' @param j 
+#' @param edge 
+#' @param update 
+#' @param getTargetContribution 
+#' @param alpha 
+#'
+#' @return Returns the change statistic or target statistic of the effect for 
+#' internal use by the estimation algorithm.
+#' @keywords internal
+transitivity_AC <-
+  function(dep.var = 1,
+           state,
+           cache,
+           i,
+           j,
+           edge,
+           update,
+           getTargetContribution = FALSE,
+           alpha = 1.1) {
+    
+    if (i == j) {
+      return(0)
+    }
+    
+    g_mar <- function(y, a){
+      contr <- 0
+      if(y>0) {
+        contr <-  (1 - (1-1/a)^(y)) 
+      } else {
+        contr <- 0
+      }
+      return(contr)
+    }
+    
+    net <- cache[[dep.var]]$valuedNetwork
+    diag(net) <- 0
+    
+    if (getTargetContribution) {
+      twoPaths <- sum(apply(cbind(net[i, ], net[, j]), 1, prod))
+      return(net[i,j] * g_mar(twoPaths, alpha))
+    }
+    
+    ### change contribution in three parts
+    
+    # part 1: i,j closes two-path
+    
+    twoPaths <- sum(apply(cbind(net[i, ], net[, j]), 1, prod))
+    ind_cont <- update * g_mar(twoPaths, alpha)
+    
+    # part 2: i,j closes instar
+    net_u <- net
+    net_u[i,j] <- net_u[i,j] + update
+    
+    nTP_before <- (net[i,] %*% net)
+    con_be <- sum(net[i,] * unlist(lapply(nTP_before, g_mar, alpha))) - (net[i,j] * g_mar(nTP_before[j], alpha))
+    nTP_after <- (net_u[i,] %*% net_u)
+    con_af <- sum(net_u[i,] * unlist(lapply(nTP_after, g_mar, alpha))) - (net_u[i,j] * g_mar(nTP_after[j], alpha))
+    ind_cont <- ind_cont + (con_af - con_be)
+    
+    # part 3: i,j closes outstar
+    
+    nTP_before <- (net %*% net[,j])
+    con_be <- sum(net[,j] * unlist(lapply(nTP_before, g_mar, alpha)))
+    nTP_after <- (net_u %*% net_u[,j])
+    con_af <- sum(net[,j] * unlist(lapply(nTP_after, g_mar, alpha)))
+    ind_cont <- ind_cont + (con_af - con_be)
+    
+    return(ind_cont)
+  }
+
+
 #' transitivity_GW
 #'
 #' Is mobility clustered in groups? This is represented by the count of
@@ -272,12 +353,10 @@ transitivity_GW <-
     
     g_mar <- function(y, a){
       contr <- 0
-      if(y>0) {
-        contr <-  (1 - (1-1/a)^(y)) 
-      } else {
-        contr <- 0
+      for(k in 0:y){
+        contr <- contr + exp(-log(a)*k)
       }
-      return(contr)
+      contr - 1
     }
     
     net <- cache[[dep.var]]$valuedNetwork

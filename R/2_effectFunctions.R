@@ -89,6 +89,75 @@ in_weights_exponent <-
   }
 
 
+#' in_weights_AC
+#' 
+#' Is there a preferential attachment in the mobility network, i.e., do individuals 
+#' move particularly to popular destinations?
+#' The geometrically weighted version avoids degeneracy.
+#'
+#' @param dep.var 
+#' @param state 
+#' @param cache 
+#' @param i 
+#' @param j 
+#' @param edge 
+#' @param update 
+#' @param getTargetContribution 
+#' @param alpha 
+#'
+#' @return Returns the change statistic or target statistic of the effect for 
+#' internal use by the estimation algorithm.
+#' @keywords internal
+in_weights_AC <-
+  function(dep.var = 1,
+           state,
+           cache,
+           i,
+           j,
+           edge,
+           update,
+           getTargetContribution = FALSE,
+           alpha = 2) {
+    if (alpha <= 0) {
+      stop("Alpha parameter in in_weights_AC weights function must be positive")
+    }
+    
+    in_weight <- (sum(cache[[dep.var]]$valuedNetwork[,j]))
+    
+    # a target contribution is calculated even for unconnected i-j pairs
+    if (getTargetContribution) {
+      g_cum <- function(y, a){
+        contr <- 0
+        if(y>1){
+          for(k in 1:(y-1)){
+            contr <- contr + (1 - (1-1/a)^(k))
+          }
+        }
+        return(contr)
+      }
+      
+      return(g_cum(y = in_weight, a = alpha) / (length(cache[[dep.var]]$valuedNetwork[, j])))
+    }
+
+    g_mar <- function(y, a){
+      contr <- 0
+      if(y>0) {
+        contr <-  (1 - (1-1/a)^(y)) 
+      } else {
+        contr <- 0
+      }
+      return(contr)
+    }
+    
+    if(update < 0){
+      return(update * g_mar(y = (in_weight + update), a = alpha))
+    }
+    if(update > 0){
+      return(update * g_mar(y = in_weight, a = alpha))
+    }
+  }
+
+
 #' in_weights_GW
 #' 
 #' Is there a preferential attachment in the mobility network, i.e., do individuals 
@@ -128,25 +197,21 @@ in_weights_GW <-
     if (getTargetContribution) {
       g_cum <- function(y, a){
         contr <- 0
-        if(y>1){
-          for(k in 1:(y-1)){
-            contr <- contr + (1 - (1-1/a)^(k))
-          }
+        for(k in 0:y){
+          contr <- contr + (y-k) * exp(-log(a)*k)
         }
-        return(contr)
+        contr - y
       }
       
       return(g_cum(y = in_weight, a = alpha) / (length(cache[[dep.var]]$valuedNetwork[, j])))
     }
-
+    
     g_mar <- function(y, a){
       contr <- 0
-      if(y>0) {
-        contr <-  (1 - (1-1/a)^(y)) 
-      } else {
-        contr <- 0
+      for(k in 0:y){
+        contr <- contr + exp(-log(a)*k)
       }
-      return(contr)
+      contr - 1
     }
     
     if(update < 0){
@@ -156,6 +221,8 @@ in_weights_GW <-
       return(update * g_mar(y = in_weight, a = alpha))
     }
   }
+
+
 
 #' present_relations
 #' 

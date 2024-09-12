@@ -546,7 +546,7 @@ avoiding_dissimilar_covar_cont <- function(dep.var = 1,
 
 
 
-#' associativity_all_GW_covar_bin
+#' associativity_all_AC_covar_bin
 #' 
 #' Do individuals with the same attribute tend to use the same paths and 
 #' individuals with different attributes to move to different places? 
@@ -564,11 +564,12 @@ avoiding_dissimilar_covar_cont <- function(dep.var = 1,
 #' @param edge 
 #' @param update 
 #' @param getTargetContribution 
+#' @param alpha 
 #'
 #' @return Returns the change statistic or target statistic of the effect for 
 #' internal use by the estimation algorithm. 
 #' @keywords internal
-associativity_all_GW_covar_bin <- function(dep.var = 1, 
+associativity_all_AC_covar_bin <- function(dep.var = 1, 
                                        resource.attribute.index,
                                        state, 
                                        cache, 
@@ -576,7 +577,8 @@ associativity_all_GW_covar_bin <- function(dep.var = 1,
                                        j, 
                                        edge, 
                                        update, 
-                                       getTargetContribution = FALSE){
+                                       getTargetContribution = FALSE,
+                                       alpha = 2){
   
   nResources <- cache[[dep.var]]$valuedNetwork[i, j]
   nResources_1 <- cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][i, j]
@@ -629,7 +631,7 @@ associativity_all_GW_covar_bin <- function(dep.var = 1,
 }
 
 
-#' associativity_one_GW_covar_bin
+#' associativity_one_AC_covar_bin
 #' 
 #' Do individuals with the same attribute tend to use the same paths and 
 #' individuals with different attributes to move to different places? 
@@ -647,11 +649,12 @@ associativity_all_GW_covar_bin <- function(dep.var = 1,
 #' @param edge 
 #' @param update 
 #' @param getTargetContribution 
+#' @param alpha 
 #'
 #' @return Returns the change statistic or target statistic of the effect for 
 #' internal use by the estimation algorithm. 
 #' @keywords internal
-associativity_one_GW_covar_bin <- function(dep.var = 1, 
+associativity_one_AC_covar_bin <- function(dep.var = 1, 
                                            resource.attribute.index,
                                            state, 
                                            cache, 
@@ -659,7 +662,8 @@ associativity_one_GW_covar_bin <- function(dep.var = 1,
                                            j, 
                                            edge, 
                                            update, 
-                                           getTargetContribution = FALSE){
+                                           getTargetContribution = FALSE,
+                                           alpha = 2){
   
   nResources <- cache[[dep.var]]$valuedNetwork[i, j]
   nResources_1 <- cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][i, j]

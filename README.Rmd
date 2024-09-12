@@ -36,10 +36,9 @@ The **MoNAn Manual** is available here on github in the manual folder or on [Soc
 
 ## Note from the developers
 
-This is version 1.0.0 of MoNAn. This update includes many changes, including
-some that mean old code written for older versions will not work anymore!
+This is version 1.1.0 of MoNAn (Sep 2024). The update to version 1.0.0 (March 2024) included many changes, including some that mean code written for older versions will not work anymore!
 
-Code use has been simplified; the most important changes are:
+Code use for version 1.0.0 has been simplified; the most important changes are:
 
 - the cache is now hidden from the user and does not need to be create or specified in functions anymore
 
@@ -50,14 +49,14 @@ Code use has been simplified; the most important changes are:
 - new way to generate the process state using monanDataCreate
 
 As of 30 Aug 2023, we have a CRAN release of the package.
-Nevertheless, the package and the documentation might still have bugs or errors,
-or you might
+Nevertheless, we cannot guarantee that the package and the documentation is 
+free of bugs or errors; further, you might
 not be able to do what you want. In that case, or if you are unsure 
 please write the package
 maintainer under his institutional email address.
 
-We are currently (May 2024) on version 1.0.1 on github. 
-Version 1.0.0 was released to CRAN in Apr 2024.
+We are currently (Sep 2024) on version 1.1.0 on github. 
+Version 1.1.0 will be released to CRAN in Sep 2024.
 
 # Installation
 
@@ -162,7 +161,8 @@ an effect requires the effects name and any additional parameters it needs.
 # create an effects object
 myEffects <- createEffects(myState)
 myEffects <- addEffect(myEffects, loops)
-myEffects <- addEffect(myEffects, reciprocity_min)
+myEffects <- addEffect(myEffects, concentration_AC, alpha = 4)
+myEffects <- addEffect(myEffects, reciprocity_AC, alpha = 4)
 myEffects <- addEffect(myEffects, dyadic_covariate, attribute.index = "sameRegion")
 myEffects <- addEffect(myEffects, alter_covariate, attribute.index = "size")
 myEffects <- addEffect(myEffects, resource_covar_to_node_covar,
@@ -175,7 +175,8 @@ myEffects <- addEffect(myEffects, loops_resource_covar, resource.attribute.index
 # attribute.index & resource.attribute.index:
 myEffects <- createEffects(myState) |>
   addEffect(loops) |>
-  addEffect(reciprocity_min) |>
+  addEffect(concentration_AC, alpha = 4) |>
+  addEffect(reciprocity_AC, alpha = 4) |>
   addEffect(dyadic_covariate, node.attribute = "sameRegion") |>
   addEffect(alter_covariate, node.attribute = "size") |>
   addEffect(resource_covar_to_node_covar,
@@ -352,7 +353,7 @@ The package also provides the possibility to exemplarily simulate mobility netwo
 mySimDN <- monanSimulate(
   myState,
   myEffects,
-  parameters = c(2, 1, 1.5, 0.1, -1, -0.5),
+  parameters = c(2, 1, 1.5, 0.5, 0.1, -1, -0.5),
   allowLoops = TRUE,
   burnin = 45000,
   thinning = 15000,

@@ -54,7 +54,8 @@ myState
 # effects object
 myEffects <- createEffects(myState) |>
   addEffect(loops) |>
-  addEffect(reciprocity_min) |>
+  addEffect(concentration_AC, alpha = 4) |>
+  addEffect(reciprocity_AC, alpha = 4) |>
   addEffect(dyadic_covariate, node.attribute = "sameRegion") |>
   addEffect(alter_covariate, node.attribute = "size") |>
   addEffect(resource_covar_to_node_covar,
@@ -149,7 +150,7 @@ plot(traces)
 ##### test whether other effects should be included #####
 
 myEffects2 <- createEffects(myState) |>
-  addEffect(transitivity_min)
+  addEffect(transitivity_AC)
 
 test_ME.2 <- scoreTest(myResDN, myEffects2)
 test_ME.2
@@ -172,7 +173,7 @@ plot(myGofTieWeight, lvls = 1:15)
 
 mySimDN <- monanSimulate(myState,
                          myEffects,
-                         parameters = c(2, 1, 1.5, 0.1, -1, -0.5),
+                         parameters = c(2, 1, 1.5, 0.5, 0.1, -1, -0.5),
                          allowLoops = TRUE,
                          burnin = 45000,
                          thinning = 15000,

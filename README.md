@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# MoNAn <img src="https://raw.githubusercontent.com/stocnet/MoNAn/develop/MoNAn_logo.png" align="right" width="150"/>
+# MoNAn <img src="https://raw.githubusercontent.com/stocnet/MoNAn/main/MoNAn_logo.png" align="right" width="150"/>
 
 <!-- badges: start -->
 <!-- badges: end -->
@@ -34,11 +34,12 @@ on [SocArXiv](https://osf.io/preprints/socarxiv/8q2xu/)
 
 ## Note from the developers
 
-This is version 1.0.0 of MoNAn. This update includes many changes,
-including some that mean old code written for older versions will not
-work anymore!
+This is version 1.1.0 of MoNAn (Sep 2024). The update to version 1.0.0
+(March 2024) included many changes, including some that mean code
+written for older versions will not work anymore!
 
-Code use has been simplified; the most important changes are:
+Code use for version 1.0.0 has been simplified; the most important
+changes are:
 
 - the cache is now hidden from the user and does not need to be create
   or specified in functions anymore
@@ -52,13 +53,13 @@ Code use has been simplified; the most important changes are:
 - new way to generate the process state using monanDataCreate
 
 As of 30 Aug 2023, we have a CRAN release of the package. Nevertheless,
-the package and the documentation might still have bugs or errors, or
-you might not be able to do what you want. In that case, or if you are
-unsure please write the package maintainer under his institutional email
-address.
+we cannot guarantee that the package and the documentation is free of
+bugs or errors; further, you might not be able to do what you want. In
+that case, or if you are unsure please write the package maintainer
+under his institutional email address.
 
-We are currently (May 2024) on version 1.0.1 on github. Version 1.0.0
-was released to CRAN in Apr 2024.
+We are currently (Sep 2024) on version 1.1.0 on github. Version 1.1.0
+will be released to CRAN in Sep 2024.
 
 # Installation
 
@@ -203,7 +204,8 @@ name and any additional parameters it needs.
 # create an effects object
 myEffects <- createEffects(myState)
 myEffects <- addEffect(myEffects, loops)
-myEffects <- addEffect(myEffects, reciprocity_min)
+myEffects <- addEffect(myEffects, concentration_AC, alpha = 4)
+myEffects <- addEffect(myEffects, reciprocity_AC, alpha = 4)
 myEffects <- addEffect(myEffects, dyadic_covariate, attribute.index = "sameRegion")
 myEffects <- addEffect(myEffects, alter_covariate, attribute.index = "size")
 myEffects <- addEffect(myEffects, resource_covar_to_node_covar,
@@ -216,7 +218,8 @@ myEffects <- addEffect(myEffects, loops_resource_covar, resource.attribute.index
 # attribute.index & resource.attribute.index:
 myEffects <- createEffects(myState) |>
   addEffect(loops) |>
-  addEffect(reciprocity_min) |>
+  addEffect(concentration_AC, alpha = 4) |>
+  addEffect(reciprocity_AC, alpha = 4) |>
   addEffect(dyadic_covariate, node.attribute = "sameRegion") |>
   addEffect(alter_covariate, node.attribute = "size") |>
   addEffect(resource_covar_to_node_covar,
@@ -229,7 +232,8 @@ myEffects
 #> Effects
 #>  effect name                  cov. organisations cov. people  parameter 
 #>  loops                                -               -           -     
-#>  reciprocity_min                      -               -           -     
+#>  concentration_AC                     -               -           4     
+#>  reciprocity_AC                       -               -           4     
 #>  dyadic_covariate                 sameRegion          -           -     
 #>  alter_covariate                     size             -           -     
 #>  resource_covar_to_node_covar       region           sex          -     
@@ -325,7 +329,7 @@ estimates), another run is necessary.
 
 ``` r
 max(abs(myResDN$convergenceStatistics))
-#> [1] 0.1139582
+#> [1] 0.06074141
 ```
 
 If convergence is too high, update algorithm, re-run estimation with
@@ -352,7 +356,7 @@ myResDN <- monan07(
 ``` r
 # check convergence
 max(abs(myResDN$convergenceStatistics))
-#> [1] 0.0956881
+#> [1] 0.06074141
 ```
 
 In case convergence is still poor, updating the algorithm might be
@@ -365,19 +369,21 @@ convergence ratio. All values in the final column should be below 0.1
 myResDN
 #> Results
 #>                                   Effects   Estimates StandardErrors
-#> 1                                   loops  2.59354872      0.1827159
-#> 2                         reciprocity_min  0.82442789      0.1830364
-#> 3             dyadic_covariate sameRegion  1.68684201      0.1107805
-#> 4                    alter_covariate size  0.03634042      0.0234508
-#> 5 resource_covar_to_node_covar region sex -0.66139043      0.1634842
-#> 6                loops_resource_covar sex -0.36497904      0.2028804
-#>    Convergence
-#> 1  0.001441213
-#> 2  0.067114163
-#> 3  0.001477124
-#> 4 -0.086525984
-#> 5 -0.113958248
-#> 6  0.017199722
+#> 1                                   loops  2.93847918     0.16752184
+#> 2                      concentration_AC 4  1.39905831     0.20998661
+#> 3                        reciprocity_AC 4  0.99264953     0.17453719
+#> 4             dyadic_covariate sameRegion  0.53396969     0.10329601
+#> 5                    alter_covariate size  0.01579074     0.01849084
+#> 6 resource_covar_to_node_covar region sex -0.63996642     0.15384288
+#> 7                loops_resource_covar sex -0.35367248     0.21448765
+#>   Convergence
+#> 1  0.02771634
+#> 2 -0.04310385
+#> 3 -0.02941513
+#> 4 -0.02808840
+#> 5  0.01195872
+#> 6 -0.06074141
+#> 7  0.04756056
 ```
 
 ## Diagnostics of the estimated model
@@ -391,7 +397,7 @@ problematic and indicate that a higher thinning is needed.
 
 ``` r
 autoCorrelationTest(myResDN)
-#> [1] 0.09451788
+#> [1] 0.09948763
 ```
 
 The output of extractTraces indicates the correlation of statistics
@@ -406,7 +412,7 @@ par(mfrow = c(1,2))
 plot(traces)
 ```
 
-<img src="man/figures/README-unnamed-chunk-18-1.png" width="100%" /><img src="man/figures/README-unnamed-chunk-18-2.png" width="100%" /><img src="man/figures/README-unnamed-chunk-18-3.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-18-1.png" width="100%" /><img src="man/figures/README-unnamed-chunk-18-2.png" width="100%" /><img src="man/figures/README-unnamed-chunk-18-3.png" width="100%" /><img src="man/figures/README-unnamed-chunk-18-4.png" width="100%" />
 
 ## Score-tests to check model specification
 
@@ -423,7 +429,7 @@ test_ME.2 <- scoreTest(myResDN, myEffects2)
 test_ME.2
 #> Results
 #>            Effects pValuesParametric pValuesNonParametric
-#> 1 transitivity_min      5.186418e-09                    0
+#> 1 transitivity_min         0.1865437                0.898
 #> 
 #>  Parametric p-values: small = more significant 
 #>  Non-parametric p-values: further away from 0.5 = more significant
@@ -463,7 +469,7 @@ parameters.
 mySimDN <- monanSimulate(
   myState,
   myEffects,
-  parameters = c(2, 1, 1.5, 0.1, -1, -0.5),
+  parameters = c(2, 1, 1.5, 0.5, 0.1, -1, -0.5),
   allowLoops = TRUE,
   burnin = 45000,
   thinning = 15000,

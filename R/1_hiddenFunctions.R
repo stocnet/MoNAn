@@ -630,7 +630,7 @@ runSubphase2 <- function(dep.var,
   
   repeat{
     if(dk2 > 100) break
-    if(res < 0.05) break
+    if(any(res < 0.05)) break
     dk2 <- dk2 + 1
     res <- res*(1-gain)
   }

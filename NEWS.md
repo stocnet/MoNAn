@@ -1,6 +1,15 @@
+# MoNAn 1.1.0
+
+Added effects that improve on the old GW effects (where AC stands for alternating cliques):
+
+- concentration_AC, concentration_AC_dyad_covar,
+  concentration_AC_resource_covar_bin,
+  reciprocity_AC, reciprocity_AC_dyad_covar_bin, reciprocity_AC_dyad_covar,
+  transitivity_AC,
+  loops_AC,
+  in_weights_AC
+
 # MoNAn 1.0.1
-
-
 
 # MoNAn 1.0.0
 

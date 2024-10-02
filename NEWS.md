@@ -1,3 +1,5 @@
+# MoNAn 1.1.1
+
 # MoNAn 1.1.0
 
 Added effects that improve on the old GW effects (where AC stands for alternating cliques):

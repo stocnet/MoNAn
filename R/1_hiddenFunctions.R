@@ -637,6 +637,14 @@ runSubphase2 <- function(dep.var,
   
   dk <- min(dk1, dk2)
   
+  if(ncol(parameters) == 1){
+    return(list(
+      parameters = mean(parameters[dk:iterations,]),
+      state = state,
+      cache = cache
+    ))
+  }
+  
   return(list(
     parameters = colMeans(parameters[dk:iterations,]),
     state = state,

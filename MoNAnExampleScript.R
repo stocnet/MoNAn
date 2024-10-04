@@ -44,7 +44,8 @@ myState <- monanDataCreate(transfers,
                            region,
                            size,
                            sex,
-                           second_or)
+                           second_or,
+                           fixedEffectDummies = TRUE)
 
 # inspect the created object
 myState
@@ -65,6 +66,21 @@ myEffects <- createEffects(myState) |>
 
 # inspect the created object
 myEffects
+
+# further effects object with fixed effects by location
+
+myEffects_fe <- createEffects(myState) |>
+  addEffect(loops) |>
+  addEffect(concentration_AC, alpha = 4) |>
+  addEffect(reciprocity_AC, alpha = 4) |>
+  addEffect(dyadic_covariate, node.attribute = "sameRegion") |>
+  addEffect(resource_covar_to_node_covar,
+            node.attribute = "region",
+            edge.attribute = "sex") |>
+  addEffect(loops_resource_covar, edge.attribute = "sex") |>
+  addFixedEffects(myState)
+
+myEffects_fe
 
 ##### get multinomial statistics to estimate initial parameters using pseudo-likelihood estimation #####
 
@@ -111,6 +127,17 @@ myResDN <- monanEstimate(
   returnDeps = TRUE,
   fish = FALSE
 )
+
+# myResDN_fe <- monanEstimate(
+#   myState, myEffects_fe, myAlg,
+#   initialParameters = NULL,
+#   # in case a pseudo-likelihood estimation was run, replace with
+#   # initialParameters = initEst,
+#   parallel = TRUE, cpus = 4,
+#   verbose = TRUE,
+#   returnDeps = TRUE,
+#   fish = FALSE
+# )
 
 # check convergence
 max(abs(myResDN$convergenceStatistics))

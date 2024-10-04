@@ -4,13 +4,17 @@
 \alias{monanDataCreate}
 \title{monanDataCreate}
 \usage{
-monanDataCreate(...)
+monanDataCreate(..., fixedEffectDummies = FALSE)
 }
 \arguments{
 \item{...}{The monan objects to be included in the process State.
 This must include exactly one edgelist (dependent variable) and the
 two nodesets associated with the edgelist.
 Further allowed elements are (monadic or dyadic) covariates of locations and people}
+
+\item{fixedEffectsDummies}{Add dummy variable for each location (minus the first)
+in the process state (data object), so that fixed effects to control the
+indegree of every location can be modelled directly.}
 }
 \value{
 An object of class "processState.monan".

@@ -19,7 +19,7 @@ attribute.index, or resource.attribute.index}
 An object of type effectsList.monan
 }
 \description{
-A function to add addtional effects to a moman effects object
+A function to add additional effects to a moman effects object
 }
 \examples{
 # Create effects object and add effects

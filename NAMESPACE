@@ -4,7 +4,7 @@ export(
   # core functions and aliases
   createAlgorithm, monanAlgorithmCreate,
   createEdgelist, monanDependent, 
-  createEffectsObject, createEffects, addEffect,
+  createEffectsObject, createEffects, addEffect, addFixedEffects, addDummyEffects,
   createNetwork, dyadicCovar,
   createNodeSet, monanNodes, monanEdges,
   createNodeVariable, monadicCovar,

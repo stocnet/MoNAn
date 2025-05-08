@@ -525,7 +525,7 @@ concentration_GW_dyad_covar <- function(dep.var = 1, attribute.index, state, cac
 #' that are the destination of many others from their origin? The functional form of this
 #' statistic assumes that individuals consider the proportions of individuals (coming from
 #' the same origin) going to a certain destination, instead of the total number.
-#' This specification uses the idea that each individual has a proportion equal to 
+#' This specification uses the idea that each individual has a contribution equal to 
 #' the proportion of individuals from its origin going on the same tie as him/her.
 #'
 #' @param dep.var
@@ -544,7 +544,7 @@ concentration_prop <- function(dep.var = 1, state, cache, i, j, edge, update,
                                getTargetContribution = FALSE){
   ### if only one person is in the origin,
   ### this origin contributes 0 to the statistic
-  if(sum(cache[[dep.var]]$valuedNetwork[i,]) < 2){
+  if(sum(cache[[dep.var]]$valuedNetwork[i,]) < 1){
     return(0)
   }
 
@@ -563,8 +563,73 @@ concentration_prop <- function(dep.var = 1, state, cache, i, j, edge, update,
 }
 
 
+#' concentration_prop_AC
+#'
+#' Is there a bandwagon effect in mobility, i.e. do mobile individuals move to locations
+#' that are the destination of many others from their origin? The functional form of this
+#' statistic assumes that individuals consider the proportions of individuals (coming from
+#' the same origin) going to a certain destination, instead of the total number.
+#' This specification uses the idea that each individual's contribution is a function of
+#' the proportion of individuals from its origin going on the same tie as him/her.
+#' The function is defined as an increasing function with decreasing positive gradient,
+#' which means that the benefits of having additional individuals on a tie decrease with
+#' more individuals. It's a similar logic to the previous AC statistics.
+#'  
+#' @param dep.var
+#' @param state
+#' @param cache
+#' @param i
+#' @param j
+#' @param edge
+#' @param update
+#' @param getTargetContribution
+#'
+#' @return Returns the change statistic or target statistic of the effect for
+#' internal use by the estimation algorithm.
+#' @keywords internal
+concentration_prop_AC <- function(dep.var = 1, state, cache, i, j, edge, update,
+                               getTargetContribution = FALSE){
+  
+  if(alpha < 1) stop("alpha parameter in concentration_AC function must be 1 or larger")
 
-## Deprecated / For testing ##
+  g <- function(k, a){
+    return((1 - (1-1/a)^(k)))
+  }
+  
+  ### calculate target statistic
+  if(getTargetContribution){
+    cont <- g(k = cache[[dep.var]]$valuedNetwork[i, j] / 
+              sum(cache[[dep.var]]$valuedNetwork[i,]) ,
+              a = alpha)
+    stat <- cache[[dep.var]]$valuedNetwork[i, j] * cont
+    return(stat)
+  }
+  
+  ### calculate change statistic
+  before <- (cache[[dep.var]]$valuedNetwork[i, j]) *
+    g(k = cache[[dep.var]]$valuedNetwork[i, j] / 
+      sum(cache[[dep.var]]$valuedNetwork[i,]) ,
+      a = alpha) 
+  if(update == -1){
+    after <- (cache[[dep.var]]$valuedNetwork[i, j] - 1) *
+              g(k = (cache[[dep.var]]$valuedNetwork[i, j]-1) / 
+                sum(cache[[dep.var]]$valuedNetwork[i,]) ,
+                a = alpha) 
+    cont <- after - before
+  }
+  if(update == 1){
+    after <- (cache[[dep.var]]$valuedNetwork[i, j] + 1) *
+      g(k = (cache[[dep.var]]$valuedNetwork[i, j]+1) / 
+          sum(cache[[dep.var]]$valuedNetwork[i,]) ,
+        a = alpha) 
+    cont <- after - before
+  }
+  return(cont)
+}
+
+
+
+## Deprecated ##
 ## If de-commenting, put back the names in the namespace ##
 
 #' #' concentration_goodbad

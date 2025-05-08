@@ -517,6 +517,52 @@ concentration_GW_dyad_covar <- function(dep.var = 1, attribute.index, state, cac
   }
 }
 
+## Currently under testing ##
+
+#' concentration_prop
+#'
+#' Is there a bandwagon effect in mobility, i.e. do mobile individuals move to locations
+#' that are the destination of many others from their origin? The functional form of this
+#' statistic assumes that individuals consider the proportions of individuals (coming from
+#' the same origin) going to a certain destination, instead of the total number.
+#' This specification uses the idea that each individual has a proportion equal to 
+#' the proportion of individuals from its origin going on the same tie as him/her.
+#'
+#' @param dep.var
+#' @param state
+#' @param cache
+#' @param i
+#' @param j
+#' @param edge
+#' @param update
+#' @param getTargetContribution
+#'
+#' @return Returns the change statistic or target statistic of the effect for
+#' internal use by the estimation algorithm.
+#' @keywords internal
+concentration_prop <- function(dep.var = 1, state, cache, i, j, edge, update,
+                               getTargetContribution = FALSE){
+  ### if only one person is in the origin,
+  ### this origin contributes 0 to the statistic
+  if(sum(cache[[dep.var]]$valuedNetwork[i,]) < 2){
+    return(0)
+  }
+
+  ### calculate target statistic
+  if(getTargetContribution){
+    stat <- (cache[[dep.var]]$valuedNetwork[i, j])^2 / 
+      sum(cache[[dep.var]]$valuedNetwork[i,]) 
+    return(stat)
+  }
+
+  ### calculate change statistic
+  cont <- ((cache[[dep.var]]$valuedNetwork[i, j] + update)^2 - 
+           (cache[[dep.var]]$valuedNetwork[i, j])^2) / 
+          sum(cache[[dep.var]]$valuedNetwork[i,]) 
+  return(cont)
+}
+
+
 
 ## Deprecated / For testing ##
 ## If de-commenting, put back the names in the namespace ##

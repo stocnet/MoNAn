@@ -27,6 +27,42 @@ concentration_basic <- function(dep.var = 1, state, cache, i, j, edge, update, g
   }
 }
 
+#' concentration_max
+#' 
+#' Is there a bandwagon effect in mobility following the most common path?
+#' 
+#' @param dep.var 
+#' @param state 
+#' @param cache 
+#' @param i 
+#' @param j 
+#' @param edge 
+#' @param update 
+#' @param getTargetContribution 
+#'
+#' @return Returns the change statistic or target statistic of the effect for 
+#' internal use by the estimation algorithm.
+#' @keywords internal
+concentration_max <- function(dep.var = 1, state, cache, i, j, edge, update, getTargetContribution = FALSE){
+  if(getTargetContribution){
+    # each tie contributes the nth proportion of the row.max
+    return( max(cache[[dep.var]]$valuedNetwork[i, ]) / 
+              (dim(cache[[dep.var]]$valuedNetwork)[1]) )
+  } else {
+    v <- (cache[[dep.var]]$valuedNetwork[i, j])
+    if(update == 1){
+      if(max(cache[[dep.var]]$valuedNetwork[i, ]) == v){
+        return(update)
+      } 
+    }
+    if(update == -1){
+      if(v > sort(cache[[dep.var]]$valuedNetwork[i, ], decreasing = T)[2]){
+        return(update)
+      }
+    }
+    return(0)
+  }
+}
 
 #' concentration_basic_cube
 #' 

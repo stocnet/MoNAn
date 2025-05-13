@@ -46,6 +46,7 @@ export(
   concentration_GW, concentration_GW_dyad_covar,
   concentration_GW_resource_covar_bin,
   concentration_prop, concentration_prop_AC,
+  concentration_max,
   #concentration_goodbad, concentration_goodbad_orig_cov, 
   #concentration_rankGW,
   #concentration_basic_squared,

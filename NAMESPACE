@@ -39,15 +39,19 @@ export(
   loops_x_loops_additional_origin,
 
   # effect functions: concentration
-  concentration_basic, 
+  concentration_basic,
+  concentration_basic_cube,
   concentration_AC, concentration_AC_dyad_covar,
   concentration_AC_resource_covar_bin,
   concentration_GW, concentration_GW_dyad_covar,
   concentration_GW_resource_covar_bin,
-  concentration_prop, concentration_prop_orig_cov, concentration_rankGW,
-  concentration_basic_squared,
-  concentration_norm, 
-  concentration_norm_squared,
+  concentration_prop, concentration_prop_AC,
+  concentration_max,
+  #concentration_goodbad, concentration_goodbad_orig_cov, 
+  #concentration_rankGW,
+  #concentration_basic_squared,
+  #concentration_norm, 
+  #concentration_norm_squared,
 
   # effect functions: reciprocity
   reciprocity_basic,

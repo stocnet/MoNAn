@@ -1,5 +1,9 @@
 # MoNAn 1.1.1
 
+Bug fixes if only one effect is included in an analysis.
+
+Inclusion of option to add fixed effects for destination by default.
+
 # MoNAn 1.1.0
 
 Added effects that improve on the old GW effects (where AC stands for alternating cliques):

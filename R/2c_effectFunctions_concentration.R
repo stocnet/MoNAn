@@ -592,9 +592,17 @@ concentration_prop <- function(dep.var = 1, state, cache, i, j, edge, update,
   }
 
   ### calculate change statistic
-  cont <- ((cache[[dep.var]]$valuedNetwork[i, j] + update)^2 - 
-           (cache[[dep.var]]$valuedNetwork[i, j])^2) / 
-          sum(cache[[dep.var]]$valuedNetwork[i,]) 
+  if(update == -1){
+    cont <- ((cache[[dep.var]]$valuedNetwork[i, j] - 1)^2 - 
+      (cache[[dep.var]]$valuedNetwork[i, j])^2) / 
+      sum(cache[[dep.var]]$valuedNetwork[i,])
+  }
+  if(update == 1){
+    cont <- ((cache[[dep.var]]$valuedNetwork[i, j] + 1)^2 - 
+      (cache[[dep.var]]$valuedNetwork[i, j])^2) / 
+      (sum(cache[[dep.var]]$valuedNetwork[i,]) + 1)
+  }
+  
   return(cont)
 }
 
@@ -624,7 +632,7 @@ concentration_prop <- function(dep.var = 1, state, cache, i, j, edge, update,
 #' internal use by the estimation algorithm.
 #' @keywords internal
 concentration_prop_AC <- function(dep.var = 1, state, cache, i, j, edge, update,
-                               getTargetContribution = FALSE){
+                               getTargetContribution = FALSE, alpha = 2){
   
   if(alpha < 1) stop("alpha parameter in concentration_AC function must be 1 or larger")
 
@@ -642,21 +650,25 @@ concentration_prop_AC <- function(dep.var = 1, state, cache, i, j, edge, update,
   }
   
   ### calculate change statistic
-  before <- (cache[[dep.var]]$valuedNetwork[i, j]) *
-    g(k = cache[[dep.var]]$valuedNetwork[i, j] / 
-      sum(cache[[dep.var]]$valuedNetwork[i,]) ,
-      a = alpha) 
   if(update == -1){
+    before <- (cache[[dep.var]]$valuedNetwork[i, j]) *
+      g(k = cache[[dep.var]]$valuedNetwork[i, j] / 
+          sum(cache[[dep.var]]$valuedNetwork[i,]) ,
+        a = alpha) 
     after <- (cache[[dep.var]]$valuedNetwork[i, j] - 1) *
-              g(k = (cache[[dep.var]]$valuedNetwork[i, j]-1) / 
+              g(k = (cache[[dep.var]]$valuedNetwork[i, j] - 1) / 
                 sum(cache[[dep.var]]$valuedNetwork[i,]) ,
                 a = alpha) 
     cont <- after - before
   }
   if(update == 1){
+    before <- (cache[[dep.var]]$valuedNetwork[i, j]) *
+      g(k = cache[[dep.var]]$valuedNetwork[i, j] / 
+          (sum(cache[[dep.var]]$valuedNetwork[i,]) + 1) ,
+        a = alpha) 
     after <- (cache[[dep.var]]$valuedNetwork[i, j] + 1) *
-      g(k = (cache[[dep.var]]$valuedNetwork[i, j]+1) / 
-          sum(cache[[dep.var]]$valuedNetwork[i,]) ,
+      g(k = (cache[[dep.var]]$valuedNetwork[i, j] + 1) / 
+          (sum(cache[[dep.var]]$valuedNetwork[i,]) + 1) ,
         a = alpha) 
     cont <- after - before
   }

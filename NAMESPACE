@@ -83,9 +83,11 @@ export(
 )
 
 importFrom("graphics", "boxplot", "lines")
-importFrom("stats", "as.formula", "ecdf", "pnorm", "runif", "sd", "dist")
+importFrom("stats", "as.formula", "ecdf", "pnorm", "runif", "sd", "dist", "cov", "quantile")
 importFrom("methods", "is")
 importFrom("snowfall", "sfInit", "sfExport", "sfLapply", "sfLibrary", "sfStop")
+importFrom("Rcpp", "evalCpp")
+useDynLib(MoNAn2, .registration = TRUE)
 
 # S3 methods
 S3method(print, result.monan)

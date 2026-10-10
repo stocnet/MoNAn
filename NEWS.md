@@ -28,6 +28,9 @@ Results from models that used the affected effects or options should be re-run.
 
 ## Other bug fixes
 
+- `multinomialProposal = TRUE` stopped with an error ("'x' must be an array of
+  at least two dimensions") in models with only one effect.
+
 - `avoiding_dissimilar_covar_cont` and
   `joining_similar_avoiding_dissimilar_covar_cont` only worked if the
   dependent variable was called "transfers".

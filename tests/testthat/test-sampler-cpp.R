@@ -120,3 +120,8 @@ test_that("estimation gives the same results with the C++ and the R sampler", {
   expect_equal(resCpp$covarianceMatrix, resR$covarianceMatrix, tolerance = 1e-10)
   expect_equal(resCpp$convergenceStatistics, resR$convergenceStatistics, tolerance = 1e-10)
 })
+
+test_that("the multinomial proposal works with a single effect", {
+  effects <- createEffects(myState) |> addEffect(loops)
+  compare_chains(effects, 1, n = 500, multinomial = TRUE)
+})

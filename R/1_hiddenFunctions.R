@@ -1053,6 +1053,9 @@ simulateOneStep <-
         },
         simplify = TRUE
         )
+      # one row per effect, also if there is only one effect (sapply then
+      # returns a vector)
+      statisticsCreate <- matrix(statisticsCreate, nrow = length(effectFunctions))
       objValues <-
         colSums((statisticsCreate + statisticsDrop) * parameters)
       pChange <- exp(objValues) / sum(exp(objValues))

@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# monan2 <img src="https://raw.githubusercontent.com/stocnet/MoNAn/main/MoNAn_logo.png" align="right" width="150"/>
+# monan2 <img src="https://raw.githubusercontent.com/perbock/monan2/main/monan2_logo.png" align="right" width="150"/>
 
 <!-- badges: start -->
 
@@ -31,33 +31,19 @@ Announcements about workshops etc. can be found
 [here](https://www.suz.uzh.ch/de/institut/professuren/block/monan_software.html).
 
 The **MoNAn Manual** is available here on github in the manual folder or
-on [SocArXiv](https://osf.io/preprints/socarxiv/8q2xu/)
+on [SocArXiv](https://osf.io/preprints/socarxiv/8q2xu/). Note this still
+is the old MoNAn manual, which still works but shall be replaced soon.
 
 ## Note from the developers
 
-monan2 is the successor of the MoNAn package. Compared to MoNAn 1.1, the
-simulation runs in C++ (estimating the example below takes less than a
-minute instead of several minutes), several effects have been corrected,
-and estimation can also use Geyer-Thompson maximum likelihood; see
-NEWS.md for all changes. Code written for MoNAn 1.0.0 or later works
-with monan2 after replacing `library(MoNAn)` by `library(monan2)`
-(except for the removed effect `in_weights_exponent`), but results of
-models with corrected effects change.
-
-The update of MoNAn to version 1.0.0 (March 2024) included many changes,
-including some that mean code written for older versions will not work
-anymore! The most important changes in version 1.0.0 are:
-
-- the cache is now hidden from the user and does not need to be create
-  or specified in functions anymore
-
-- there is a new way to specify the model with createEffects and
-  addEffect
-
-- in gofMobilityNetwork there is no need to specify “simulations”
-  anymore
-
-- new way to generate the process state using monanDataCreate
+monan2 is the successor of the MoNAn package. Compared to MoNAn 1.1.1,
+the simulation runs in C++ (estimating the example below takes less than
+a minute instead of several minutes), several effects have been
+corrected, and estimation can also use Geyer-Thompson maximum
+likelihood; see NEWS.md for all changes. Code written for MoNAn 1.0.0 or
+later works with monan2 after replacing `library(MoNAn)` by
+`library(monan2)`, but results of models with corrected effects have
+minimal change.
 
 monan2 is not yet on CRAN; the original MoNAn package is. We cannot
 guarantee that the package and the documentation is free of bugs or

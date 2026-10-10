@@ -28,6 +28,10 @@ Results from models that used the affected effects or options should be re-run.
 
 ## Other bug fixes
 
+- The example of `simulateMobilityNetworks` used 6 parameters for 7 effects;
+  `simulateMobilityNetworks` now stops if the number of parameters differs
+  from the number of effects (before, parameters were silently recycled).
+
 - `multinomialProposal = TRUE` stopped with an error ("'x' must be an array of
   at least two dimensions") in models with only one effect.
 

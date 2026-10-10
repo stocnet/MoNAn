@@ -1104,7 +1104,7 @@ monanEstimate <- estimateMobilityNetwork
 #' mySimDN <- simulateMobilityNetworks(
 #'   myState,
 #'   myEffects,
-#'   parameters = c(2, 1, 1.5, 0.1, -1, -0.5),
+#'   parameters = c(2, 1, 1.5, 0.5, 0.1, -1, -0.5),
 #'   allowLoops = TRUE,
 #'   burnin = 450,
 #'   thinning = 150,
@@ -1135,6 +1135,10 @@ simulateMobilityNetworks <-
     dep.var <- state$dep.var
     cache <- state$cache
     checkEffectInputs(effects, state)
+    if (length(parameters) != length(effects$name)) {
+      stop(paste("parameters must have one value per effect:", length(effects$name),
+                 "effects, but", length(parameters), "parameters"))
+    }
     
     # generate a state and cache after burnin with parameters
     r <-

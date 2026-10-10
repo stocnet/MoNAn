@@ -125,3 +125,12 @@ test_that("the multinomial proposal works with a single effect", {
   effects <- createEffects(myState) |> addEffect(loops)
   compare_chains(effects, 1, n = 500, multinomial = TRUE)
 })
+
+test_that("simulation needs one parameter per effect", {
+  expect_error(
+    simulateMobilityNetworks(myState, myEffects, parameters = rep(0.1, 6),
+                             allowLoops = TRUE, burnin = 10, thinning = 10,
+                             nSimulations = 1),
+    "one value per effect"
+  )
+})

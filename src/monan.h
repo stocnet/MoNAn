@@ -14,15 +14,17 @@
 #endif
 
 #include <Rcpp.h>
+#include <Rmath.h>
 #include <memory>
 #include <string>
 #include <vector>
 
-// R's x^y (arithmetic.c): x * x for y == 2, pow() otherwise
+// R's x^y (arithmetic.c): x * x for y == 2, R_pow() otherwise. R_pow() is
+// R's own power function, which does not use pow() on all platforms (on
+// 64-bit Windows, it uses the long double powl()).
 inline double rpow(double x, double y) {
   if (y == 2.0) return x * x;
-  if (x == 1.0 || y == 0.0) return 1.0;
-  return std::pow(x, y);
+  return R_pow(x, y);
 }
 
 struct Chain {

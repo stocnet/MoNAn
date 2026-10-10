@@ -1,0 +1,13 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+^LICENSE\.md$
+^MoNAnExampleScript\.R$
+^README\.Rmd$
+^cran-comments\.md$
+^manual$
+^CRAN-SUBMISSION$
+^.github$
+^MoNAn_logo\.png$
+^\.positai$
+^\.claude$
+^\.gitignore$

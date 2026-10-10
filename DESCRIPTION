@@ -1,8 +1,8 @@
 Package: monan2
 Type: Package
 Title: Mobility Network Analysis 2
-Version: 1.1.1
-Date: 2024-09-12
+Version: 0.1.0
+Date: 2026-10-10
 Authors@R: c(person("Per", "Block", role = c("cre", "aut", "cph"), email = "block@soziologie.uzh.ch", 
         comment = c(ORCID = "0000-0002-7583-2392")), 
     person("Christoph", "Stadtfeld", role = "aut", comment = c(ORCID = "0000-0002-2704-2134")),
@@ -15,16 +15,19 @@ Description: Implements the method to analyse weighted mobility networks or dist
     incorporating exogenous predictors pertaining to individuals and locations 
     known from classical mobility analyses, as well as modelling emergent mobility 
     patterns akin to structural patterns known from the statistical analysis of social networks.
+    It is the successor of the 'MoNAn' package: simulations run in C++ (using 'Rcpp'),
+    and parameters can be estimated with stochastic approximation (Robbins-Monro)
+    or with Geyer-Thompson MCMC maximum likelihood estimation.
 Depends: R (>= 4.2)
 License: GPL (>= 3)
+URL: https://github.com/perblock/monan2
+BugReports: https://github.com/perblock/monan2/issues
 Encoding: UTF-8
 LazyData: true
 Imports: snowfall (>= 1.84-6.2), methods, Rcpp
 LinkingTo: Rcpp
 Roxygen: list(markdown = TRUE)
 Suggests: 
-    knitr,
-    rmarkdown,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Config/roxygen2/version: 8.0.0

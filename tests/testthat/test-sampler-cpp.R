@@ -27,7 +27,7 @@ test_that("C++ statistics equal the R statistics of each draw", {
 })
 
 test_that("models with effects without a C++ version are recognised", {
-  effects <- createEffects(myState) |> addEffect(loops) |> addEffect(transitivity_AC)
+  effects <- createEffects(myState) |> addEffect(loops) |> addEffect(present_relations)
   expect_null(cppEffectSpec(effects, myState))
   expect_false(useCppSampler(effects, myState))
 })

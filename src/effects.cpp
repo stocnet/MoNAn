@@ -377,6 +377,220 @@ class InWeights : public Effect {
   }
 };
 
+// ---- transitivity and triad effects (R/2e_effectFunctions_transitivity.R)
+
+// rows i, j and columns i, j of a network, with the loop entries set to 0
+struct RowsCols {
+  std::vector<double> ri, rj, ci, cj;
+  RowsCols(const Chain& ch, const std::vector<double>& m, int i, int j)
+    : ri(ch.n), rj(ch.n), ci(ch.n), cj(ch.n) {
+    for (int k = 0; k < ch.n; ++k) {
+      ri[k] = m[ch.idx(i, k)];
+      rj[k] = m[ch.idx(j, k)];
+      ci[k] = m[ch.idx(k, i)];
+      cj[k] = m[ch.idx(k, j)];
+    }
+    ri[i] = 0;
+    rj[j] = 0;
+    ci[i] = 0;
+    cj[j] = 0;
+  }
+};
+
+// R's sum(a * b) and sum(a * b * c): element-wise products, long double sum
+inline double sumProd(const std::vector<double>& a, const std::vector<double>& b) {
+  long double total = 0;
+  for (size_t k = 0; k < a.size(); ++k) total += a[k] * b[k];
+  return (double)total;
+}
+inline double sumProd(const std::vector<double>& a, const std::vector<double>& b,
+                      const std::vector<double>& c) {
+  long double total = 0;
+  for (size_t k = 0; k < a.size(); ++k) total += (a[k] * b[k]) * c[k];
+  return (double)total;
+}
+
+// transitivity_basic
+class TransitivityBasic : public Effect {
+ public:
+  double change(const Chain& ch, int i, int j, int edge, int update) const override {
+    if (i == j) return 0;
+    RowsCols n(ch, ch.valued, i, j);
+    return update * (sumProd(n.ri, n.cj) + sumProd(n.ri, n.rj) + sumProd(n.ci, n.cj));
+  }
+  double target(const Chain& ch, int i, int j) const override {
+    if (i == j) return 0;
+    RowsCols n(ch, ch.valued, i, j);
+    return ch.v(i, j) * sumProd(n.ri, n.cj);
+  }
+};
+
+// transitivity_min
+class TransitivityMin : public Effect {
+ public:
+  double change(const Chain& ch, int i, int j, int edge, int update) const override {
+    if (i == j) return 0;
+    if (update == 0) return 0;
+    double nf = ch.netFlows[ch.idx(i, j)];
+    if (update > 0 && nf >= 0) return 0;
+    if (update < 0 && nf > 0) return 0;
+    RowsCols m(ch, ch.minNet, i, j);
+    double dyadValue = ch.minNet[ch.idx(i, j)];
+    long double v = 0;
+    for (int k = 0; k < ch.n; ++k) {
+      double twoPath = std::min(m.ri[k], m.cj[k]);
+      if (update > 0) v += dyadValue < twoPath;
+      if (update < 0) v += dyadValue <= twoPath;
+    }
+    return update > 0 ? (double)v : -(double)v;
+  }
+  double target(const Chain& ch, int i, int j) const override {
+    if (i == j) return 0;
+    RowsCols m(ch, ch.minNet, i, j);
+    double dyadValue = ch.minNet[ch.idx(i, j)];
+    long double v = 0;
+    for (int k = 0; k < ch.n; ++k) v += std::min(dyadValue, std::min(m.ri[k], m.cj[k]));
+    return (double)v / 6;
+  }
+};
+
+// transitivity_netflow
+class TransitivityNetflow : public Effect {
+  // sum(pmin(getPathWeights(ik, kj), x)) over k, for row a and column b of
+  // the net flow network
+  static double sumPathWeights(const Chain& ch, int a, int b, double x) {
+    long double total = 0;
+    for (int k = 0; k < ch.n; ++k) {
+      double ik = ch.netFlows[ch.idx(a, k)], kj = ch.netFlows[ch.idx(k, b)];
+      double w = std::min(std::abs(ik), std::abs(kj));
+      if (ik < 0 && kj < 0) w = 0;
+      total += std::min(w, x);
+    }
+    return (double)total;
+  }
+ public:
+  double change(const Chain& ch, int i, int j, int edge, int update) const override {
+    if (i == j) return 0;
+    double nf = ch.netFlows[ch.idx(i, j)];
+    double contributionBefore = 0;
+    // the path weights are those of i -> k -> j if the net flow is (or
+    // becomes) positive, and of j -> k -> i otherwise
+    bool forward;
+    if (nf > 0) {
+      forward = true;
+      contributionBefore = sumPathWeights(ch, i, j, nf);
+    } else if (nf < 0) {
+      forward = false;
+      contributionBefore = sumPathWeights(ch, j, i, ch.netFlows[ch.idx(j, i)]);
+    } else {
+      forward = update > 0;
+    }
+    double tieWeightAfter = nf + update;
+    double contributionAfter = forward ? sumPathWeights(ch, i, j, std::abs(tieWeightAfter))
+                                       : sumPathWeights(ch, j, i, std::abs(tieWeightAfter));
+    return contributionAfter - contributionBefore;
+  }
+  double target(const Chain& ch, int i, int j) const override {
+    if (i == j) return 0;
+    double nf = ch.netFlows[ch.idx(i, j)];
+    if (nf <= 0) return 0;
+    return sumPathWeights(ch, i, j, nf) / 3;
+  }
+};
+
+// transitivity_AC, transitivity_GW
+class TransitivityACGW : public Effect {
+  bool gw;
+  double alpha;
+  double g(double y) const {
+    if (!gw) return 1 - rpow(1 - 1 / alpha, y);
+    if (alpha == 1) return y;
+    return (1 - rpow(alpha, -y)) / (alpha - 1);
+  }
+  // R's sum(w * g_mar(y))
+  double sumWeighted(const std::vector<double>& w, const std::vector<double>& y) const {
+    long double total = 0;
+    for (size_t k = 0; k < w.size(); ++k) total += w[k] * g(y[k]);
+    return (double)total;
+  }
+ public:
+  TransitivityACGW(bool isGW, double a) : gw(isGW), alpha(a) {}
+  double change(const Chain& ch, int i, int j, int edge, int update) const override {
+    if (i == j) return 0;
+    RowsCols n(ch, ch.valued, i, j);
+    int N = ch.n;
+
+    // part 1: i,j closes two-path
+    double cont = update * g(sumProd(n.ri, n.cj));
+
+    // part 2: i,j closes instar
+    std::vector<double> riU = n.ri;
+    riU[j] = riU[j] + update;
+    std::vector<double> before(N), after(N);
+    for (int k = 0; k < N; ++k) {
+      double product = 0;
+      for (int m = 0; m < N; ++m) product += n.ri[m] * ch.v(m, k);
+      before[k] = product - n.ri[k] * ch.v(k, k);
+      after[k] = before[k] + update * n.rj[k];
+    }
+    double conBe = sumWeighted(n.ri, before) - (n.ri[j] * g(before[j]));
+    double conAf = sumWeighted(riU, after) - (riU[j] * g(after[j]));
+    cont = cont + (conAf - conBe);
+
+    // part 3: i,j closes outstar
+    for (int k = 0; k < N; ++k) {
+      double product = 0;
+      for (int m = 0; m < N; ++m) product += ch.v(k, m) * n.cj[m];
+      before[k] = product - ch.v(k, k) * n.cj[k];
+      after[k] = before[k] + update * n.ci[k];
+    }
+    conBe = sumWeighted(n.cj, before);
+    conAf = sumWeighted(n.cj, after);
+    cont = cont + (conAf - conBe);
+    return cont;
+  }
+  double target(const Chain& ch, int i, int j) const override {
+    if (i == j) return 0;
+    RowsCols n(ch, ch.valued, i, j);
+    return n.ri[j] * g(sumProd(n.ri, n.cj));
+  }
+};
+
+// triad120C, triad120D, triad120U
+class Triad120 : public Effect {
+ public:
+  enum Type { C, D, U };
+ private:
+  Type type;
+ public:
+  explicit Triad120(Type t) : type(t) {}
+  double change(const Chain& ch, int i, int j, int edge, int update) const override {
+    if (i == j) return 0;
+    RowsCols n(ch, ch.valued, i, j);
+    double nji = ch.v(j, i);
+    if (type == C) {
+      double cont = update * sumProd(n.ri, n.cj) * nji;
+      cont = cont + update * sumProd(n.ci, n.rj) * nji;
+      cont = cont + update * sumProd(n.rj, n.ri, n.ci);
+      return cont + update * sumProd(n.ci, n.cj, n.rj);
+    }
+    if (type == D) {
+      double cont = update * sumProd(n.ci, n.cj) * nji;
+      return cont + update * sumProd(n.ri, n.cj, n.rj);
+    }
+    double cont = update * sumProd(n.ri, n.rj) * nji;
+    return cont + update * sumProd(n.cj, n.ri, n.ci);
+  }
+  double target(const Chain& ch, int i, int j) const override {
+    if (i == j) return 0;
+    RowsCols n(ch, ch.valued, i, j);
+    double recip = ch.v(i, j) * ch.v(j, i);
+    if (type == C) return recip * sumProd(n.ri, n.cj);
+    if (type == D) return recip * sumProd(n.ci, n.cj) / 2;
+    return recip * sumProd(n.ri, n.rj) / 2;
+  }
+};
+
 }  // namespace
 
 std::unique_ptr<Effect> makeEffect(const Rcpp::List& spec, const Chain& chain) {
@@ -467,5 +681,14 @@ std::unique_ptr<Effect> makeEffect(const Rcpp::List& spec, const Chain& chain) {
     }
     return E(new InWeights(name == "in_weights_GW", alpha));
   }
+  if (name == "transitivity_basic") return E(new TransitivityBasic());
+  if (name == "transitivity_min") return E(new TransitivityMin());
+  if (name == "transitivity_netflow") return E(new TransitivityNetflow());
+  if (name == "transitivity_AC" || name == "transitivity_GW") {
+    return E(new TransitivityACGW(name == "transitivity_GW", Rcpp::as<double>(spec["alpha"])));
+  }
+  if (name == "triad120C") return E(new Triad120(Triad120::C));
+  if (name == "triad120D") return E(new Triad120(Triad120::D));
+  if (name == "triad120U") return E(new Triad120(Triad120::U));
   Rcpp::stop("effect '%s' has no C++ version", name);
 }

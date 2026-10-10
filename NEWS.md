@@ -73,7 +73,9 @@ Results from models that used the affected effects or options should be re-run.
   `concentration_GW_resource_covar_bin`, `reciprocity_AC`, `reciprocity_GW`,
   `reciprocity_AC_dyad_covar`, `reciprocity_AC_dyad_covar_bin`,
   `reciprocity_GW_dyad_covar`, `reciprocity_GW_dyad_covar_bin`,
-  `in_weights_AC`, `in_weights_GW`, `dyadic_covariate`, `alter_covariate` and
+  `in_weights_AC`, `in_weights_GW`, `transitivity_basic`, `transitivity_min`,
+  `transitivity_netflow`, `transitivity_AC`, `transitivity_GW`, `triad120C`,
+  `triad120D`, `triad120U`, `dyadic_covariate`, `alter_covariate` and
   `resource_covar_to_node_covar`. A sampler step is about 40-50 times faster; the
   estimation of the example model with the default algorithm takes 17 seconds.
   For the same seed, results are identical to those of the R sampler, which is

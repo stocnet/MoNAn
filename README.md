@@ -1,12 +1,13 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# MoNAn <img src="https://raw.githubusercontent.com/stocnet/MoNAn/main/MoNAn_logo.png" align="right" width="150"/>
+# monan2 <img src="https://raw.githubusercontent.com/stocnet/MoNAn/main/MoNAn_logo.png" align="right" width="150"/>
 
 <!-- badges: start -->
+
 <!-- badges: end -->
 
-MoNAn is the software implementation of the statistical model outlined
+monan2 is the software implementation of the statistical model outlined
 in:
 
 Block, P., Stadtfeld, C., & Robins, G. (2022). A statistical model for
@@ -34,12 +35,18 @@ on [SocArXiv](https://osf.io/preprints/socarxiv/8q2xu/)
 
 ## Note from the developers
 
-This is version 1.1.0 of MoNAn (Sep 2024). The update to version 1.0.0
-(March 2024) included many changes, including some that mean code
-written for older versions will not work anymore!
+monan2 is the successor of the MoNAn package. Compared to MoNAn 1.1, the
+simulation runs in C++ (estimating the example below takes less than a
+minute instead of several minutes), several effects have been corrected,
+and estimation can also use Geyer-Thompson maximum likelihood; see
+NEWS.md for all changes. Code written for MoNAn 1.0.0 or later works
+with monan2 after replacing `library(MoNAn)` by `library(monan2)`
+(except for the removed effect `in_weights_exponent`), but results of
+models with corrected effects change.
 
-Code use for version 1.0.0 has been simplified; the most important
-changes are:
+The update of MoNAn to version 1.0.0 (March 2024) included many changes,
+including some that mean code written for older versions will not work
+anymore! The most important changes in version 1.0.0 are:
 
 - the cache is now hidden from the user and does not need to be create
   or specified in functions anymore
@@ -52,30 +59,25 @@ changes are:
 
 - new way to generate the process state using monanDataCreate
 
-As of 30 Aug 2023, we have a CRAN release of the package. Nevertheless,
-we cannot guarantee that the package and the documentation is free of
-bugs or errors; further, you might not be able to do what you want. In
-that case, or if you are unsure please write the package maintainer
-under his institutional email address.
-
-We are currently (Sep 2024) on version 1.1.0 on github. Version 1.1.0
-will be released to CRAN in Sep 2024.
+monan2 is not yet on CRAN; the original MoNAn package is. We cannot
+guarantee that the package and the documentation is free of bugs or
+errors; further, you might not be able to do what you want. In that
+case, or if you are unsure please write the package maintainer under his
+institutional email address.
 
 # Installation
 
-You can install MoNAn either from CRAN or from GitHub.
-
-The advantage of installing from github is that you will always stay
-up-to-date with the latest developments, in particular, new
-functionality and effects. You can install the current version of MoNAn
-from GitHub using:
+You can install monan2 from GitHub using:
 
 ``` r
 # install.packages("remotes")
-remotes::install_github("stocnet/MoNAn")
+remotes::install_github("perblock/monan2")
 ```
 
-However, you can also get the (often slightly older) CRAN version with:
+monan2 contains C++ code, so installing it from GitHub requires a C++
+compiler (on Windows Rtools, on macOS the Xcode Command Line Tools).
+
+The original MoNAn package is available on CRAN:
 
 ``` r
 install.packages("MoNAn")
@@ -84,10 +86,10 @@ install.packages("MoNAn")
 # Example
 
 In this section, we outline a simple example with synthetic data stored
-in the MoNAn package.
+in the monan2 package.
 
 ``` r
-library(MoNAn)
+library(monan2)
 ```
 
 ## The Data
@@ -139,7 +141,7 @@ orgSize
 
 ### Preparing the data
 
-First, we create MoNAn data objects from the introduced data files. A
+First, we create monan2 data objects from the introduced data files. A
 necessary part is that we define and name the nodesets, i.e., we name
 who (“people”) is mobile between what (“organisations”).
 
@@ -164,10 +166,10 @@ size <- monadicCovar(orgSize, nodeSet = "organisations")
 sex <- monadicCovar(indSex, nodeSet = "people", addSame = F, addSim = F)
 ```
 
-We combine the data objects into the process state, i.e., a MoNAn object
-that stores all information about the data that will be used in the
-estimation later. We must include one outcome variable (transfers) and
-two nodeSets (people, organisations).
+We combine the data objects into the process state, i.e., a monan2
+object that stores all information about the data that will be used in
+the estimation later. We must include one outcome variable (transfers)
+and two nodeSets (people, organisations).
 
 ``` r
 myState <- monanDataCreate(transfers,
@@ -294,8 +296,7 @@ be used. The remaining lines define whether parallel computing should be
 used, how much console output is desired during the estimation, and
 whether the simulations from phase 3 should be stored.
 
-Running the model takes a while (up to 10 minutes for this data with
-parallel computing).
+Running the model takes less than a minute for this data.
 
 ``` r
 myResDN <- monanEstimate(
@@ -412,7 +413,7 @@ par(mfrow = c(1,2))
 plot(traces)
 ```
 
-<img src="man/figures/README-unnamed-chunk-18-1.png" width="100%" /><img src="man/figures/README-unnamed-chunk-18-2.png" width="100%" /><img src="man/figures/README-unnamed-chunk-18-3.png" width="100%" /><img src="man/figures/README-unnamed-chunk-18-4.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-18-1.png" alt="" width="100%" /><img src="man/figures/README-unnamed-chunk-18-2.png" alt="" width="100%" /><img src="man/figures/README-unnamed-chunk-18-3.png" alt="" width="100%" /><img src="man/figures/README-unnamed-chunk-18-4.png" alt="" width="100%" />
 
 ## Score-tests to check model specification
 
@@ -449,7 +450,7 @@ myGofIndegree <- monanGOF(ans = myResDN, gofFunction = getIndegree, lvls = 1:70)
 plot(myGofIndegree, lvls = 20:70)
 ```
 
-<img src="man/figures/README-unnamed-chunk-20-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-20-1.png" alt="" width="100%" />
 
 ``` r
 
@@ -457,7 +458,7 @@ myGofTieWeight <- monanGOF(ans = myResDN, gofFunction = getTieWeights, lvls = 1:
 plot(myGofTieWeight, lvls = 1:20)
 ```
 
-<img src="man/figures/README-unnamed-chunk-20-2.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-20-2.png" alt="" width="100%" />
 
 ## Simulation
 

@@ -14,11 +14,22 @@ Block, P., Stadtfeld, C., & Robins, G. (2022). A statistical model for
 the analysis of mobility tables as weighted networks with an application
 to faculty hiring networks. Social Networks, 68, 264-278.
 
+AND
+
+Hoffman, M., & Block, P. (2026). Models for emergent structures in
+mobility: specification and individual-level interpretation. Journal of
+the Royal Statistical Society Series A: Statistics in Society, qnag057.
+
 [Link to the study in Social
 Networks](https://doi.org/10.1016/j.socnet.2021.08.003).
 
 [Pre-print with minor differences to the journal
 version](https://osf.io/preprints/socarxiv/n86rx/).
+
+[Link to the study in JRSSA](https://doi.org/10.1093/jrsssa/qnag057).
+
+[Pre-print with minor differences to the journal
+version](https://doi.org/10.31235/osf.io/8nkfj_v1).
 
 The model allows for the analysis of emergent structures (known from
 network analysis) in mobility tables, alongside exogenous predictors. It
@@ -32,7 +43,8 @@ Announcements about workshops etc. can be found
 
 The **MoNAn Manual** is available here on github in the manual folder or
 on [SocArXiv](https://osf.io/preprints/socarxiv/8q2xu/). Note this still
-is the old MoNAn manual, which still works but shall be replaced soon.
+is the old MoNAn manual, which still works but shall be replaced soon by
+a dedicated monan2 manual.
 
 ## Note from the developers
 
@@ -228,40 +240,6 @@ myEffects
 #>  loops_resource_covar                 -              sex          -
 ```
 
-### Optional: Pre-estimation
-
-We can run a pseudo-likelihood estimation that gives a (biased) guess of
-the model results. We use this to get improved initial estimates, which
-increases the chances of model convergence in the first run of the
-estimation considerably. To get pseudo-likelihood estimates, we need to
-use functions from other libraries to estimate a multinomial logit model
-(e.g., “dfidx” and “mlogit”)
-
-``` r
-# create multinomial statistics object pseudo-likelihood estimation
-myStatisticsFrame <- getMultinomialStatistics(myState, myEffects)
-
-### additional script to get pseudo-likelihood estimates, requires the dfidx and mlogit package
-# library(dfidx)
-# library(mlogit)
-# my.mlogit.dataframe <- dfidx(myStatisticsFrame,
-#                           shape = "long", 
-#                           choice = "choice")
-# 
-# colnames(my.mlogit.dataframe) <- gsub(" ", "_", colnames(my.mlogit.dataframe))
-# 
-# IVs <- (colnames(my.mlogit.dataframe)[2:(ncol(myStatisticsFrame)-2)])
-# 
-# form <- as.formula(paste("choice ~ 1 + ", paste(IVs, collapse = " + "), "| 0"))
-# 
-# my.mlogit.results <- mlogit(formula = eval(form), data = my.mlogit.dataframe, 
-#                             heterosc = FALSE)
-# 
-# summary(my.mlogit.results)
-#
-# initEst <- my.mlogit.results$coefficients[1:length(IVs)]
-```
-
 ### Specifying the estimation algorithm
 
 The estimation algorithm requires multiple parameters that guide the
@@ -399,7 +377,7 @@ par(mfrow = c(1,2))
 plot(traces)
 ```
 
-<img src="man/figures/README-unnamed-chunk-18-1.png" alt="" width="100%" /><img src="man/figures/README-unnamed-chunk-18-2.png" alt="" width="100%" /><img src="man/figures/README-unnamed-chunk-18-3.png" alt="" width="100%" /><img src="man/figures/README-unnamed-chunk-18-4.png" alt="" width="100%" />
+<img src="man/figures/README-unnamed-chunk-17-1.png" alt="" width="100%" /><img src="man/figures/README-unnamed-chunk-17-2.png" alt="" width="100%" /><img src="man/figures/README-unnamed-chunk-17-3.png" alt="" width="100%" /><img src="man/figures/README-unnamed-chunk-17-4.png" alt="" width="100%" />
 
 ## Score-tests to check model specification
 
@@ -436,7 +414,7 @@ myGofIndegree <- monanGOF(ans = myResDN, gofFunction = getIndegree, lvls = 1:70)
 plot(myGofIndegree, lvls = 20:70)
 ```
 
-<img src="man/figures/README-unnamed-chunk-20-1.png" alt="" width="100%" />
+<img src="man/figures/README-unnamed-chunk-19-1.png" alt="" width="100%" />
 
 ``` r
 
@@ -444,7 +422,7 @@ myGofTieWeight <- monanGOF(ans = myResDN, gofFunction = getTieWeights, lvls = 1:
 plot(myGofTieWeight, lvls = 1:20)
 ```
 
-<img src="man/figures/README-unnamed-chunk-20-2.png" alt="" width="100%" />
+<img src="man/figures/README-unnamed-chunk-19-2.png" alt="" width="100%" />
 
 ## Simulation
 

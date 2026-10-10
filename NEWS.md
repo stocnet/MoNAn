@@ -1,4 +1,4 @@
-# monan2 (development version)
+# monan2 0.1.0
 
 !! The package has been renamed from MoNAn to monan2 !!
 

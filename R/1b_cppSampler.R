@@ -12,7 +12,10 @@ cppEffects <- c("loops", "concentration_AC", "reciprocity_AC", "dyadic_covariate
                 "loops_resource_covar_node_covar",
                 "concentration_GW", "concentration_AC_dyad_covar",
                 "concentration_GW_dyad_covar", "concentration_AC_resource_covar_bin",
-                "concentration_GW_resource_covar_bin")
+                "concentration_GW_resource_covar_bin",
+                "reciprocity_GW", "reciprocity_AC_dyad_covar",
+                "reciprocity_AC_dyad_covar_bin", "reciprocity_GW_dyad_covar",
+                "reciprocity_GW_dyad_covar_bin")
 
 # cppEffectSpec
 # translates an effects object into the specification used by the C++ effects:

@@ -307,6 +307,52 @@ class Concentration : public Effect {
   }
 };
 
+// reciprocity_GW, reciprocity_AC_dyad_covar, reciprocity_AC_dyad_covar_bin,
+// reciprocity_GW_dyad_covar, reciprocity_GW_dyad_covar_bin
+// (R/2d_effectFunctions_reciprocity.R)
+class Reciprocity : public Effect {
+ public:
+  enum Weight { NONE, DYAD, DYAD_BIN };
+ private:
+  bool gw;
+  Weight weight;
+  double alpha;
+  std::vector<double> dyad;  // n x n covariate
+  double g(double y) const { return gw ? gMarGW(y, alpha) : gMarAC(y, alpha); }
+  double a(const Chain& ch, int i, int j) const { return dyad[ch.idx(i, j)]; }
+ public:
+  Reciprocity(bool isGW, Weight w, double al, std::vector<double> d)
+    : gw(isGW), weight(w), alpha(al), dyad(std::move(d)) {}
+  double change(const Chain& ch, int i, int j, int edge, int update) const override {
+    if (i == j) return 0;
+    if (weight == NONE) {
+      double nIncoming = ch.v(j, i);
+      double cont = update * g(nIncoming);
+      double nOutgoing = ch.v(i, j);
+      return cont + nIncoming * (g(nOutgoing + update) - g(nOutgoing));
+    }
+    if (weight == DYAD) {
+      double nIncoming = ch.v(j, i);
+      double cont = update * g(nIncoming) * a(ch, i, j);
+      double nOutgoing = ch.v(i, j);
+      return cont + nIncoming * (g(nOutgoing + update) * a(ch, j, i) -
+                                 g(nOutgoing) * a(ch, j, i));
+    }
+    double nIncoming = ch.v(j, i) * a(ch, j, i);
+    double cont = update * g(nIncoming) * a(ch, i, j);
+    double nOutgoing = ch.v(i, j) * a(ch, i, j);
+    return cont + nIncoming * (g(nOutgoing + (update * a(ch, i, j))) - g(nOutgoing));
+  }
+  double target(const Chain& ch, int i, int j) const override {
+    if (i == j) return 0;
+    if (weight == NONE) return ch.v(i, j) * g(ch.v(j, i));
+    if (weight == DYAD) return ch.v(i, j) * g(ch.v(j, i)) * a(ch, i, j);
+    double nOutgoing = ch.v(i, j) * a(ch, i, j);
+    double nIncoming = ch.v(j, i) * a(ch, j, i);
+    return nOutgoing * g(nIncoming);
+  }
+};
+
 }  // namespace
 
 std::unique_ptr<Effect> makeEffect(const Rcpp::List& spec, const Chain& chain) {
@@ -373,6 +419,22 @@ std::unique_ptr<Effect> makeEffect(const Rcpp::List& spec, const Chain& chain) {
       resource = chain.resourceIndex(Rcpp::as<std::string>(spec["resourceAttribute"]));
     }
     return E(new Concentration(gw, w, alpha, dyad, resource));
+  }
+  if (name == "reciprocity_GW" || name == "reciprocity_AC_dyad_covar" ||
+      name == "reciprocity_AC_dyad_covar_bin" || name == "reciprocity_GW_dyad_covar" ||
+      name == "reciprocity_GW_dyad_covar_bin") {
+    bool gw = name.find("_GW") != std::string::npos;
+    double alpha = alphaOf(spec, name.c_str());
+    Reciprocity::Weight w = Reciprocity::NONE;
+    std::vector<double> dyad;
+    if (name.find("dyad_covar") != std::string::npos) {
+      w = name.find("_bin") != std::string::npos ? Reciprocity::DYAD_BIN : Reciprocity::DYAD;
+      dyad = attributeOf(spec);
+      if (dyad.size() != (size_t)chain.n * chain.n) {
+        Rcpp::stop("attribute.index in %s function must be a square matrix", name);
+      }
+    }
+    return E(new Reciprocity(gw, w, alpha, dyad));
   }
   Rcpp::stop("effect '%s' has no C++ version", name);
 }

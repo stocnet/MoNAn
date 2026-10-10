@@ -46,3 +46,49 @@ test_that("models with effects without a C++ version are recognised", {
   expect_null(cppEffectSpec(effects, myState))
   expect_false(useCppSampler(effects, myState))
 })
+
+test_that("C++ effects give the same values as the R effects", {
+  effects <- createEffects(myState) |>
+    addEffect(loops) |>
+    addEffect(concentration_AC, alpha = 4) |>
+    addEffect(reciprocity_AC, alpha = 2) |>
+    addEffect(dyadic_covariate, node.attribute = "sameRegion") |>
+    addEffect(alter_covariate, node.attribute = "size") |>
+    addEffect(alter_covariate, node.attribute = "size", loop.contribution = FALSE) |>
+    addEffect(resource_covar_to_node_covar, node.attribute = "region", edge.attribute = "sex") |>
+    addEffect(resource_covar_to_node_covar, node.attribute = "size",
+              edge.attribute = "second_or", loop.contribution = TRUE) |>
+    addEffect(loops_resource_covar, edge.attribute = "second_or")
+  dv <- myState$dep.var
+  el <- myState[[dv]]$data
+  set.seed(3)
+  n <- 100
+  E <- sample(nrow(el), n, TRUE)
+  J <- sample(17, n, TRUE)
+  J[1:10] <- el[E[1:10], 1]  # moves into loops
+  U <- sample(c(-1, 1), n, TRUE)
+
+  for (k in seq_along(effects$name)) {
+    f <- effects$effectFormulas[[k]]
+    for (m in 1:n) {
+      expected <- c(
+        change = f(dep.var = dv, state = myState, cache = myState$cache,
+                   i = el[E[m], 1], j = J[m], edge = E[m], update = U[m]),
+        target = f(dep.var = dv, state = myState, cache = myState$cache,
+                   i = el[E[m], 1], j = J[m], edge = E[m], update = U[m],
+                   getTargetContribution = TRUE)
+      )
+      expect_identical(
+        cppEffectValues(effects, k, myState, myState$cache, el[E[m], 1], J[m], E[m], U[m]),
+        expected,
+        label = paste(effects$name[k], "edge", E[m], "to", J[m])
+      )
+    }
+  }
+})
+
+test_that("C++ and R chains are identical for the example model", {
+  compare_chains(myEffects, myResDN$estimates, n = 5000)
+  compare_chains(myEffects, myResDN$estimates, n = 5000, allowLoops = FALSE)
+  compare_chains(myEffects, rep(0, 7), n = 5000)
+})

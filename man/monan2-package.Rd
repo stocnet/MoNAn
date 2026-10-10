@@ -6,7 +6,15 @@
 \alias{monan2-package}
 \title{monan2: Mobility Network Analysis 2}
 \description{
-Implements the method to analyse weighted mobility networks or distribution networks as outlined in: Block, P., Stadtfeld, C., & Robins, G. (2022) \doi{10.1016/j.socnet.2021.08.003}. The purpose of the model is to analyse the structure of mobility, incorporating exogenous predictors pertaining to individuals and locations known from classical mobility analyses, as well as modelling emergent mobility patterns akin to structural patterns known from the statistical analysis of social networks.
+Implements the method to analyse weighted mobility networks or distribution networks as outlined in: Block, P., Stadtfeld, C., & Robins, G. (2022) \doi{10.1016/j.socnet.2021.08.003}. The purpose of the model is to analyse the structure of mobility, incorporating exogenous predictors pertaining to individuals and locations known from classical mobility analyses, as well as modelling emergent mobility patterns akin to structural patterns known from the statistical analysis of social networks. It is the successor of the 'MoNAn' package: simulations run in C++ (using 'Rcpp'), and parameters can be estimated with stochastic approximation (Robbins-Monro) or with Geyer-Thompson MCMC maximum likelihood estimation.
+}
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/perblock/monan2}
+  \item Report bugs at \url{https://github.com/perblock/monan2/issues}
+}
+
 }
 \author{
 \strong{Maintainer}: Per Block \email{block@soziologie.uzh.ch} (\href{https://orcid.org/0000-0002-7583-2392}{ORCID}) [copyright holder]

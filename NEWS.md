@@ -66,11 +66,11 @@ Results from models that used the affected effects or options should be re-run.
 
 - The MCMC sampler and all effects run in C++. A sampler step is about
   20-50 times faster, depending on the effects; the estimation of the example
-  model with the default algorithm takes 17 seconds. A sampler step is about 40-50 times faster; the
-  estimation of the example model with the default algorithm takes 17 seconds.
+  model with the default algorithm takes 17 seconds instead of 13 minutes.
   For the same seed, results are identical to those of the R sampler, which
-  remains available and is used for models with effects written only in R. `options(MoNAn2.useCpp = FALSE)` switches to the
-  R sampler. The package now needs a C++ compiler when installed from source.
+  remains available and is used for models with effects written only in R;
+  `options(MoNAn2.useCpp = FALSE)` switches to it. The package now needs a
+  C++ compiler when installed from source.
 
 - The MCMC sampler updates the edgelist and the cache in place instead of
   copying them in every simulation step. The time per step no longer grows

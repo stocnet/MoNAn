@@ -6,7 +6,10 @@
 # effects with a C++ version
 cppEffects <- c("loops", "concentration_AC", "reciprocity_AC", "dyadic_covariate",
                 "alter_covariate", "resource_covar_to_node_covar",
-                "loops_resource_covar")
+                "loops_resource_covar",
+                "loops_AC", "loops_GW", "loops_additional_origin",
+                "loops_x_loops_additional_origin", "loops_node_covar",
+                "loops_resource_covar_node_covar")
 
 # cppEffectSpec
 # translates an effects object into the specification used by the C++ effects:

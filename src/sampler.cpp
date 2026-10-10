@@ -123,13 +123,7 @@ class Sampler {
   // in the order of expand.grid (i fastest)
   std::vector<double> statistics() const {
     std::vector<double> s(effects.size());
-    for (size_t k = 0; k < effects.size(); ++k) {
-      long double total = 0;
-      for (int j = 0; j < ch.n; ++j) {
-        for (int i = 0; i < ch.n; ++i) total += effects[k]->target(ch, i, j);
-      }
-      s[k] = (double)total;
-    }
+    for (size_t k = 0; k < effects.size(); ++k) s[k] = effects[k]->targetTotal(ch);
     return s;
   }
 

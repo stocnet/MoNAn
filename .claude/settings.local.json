@@ -5,7 +5,9 @@
       "Bash(Rscript -e 'Rcpp::compileAttributes\\(\\)')",
       "Bash(Rscript -e ' *)",
       "Bash(Rscript -e 'devtools::test\\(filter = \"sampler-cpp\", reporter = \"summary\"\\)')",
-      "Bash(grep -v \"^sampler-cpp: \\\\.*$\")"
+      "Bash(grep -v \"^sampler-cpp: \\\\.*$\")",
+      "Bash(Rscript -e 'devtools::test\\(filter = \"cpp\", reporter = \"summary\"\\)')",
+      "Bash(grep -v \"^[a-z-]*: \\\\.*$\")"
     ]
   }
 }

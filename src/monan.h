@@ -83,6 +83,16 @@ class Effect {
   virtual ~Effect() {}
   virtual double change(const Chain& ch, int i, int j, int edge, int update) const = 0;
   virtual double target(const Chain& ch, int i, int j) const = 0;
+  // the target statistic: the sum of the target contributions over all cells,
+  // in the order of getNetworkStatistics() (i fastest); effects can override
+  // this with a faster calculation that gives exactly the same value
+  virtual double targetTotal(const Chain& ch) const {
+    long double total = 0;
+    for (int j = 0; j < ch.n; ++j) {
+      for (int i = 0; i < ch.n; ++i) total += target(ch, i, j);
+    }
+    return (double)total;
+  }
 };
 
 // builds an effect from its specification (see cppEffectSpec in R)

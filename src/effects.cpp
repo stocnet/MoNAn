@@ -144,6 +144,118 @@ class LoopsResourceCovar : public Effect {
   }
 };
 
+// loops_AC (R/2b_effectFunctions_loops.R)
+class LoopsAC : public Effect {
+  double alpha;
+ public:
+  explicit LoopsAC(double a) : alpha(a) {}
+  double change(const Chain& ch, int i, int j, int edge, int update) const override {
+    if (i != j) return 0;
+    double tie = ch.v(i, i);
+    if (update < 0) return update * gMarAC(tie + update, alpha);
+    return update * gMarAC(tie, alpha);
+  }
+  double target(const Chain& ch, int i, int j) const override {
+    if (i == j) return gCumAC(ch.v(i, i), alpha);
+    return 0;
+  }
+};
+
+// marginal and cumulative contributions of the GW effects, summed term by term
+// as in R
+inline double gMarGW(double y, double a) {
+  double contr = 0;
+  for (int k = 0; k <= (int)y; ++k) contr = contr + std::exp(-std::log(a) * k);
+  return contr - 1;
+}
+inline double gCumGW(double y, double a) {
+  double contr = 0;
+  for (int k = 0; k <= (int)y; ++k) contr = contr + (y - k) * std::exp(-std::log(a) * k);
+  return contr - y;
+}
+
+// loops_GW (R/2b_effectFunctions_loops.R)
+class LoopsGW : public Effect {
+  double alpha;
+ public:
+  explicit LoopsGW(double a) : alpha(a) {}
+  double change(const Chain& ch, int i, int j, int edge, int update) const override {
+    if (i != j) return 0;
+    double tie = ch.v(i, i);
+    if (update < 0) return update * gMarGW(tie + update, alpha);
+    return update * gMarGW(tie, alpha);
+  }
+  double target(const Chain& ch, int i, int j) const override {
+    if (i == j) return gCumGW(ch.v(i, i), alpha);
+    return 0;
+  }
+};
+
+// loops_additional_origin and loops_x_loops_additional_origin
+// (R/2b_effectFunctions_loops.R): resources moving to their additional origin
+// (a resource covariate holding a location id); with onlyLoops, only if this
+// is also their origin
+class LoopsAdditionalOrigin : public Effect {
+  int resource;
+  bool onlyLoops;
+  bool counts(const Chain& ch, int e, int i, int j) const {
+    return ch.sender[e] == i && ch.receiver[e] == j &&
+           ch.resourceValues[resource][e] == j + 1;
+  }
+ public:
+  LoopsAdditionalOrigin(int r, bool loops) : resource(r), onlyLoops(loops) {}
+  double change(const Chain& ch, int i, int j, int edge, int update) const override {
+    if (j + 1 == ch.resourceValues[resource][edge] && (!onlyLoops || j == i)) return update;
+    return 0;
+  }
+  double target(const Chain& ch, int i, int j) const override {
+    if (onlyLoops && i != j) return 0;
+    double cont = 0;
+    for (size_t e = 0; e < ch.sender.size(); ++e) cont += counts(ch, (int)e, i, j);
+    return cont;
+  }
+  // one pass over the resources instead of one per cell; the same count
+  double targetTotal(const Chain& ch) const override {
+    double total = 0;
+    for (size_t e = 0; e < ch.sender.size(); ++e) {
+      int i = ch.sender[e], j = ch.receiver[e];
+      if (i < 0 || (onlyLoops && i != j)) continue;
+      total += ch.resourceValues[resource][e] == j + 1;
+    }
+    return total;
+  }
+};
+
+// loops_node_covar (R/2b_effectFunctions_loops.R)
+class LoopsNodeCovar : public Effect {
+  std::vector<double> attribute;
+ public:
+  explicit LoopsNodeCovar(std::vector<double> a) : attribute(std::move(a)) {}
+  double change(const Chain& ch, int i, int j, int edge, int update) const override {
+    if (i != j) return 0;
+    return update * attribute[i];
+  }
+  double target(const Chain& ch, int i, int j) const override {
+    if (i != j) return 0;
+    return ch.v(i, j) * attribute[i];
+  }
+};
+
+// loops_resource_covar_node_covar (R/2b_effectFunctions_loops.R)
+class LoopsResourceCovarNodeCovar : public Effect {
+  int resource;
+  std::vector<double> attribute;
+ public:
+  LoopsResourceCovarNodeCovar(int r, std::vector<double> a) : resource(r), attribute(std::move(a)) {}
+  double change(const Chain& ch, int i, int j, int edge, int update) const override {
+    if (i == j) return update * ch.resourceValues[resource][edge] * attribute[j];
+    return 0;
+  }
+  double target(const Chain& ch, int i, int j) const override {
+    return (ch.resourceNetworks[resource][ch.idx(i, j)] * (i == j)) * attribute[i];
+  }
+};
+
 }  // namespace
 
 std::unique_ptr<Effect> makeEffect(const Rcpp::List& spec, const Chain& chain) {
@@ -168,6 +280,23 @@ std::unique_ptr<Effect> makeEffect(const Rcpp::List& spec, const Chain& chain) {
   if (name == "loops_resource_covar") {
     return E(new LoopsResourceCovar(
       chain.resourceIndex(Rcpp::as<std::string>(spec["resourceAttribute"]))));
+  }
+  if (name == "loops_AC" || name == "loops_GW") {
+    double alpha = Rcpp::as<double>(spec["alpha"]);
+    if (alpha <= 0) Rcpp::stop("Alpha parameter in GW loops weights function must be positive");
+    if (name == "loops_AC") return E(new LoopsAC(alpha));
+    return E(new LoopsGW(alpha));
+  }
+  if (name == "loops_additional_origin" || name == "loops_x_loops_additional_origin") {
+    return E(new LoopsAdditionalOrigin(
+      chain.resourceIndex(Rcpp::as<std::string>(spec["resourceAttribute"])),
+      name == "loops_x_loops_additional_origin"));
+  }
+  if (name == "loops_node_covar") return E(new LoopsNodeCovar(attributeOf(spec)));
+  if (name == "loops_resource_covar_node_covar") {
+    return E(new LoopsResourceCovarNodeCovar(
+      chain.resourceIndex(Rcpp::as<std::string>(spec["resourceAttribute"])),
+      attributeOf(spec)));
   }
   Rcpp::stop("effect '%s' has no C++ version", name);
 }

@@ -173,6 +173,10 @@ getNetStatsFromDeps <- function(dep.var, oneDep, ans, effects){
 
 # getNetworkStatistics
 getNetworkStatistics <- function(dep.var, state, cache, effects) {
+  if (useCppSampler(effects, state)) {
+    return(cppNetworkStatistics(dep.var, state, cache, effects))
+  }
+
   actors1 <- state[[dep.var]]$nodeSet[1]
   actors2 <- state[[dep.var]]$nodeSet[2]
   nActors1 <- length(state[[actors1]]$ids)
@@ -943,6 +947,14 @@ simulateNSteps <-
            multinomialProposal = FALSE,
            debug = FALSE,
            n = 1) {
+    if (senderFixed && !debug && useCppSampler(effects, state)) {
+      res <- simulateChain(dep.var, state, cache, effects, parameters,
+                           burnIn = n, iterations = 0, thinning = 0,
+                           allowLoops = allowLoops,
+                           multinomialProposal = multinomialProposal)
+      return(list(state = res$state, cache = res$cache))
+    }
+
     state <- toMutableState(state, dep.var)
     cache <- toMutableCache(cache)
     for (i in 1:n) {
@@ -1142,6 +1154,26 @@ simulateStatisticVectors <- function(dep.var,
                                      fish = FALSE,
                                      returnDeps = FALSE,
                                      returnState = FALSE) {
+  # the whole chain in C++ if all effects have a C++ version
+  if (useCppSampler(effects, state)) {
+    if (verbose) {
+      cat(paste("Starting burn-in with", burnIn, "steps\n"))
+    }
+    res <- simulateChain(dep.var, state, cache, effects, initialParameters,
+                         burnIn = burnIn, iterations = iterations, thinning = thinning,
+                         allowLoops = allowLoops, multinomialProposal = multinomialProposal,
+                         returnDraws = returnDeps)
+    statisticsMatrix <- res$statistics
+    rownames(statisticsMatrix) <- rep("stats", nrow(statisticsMatrix))
+    if (returnDeps) {
+      return(list(statisticsMatrix, res$draws))
+    }
+    if (returnState) {
+      return(list(statistics = statisticsMatrix, state = res$state, cache = res$cache))
+    }
+    return(statisticsMatrix)
+  }
+
   statisticsMatrix <- c()
 
   if (returnDeps) {

@@ -5,10 +5,13 @@
 compare_chains <- function(effects, parameters, n = 5000, allowLoops = TRUE,
                            multinomial = FALSE, state = myState, seed = 42) {
   dv <- state$dep.var
+  oldOptions <- options(MoNAn2.useCpp = FALSE)
+  on.exit(options(oldOptions), add = TRUE)
   set.seed(seed)
   r <- simulateNSteps(dv, state, state$cache, effects, parameters,
                       allowLoops = allowLoops, multinomialProposal = multinomial, n = n)
   rNext <- runif(1)
+  options(MoNAn2.useCpp = TRUE)
   set.seed(seed)
   cpp <- simulateChain(dv, state, state$cache, effects, parameters,
                        burnIn = n, iterations = 0, thinning = 0,
@@ -31,10 +34,13 @@ test_that("C++ and R chains are identical with the loops effect", {
 test_that("C++ statistics equal the R statistics of each draw", {
   effects <- createEffects(myState) |> addEffect(loops)
   dv <- myState$dep.var
+  old <- options(MoNAn2.useCpp = FALSE)
+  on.exit(options(old), add = TRUE)
   set.seed(5)
   r <- simulateStatisticVectors(dv, myState, myState$cache, effects, 1,
                                 burnIn = 200, iterations = 20, thinning = 200,
                                 allowLoops = TRUE)
+  options(MoNAn2.useCpp = TRUE)
   set.seed(5)
   cpp <- simulateChain(dv, myState, myState$cache, effects, 1,
                        burnIn = 200, iterations = 20, thinning = 200, allowLoops = TRUE)
@@ -97,4 +103,24 @@ test_that("C++ and R chains are identical with the multinomial proposal", {
   compare_chains(myEffects, myResDN$estimates, n = 1000, multinomial = TRUE)
   compare_chains(myEffects, myResDN$estimates, n = 1000, multinomial = TRUE, allowLoops = FALSE)
   compare_chains(myEffects, rep(0, 7), n = 1000, multinomial = TRUE)
+})
+
+test_that("estimation gives the same results with the C++ and the R sampler", {
+  skip_on_cran()
+  alg <- createAlgorithm(myState, myEffects, burnInN1 = 300, thinningN1 = 100,
+                         burnInN2 = 300, thinningN2 = 100, nsubN2 = 1,
+                         initialIterationsN2 = 15, burnInN3 = 300, thinningN3 = 100,
+                         iterationsN3 = 30)
+  run <- function(useCpp) {
+    old <- options(MoNAn2.useCpp = useCpp)
+    on.exit(options(old))
+    set.seed(8)
+    estimateMobilityNetwork(myState, myEffects, alg)
+  }
+  expect_true(useCppSampler(myEffects, myState))
+  resR <- run(FALSE)
+  resCpp <- run(TRUE)
+  expect_equal(resCpp$estimates, resR$estimates, tolerance = 1e-12)
+  expect_equal(resCpp$covarianceMatrix, resR$covarianceMatrix, tolerance = 1e-10)
+  expect_equal(resCpp$convergenceStatistics, resR$convergenceStatistics, tolerance = 1e-10)
 })

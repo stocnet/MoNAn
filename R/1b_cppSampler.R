@@ -41,9 +41,10 @@ cppEffectSpec <- function(effects, state) {
 }
 
 # useCppSampler
-# whether the C++ sampler is used for these effects
+# whether the C++ sampler is used for these effects; options(MoNAn2.useCpp =
+# FALSE) switches to the R sampler
 useCppSampler <- function(effects, state) {
-  isTRUE(getOption("MoNAn.useCpp", TRUE)) && !is.null(cppEffectSpec(effects, state))
+  isTRUE(getOption("MoNAn2.useCpp", TRUE)) && !is.null(cppEffectSpec(effects, state))
 }
 
 # cppChainInputs
@@ -108,6 +109,16 @@ simulateChain <- function(dep.var, state, cache, effects, parameters,
     })
   }
   out
+}
+
+# cppNetworkStatistics
+# target statistics of a state in C++, as getNetworkStatistics
+cppNetworkStatistics <- function(dep.var, state, cache, effects) {
+  inputs <- cppChainInputs(dep.var, state, cache)
+  statistics <- networkStatisticsCpp(inputs$edgelist, inputs$cache, inputs$resourceCovariates,
+                                     cppEffectSpec(effects, inputs$state))
+  names(statistics) <- effects$name
+  statistics
 }
 
 # cppEffectValues

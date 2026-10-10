@@ -1,3 +1,0 @@
-# no fused multiply-add: R rounds a + b * c in two steps, and the C++ effects
-# must give exactly the same values as the R effects
-PKG_CXXFLAGS = -ffp-contract=off

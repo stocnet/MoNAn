@@ -353,6 +353,30 @@ class Reciprocity : public Effect {
   }
 };
 
+// in_weights_AC, in_weights_GW (R/2_effectFunctions.R): the AC or GW function
+// of the inflow of the destination
+class InWeights : public Effect {
+  bool gw;
+  double alpha;
+  // sum(cache$valuedNetwork[, j]) as in R (long double accumulation)
+  double inWeight(const Chain& ch, int j) const {
+    long double total = 0;
+    for (int i = 0; i < ch.n; ++i) total += ch.v(i, j);
+    return (double)total;
+  }
+ public:
+  InWeights(bool isGW, double a) : gw(isGW), alpha(a) {}
+  double change(const Chain& ch, int i, int j, int edge, int update) const override {
+    double w = inWeight(ch, j);
+    double y = update < 0 ? w + update : w;
+    return update * (gw ? gMarGW(y, alpha) : gMarAC(y, alpha));
+  }
+  double target(const Chain& ch, int i, int j) const override {
+    double w = inWeight(ch, j);
+    return (gw ? gCumGW(w, alpha) : gCumAC(w, alpha)) / ch.n;
+  }
+};
+
 }  // namespace
 
 std::unique_ptr<Effect> makeEffect(const Rcpp::List& spec, const Chain& chain) {
@@ -435,6 +459,13 @@ std::unique_ptr<Effect> makeEffect(const Rcpp::List& spec, const Chain& chain) {
       }
     }
     return E(new Reciprocity(gw, w, alpha, dyad));
+  }
+  if (name == "in_weights_AC" || name == "in_weights_GW") {
+    double alpha = Rcpp::as<double>(spec["alpha"]);
+    if (alpha <= 0) {
+      Rcpp::stop("Alpha parameter in %s weights function must be positive", name);
+    }
+    return E(new InWeights(name == "in_weights_GW", alpha));
   }
   Rcpp::stop("effect '%s' has no C++ version", name);
 }

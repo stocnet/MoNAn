@@ -65,9 +65,16 @@ Results from models that used the affected effects or options should be re-run.
 ## Performance
 
 - The MCMC sampler runs in C++ for models whose effects all have a C++
-  version, currently `loops`, `concentration_AC`, `reciprocity_AC`,
-  `dyadic_covariate`, `alter_covariate`, `resource_covar_to_node_covar` and
-  `loops_resource_covar`. A sampler step is about 40-50 times faster; the
+  version, currently `loops`, `loops_AC`, `loops_GW`, `loops_node_covar`,
+  `loops_resource_covar`, `loops_resource_covar_node_covar`,
+  `loops_additional_origin`, `loops_x_loops_additional_origin`,
+  `concentration_AC`, `concentration_GW`, `concentration_AC_dyad_covar`,
+  `concentration_GW_dyad_covar`, `concentration_AC_resource_covar_bin`,
+  `concentration_GW_resource_covar_bin`, `reciprocity_AC`, `reciprocity_GW`,
+  `reciprocity_AC_dyad_covar`, `reciprocity_AC_dyad_covar_bin`,
+  `reciprocity_GW_dyad_covar`, `reciprocity_GW_dyad_covar_bin`,
+  `in_weights_AC`, `in_weights_GW`, `dyadic_covariate`, `alter_covariate` and
+  `resource_covar_to_node_covar`. A sampler step is about 40-50 times faster; the
   estimation of the example model with the default algorithm takes 17 seconds.
   For the same seed, results are identical to those of the R sampler, which is
   used for all other models. `options(MoNAn2.useCpp = FALSE)` switches to the

@@ -4,6 +4,15 @@
 #ifndef MONAN_H
 #define MONAN_H
 
+// No fused multiply-add: R rounds a + b * c in two steps, and the C++ effects
+// must give exactly the same values as the R effects. (A pragma rather than
+// -ffp-contract=off in Makevars, which R CMD check reports as non-portable.)
+#if defined(__clang__)
+#pragma STDC FP_CONTRACT OFF
+#elif defined(__GNUC__)
+#pragma GCC optimize("fp-contract=off")
+#endif
+
 #include <Rcpp.h>
 #include <memory>
 #include <string>

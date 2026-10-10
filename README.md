@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# monan2 <img src="https://raw.githubusercontent.com/perbock/monan2/main/monan2_logo.png" align="right" width="150"/>
+# monan2 <img src="https://github.com/perblock/monan2/blob/main/monan2_logo.png" align="right" width="150"/>
 
 <!-- badges: start -->
 

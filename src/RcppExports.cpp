@@ -10,19 +10,66 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
-// cppSamplerAvailable
-bool cppSamplerAvailable();
-RcppExport SEXP _MoNAn2_cppSamplerAvailable() {
+// simulateChainCpp
+Rcpp::List simulateChainCpp(Rcpp::IntegerMatrix edgelist, Rcpp::List cache, Rcpp::List resourceCovariates, Rcpp::IntegerVector resourceSet, Rcpp::IntegerVector nodeSet, Rcpp::List effectSpecs, Rcpp::NumericVector parameters, int burnIn, int iterations, int thinning, bool allowLoops, bool multinomialProposal, bool returnDraws);
+RcppExport SEXP _MoNAn2_simulateChainCpp(SEXP edgelistSEXP, SEXP cacheSEXP, SEXP resourceCovariatesSEXP, SEXP resourceSetSEXP, SEXP nodeSetSEXP, SEXP effectSpecsSEXP, SEXP parametersSEXP, SEXP burnInSEXP, SEXP iterationsSEXP, SEXP thinningSEXP, SEXP allowLoopsSEXP, SEXP multinomialProposalSEXP, SEXP returnDrawsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    rcpp_result_gen = Rcpp::wrap(cppSamplerAvailable());
+    Rcpp::traits::input_parameter< Rcpp::IntegerMatrix >::type edgelist(edgelistSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type cache(cacheSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type resourceCovariates(resourceCovariatesSEXP);
+    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type resourceSet(resourceSetSEXP);
+    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type nodeSet(nodeSetSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type effectSpecs(effectSpecsSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type parameters(parametersSEXP);
+    Rcpp::traits::input_parameter< int >::type burnIn(burnInSEXP);
+    Rcpp::traits::input_parameter< int >::type iterations(iterationsSEXP);
+    Rcpp::traits::input_parameter< int >::type thinning(thinningSEXP);
+    Rcpp::traits::input_parameter< bool >::type allowLoops(allowLoopsSEXP);
+    Rcpp::traits::input_parameter< bool >::type multinomialProposal(multinomialProposalSEXP);
+    Rcpp::traits::input_parameter< bool >::type returnDraws(returnDrawsSEXP);
+    rcpp_result_gen = Rcpp::wrap(simulateChainCpp(edgelist, cache, resourceCovariates, resourceSet, nodeSet, effectSpecs, parameters, burnIn, iterations, thinning, allowLoops, multinomialProposal, returnDraws));
+    return rcpp_result_gen;
+END_RCPP
+}
+// networkStatisticsCpp
+Rcpp::NumericVector networkStatisticsCpp(Rcpp::IntegerMatrix edgelist, Rcpp::List cache, Rcpp::List resourceCovariates, Rcpp::List effectSpecs);
+RcppExport SEXP _MoNAn2_networkStatisticsCpp(SEXP edgelistSEXP, SEXP cacheSEXP, SEXP resourceCovariatesSEXP, SEXP effectSpecsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::IntegerMatrix >::type edgelist(edgelistSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type cache(cacheSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type resourceCovariates(resourceCovariatesSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type effectSpecs(effectSpecsSEXP);
+    rcpp_result_gen = Rcpp::wrap(networkStatisticsCpp(edgelist, cache, resourceCovariates, effectSpecs));
+    return rcpp_result_gen;
+END_RCPP
+}
+// effectValuesCpp
+Rcpp::NumericVector effectValuesCpp(Rcpp::IntegerMatrix edgelist, Rcpp::List cache, Rcpp::List resourceCovariates, Rcpp::List effectSpec, int i, int j, int edge, int update);
+RcppExport SEXP _MoNAn2_effectValuesCpp(SEXP edgelistSEXP, SEXP cacheSEXP, SEXP resourceCovariatesSEXP, SEXP effectSpecSEXP, SEXP iSEXP, SEXP jSEXP, SEXP edgeSEXP, SEXP updateSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::IntegerMatrix >::type edgelist(edgelistSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type cache(cacheSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type resourceCovariates(resourceCovariatesSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type effectSpec(effectSpecSEXP);
+    Rcpp::traits::input_parameter< int >::type i(iSEXP);
+    Rcpp::traits::input_parameter< int >::type j(jSEXP);
+    Rcpp::traits::input_parameter< int >::type edge(edgeSEXP);
+    Rcpp::traits::input_parameter< int >::type update(updateSEXP);
+    rcpp_result_gen = Rcpp::wrap(effectValuesCpp(edgelist, cache, resourceCovariates, effectSpec, i, j, edge, update));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_MoNAn2_cppSamplerAvailable", (DL_FUNC) &_MoNAn2_cppSamplerAvailable, 0},
+    {"_MoNAn2_simulateChainCpp", (DL_FUNC) &_MoNAn2_simulateChainCpp, 13},
+    {"_MoNAn2_networkStatisticsCpp", (DL_FUNC) &_MoNAn2_networkStatisticsCpp, 4},
+    {"_MoNAn2_effectValuesCpp", (DL_FUNC) &_MoNAn2_effectValuesCpp, 8},
     {NULL, NULL, 0}
 };
 

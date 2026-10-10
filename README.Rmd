@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 ```
 
 
-# monan2 <img src="https://github.com/perblock/monan2/blob/main/monan2_logo.png" align="right" width="150"/>
+# monan2 <img src="monan2_logo.png" align="right" width="150"/>
 
 <!-- badges: start -->
 <!-- badges: end -->

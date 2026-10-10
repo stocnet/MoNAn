@@ -7,7 +7,7 @@
 ^manual$
 ^CRAN-SUBMISSION$
 ^.github$
-^MoNAn_logo\.png$
+^monan2_logo\.png$
 ^\.positai$
 ^\.claude$
 ^\.gitignore$

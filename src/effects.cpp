@@ -161,16 +161,27 @@ class LoopsAC : public Effect {
   }
 };
 
+// R's 0:y: counts up to floor(y) for y >= 0, and down to ceiling(y) otherwise
+inline std::vector<int> rSeqFromZero(double y) {
+  std::vector<int> k;
+  if (y >= 0) {
+    for (int m = 0; m <= (int)std::floor(y); ++m) k.push_back(m);
+  } else {
+    for (int m = 0; m >= (int)std::ceil(y); --m) k.push_back(m);
+  }
+  return k;
+}
+
 // marginal and cumulative contributions of the GW effects, summed term by term
-// as in R
+// over 0:y as in R
 inline double gMarGW(double y, double a) {
   double contr = 0;
-  for (int k = 0; k <= (int)y; ++k) contr = contr + std::exp(-std::log(a) * k);
+  for (int k : rSeqFromZero(y)) contr = contr + std::exp(-std::log(a) * k);
   return contr - 1;
 }
 inline double gCumGW(double y, double a) {
   double contr = 0;
-  for (int k = 0; k <= (int)y; ++k) contr = contr + (y - k) * std::exp(-std::log(a) * k);
+  for (int k : rSeqFromZero(y)) contr = contr + (y - k) * std::exp(-std::log(a) * k);
   return contr - y;
 }
 
@@ -256,6 +267,46 @@ class LoopsResourceCovarNodeCovar : public Effect {
   }
 };
 
+// concentration_GW, concentration_AC_dyad_covar, concentration_GW_dyad_covar,
+// concentration_AC_resource_covar_bin, concentration_GW_resource_covar_bin
+// (R/2c_effectFunctions_concentration.R): the AC or GW function of the tie
+// value, which is the number of resources (weighted by a dyadic covariate) or
+// the sum of a resource covariate on the tie
+class Concentration : public Effect {
+ public:
+  enum Weight { NONE, DYAD, RESOURCE };
+ private:
+  bool gw;
+  Weight weight;
+  double alpha;
+  std::vector<double> dyad;  // DYAD: n x n covariate
+  int resource;              // RESOURCE: resource covariate
+  double tieValue(const Chain& ch, int i, int j) const {
+    if (weight == RESOURCE) return ch.resourceNetworks[resource][ch.idx(i, j)];
+    return ch.v(i, j);
+  }
+  double gMar(double y) const { return gw ? gMarGW(y, alpha) : gMarAC(y, alpha); }
+  double gCum(double y) const { return gw ? gCumGW(y, alpha) : gCumAC(y, alpha); }
+ public:
+  Concentration(bool isGW, Weight w, double a, std::vector<double> d, int r)
+    : gw(isGW), weight(w), alpha(a), dyad(std::move(d)), resource(r) {}
+  double change(const Chain& ch, int i, int j, int edge, int update) const override {
+    if (i == j) return 0;
+    if (weight == DYAD && dyad[ch.idx(i, j)] == 0) return 0;
+    if (weight == RESOURCE && ch.resourceValues[resource][edge] == 0) return 0;
+    double tie = tieValue(ch, i, j);
+    double g = update < 0 ? update * gMar(tie + update) : update * gMar(tie);
+    if (weight == DYAD) return g * dyad[ch.idx(i, j)];
+    return g;
+  }
+  double target(const Chain& ch, int i, int j) const override {
+    if (i == j) return 0;
+    double g = gCum(tieValue(ch, i, j));
+    if (weight == DYAD) return g * dyad[ch.idx(i, j)];
+    return g;
+  }
+};
+
 }  // namespace
 
 std::unique_ptr<Effect> makeEffect(const Rcpp::List& spec, const Chain& chain) {
@@ -297,6 +348,31 @@ std::unique_ptr<Effect> makeEffect(const Rcpp::List& spec, const Chain& chain) {
     return E(new LoopsResourceCovarNodeCovar(
       chain.resourceIndex(Rcpp::as<std::string>(spec["resourceAttribute"])),
       attributeOf(spec)));
+  }
+  if (name == "concentration_GW" || name == "concentration_AC_dyad_covar" ||
+      name == "concentration_GW_dyad_covar" ||
+      name == "concentration_AC_resource_covar_bin" ||
+      name == "concentration_GW_resource_covar_bin") {
+    bool gw = name.find("_GW") != std::string::npos;
+    Concentration::Weight w = Concentration::NONE;
+    std::vector<double> dyad;
+    int resource = -1;
+    // the R versions name the GW dyadic and unweighted effects
+    // "concentration_GW" in their alpha error message
+    std::string alphaName = name == "concentration_GW_dyad_covar" ? "concentration_GW" : name;
+    double alpha = alphaOf(spec, alphaName.c_str());
+    if (name.find("dyad_covar") != std::string::npos) {
+      w = Concentration::DYAD;
+      dyad = attributeOf(spec);
+      if (dyad.size() != (size_t)chain.n * chain.n) {
+        Rcpp::stop("attribute.index in %s_bin function must be a square matrix", name);
+      }
+    }
+    if (name.find("resource_covar") != std::string::npos) {
+      w = Concentration::RESOURCE;
+      resource = chain.resourceIndex(Rcpp::as<std::string>(spec["resourceAttribute"]));
+    }
+    return E(new Concentration(gw, w, alpha, dyad, resource));
   }
   Rcpp::stop("effect '%s' has no C++ version", name);
 }

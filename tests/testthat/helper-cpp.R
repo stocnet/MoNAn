@@ -64,3 +64,13 @@ expect_cpp_matches_r <- function(effects, state = myState, n = 100, seed = 3) {
   options(old)
   expect_identical(cppNetworkStatistics(dv, state, state$cache, effects), rStatistics)
 }
+
+# the example state with a continuous dyadic covariate (similarity of
+# organisation sizes); in the global environment, as addEffect() finds the
+# state by its name there
+local({
+  cppTestState <- myState
+  cppTestState$size_similarity <- createNetwork(myState$size$sim,
+                                                nodeSet = c("organisations", "organisations"))
+  assign("cppTestState", cppTestState, envir = globalenv())
+})

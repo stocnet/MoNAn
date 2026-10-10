@@ -1,6 +1,6 @@
 # This script runs a simple example with the data from the MoNAn package
 
-library(MoNAn)
+library(MoNAn2)
 
 
 ##### create data objects from internal data files, 
@@ -119,9 +119,6 @@ myAlg <- monanAlgorithmCreate(myState, myEffects, nsubN2 = 3,
 # mobility network model 
 myResDN <- monanEstimate(
   myState, myEffects, myAlg,
-  initialParameters = NULL,
-  # in case a pseudo-likelihood estimation was run, replace with
-  # initialParameters = initEst,
   parallel = TRUE, cpus = 4,
   verbose = TRUE,
   returnDeps = TRUE,

@@ -1341,6 +1341,9 @@ toMutableState <- function(state, dep.var) {
   e$.names <- names(state[[dep.var]])
   e$.class <- class(state[[dep.var]])
 
+  # placeholder for the variable the function below updates in e (its
+  # environment is set to e below)
+  data <- NULL
   e$.setEdge <- function(edge, value) {
     data[edge, ] <<- value
   }
@@ -1373,6 +1376,10 @@ toMutableCache <- function(cache) {
     if (is.null(x$resourceNetworks)) {
       e$resourceNetworks <- NULL
     }
+
+    # placeholders for the variables the functions below update in e (their
+    # environment is set to e below)
+    valuedNetwork <- netFlowsNetwork <- minNetwork <- resourceNetworks <- NULL
 
     # same logic as updateWeightedCache
     e$.update <- function(sender, receiver, resourceID, state, update) {

@@ -64,6 +64,15 @@ Results from models that used the affected effects or options should be re-run.
 
 ## Performance
 
+- The MCMC sampler runs in C++ for models whose effects all have a C++
+  version, currently `loops`, `concentration_AC`, `reciprocity_AC`,
+  `dyadic_covariate`, `alter_covariate`, `resource_covar_to_node_covar` and
+  `loops_resource_covar`. A sampler step is about 40-50 times faster; the
+  estimation of the example model with the default algorithm takes 17 seconds.
+  For the same seed, results are identical to those of the R sampler, which is
+  used for all other models. `options(MoNAn2.useCpp = FALSE)` switches to the
+  R sampler. The package now needs a C++ compiler when installed from source.
+
 - The MCMC sampler updates the edgelist and the cache in place instead of
   copying them in every simulation step. The time per step no longer grows
   with the number of locations and resources (e.g. about 5 times faster with

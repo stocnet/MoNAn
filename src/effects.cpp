@@ -591,6 +591,122 @@ class Triad120 : public Effect {
   }
 };
 
+// ---- remaining concentration effects (R/2c_effectFunctions_concentration.R)
+
+// concentration_basic (power 2), concentration_basic_cube (power 3)
+class ConcentrationBasic : public Effect {
+  double power;
+ public:
+  explicit ConcentrationBasic(double p) : power(p) {}
+  double change(const Chain& ch, int i, int j, int edge, int update) const override {
+    return rpow(ch.v(i, j) + update, power) - rpow(ch.v(i, j), power);
+  }
+  double target(const Chain& ch, int i, int j) const override {
+    return rpow(ch.v(i, j), power);
+  }
+};
+
+// concentration_prop, concentration_prop_AC: functions of the proportions of
+// the resources of an origin going to each destination
+class ConcentrationProp : public Effect {
+  bool ac;
+  double alpha;
+  double g(double k) const { return 1 - rpow(1 - 1 / alpha, k); }
+  static double sum(const std::vector<double>& row) {
+    long double total = 0;
+    for (double x : row) total += x;
+    return (double)total;
+  }
+  // contribution of all ties from one origin; empty origins contribute 0
+  double rowContribution(const std::vector<double>& row) const {
+    double total = sum(row);
+    if (total == 0) return 0;
+    long double s = 0;
+    if (ac) {
+      for (double x : row) s += x * g(x / total);
+      return (double)s;
+    }
+    for (double x : row) s += rpow(x, 2);
+    return (double)s / total;
+  }
+  std::vector<double> rowOf(const Chain& ch, int i) const {
+    std::vector<double> row(ch.n);
+    for (int k = 0; k < ch.n; ++k) row[k] = ch.v(i, k);
+    return row;
+  }
+ public:
+  ConcentrationProp(bool isAC, double a) : ac(isAC), alpha(a) {}
+  double change(const Chain& ch, int i, int j, int edge, int update) const override {
+    std::vector<double> row = rowOf(ch, i);
+    std::vector<double> newRow = row;
+    newRow[j] = newRow[j] + update;
+    return rowContribution(newRow) - rowContribution(row);
+  }
+  double target(const Chain& ch, int i, int j) const override {
+    std::vector<double> row = rowOf(ch, i);
+    double total = sum(row);
+    if (total == 0) return 0;
+    if (ac) return row[j] * g(row[j] / total);
+    return rpow(row[j], 2) / total;
+  }
+};
+
+// ---- remaining reciprocity effects (R/2d_effectFunctions_reciprocity.R)
+
+// reciprocity_basic
+class ReciprocityBasic : public Effect {
+ public:
+  double change(const Chain& ch, int i, int j, int edge, int update) const override {
+    if (i == j) return 0;
+    return update * ch.v(j, i);
+  }
+  double target(const Chain& ch, int i, int j) const override {
+    if (i == j) return 0;
+    return ch.v(i, j) * ch.v(j, i) / 2;
+  }
+};
+
+// reciprocity_min, reciprocity_min_dyad_covar
+class ReciprocityMin : public Effect {
+  bool weighted;
+  std::vector<double> dyad;  // n x n covariate (weighted only)
+ public:
+  ReciprocityMin(bool w, std::vector<double> d) : weighted(w), dyad(std::move(d)) {}
+  double change(const Chain& ch, int i, int j, int edge, int update) const override {
+    if (i == j) return 0;
+    double nf = ch.netFlows[ch.idx(i, j)];
+    bool changes = (update > 0 && nf < 0) || (update < 0 && nf <= 0);
+    if (!changes) return 0;
+    if (weighted) return update * dyad[ch.idx(i, j)];
+    return update > 0 ? 1 : -1;
+  }
+  double target(const Chain& ch, int i, int j) const override {
+    if (i == j) return 0;
+    if (!weighted) return ch.minNet[ch.idx(i, j)] / 2;
+    return std::min(ch.minNet[ch.idx(i, j)], ch.minNet[ch.idx(j, i)]) *
+             dyad[ch.idx(i, j)] / 2;
+  }
+};
+
+// reciprocity_min_resource_covar
+class ReciprocityMinResource : public Effect {
+  int resource;
+  double r(const Chain& ch, int i, int j) const {
+    return ch.resourceNetworks[resource][ch.idx(i, j)];
+  }
+ public:
+  explicit ReciprocityMinResource(int res) : resource(res) {}
+  double change(const Chain& ch, int i, int j, int edge, int update) const override {
+    if (i == j) return 0;
+    double weight = update * ch.resourceValues[resource][edge];
+    return std::min(r(ch, i, j) + weight, r(ch, j, i)) - std::min(r(ch, i, j), r(ch, j, i));
+  }
+  double target(const Chain& ch, int i, int j) const override {
+    if (i == j) return 0;
+    return std::min(r(ch, i, j), r(ch, j, i)) / 2;
+  }
+};
+
 }  // namespace
 
 std::unique_ptr<Effect> makeEffect(const Rcpp::List& spec, const Chain& chain) {
@@ -690,5 +806,24 @@ std::unique_ptr<Effect> makeEffect(const Rcpp::List& spec, const Chain& chain) {
   if (name == "triad120C") return E(new Triad120(Triad120::C));
   if (name == "triad120D") return E(new Triad120(Triad120::D));
   if (name == "triad120U") return E(new Triad120(Triad120::U));
+  if (name == "concentration_basic") return E(new ConcentrationBasic(2));
+  if (name == "concentration_basic_cube") return E(new ConcentrationBasic(3));
+  if (name == "concentration_prop") return E(new ConcentrationProp(false, 0));
+  if (name == "concentration_prop_AC") {
+    return E(new ConcentrationProp(true, alphaOf(spec, "concentration_prop_AC")));
+  }
+  if (name == "reciprocity_basic") return E(new ReciprocityBasic());
+  if (name == "reciprocity_min") return E(new ReciprocityMin(false, {}));
+  if (name == "reciprocity_min_dyad_covar") {
+    std::vector<double> dyad = attributeOf(spec);
+    if (dyad.size() != (size_t)chain.n * chain.n) {
+      Rcpp::stop("attribute.index in reciprocity_min_dyad_covar function must be a square matrix");
+    }
+    return E(new ReciprocityMin(true, dyad));
+  }
+  if (name == "reciprocity_min_resource_covar") {
+    return E(new ReciprocityMinResource(
+      chain.resourceIndex(Rcpp::as<std::string>(spec["resourceAttribute"]))));
+  }
   Rcpp::stop("effect '%s' has no C++ version", name);
 }

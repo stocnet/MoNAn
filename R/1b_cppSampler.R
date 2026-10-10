@@ -19,7 +19,11 @@ cppEffects <- c("loops", "concentration_AC", "reciprocity_AC", "dyadic_covariate
                 "in_weights_AC", "in_weights_GW",
                 "transitivity_basic", "transitivity_min", "transitivity_netflow",
                 "transitivity_AC", "transitivity_GW",
-                "triad120C", "triad120D", "triad120U")
+                "triad120C", "triad120D", "triad120U",
+                "concentration_basic", "concentration_basic_cube",
+                "concentration_prop", "concentration_prop_AC",
+                "reciprocity_basic", "reciprocity_min",
+                "reciprocity_min_dyad_covar", "reciprocity_min_resource_covar")
 
 # cppEffectSpec
 # translates an effects object into the specification used by the C++ effects:

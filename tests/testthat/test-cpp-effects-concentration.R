@@ -19,3 +19,20 @@ test_that("C++ and R chains are identical with the concentration effects", {
   compare_chains(concentrationEffects, parameters, n = 5000, state = cppTestState)
   compare_chains(concentrationEffects, parameters, n = 500, state = cppTestState, multinomial = TRUE)
 })
+
+otherConcentrationEffects <- createEffects(myState) |>
+  addEffect(concentration_basic) |>
+  addEffect(concentration_basic_cube) |>
+  addEffect(concentration_prop) |>
+  addEffect(concentration_prop_AC, alpha = 2) |>
+  addEffect(concentration_prop_AC, alpha = 5)
+
+test_that("C++ basic and proportional concentration effects give the same values as R", {
+  expect_cpp_matches_r(otherConcentrationEffects)
+})
+
+test_that("C++ and R chains are identical with the basic and proportional concentration effects", {
+  parameters <- c(0.02, -0.001, 0.2, 0.3, 0.1)
+  compare_chains(otherConcentrationEffects, parameters, n = 5000)
+  compare_chains(otherConcentrationEffects, parameters, n = 500, multinomial = TRUE)
+})

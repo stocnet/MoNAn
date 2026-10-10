@@ -3,7 +3,9 @@
     "allow": [
       "Bash(python3 -)",
       "Bash(Rscript -e 'Rcpp::compileAttributes\\(\\)')",
-      "Bash(Rscript -e ' *)"
+      "Bash(Rscript -e ' *)",
+      "Bash(Rscript -e 'devtools::test\\(filter = \"sampler-cpp\", reporter = \"summary\"\\)')",
+      "Bash(grep -v \"^sampler-cpp: \\\\.*$\")"
     ]
   }
 }

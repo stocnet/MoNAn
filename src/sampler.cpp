@@ -42,14 +42,16 @@ class Sampler {
       for (int k : nodeSet) if (k != i + 1) nodes.push_back(k);
     }
 
+    size_t K = effects.size();
+
     if (multinomial) {
-      Rcpp::stop("multinomial proposal not yet implemented in C++");
+      multinomialStep(edge, i, j, nodes);
+      return;
     }
 
     int l = sampleLikeR(nodes) - 1;
     if (j == l) return;
 
-    size_t K = effects.size();
     std::vector<double> drop(K), create(K);
     for (size_t k = 0; k < K; ++k) drop[k] = effects[k]->change(ch, i, j, edge, -1);
 
@@ -73,6 +75,48 @@ class Sampler {
       ch.sender[edge] = i;
       ch.receiver[edge] = j;
     }
+  }
+
+  // multinomial proposal: the destination is drawn from all possible ones with
+  // probabilities proportional to exp(parameters . change statistics), with the
+  // same arithmetic as R (colSums, sum and cumsum accumulate in long double)
+  void multinomialStep(int edge, int i, int j, const std::vector<int>& nodes) {
+    size_t K = effects.size();
+    std::vector<double> drop(K);
+    for (size_t k = 0; k < K; ++k) drop[k] = effects[k]->change(ch, i, j, edge, -1);
+
+    ch.update(i, j, edge, -1);
+    ch.sender[edge] = ch.receiver[edge] = -1;
+
+    size_t D = nodes.size();
+    std::vector<double> expValues(D);
+    long double total = 0;
+    for (size_t d = 0; d < D; ++d) {
+      long double objective = 0;
+      for (size_t k = 0; k < K; ++k) {
+        double create = effects[k]->change(ch, i, nodes[d] - 1, edge, 1);
+        objective += (create + drop[k]) * parameters[k];
+      }
+      expValues[d] = std::exp((double)objective);
+      total += expValues[d];
+    }
+
+    double u = unif_rand();
+    long double cumulative = 0;
+    size_t draw = D;
+    for (size_t d = 0; d < D; ++d) {
+      cumulative += expValues[d] / (double)total;
+      if ((double)cumulative >= u) {
+        draw = d;
+        break;
+      }
+    }
+    if (draw == D) Rcpp::stop("no destination drawn in multinomial proposal");
+    int l = nodes[draw] - 1;
+
+    ch.update(i, l, edge, 1);
+    ch.sender[edge] = i;
+    ch.receiver[edge] = l;
   }
 
   // as getNetworkStatistics(): sum of target contributions over all cells,

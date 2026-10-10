@@ -92,3 +92,9 @@ test_that("C++ and R chains are identical for the example model", {
   compare_chains(myEffects, myResDN$estimates, n = 5000, allowLoops = FALSE)
   compare_chains(myEffects, rep(0, 7), n = 5000)
 })
+
+test_that("C++ and R chains are identical with the multinomial proposal", {
+  compare_chains(myEffects, myResDN$estimates, n = 1000, multinomial = TRUE)
+  compare_chains(myEffects, myResDN$estimates, n = 1000, multinomial = TRUE, allowLoops = FALSE)
+  compare_chains(myEffects, rep(0, 7), n = 1000, multinomial = TRUE)
+})

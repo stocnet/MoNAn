@@ -707,6 +707,228 @@ class ReciprocityMinResource : public Effect {
   }
 };
 
+// ---- remaining exogenous and other effects (R/2a_effectFunctions_exogenous.R,
+// R/2_effectFunctions.R)
+
+// same_covariate, sim_covariate: a dyadic covariate (the 'same' or 'sim'
+// matrix of a node covariate) times the number of resources
+// (also used for dyadic_covariate, which has the same form)
+
+// dyadic_covariate_resource_attribute
+class DyadicCovariateResourceAttribute : public Effect {
+  std::vector<double> dyad;
+  int resource;
+ public:
+  DyadicCovariateResourceAttribute(std::vector<double> d, int r) : dyad(std::move(d)), resource(r) {}
+  double change(const Chain& ch, int i, int j, int edge, int update) const override {
+    if (i == j) return 0;
+    return update * ch.resourceValues[resource][edge] * dyad[ch.idx(i, j)];
+  }
+  double target(const Chain& ch, int i, int j) const override {
+    if (i == j) return 0;
+    return ch.resourceNetworks[resource][ch.idx(i, j)] * dyad[ch.idx(i, j)];
+  }
+};
+
+// sum(m[, j]) as in R (long double accumulation)
+inline double colSum(const Chain& ch, const std::vector<double>& m, int j) {
+  long double total = 0;
+  for (int i = 0; i < ch.n; ++i) total += m[ch.idx(i, j)];
+  return (double)total;
+}
+// sum(m[i, ]) as in R
+inline double rowSum(const Chain& ch, const std::vector<double>& m, int i) {
+  long double total = 0;
+  for (int j = 0; j < ch.n; ++j) total += m[ch.idx(i, j)];
+  return (double)total;
+}
+
+// in_ties_loops
+class InTiesLoops : public Effect {
+ public:
+  double change(const Chain& ch, int i, int j, int edge, int update) const override {
+    if (i == j) return update * (colSum(ch, ch.valued, j) - ch.v(j, j));
+    return update * ch.v(j, j);
+  }
+  double target(const Chain& ch, int i, int j) const override {
+    return (ch.v(i, j) * (i == j)) * (colSum(ch, ch.valued, j) - ch.v(j, j));
+  }
+};
+
+// present_relations
+class PresentRelations : public Effect {
+ public:
+  double change(const Chain& ch, int i, int j, int edge, int update) const override {
+    if (i == j) return 0;
+    if (ch.v(i, j) == 0 && update > 0) return 1;
+    if (ch.v(i, j) == -update && update < 0) return -1;
+    return 0;
+  }
+  double target(const Chain& ch, int i, int j) const override {
+    if (i == j) return 0;
+    return (ch.v(i, j) > 0) * 1;
+  }
+};
+
+// ---- covariate-based effects (R/2f_effectFunctions_endogenousCovariateBased.R)
+
+// staying_by_prop_bin_inflow, crowding_out_prop_covar_bin: loops weighted by
+// the proportion of resources with the (binary) attribute among the inflow
+class InflowProportion : public Effect {
+  int resource;
+  bool crowdingOut;
+  double r(const Chain& ch, int i, int j) const { return ch.resourceNetworks[resource][ch.idx(i, j)]; }
+  double propBefore(const Chain& ch, int j) const {
+    double sumV = colSum(ch, ch.valued, j);
+    if ((sumV - ch.v(j, j)) == 0) return 0.5;
+    return (colSum(ch, ch.resourceNetworks[resource], j) - r(ch, j, j)) / (sumV - ch.v(j, j));
+  }
+ public:
+  InflowProportion(int res, bool crowding) : resource(res), crowdingOut(crowding) {}
+  double change(const Chain& ch, int i, int j, int edge, int update) const override {
+    double before = propBefore(ch, j);
+    if (i == j) {
+      if (crowdingOut && ch.resourceValues[resource][edge] == 1) return 0;
+      return before * update;
+    }
+    double loops = crowdingOut ? ch.v(j, j) - r(ch, j, j) : ch.v(j, j);
+    double sumV = colSum(ch, ch.valued, j);
+    double after;
+    if (((sumV + update) - ch.v(j, j)) == 0) {
+      after = 0.5;
+    } else {
+      after = ((colSum(ch, ch.resourceNetworks[resource], j) +
+                update * ch.resourceValues[resource][edge]) - r(ch, j, j)) /
+              ((sumV + update) - ch.v(j, j));
+    }
+    double change = after - before;
+    return change * loops;
+  }
+  double target(const Chain& ch, int i, int j) const override {
+    if (i != j) return 0;
+    double loops = crowdingOut ? ch.v(i, j) - r(ch, i, j) : ch.v(i, j);
+    double sumV = colSum(ch, ch.valued, j);
+    double prop;
+    if ((sumV - ch.v(i, j)) == 0) {
+      prop = 0.5;
+    } else {
+      prop = (colSum(ch, ch.resourceNetworks[resource], j) - r(ch, i, j)) / (sumV - ch.v(i, j));
+    }
+    return loops * prop;
+  }
+};
+
+// joining_similar_avoiding_dissimilar_covar_bin, avoiding_dissimilar_covar_bin
+class SimilarityBin : public Effect {
+  int resource;
+  bool joining;  // false: avoiding_dissimilar
+ public:
+  SimilarityBin(int r, bool j) : resource(r), joining(j) {}
+  double change(const Chain& ch, int i, int j, int edge, int update) const override {
+    double n = ch.v(i, j);
+    double n1 = ch.resourceNetworks[resource][ch.idx(i, j)];
+    double attr = ch.resourceValues[resource][edge];
+    if (update == -1) {
+      if (n < 2) return 0;
+      double originSize = rowSum(ch, ch.valued, i);
+      if (joining) {
+        if (attr == 1) return (-2 * (n1 - 1) + 2 * (n - n1)) / (originSize - 1);
+        return (-2 * (n - n1 - 1) + 2 * n1) / (originSize - 1);
+      }
+      if (attr == 1) return (2 * (n - n1)) / (originSize - 1);
+      return (2 * n1) / (originSize - 1);
+    }
+    if (update == 1) {
+      if (n < 1) return 0;
+      double originSize = rowSum(ch, ch.valued, i) + 1;
+      if (joining) {
+        if (attr == 1) return (2 * n1 - 2 * (n - n1)) / (originSize - 1);
+        return (2 * (n - n1) - 2 * (n1)) / (originSize - 1);
+      }
+      if (attr == 1) return (-2 * (n - n1)) / (originSize - 1);
+      return (-2 * (n1)) / (originSize - 1);
+    }
+    Rcpp::stop("updates other than -1 and 1 are not supported");
+  }
+  double target(const Chain& ch, int i, int j) const override {
+    double n = ch.v(i, j);
+    if (n < 2) return 0;
+    double n1 = ch.resourceNetworks[resource][ch.idx(i, j)];
+    double originSize = rowSum(ch, ch.valued, i);
+    double numerator;
+    if (joining) {
+      numerator = n1 * (n1 - 1) + (n - n1) * (n - n1 - 1) - 2 * n1 * (n - n1);
+    } else {
+      numerator = -2 * n1 * (n - n1);
+    }
+    double denominator = originSize - 1;
+    return numerator / denominator;
+  }
+};
+
+// joining_similar_avoiding_dissimilar_covar_cont, avoiding_dissimilar_covar_cont:
+// pairwise distances of a continuous attribute among the resources on a tie
+class SimilarityCont : public Effect {
+  int resource;
+  bool joining;  // false: avoiding_dissimilar
+  double attributeRange;
+  // R: the pairwise term of the target statistic, for the distance d = |a - b|
+  double term(double d) const {
+    return joining ? (attributeRange - 2 * d) / attributeRange : d;
+  }
+  // the target contribution of one tie from the attributes of its resources
+  // (in edgelist order), summing over the pairs in the order of upper.tri()
+  double tieValue(const Chain& ch, int i, const std::vector<double>& x) const {
+    long double numerator = 0;
+    for (size_t c = 1; c < x.size(); ++c) {
+      for (size_t r = 0; r < c; ++r) numerator += term(std::abs(x[r] - x[c]));
+    }
+    double denominator = rowSum(ch, ch.valued, i) - 1;
+    return (double)numerator / denominator;
+  }
+ public:
+  SimilarityCont(int r, bool j, double range) : resource(r), joining(j), attributeRange(range) {}
+  double change(const Chain& ch, int i, int j, int edge, int update) const override {
+    double n = ch.v(i, j);
+    if (update == -1 && n < 2) return 0;
+    if (update == 1 && n < 1) return 0;
+    if (update != -1 && update != 1) Rcpp::stop("updates other than -1 and 1 are not supported");
+    double attr = ch.resourceValues[resource][edge];
+    long double total = 0;
+    for (size_t e = 0; e < ch.sender.size(); ++e) {
+      if (ch.sender[e] == i && ch.receiver[e] == j && (int)e != edge) {
+        total += term(std::abs(attr - ch.resourceValues[resource][e]));
+      }
+    }
+    double originSize = rowSum(ch, ch.valued, i) + (update == 1 ? 1 : 0);
+    if (update == -1) return -(double)total / (originSize - 1);
+    return (double)total / (originSize - 1);
+  }
+  double target(const Chain& ch, int i, int j) const override {
+    if (ch.v(i, j) < 2) return 0;
+    std::vector<double> x;
+    for (size_t e = 0; e < ch.sender.size(); ++e) {
+      if (ch.sender[e] == i && ch.receiver[e] == j) x.push_back(ch.resourceValues[resource][e]);
+    }
+    return tieValue(ch, i, x);
+  }
+  // one pass over the resources instead of one per cell; the same values
+  double targetTotal(const Chain& ch) const override {
+    std::vector<std::vector<double>> byTie((size_t)ch.n * ch.n);
+    for (size_t e = 0; e < ch.sender.size(); ++e) {
+      if (ch.sender[e] < 0) continue;
+      byTie[ch.idx(ch.sender[e], ch.receiver[e])].push_back(ch.resourceValues[resource][e]);
+    }
+    long double total = 0;
+    for (int j = 0; j < ch.n; ++j) {
+      for (int i = 0; i < ch.n; ++i) {
+        total += ch.v(i, j) < 2 ? 0 : tieValue(ch, i, byTie[ch.idx(i, j)]);
+      }
+    }
+    return (double)total;
+  }
+};
+
 }  // namespace
 
 std::unique_ptr<Effect> makeEffect(const Rcpp::List& spec, const Chain& chain) {
@@ -824,6 +1046,36 @@ std::unique_ptr<Effect> makeEffect(const Rcpp::List& spec, const Chain& chain) {
   if (name == "reciprocity_min_resource_covar") {
     return E(new ReciprocityMinResource(
       chain.resourceIndex(Rcpp::as<std::string>(spec["resourceAttribute"]))));
+  }
+  if (name == "same_covariate" || name == "sim_covariate") {
+    return E(new DyadicCovariate(attributeOf(spec)));
+  }
+  if (name == "dyadic_covariate_resource_attribute") {
+    return E(new DyadicCovariateResourceAttribute(
+      attributeOf(spec), chain.resourceIndex(Rcpp::as<std::string>(spec["resourceAttribute"]))));
+  }
+  if (name == "in_ties_loops") return E(new InTiesLoops());
+  if (name == "present_relations") return E(new PresentRelations());
+  if (name == "staying_by_prop_bin_inflow" || name == "crowding_out_prop_covar_bin") {
+    return E(new InflowProportion(
+      chain.resourceIndex(Rcpp::as<std::string>(spec["resourceAttribute"])),
+      name == "crowding_out_prop_covar_bin"));
+  }
+  if (name == "joining_similar_avoiding_dissimilar_covar_bin" ||
+      name == "avoiding_dissimilar_covar_bin") {
+    return E(new SimilarityBin(
+      chain.resourceIndex(Rcpp::as<std::string>(spec["resourceAttribute"])),
+      name == "joining_similar_avoiding_dissimilar_covar_bin"));
+  }
+  if (name == "joining_similar_avoiding_dissimilar_covar_cont" ||
+      name == "avoiding_dissimilar_covar_cont") {
+    int r = chain.resourceIndex(Rcpp::as<std::string>(spec["resourceAttribute"]));
+    double lo = R_PosInf, hi = R_NegInf;
+    for (double x : chain.resourceValues[r]) {
+      lo = std::min(lo, x);
+      hi = std::max(hi, x);
+    }
+    return E(new SimilarityCont(r, name == "joining_similar_avoiding_dissimilar_covar_cont", hi - lo));
   }
   Rcpp::stop("effect '%s' has no C++ version", name);
 }

@@ -64,26 +64,12 @@ Results from models that used the affected effects or options should be re-run.
 
 ## Performance
 
-- The MCMC sampler runs in C++ for models whose effects all have a C++
-  version, currently `loops`, `loops_AC`, `loops_GW`, `loops_node_covar`,
-  `loops_resource_covar`, `loops_resource_covar_node_covar`,
-  `loops_additional_origin`, `loops_x_loops_additional_origin`,
-  `concentration_basic`, `concentration_basic_cube`, `concentration_prop`,
-  `concentration_prop_AC`, `concentration_AC`, `concentration_GW`,
-  `concentration_AC_dyad_covar`,
-  `concentration_GW_dyad_covar`, `concentration_AC_resource_covar_bin`,
-  `concentration_GW_resource_covar_bin`, `reciprocity_basic`, `reciprocity_min`,
-  `reciprocity_min_dyad_covar`, `reciprocity_min_resource_covar`,
-  `reciprocity_AC`, `reciprocity_GW`,
-  `reciprocity_AC_dyad_covar`, `reciprocity_AC_dyad_covar_bin`,
-  `reciprocity_GW_dyad_covar`, `reciprocity_GW_dyad_covar_bin`,
-  `in_weights_AC`, `in_weights_GW`, `transitivity_basic`, `transitivity_min`,
-  `transitivity_netflow`, `transitivity_AC`, `transitivity_GW`, `triad120C`,
-  `triad120D`, `triad120U`, `dyadic_covariate`, `alter_covariate` and
-  `resource_covar_to_node_covar`. A sampler step is about 40-50 times faster; the
+- The MCMC sampler and all effects run in C++. A sampler step is about
+  20-50 times faster, depending on the effects; the estimation of the example
+  model with the default algorithm takes 17 seconds. A sampler step is about 40-50 times faster; the
   estimation of the example model with the default algorithm takes 17 seconds.
-  For the same seed, results are identical to those of the R sampler, which is
-  used for all other models. `options(MoNAn2.useCpp = FALSE)` switches to the
+  For the same seed, results are identical to those of the R sampler, which
+  remains available and is used for models with effects written only in R. `options(MoNAn2.useCpp = FALSE)` switches to the
   R sampler. The package now needs a C++ compiler when installed from source.
 
 - The MCMC sampler updates the edgelist and the cache in place instead of

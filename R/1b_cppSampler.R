@@ -23,7 +23,14 @@ cppEffects <- c("loops", "concentration_AC", "reciprocity_AC", "dyadic_covariate
                 "concentration_basic", "concentration_basic_cube",
                 "concentration_prop", "concentration_prop_AC",
                 "reciprocity_basic", "reciprocity_min",
-                "reciprocity_min_dyad_covar", "reciprocity_min_resource_covar")
+                "reciprocity_min_dyad_covar", "reciprocity_min_resource_covar",
+                "same_covariate", "sim_covariate", "dyadic_covariate_resource_attribute",
+                "in_ties_loops", "present_relations",
+                "staying_by_prop_bin_inflow", "crowding_out_prop_covar_bin",
+                "joining_similar_avoiding_dissimilar_covar_bin",
+                "avoiding_dissimilar_covar_bin",
+                "joining_similar_avoiding_dissimilar_covar_cont",
+                "avoiding_dissimilar_covar_cont")
 
 # cppEffectSpec
 # translates an effects object into the specification used by the C++ effects:
@@ -47,6 +54,17 @@ cppEffectSpec <- function(effects, state) {
     if (!is.null(args$attribute.index) && !identical(args$attribute.index, quote(expr = ))) {
       spec$attribute <- as.numeric(state[[args$attribute.index]]$data)
       spec$attributeIsMatrix <- is.matrix(state[[args$attribute.index]]$data)
+      # same_covariate and sim_covariate use the 'same' / 'sim' matrix of the
+      # covariate
+      for (m in c("same", "sim")) {
+        if (effectName == paste0(m, "_covariate")) {
+          if (is.null(state[[args$attribute.index]][[m]])) {
+            stop(paste0("Effect ", effectName, " expects covariates with a '", m, "' attribute."))
+          }
+          spec$attribute <- as.numeric(state[[args$attribute.index]][[m]])
+          spec$attributeIsMatrix <- TRUE
+        }
+      }
     }
     if (!is.null(args$resource.attribute.index) &&
         !identical(args$resource.attribute.index, quote(expr = ))) {

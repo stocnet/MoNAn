@@ -26,10 +26,27 @@ test_that("C++ statistics equal the R statistics of each draw", {
   expect_identical(unname(cpp$statistics), unname(r))
 })
 
-test_that("models with effects without a C++ version are recognised", {
-  effects <- createEffects(myState) |> addEffect(loops) |> addEffect(present_relations)
+test_that("models with effects written only in R use the R sampler", {
+  # a user-written effect without a C++ version; addEffect() finds effects by
+  # name in the global environment
+  assign("myLoops", function(dep.var = 1, state, cache, i, j, edge, update,
+                             getTargetContribution = FALSE) {
+    if (getTargetContribution) return(cache[[dep.var]]$valuedNetwork[i, j] * (i == j))
+    if (i == j) return(update)
+    0
+  }, envir = globalenv())
+  on.exit(rm("myLoops", envir = globalenv()), add = TRUE)
+
+  effects <- createEffects(myState) |> addEffect(loops) |> addEffect(myLoops)
   expect_null(cppEffectSpec(effects, myState))
   expect_false(useCppSampler(effects, myState))
+
+  set.seed(1)
+  res <- simulateStatisticVectors(myState$dep.var, myState, myState$cache, effects,
+                                  c(0.5, 0.5), burnIn = 100, iterations = 3, thinning = 100,
+                                  allowLoops = TRUE)
+  # both effects count loops
+  expect_equal(res[, 1], res[, 2])
 })
 
 test_that("C++ effects give the same values as the R effects", {

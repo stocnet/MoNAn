@@ -87,7 +87,7 @@ importFrom("stats", "as.formula", "ecdf", "pnorm", "runif", "sd", "dist", "cov",
 importFrom("methods", "is")
 importFrom("snowfall", "sfInit", "sfExport", "sfLapply", "sfLibrary", "sfStop")
 importFrom("Rcpp", "evalCpp")
-useDynLib(MoNAn2, .registration = TRUE)
+useDynLib(monan2, .registration = TRUE)
 
 # S3 methods
 S3method(print, result.monan)

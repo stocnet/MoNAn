@@ -39,7 +39,7 @@ test_that("C++ and R chains are identical with these effects", {
 })
 
 test_that("all exported effects have a C++ version", {
-  ns <- asNamespace("MoNAn2")
+  ns <- asNamespace("monan2")
   isEffect <- vapply(getNamespaceExports(ns), function(name) {
     f <- get(name, envir = ns)
     is.function(f) && all(c("state", "cache", "getTargetContribution") %in% names(formals(f)))

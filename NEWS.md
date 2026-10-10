@@ -1,10 +1,10 @@
-# MoNAn2 (development version)
+# monan2 (development version)
 
-!! The package has been renamed from MoNAn to MoNAn2 !!
+!! The package has been renamed from MoNAn to monan2 !!
 
-Load it with `library(MoNAn2)`. Saved objects that contain effect functions
+Load it with `library(monan2)`. Saved objects that contain effect functions
 (e.g. effects objects created with MoNAn) refer to the MoNAn namespace and
-should be recreated with MoNAn2.
+should be recreated with monan2.
 
 ## Bug fixes that change results
 
@@ -45,8 +45,8 @@ Results from models that used the affected effects or options should be re-run.
   calculated over the whole row of the origin, as in `concentration_prop`.
 - The startup message reads the version of the attached package instead of
   the hard-coded name "MoNAn".
-- Parallel workers load MoNAn2 instead of MoNAn.
-- The example data `myEffects` has been recreated with MoNAn2, as it referred
+- Parallel workers load monan2 instead of MoNAn.
+- The example data `myEffects` has been recreated with monan2, as it referred
   to the MoNAn namespace.
 
 ## New features
@@ -72,7 +72,7 @@ Results from models that used the affected effects or options should be re-run.
   model with the default algorithm takes 17 seconds instead of 13 minutes.
   For the same seed, results are identical to those of the R sampler, which
   remains available and is used for models with effects written only in R;
-  `options(MoNAn2.useCpp = FALSE)` switches to it. The package now needs a
+  `options(monan2.useCpp = FALSE)` switches to it. The package now needs a
   C++ compiler when installed from source.
 
 - The MCMC sampler updates the edgelist and the cache in place instead of

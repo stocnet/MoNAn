@@ -2,14 +2,14 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 simulateChainCpp <- function(edgelist, cache, resourceCovariates, resourceSet, nodeSet, effectSpecs, parameters, burnIn, iterations, thinning, allowLoops, multinomialProposal, returnDraws) {
-    .Call(`_MoNAn2_simulateChainCpp`, edgelist, cache, resourceCovariates, resourceSet, nodeSet, effectSpecs, parameters, burnIn, iterations, thinning, allowLoops, multinomialProposal, returnDraws)
+    .Call(`_monan2_simulateChainCpp`, edgelist, cache, resourceCovariates, resourceSet, nodeSet, effectSpecs, parameters, burnIn, iterations, thinning, allowLoops, multinomialProposal, returnDraws)
 }
 
 networkStatisticsCpp <- function(edgelist, cache, resourceCovariates, effectSpecs) {
-    .Call(`_MoNAn2_networkStatisticsCpp`, edgelist, cache, resourceCovariates, effectSpecs)
+    .Call(`_monan2_networkStatisticsCpp`, edgelist, cache, resourceCovariates, effectSpecs)
 }
 
 effectValuesCpp <- function(edgelist, cache, resourceCovariates, effectSpec, i, j, edge, update) {
-    .Call(`_MoNAn2_effectValuesCpp`, edgelist, cache, resourceCovariates, effectSpec, i, j, edge, update)
+    .Call(`_monan2_effectValuesCpp`, edgelist, cache, resourceCovariates, effectSpec, i, j, edge, update)
 }
 

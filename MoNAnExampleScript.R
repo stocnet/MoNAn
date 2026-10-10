@@ -1,6 +1,6 @@
 # This script runs a simple example with the data from the MoNAn package
 
-library(MoNAn2)
+library(monan2)
 
 
 ##### create data objects from internal data files, 

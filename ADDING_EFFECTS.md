@@ -1,6 +1,6 @@
-# Adding an effect to MoNAn2
+# Adding an effect to monan2
 
-This guide is for developers of MoNAn2. It explains how to add a new effect so
+This guide is for developers of monan2. It explains how to add a new effect so
 that it works with both samplers:
 
 - the **R sampler** (`R/1_hiddenFunctions.R`), which calls the effect's R function;
@@ -285,5 +285,5 @@ if they differ.
 Users can also write their own effects in R, with the signature from step 1, and
 add them with `addEffect()`. The function must be defined in the global
 environment, because `addEffect()` finds effects (and the state) by name there.
-Models with such effects use the R sampler automatically. `options(MoNAn2.useCpp = FALSE)` makes all models use the R
+Models with such effects use the R sampler automatically. `options(monan2.useCpp = FALSE)` makes all models use the R
 sampler, e.g. to compare both.

@@ -18,29 +18,6 @@ resource_covar_to_node_covar(
   getTargetContribution = FALSE
 )
 }
-\arguments{
-\item{dep.var}{}
-
-\item{resource.attribute.index}{}
-
-\item{attribute.index}{}
-
-\item{state}{}
-
-\item{cache}{}
-
-\item{i}{}
-
-\item{j}{}
-
-\item{edge}{}
-
-\item{update}{}
-
-\item{loop.contribution}{}
-
-\item{getTargetContribution}{}
-}
 \value{
 Returns the change statistic or target statistic of the effect for
 internal use by the estimation algorithm.

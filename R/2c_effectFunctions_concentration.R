@@ -239,7 +239,7 @@ concentration_GW <- function(dep.var = 1, state, cache, i, j, edge, update,
 
 #' concentration_AC_resource_covar_bin
 #' 
-#' Is there a bandwaggon effect in mobility, akin to the concentration_AC
+#' Is there a bandwagon effect in mobility, akin to the concentration_AC
 #' effect, but where people of group 1 only consider others of group 1
 #' in their decision to move?
 #' 
@@ -328,7 +328,7 @@ concentration_AC_resource_covar_bin <- function(dep.var = 1,
 
 #' concentration_GW_resource_covar_bin
 #' 
-#' Is there a bandwaggon effect in mobility, akin to the concentration_GW
+#' Is there a bandwagon effect in mobility, akin to the concentration_GW
 #' effect, but where people of group 1 only consider others of group 1
 #' in their decision to move?
 #' 
@@ -578,23 +578,33 @@ concentration_GW_dyad_covar <- function(dep.var = 1, attribute.index, state, cac
 #' @keywords internal
 concentration_prop <- function(dep.var = 1, state, cache, i, j, edge, update,
                                getTargetContribution = FALSE){
-  ### if only one person is in the origin,
-  ### this origin contributes 0 to the statistic
-  if(sum(cache[[dep.var]]$valuedNetwork[i,]) < 1){
-    return(0)
+  
+  ### contribution of all ties from one origin; empty origins contribute 0
+  rowContribution <- function(row){
+    total <- sum(row)
+    if(total == 0){
+      return(0)
+    }
+    return(sum(row^2) / total)
   }
+  
+  row <- cache[[dep.var]]$valuedNetwork[i, ]
 
   ### calculate target statistic
   if(getTargetContribution){
-    stat <- (cache[[dep.var]]$valuedNetwork[i, j])^2 / 
-      sum(cache[[dep.var]]$valuedNetwork[i,]) 
+    if(sum(row) == 0){
+      return(0)
+    }
+    stat <- row[j]^2 / sum(row)
     return(stat)
   }
 
   ### calculate change statistic
-  cont <- ((cache[[dep.var]]$valuedNetwork[i, j] + update)^2 - 
-           (cache[[dep.var]]$valuedNetwork[i, j])^2) / 
-          sum(cache[[dep.var]]$valuedNetwork[i,]) 
+  ### the update changes the row sum of origin i, and thereby the proportions
+  ### of all ties from i, so the whole row is recalculated
+  newRow <- row
+  newRow[j] <- newRow[j] + update
+  cont <- rowContribution(newRow) - rowContribution(row)
   return(cont)
 }
 
@@ -619,47 +629,46 @@ concentration_prop <- function(dep.var = 1, state, cache, i, j, edge, update,
 #' @param edge
 #' @param update
 #' @param getTargetContribution
+#' @param alpha
 #'
 #' @return Returns the change statistic or target statistic of the effect for
 #' internal use by the estimation algorithm.
 #' @keywords internal
 concentration_prop_AC <- function(dep.var = 1, state, cache, i, j, edge, update,
-                               getTargetContribution = FALSE){
+                               getTargetContribution = FALSE, alpha = 2){
   
-  if(alpha < 1) stop("alpha parameter in concentration_AC function must be 1 or larger")
+  if(alpha < 1) stop("alpha parameter in concentration_prop_AC function must be 1 or larger")
 
   g <- function(k, a){
     return((1 - (1-1/a)^(k)))
   }
   
+  ### contribution of all ties from one origin; empty origins contribute 0
+  rowContribution <- function(row){
+    total <- sum(row)
+    if(total == 0){
+      return(0)
+    }
+    return(sum(row * g(k = row / total, a = alpha)))
+  }
+  
+  row <- cache[[dep.var]]$valuedNetwork[i, ]
+  
   ### calculate target statistic
   if(getTargetContribution){
-    cont <- g(k = cache[[dep.var]]$valuedNetwork[i, j] / 
-              sum(cache[[dep.var]]$valuedNetwork[i,]) ,
-              a = alpha)
-    stat <- cache[[dep.var]]$valuedNetwork[i, j] * cont
+    if(sum(row) == 0){
+      return(0)
+    }
+    stat <- row[j] * g(k = row[j] / sum(row), a = alpha)
     return(stat)
   }
   
   ### calculate change statistic
-  before <- (cache[[dep.var]]$valuedNetwork[i, j]) *
-    g(k = cache[[dep.var]]$valuedNetwork[i, j] / 
-      sum(cache[[dep.var]]$valuedNetwork[i,]) ,
-      a = alpha) 
-  if(update == -1){
-    after <- (cache[[dep.var]]$valuedNetwork[i, j] - 1) *
-              g(k = (cache[[dep.var]]$valuedNetwork[i, j]-1) / 
-                sum(cache[[dep.var]]$valuedNetwork[i,]) ,
-                a = alpha) 
-    cont <- after - before
-  }
-  if(update == 1){
-    after <- (cache[[dep.var]]$valuedNetwork[i, j] + 1) *
-      g(k = (cache[[dep.var]]$valuedNetwork[i, j]+1) / 
-          sum(cache[[dep.var]]$valuedNetwork[i,]) ,
-        a = alpha) 
-    cont <- after - before
-  }
+  ### the update changes the row sum of origin i, and thereby the proportions
+  ### of all ties from i, so the whole row is recalculated
+  newRow <- row
+  newRow[j] <- newRow[j] + update
+  cont <- rowContribution(newRow) - rowContribution(row)
   return(cont)
 }
 

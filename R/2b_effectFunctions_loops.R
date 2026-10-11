@@ -415,7 +415,9 @@ loops_x_loops_additional_origin <-
       return(cont)
     }
     
-    orig.of.res <- state[[dep.var]]$data[edge,1]
+    # the origin is i; the edgelist cannot be used here, as the sampler sets the
+    # moving resource's row to NA before calculating the change of adding it
+    orig.of.res <- i
     dest.of.res <- j
     additional.orig.of.res <- state[[resource.attribute.index]]$data[edge]
     

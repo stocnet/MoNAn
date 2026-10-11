@@ -119,25 +119,19 @@ reciprocity_min_resource_covar <-
       ) / 2)
     }
     
-    # simplified version that assumes that update are 1 or -1 and the network is an integer network
-    if (update > 0 &&
-        (cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][i, j] <
-         cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][j, i])) {
-      return(1)
-    }
-    if (update < 0 &&
-        (cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][i, j] <=
-         cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][j, i])) {
-      return(-1)
-    }
-    return(0)
+    # the resource network is weighted by the attribute of the moving resource,
+    # so resources without the attribute (value 0) do not change the statistic
+    r_ij <- cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][i, j]
+    r_ji <- cache[[dep.var]]$resourceNetworks[[resource.attribute.index]][j, i]
+    weight <- update * state[[resource.attribute.index]]$data[edge]
+    return(min(r_ij + weight, r_ji) - min(r_ij, r_ji))
   }
 
 
 #' reciprocity_min_dyad_covar
 #'
 #' Do individuals move to destinations that send more individuals to ego’s origin?
-#' This is weighted by a dydic covariate. 
+#' This is weighted by a dyadic covariate. 
 #' This version of the effect is the minimum of the moves in either direction, 
 #' thereby guarding against degeneracy and guaranteeing sample size consistency. 
 #' It counts the ‘raw’ number of reciprocated transitions in the mobility network.
@@ -165,8 +159,6 @@ reciprocity_min_dyad_covar <-
            edge,
            update,
            getTargetContribution = FALSE) {
-    if(!all(state[[attribute.index]]$data == t(state[[attribute.index]]$data))) 
-      stop("attribute.index in reciprocity_min_dyad_covar function must be symmetric")
     if(dim(state[[attribute.index]]$data)[1] != dim(state[[attribute.index]]$data)[2]) 
       stop("attribute.index in reciprocity_min_dyad_covar function must be a square matrix")
     if(length(dim(state[[attribute.index]]$data)) != 2) 
@@ -277,8 +269,6 @@ reciprocity_AC <- function(dep.var = 1, state, cache, i, j, edge, update,
 reciprocity_AC_dyad_covar_bin <- function(dep.var = 1, attribute.index, state, cache, i, j, edge, update, 
                                           getTargetContribution = FALSE, alpha = 2){
   if(alpha < 1) stop("alpha parameter in reciprocity_AC_dyad_covar_bin function must be 1 or larger")
-  if(!all(state[[attribute.index]]$data == t(state[[attribute.index]]$data))) stop("attribute.index in reciprocity_AC_dyad_covar_bin function must be symmetric")
-  if(!all(state[[attribute.index]]$data %in% c(0,1))) stop("all values of attribute.index in reciprocity_AC_dyad_covar_bin function must be 0 or 1")
   if(dim(state[[attribute.index]]$data)[1] != dim(state[[attribute.index]]$data)[2]) stop("attribute.index in reciprocity_AC_dyad_covar_bin function must be a square matrix")
   if(length(dim(state[[attribute.index]]$data)) != 2) stop("attribute.index in reciprocity_AC_dyad_covar_bin function must be a square matrix")
   
@@ -343,7 +333,6 @@ reciprocity_AC_dyad_covar_bin <- function(dep.var = 1, attribute.index, state, c
 reciprocity_AC_dyad_covar <- function(dep.var = 1, attribute.index, state, cache, i, j, edge, update, 
                                       getTargetContribution = FALSE, alpha = 2){
   if(alpha < 1) stop("alpha parameter in reciprocity_AC_dyad_covar function must be 1 or larger")
-  if(!all(state[[attribute.index]]$data == t(state[[attribute.index]]$data))) stop("attribute.index in reciprocity_AC_dyad_covar function must be symmetric")
   if(dim(state[[attribute.index]]$data)[1] != dim(state[[attribute.index]]$data)[2]) stop("attribute.index in reciprocity_AC_dyad_covar function must be a square matrix")
   if(length(dim(state[[attribute.index]]$data)) != 2) stop("attribute.index in reciprocity_AC_dyad_covar function must be a square matrix")
   
@@ -467,8 +456,6 @@ reciprocity_GW <- function(dep.var = 1, state, cache, i, j, edge, update,
 reciprocity_GW_dyad_covar_bin <- function(dep.var = 1, attribute.index, state, cache, i, j, edge, update, 
                                           getTargetContribution = FALSE, alpha = 2){
   if(alpha < 1) stop("alpha parameter in reciprocity_GW_dyad_covar_bin function must be 1 or larger")
-  if(!all(state[[attribute.index]]$data == t(state[[attribute.index]]$data))) stop("attribute.index in reciprocity_GW_dyad_covar_bin function must be symmetric")
-  if(!all(state[[attribute.index]]$data %in% c(0,1))) stop("all values of attribute.index in reciprocity_GW_dyad_covar_bin function must be 0 or 1")
   if(dim(state[[attribute.index]]$data)[1] != dim(state[[attribute.index]]$data)[2]) stop("attribute.index in reciprocity_GW_dyad_covar_bin function must be a square matrix")
   if(length(dim(state[[attribute.index]]$data)) != 2) stop("attribute.index in reciprocity_GW_dyad_covar_bin function must be a square matrix")
   
@@ -531,7 +518,6 @@ reciprocity_GW_dyad_covar_bin <- function(dep.var = 1, attribute.index, state, c
 reciprocity_GW_dyad_covar <- function(dep.var = 1, attribute.index, state, cache, i, j, edge, update, 
                                       getTargetContribution = FALSE, alpha = 2){
   if(alpha < 1) stop("alpha parameter in reciprocity_GW_dyad_covar function must be 1 or larger")
-  if(!all(state[[attribute.index]]$data == t(state[[attribute.index]]$data))) stop("attribute.index in reciprocity_GW_dyad_covar function must be symmetric")
   if(dim(state[[attribute.index]]$data)[1] != dim(state[[attribute.index]]$data)[2]) stop("attribute.index in reciprocity_GW_dyad_covar function must be a square matrix")
   if(length(dim(state[[attribute.index]]$data)) != 2) stop("attribute.index in reciprocity_GW_dyad_covar function must be a square matrix")
   

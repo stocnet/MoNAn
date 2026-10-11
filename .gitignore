@@ -1,9 +1,13 @@
 .Rproj.user
-.Rproj
 .Rhistory
 .RData
+.DS_Store
+src/*.o
+src/*.so
+src/*.dll
+.positai
+.claude/
 .Ruserdata
 temp1.RData
 inst/doc
-.DS_Store
 MoNAn.Rproj

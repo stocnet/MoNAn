@@ -95,28 +95,24 @@ createInternalCache <-
       }
       if (is(processState[[name]], "edgelist.monan")) {
         # create valued network from edge list
-        m <- matrix(0, nActors1, nActors2)
-        
-        # create weighted resource networks
+        nResources <- processState[[name]]$size[1]
+        senders <- processState[[name]]$data[seq_len(nResources), 1]
+        receivers <- processState[[name]]$data[seq_len(nResources), 2]
+        tie <- senders + (receivers - 1) * nActors1
+        m <- matrix(as.numeric(tabulate(tie, nbins = nActors1 * nActors2)),
+                    nActors1, nActors2)
+
+        # create weighted resource networks; the values on each tie are summed
+        # in the order of the edge list, starting from 0, i.e. exactly as when
+        # adding the resources one by one
         m.resource <-
-          lapply(resourceCovariates, function(v) {
-            matrix(0, nrow = nActors1, ncol = nActors2)
+          lapply(resourceCovariates, function(ressCovar) {
+            values <- as.numeric(processState[[ressCovar]]$data[seq_len(nResources)])
+            matrix(tieSumsCpp(as.integer(tie), values, nActors1 * nActors2),
+                   nrow = nActors1, ncol = nActors2)
           })
         names(m.resource) <- resourceCovariates
-        
-        for (i in 1:processState[[name]]$size[1]) {
-          sender <- processState[[name]]$data[i, 1]
-          receiver <- processState[[name]]$data[i, 2]
-          v <- m[sender, receiver]
-          m[sender, receiver] <- v + 1
-          
-          # cache network * resource covariate matrices
-          for (ressCovar in resourceCovariates) {
-            v <- m.resource[[ressCovar]][sender, receiver]
-            m.resource[[ressCovar]][sender, receiver] <- v +
-              processState[[ressCovar]]$data[i]
-          }
-        }
+
         cache[[name]]$valuedNetwork <- m
         cache[[name]]$resourceNetworks <- m.resource
         
@@ -173,6 +169,10 @@ getNetStatsFromDeps <- function(dep.var, oneDep, ans, effects){
 
 # getNetworkStatistics
 getNetworkStatistics <- function(dep.var, state, cache, effects) {
+  if (useCppSampler(effects, state)) {
+    return(cppNetworkStatistics(dep.var, state, cache, effects))
+  }
+
   actors1 <- state[[dep.var]]$nodeSet[1]
   actors2 <- state[[dep.var]]$nodeSet[2]
   nActors1 <- length(state[[actors1]]$ids)
@@ -247,7 +247,7 @@ runPhase1 <- function(dep.var,
                                  iterations = round(iterationsN1 / cpus), 
                                  thinning = thinningN1, 
                                  multinomialProposal = multinomialProposal, 
-                                 allowLoops, 
+                                 allowLoops = allowLoops, 
                                  verbose = verbose)
     statisticsMatrix <- Reduce("rbind", statisticsMatrix)
     sfStop()
@@ -445,6 +445,281 @@ runPhase2 <- function(dep.var,
   }
 
   return(parameters)
+}
+
+
+# runPhase2GT
+# Alternative to runPhase2: Geyer-Thompson MCMC maximum likelihood estimation
+# (Geyer & Thompson 1992; as in MCMC MLE for ERGMs). Networks are simulated at
+# the current parameters theta0, and the parameters are updated with
+# geyerThompsonStep. Iterations with iterationsGT draws continue until a step
+# is an unrestricted Geyer-Thompson step, i.e. the observed statistics are
+# within the range of the simulated ones; the estimate is then taken from a
+# final step based on finalIterationsGT draws, which reduces Monte Carlo error.
+runPhase2GT <- function(dep.var,
+                        state,
+                        cache,
+                        effects,
+                        initialParameters,
+                        observedStatistics,
+                        burnIn,
+                        thinning,
+                        iterationsGT,
+                        maxIterationsGT,
+                        finalIterationsGT = 3 * iterationsGT,
+                        minESS = 0.5,
+                        parallel,
+                        cpus,
+                        multinomialProposal = FALSE,
+                        allowLoops,
+                        verbose = FALSE) {
+  if (parallel && cpus > 1) {
+    sfInit(parallel = TRUE, cpus = cpus)
+    sfLibrary("MoNAn", character.only = TRUE)
+    on.exit(sfStop(), add = TRUE)
+  } else {
+    parallel <- FALSE
+    cpus <- 1
+  }
+
+  splitDraws <- function(n) {
+    draws <- rep(n %/% cpus, cpus)
+    rest <- n %% cpus
+    if (rest > 0) {
+      draws[1:rest] <- draws[1:rest] + 1
+    }
+    draws
+  }
+
+  runChain <- function(chain, dep.var, effects, parameters, burnIn, thinning,
+                       allowLoops, multinomialProposal) {
+    res <- simulateStatisticVectors(
+      dep.var, chain$state, chain$cache, effects, parameters,
+      burnIn = burnIn, iterations = chain$draws, thinning = thinning,
+      allowLoops = allowLoops, multinomialProposal = multinomialProposal,
+      returnState = TRUE
+    )
+    list(statistics = res$statistics, state = res$state, cache = res$cache)
+  }
+
+  # simulate a sample of statistics at the given parameters; chains continue
+  # from where the previous sample ended
+  chains <- lapply(seq_len(cpus), function(k) list(state = state, cache = cache))
+  simulateSample <- function(parameters, n) {
+    draws <- splitDraws(n)
+    for (k in seq_len(cpus)) {
+      chains[[k]]$draws <<- draws[k]
+    }
+    applyFun <- if (parallel) sfLapply else lapply
+    chains <<- applyFun(chains, runChain, dep.var = dep.var, effects = effects,
+                        parameters = parameters, burnIn = burnIn,
+                        thinning = thinning, allowLoops = allowLoops,
+                        multinomialProposal = multinomialProposal)
+    Reduce(rbind, lapply(chains, "[[", "statistics"))
+  }
+
+  report <- function(label, statistics, step, parameters) {
+    if (!verbose) {
+      return(invisible(NULL))
+    }
+    tRatios <- (colMeans(statistics) - observedStatistics) / apply(statistics, 2, sd)
+    cat(paste0("\n", label, ": max |t-ratio| ", round(max(abs(tRatios)), 3),
+               ", effective sample size ",
+               if (is.na(step$ess)) "-" else round(step$ess), " of ", nrow(statistics),
+               ", ", step$method, " step",
+               if (step$restricted) " (restricted)" else "", "\n"))
+    cat(paste(names(parameters), "\n", parameters, "\n"))
+  }
+
+  parameters <- initialParameters
+  names(parameters) <- effects$name
+
+  for (iter in 1:maxIterationsGT) {
+    statistics <- simulateSample(parameters, iterationsGT)
+    step <- geyerThompsonStep(statistics, observedStatistics, minESS)
+    parameters <- parameters + step$delta
+    report(paste("Geyer-Thompson iteration", iter), statistics, step, parameters)
+    if (!step$restricted) {
+      break
+    }
+  }
+
+  # final step from a larger sample
+  statistics <- simulateSample(parameters, finalIterationsGT)
+  step <- geyerThompsonStep(statistics, observedStatistics, minESS)
+  parameters <- parameters + step$delta
+  report("Geyer-Thompson final step", statistics, step, parameters)
+
+  parameters
+}
+
+
+# geyerThompsonStep
+# One parameter update from a sample of statistics simulated at theta0.
+# If the observed statistics lie within the range of the sample (measured by
+# Mahalanobis distance), the Geyer-Thompson approximation of
+# l(theta0 + delta) - l(theta0), -log mean_k exp(delta . (s_k - s_obs)), is
+# maximised with Newton steps, keeping the effective sample size of the
+# importance weights >= minESS * M. Otherwise, importance sampling is
+# unreliable and a step based on the normal approximation of the statistics
+# is taken towards a target between the sample mean and the observed
+# statistics that lies within the sample range (similar to the step length
+# of Hummel, Hunter & Handcock 2012).
+geyerThompsonStep <- function(statistics, observedStatistics, minESS = 0.5,
+                              maxNewton = 100, tol = 1e-8) {
+  M <- nrow(statistics)
+  p <- ncol(statistics)
+  mu <- colMeans(statistics)
+  C <- cov(statistics)
+  solveC <- function(A, b) {
+    tryCatch(solve(A, b), error = function(e) {
+      solve(A + diag(1e-8 * max(1, max(diag(A))), p), b)
+    })
+  }
+
+  # range of the sample: Mahalanobis distances of the draws from their mean
+  centred <- sweep(statistics, 2, mu)
+  sampleDistances <- sqrt(pmax(0, rowSums(centred * t(solveC(C, t(centred))))))
+  range <- as.numeric(quantile(sampleDistances, 0.9))
+  obsDistance <- sqrt(max(0, sum((observedStatistics - mu) *
+                                   solveC(C, observedStatistics - mu))))
+
+  if (obsDistance > range) {
+    gamma <- range / obsDistance
+    delta <- as.vector(solveC(C, gamma * (observedStatistics - mu)))
+    return(list(delta = delta, ess = NA, restricted = TRUE, method = "normal"))
+  }
+
+  d <- sweep(statistics, 2, observedStatistics)
+  weightsOf <- function(delta) {
+    eta <- as.vector(d %*% delta)
+    w <- exp(eta - max(eta))
+    w / sum(w)
+  }
+  # objective, computed stably: -log mean exp(eta)
+  objective <- function(delta) {
+    eta <- as.vector(d %*% delta)
+    -(max(eta) + log(mean(exp(eta - max(eta)))))
+  }
+  essOf <- function(w) 1 / sum(w^2)
+
+  delta <- rep(0, p)
+  restricted <- FALSE
+  for (k in 1:maxNewton) {
+    w <- weightsOf(delta)
+    m <- colSums(w * d)
+    Cw <- crossprod(d * sqrt(w)) - tcrossprod(m)
+    newtonStep <- -solveC(Cw, m)
+
+    # backtrack until the objective does not decrease and the effective
+    # sample size is large enough
+    a <- 1
+    repeat {
+      candidate <- delta + a * newtonStep
+      if (objective(candidate) >= objective(delta) - 1e-12 &&
+          essOf(weightsOf(candidate)) >= minESS * M) {
+        break
+      }
+      a <- a / 2
+      if (a < 1e-6) {
+        candidate <- delta
+        break
+      }
+    }
+    if (a < 1) {
+      restricted <- restricted ||
+        essOf(weightsOf(candidate)) < minESS * M * 1.01
+    }
+    change <- max(abs(candidate - delta))
+    delta <- candidate
+    if (change < tol) {
+      break
+    }
+  }
+
+  list(delta = delta, ess = essOf(weightsOf(delta)), restricted = restricted,
+       method = "Geyer-Thompson")
+}
+
+
+# getMPLE
+# Maximum pseudo-likelihood estimate: a conditional logit of each resource's
+# observed destination against all possible destinations, given the
+# destinations of all other resources. Used as starting values for the
+# Geyer-Thompson estimation. Returns NULL if the estimate does not exist
+# (e.g. separation) or the optimisation fails.
+getMPLE <- function(dep.var, state, cache, effects, allowLoops,
+                    maxNewton = 50, tol = 1e-8) {
+  state <- toMutableState(state, dep.var)
+  cache <- toMutableCache(cache)
+  edgelist <- state[[dep.var]]
+  nodeName <- edgelist$nodeSet[1]
+  resourceName <- edgelist$nodeSet[3]
+  nodes <- state[[nodeName]]$ids[state[[nodeName]]$considerWhenSampling]
+  resources <- which(state[[resourceName]]$considerWhenSampling)
+  effectFunctions <- effects$effectFormulas
+  p <- length(effectFunctions)
+
+  # for each resource: change statistics of adding it to every possible
+  # destination after removing it, and which destination is observed
+  choiceSets <- lapply(resources, function(e) {
+    i <- edgelist$data[e, 1]
+    j <- edgelist$data[e, 2]
+    destinations <- if (allowLoops) nodes else setdiff(nodes, i)
+
+    cells <- getCacheCells(cache[[dep.var]], i, j)
+    updateCacheInPlace(cache[[dep.var]], i, j, resourceID = e, state = state, update = -1)
+    setEdgeInPlace(edgelist, e, rep(NA, 2))
+    X <- t(vapply(destinations, function(k) {
+      vapply(effectFunctions, function(f) {
+        f(dep.var = dep.var, state = state, cache = cache,
+          i = i, j = k, update = 1, edge = e)
+      }, numeric(1))
+    }, numeric(p)))
+    restoreCacheCells(cache[[dep.var]], i, j, cells)
+    setEdgeInPlace(edgelist, e, c(i, j))
+
+    list(X = matrix(X, ncol = p), observed = match(j, destinations))
+  })
+
+  theta <- rep(0, p)
+  logPL <- function(theta) {
+    sum(vapply(choiceSets, function(cs) {
+      eta <- as.vector(cs$X %*% theta)
+      eta[cs$observed] - max(eta) - log(sum(exp(eta - max(eta))))
+    }, numeric(1)))
+  }
+  for (k in 1:maxNewton) {
+    gradient <- rep(0, p)
+    hessian <- matrix(0, p, p)
+    for (cs in choiceSets) {
+      eta <- as.vector(cs$X %*% theta)
+      prob <- exp(eta - max(eta))
+      prob <- prob / sum(prob)
+      expected <- colSums(prob * cs$X)
+      gradient <- gradient + cs$X[cs$observed, ] - expected
+      hessian <- hessian - (crossprod(cs$X * sqrt(prob)) - tcrossprod(expected))
+    }
+    step <- tryCatch(-solve(hessian, gradient), error = function(e) NULL)
+    if (is.null(step) || any(!is.finite(step))) {
+      return(NULL)
+    }
+    # step halving to keep the pseudo-likelihood increasing
+    a <- 1
+    current <- logPL(theta)
+    while (logPL(theta + a * step) < current - 1e-10 && a > 1e-6) {
+      a <- a / 2
+    }
+    theta <- theta + a * step
+    if (max(abs(a * step)) < tol) {
+      break
+    }
+  }
+  if (any(!is.finite(theta)) || max(abs(theta)) > 1e3) {
+    return(NULL)
+  }
+  names(theta) <- effects$name
+  theta
 }
 
 
@@ -654,6 +929,8 @@ runSubphase2 <- function(dep.var,
 
 
 # simulateNSteps
+# returns state and cache in their in-place form (see toMutableState);
+# convert with toListState / toListCache before storing them
 simulateNSteps <-
   function(dep.var,
            state,
@@ -666,6 +943,16 @@ simulateNSteps <-
            multinomialProposal = FALSE,
            debug = FALSE,
            n = 1) {
+    if (senderFixed && !debug && useCppSampler(effects, state)) {
+      res <- simulateChain(dep.var, state, cache, effects, parameters,
+                           burnIn = n, iterations = 0, thinning = 0,
+                           allowLoops = allowLoops,
+                           multinomialProposal = multinomialProposal)
+      return(list(state = res$state, cache = res$cache))
+    }
+
+    state <- toMutableState(state, dep.var)
+    cache <- toMutableCache(cache)
     for (i in 1:n) {
       res <-
         simulateOneStep(
@@ -688,6 +975,7 @@ simulateNSteps <-
 
 
 # simulateOneStep
+# changes state and cache in place; both must be in their in-place form
 simulateOneStep <-
   function(dep.var,
            state,
@@ -716,6 +1004,8 @@ simulateOneStep <-
       nodeSet <- setdiff(nodeSet, i)
     }
 
+    effectFunctions <- effects$effectFormulas
+
     ## MULTINOMIAL PROPOSAL ## CONSIDER REFACTOR TO FUNCTION
 
     if (multinomialProposal) {
@@ -724,7 +1014,6 @@ simulateOneStep <-
       }
 
       # remove resource from process state
-      effectFunctions <- effects$effectFormulas
       statisticsDrop <-
         unlist(lapply(effectFunctions, function(f) {
           f(
@@ -739,19 +1028,9 @@ simulateOneStep <-
         }))
 
       # update process state and cache
-      cacheNew <- cache
-      cacheNew[[dep.var]] <-
-        updateWeightedCache(
-          cache[[dep.var]],
-          i,
-          j,
-          resourceID = randomEdge,
-          state = state,
-          dep.var = dep.var,
-          update = -1
-        )
-      stateNew <- state
-      stateNew[[dep.var]]$data[randomEdge, ] <- rep(NA, 2)
+      updateCacheInPlace(cache[[dep.var]], i, j,
+                         resourceID = randomEdge, state = state, update = -1)
+      setEdgeInPlace(state[[dep.var]], randomEdge, rep(NA, 2))
 
       # for each possible receiver
       statisticsCreate <-
@@ -770,6 +1049,9 @@ simulateOneStep <-
         },
         simplify = TRUE
         )
+      # one row per effect, also if there is only one effect (sapply then
+      # returns a vector)
+      statisticsCreate <- matrix(statisticsCreate, nrow = length(effectFunctions))
       objValues <-
         colSums((statisticsCreate + statisticsDrop) * parameters)
       pChange <- exp(objValues) / sum(exp(objValues))
@@ -779,17 +1061,9 @@ simulateOneStep <-
       l <- nodeSet[draw]
 
       # update process state and cache
-      cache[[dep.var]] <-
-        updateWeightedCache(
-          cacheNew[[dep.var]],
-          sender = i,
-          receiver = l,
-          resourceID = randomEdge,
-          state = state,
-          dep.var = dep.var,
-          update = 1
-        )
-      state[[dep.var]]$data[randomEdge, ] <- c(i, l)
+      updateCacheInPlace(cache[[dep.var]], i, l,
+                         resourceID = randomEdge, state = state, update = 1)
+      setEdgeInPlace(state[[dep.var]], randomEdge, c(i, l))
     }
 
 
@@ -812,7 +1086,6 @@ simulateOneStep <-
         return(list(state = state, cache = cache))
       }
 
-      effectFunctions <- effects$effectFormulas
       statisticsDrop <-
         unlist(lapply(effectFunctions, function(f) {
           f(
@@ -826,27 +1099,19 @@ simulateOneStep <-
           )
         }))
 
-      # update process state and cache
-      cacheNew <- cache
-      cacheNew[[dep.var]] <-
-        updateWeightedCache(
-          cache[[dep.var]],
-          i,
-          j,
-          resourceID = randomEdge,
-          state = state,
-          dep.var = dep.var,
-          update = -1
-        )
-      stateNew <- state
-      stateNew[[dep.var]]$data[randomEdge, ] <- rep(NA, 2)
+      # remove the resource from state and cache, keeping what is needed to
+      # undo this if the change is rejected
+      oldCells <- getCacheCells(cache[[dep.var]], i, j)
+      updateCacheInPlace(cache[[dep.var]], i, j,
+                         resourceID = randomEdge, state = state, update = -1)
+      setEdgeInPlace(state[[dep.var]], randomEdge, rep(NA, 2))
 
       statisticsCreate <-
         unlist(lapply(effectFunctions, function(f) {
           f(
             dep.var = dep.var,
-            state = stateNew,
-            cache = cacheNew,
+            state = state,
+            cache = cache,
             i = k,
             j = l,
             update = +1,
@@ -860,17 +1125,12 @@ simulateOneStep <-
       acceptanceProbability <- min(1, exp(changeContribution))
 
       if (acceptanceProbability >= runif(1)) {
-        cache[[dep.var]] <-
-          updateWeightedCache(
-            cacheNew[[dep.var]],
-            sender = k,
-            receiver = l,
-            resourceID = randomEdge,
-            state = state,
-            dep.var = dep.var,
-            update = 1
-          )
-        state[[dep.var]]$data[randomEdge, ] <- c(k, l)
+        updateCacheInPlace(cache[[dep.var]], k, l,
+                           resourceID = randomEdge, state = state, update = 1)
+        setEdgeInPlace(state[[dep.var]], randomEdge, c(k, l))
+      } else {
+        restoreCacheCells(cache[[dep.var]], i, j, oldCells)
+        setEdgeInPlace(state[[dep.var]], randomEdge, c(i, j))
       }
     }
 
@@ -891,7 +1151,28 @@ simulateStatisticVectors <- function(dep.var,
                                      verbose = FALSE,
                                      multinomialProposal = FALSE,
                                      fish = FALSE,
-                                     returnDeps = FALSE) {
+                                     returnDeps = FALSE,
+                                     returnState = FALSE) {
+  # the whole chain in C++ if all effects have a C++ version
+  if (useCppSampler(effects, state)) {
+    if (verbose) {
+      cat(paste("Starting burn-in with", burnIn, "steps\n"))
+    }
+    res <- simulateChain(dep.var, state, cache, effects, initialParameters,
+                         burnIn = burnIn, iterations = iterations, thinning = thinning,
+                         allowLoops = allowLoops, multinomialProposal = multinomialProposal,
+                         returnDraws = returnDeps)
+    statisticsMatrix <- res$statistics
+    rownames(statisticsMatrix) <- rep("stats", nrow(statisticsMatrix))
+    if (returnDeps) {
+      return(list(statisticsMatrix, res$draws))
+    }
+    if (returnState) {
+      return(list(statistics = statisticsMatrix, state = res$state, cache = res$cache))
+    }
+    return(statisticsMatrix)
+  }
+
   statisticsMatrix <- c()
 
   if (returnDeps) {
@@ -952,7 +1233,8 @@ simulateStatisticVectors <- function(dep.var,
     statisticsMatrix <- rbind(statisticsMatrix, stats)
 
     if (returnDeps) {
-      deps[[i]] <- list(state = state, cache = cache)
+      deps[[i]] <- list(state = toListState(state, dep.var),
+                        cache = toListCache(cache))
     }
   }
 
@@ -965,6 +1247,9 @@ simulateStatisticVectors <- function(dep.var,
 
   if (returnDeps) {
     return(list(statisticsMatrix, deps))
+  } else if (returnState) {
+    # the end of the chain (in-place form), to continue it later
+    return(list(statistics = statisticsMatrix, state = state, cache = cache))
   } else {
     return(statisticsMatrix)
   }
@@ -1034,4 +1319,156 @@ updateWeightedCache <- function(cache,
     cache$netFlowsNetwork[receiver, sender] - update
 
   cache
+}
+
+
+########## in-place state and cache for MCMC chains
+# Within one chain, the dependent variable of the state and the cache are
+# stored in environments and updated in place. This avoids copying the edgelist
+# and all cache matrices in every simulation step. Effects read them as before
+# (state[[dep.var]]$data, cache[[dep.var]]$valuedNetwork[i, j], ...).
+# Updates are done by functions whose environment is that environment, using
+# <<-; e$x[i, j] <- v would copy x, and evalq() is not byte-compiled.
+# Anything that leaves a chain is converted back with toListState/toListCache.
+
+# toMutableState
+toMutableState <- function(state, dep.var) {
+  if (is.environment(state[[dep.var]])) {
+    return(state)
+  }
+  e <- list2env(unclass(state[[dep.var]]), envir = new.env(parent = baseenv()))
+  e$.names <- names(state[[dep.var]])
+  e$.class <- class(state[[dep.var]])
+
+  # placeholder for the variable the function below updates in e (its
+  # environment is set to e below)
+  data <- NULL
+  e$.setEdge <- function(edge, value) {
+    data[edge, ] <<- value
+  }
+  environment(e$.setEdge) <- e
+
+  state[[dep.var]] <- e
+  state
+}
+
+# toListState
+toListState <- function(state, dep.var) {
+  e <- state[[dep.var]]
+  if (!is.environment(e)) {
+    return(state)
+  }
+  l <- mget(e$.names, envir = e)
+  class(l) <- e$.class
+  state[[dep.var]] <- l
+  state
+}
+
+# toMutableCache
+toMutableCache <- function(cache) {
+  lapply(cache, function(x) {
+    if (is.environment(x)) {
+      return(x)
+    }
+    e <- list2env(x, envir = new.env(parent = baseenv()))
+    e$.names <- names(x)
+    if (is.null(x$resourceNetworks)) {
+      e$resourceNetworks <- NULL
+    }
+
+    # placeholders for the variables the functions below update in e (their
+    # environment is set to e below)
+    valuedNetwork <- netFlowsNetwork <- minNetwork <- resourceNetworks <- NULL
+
+    # same logic as updateWeightedCache
+    e$.update <- function(sender, receiver, resourceID, state, update) {
+      # Updates of weighted resource caches
+      for (ressCovar in names(resourceNetworks)) {
+        resourceNetworks[[ressCovar]][sender, receiver] <<-
+          resourceNetworks[[ressCovar]][sender, receiver] +
+          update * state[[ressCovar]]$data[resourceID]
+      }
+
+      # The following uses information about the net flow network before the update
+      if (update > 0 && netFlowsNetwork[sender, receiver] < 0) {
+        minNetwork[sender, receiver] <<- minNetwork[sender, receiver] + 1
+      }
+      if (update < 0 && netFlowsNetwork[sender, receiver] <= 0 && sender != receiver) {
+        minNetwork[sender, receiver] <<- minNetwork[sender, receiver] - 1
+      }
+      if (minNetwork[sender, receiver] < 0) {
+        stop(paste("Error in cache update, negative min tie.",
+                   sender, receiver, update, netFlowsNetwork[sender, receiver]))
+      }
+      minNetwork[receiver, sender] <<- minNetwork[sender, receiver]
+
+      # weighted updates
+      valuedNetwork[sender, receiver] <<- valuedNetwork[sender, receiver] + update
+      netFlowsNetwork[sender, receiver] <<- netFlowsNetwork[sender, receiver] + update
+      netFlowsNetwork[receiver, sender] <<- netFlowsNetwork[receiver, sender] - update
+    }
+
+    # the cells that an update of sender-receiver changes, to restore them
+    # exactly if a proposed change is rejected (adding back a numeric resource
+    # covariate value is not always exact in floating point)
+    e$.getCells <- function(sender, receiver) {
+      list(
+        valued = valuedNetwork[sender, receiver],
+        netFlows = c(netFlowsNetwork[sender, receiver], netFlowsNetwork[receiver, sender]),
+        min = c(minNetwork[sender, receiver], minNetwork[receiver, sender]),
+        resource = lapply(resourceNetworks, function(m) m[sender, receiver])
+      )
+    }
+
+    e$.restoreCells <- function(sender, receiver, cells) {
+      for (ressCovar in names(resourceNetworks)) {
+        resourceNetworks[[ressCovar]][sender, receiver] <<- cells$resource[[ressCovar]]
+      }
+      valuedNetwork[sender, receiver] <<- cells$valued
+      netFlowsNetwork[sender, receiver] <<- cells$netFlows[1]
+      netFlowsNetwork[receiver, sender] <<- cells$netFlows[2]
+      minNetwork[sender, receiver] <<- cells$min[1]
+      minNetwork[receiver, sender] <<- cells$min[2]
+    }
+
+    environment(e$.update) <- e
+    environment(e$.getCells) <- e
+    environment(e$.restoreCells) <- e
+    e
+  })
+}
+
+# toListCache
+toListCache <- function(cache) {
+  lapply(cache, function(e) {
+    if (!is.environment(e)) {
+      return(e)
+    }
+    mget(e$.names, envir = e)
+  })
+}
+
+# updateCacheInPlace
+# same as updateWeightedCache, but changes the cache environment in place
+updateCacheInPlace <- function(cacheEnv, sender, receiver, resourceID, state, update) {
+  cacheEnv$.update(sender, receiver, resourceID, state, update)
+  invisible(NULL)
+}
+
+# getCacheCells
+getCacheCells <- function(cacheEnv, sender, receiver) {
+  cacheEnv$.getCells(sender, receiver)
+}
+
+# restoreCacheCells
+restoreCacheCells <- function(cacheEnv, sender, receiver, cells) {
+  cacheEnv$.restoreCells(sender, receiver, cells)
+  invisible(NULL)
+}
+
+# setEdgeInPlace
+# sets the sender and receiver of one resource in the edgelist environment
+setEdgeInPlace <- function(edgelistEnv, edge, value) {
+  edgelistEnv$.setEdge(edge, value)
+  invisible(NULL)
 }

@@ -9,11 +9,6 @@ alternative destination whether change and target statistics match.}
 \usage{
 test_effect(effectName, ...)
 }
-\arguments{
-\item{effectName}{}
-
-\item{...}{}
-}
 \value{
 A data frame containing for each person in the example data:
 Origin; Destination; Suggested destination; Change statistic;

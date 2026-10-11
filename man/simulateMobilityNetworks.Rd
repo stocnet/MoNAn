@@ -81,7 +81,7 @@ do counter-factual simulations.
 mySimDN <- simulateMobilityNetworks(
   myState,
   myEffects,
-  parameters = c(2, 1, 1.5, 0.1, -1, -0.5),
+  parameters = c(2, 1, 1.5, 0.5, 0.1, -1, -0.5),
   allowLoops = TRUE,
   burnin = 450,
   thinning = 150,

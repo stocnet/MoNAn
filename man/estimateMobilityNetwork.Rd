@@ -78,10 +78,11 @@ the outcome in the form of an edgelist, the nodesets, and covariates.}
 
 \item{algorithm}{An object of class "algorithm.monan" which specifies the algorithm used in the estimation.}
 
-\item{initialParameters}{Starting values for the parameters. Using starting
-values, e.g., from a multinomial logit model (see \code{\link[=getMultinomialStatistics]{getMultinomialStatistics()}})
-increases the chances of model convergence in the first run of the estimation
-considerably.}
+\item{initialParameters}{Starting values for the parameters. If neither
+initialParameters nor prevAns are specified, maximum pseudo-likelihood
+estimates are used, i.e., the estimates of the multinomial logit model for
+which \code{\link[=getMultinomialStatistics]{getMultinomialStatistics()}} provides the data. If these do not exist
+(e.g., because of separation), the estimation starts from zero.}
 
 \item{prevAns}{If a previous estimation did not yield satisfactory convergence,
 the outcome object of that estimation should be specified here to provide new

@@ -25,6 +25,8 @@
 #' If the value is too low, there will be an error in Phase 1.
 #' @param gainN1 The size of the updating step after Phase 1. A conservative
 #' value is 0, values higher than 0.25 are courageous. Defaults to 0.1.
+#' Only used if the estimation starts from zero, i.e., if no starting values
+#' are given and maximum pseudo-likelihood estimates are not available.
 #' @param burnInN2 The number of simulation steps before the first draw in Phase 1.
 #' A recommended value is at least n_Individuals * n_locations if
 #' multinomialProposal = FALSE, and at least n_Individuals if multinomialProposal = TRUE
@@ -58,6 +60,20 @@
 #' In case this value is too low, the outcome might erroneously indicate a lack
 #' of convergence.
 #' @param allowLoops Logical: can individuals/resources stay in their origin?
+#' @param phase2Method How the parameters are estimated in Phase 2:
+#' "RM" (default) uses the Robbins-Monro stochastic approximation
+#' algorithm; "GT" uses Geyer-Thompson MCMC maximum likelihood estimation,
+#' as used for exponential random graph models. With "GT", the arguments
+#' nsubN2, initGain and initialIterationsN2 are not used.
+#' @param iterationsGT With phase2Method = "GT": the number of draws in each
+#' Geyer-Thompson iteration. Defaults to 10 * n_effects, but at least 100.
+#' @param maxIterationsGT With phase2Method = "GT": the maximum number of
+#' Geyer-Thompson iterations before the final step. Iterations stop earlier
+#' once the observed statistics lie within the range of the simulated ones.
+#' Defaults to 10.
+#' @param finalIterationsGT With phase2Method = "GT": the number of draws for
+#' the final Geyer-Thompson step, which determines the estimates.
+#' Defaults to 3 * iterationsGT.
 #'
 #' @return An object of class "algorithm.monan".
 #' @export
@@ -83,7 +99,11 @@ createAlgorithm <-
            burnInN3 = NULL,
            thinningN3 = NULL,
            iterationsN3 = 500,
-           allowLoops = NULL) {
+           allowLoops = NULL,
+           phase2Method = c("RM", "GT"),
+           iterationsGT = NULL,
+           maxIterationsGT = 10,
+           finalIterationsGT = NULL) {
     dep.var <- state$dep.var
     
     algorithm <- list()
@@ -182,6 +202,19 @@ createAlgorithm <-
     }
     if (!(is.null(allowLoops))) {
       algorithm[["allowLoops"]] <- as.logical(allowLoops)
+    }
+
+    algorithm[["phase2Method"]] <- match.arg(phase2Method)
+    if (is.null(iterationsGT)) {
+      algorithm[["iterationsGT"]] <- max(100, 10 * length(effects[["effectFormulas"]]))
+    } else {
+      algorithm[["iterationsGT"]] <- iterationsGT
+    }
+    algorithm[["maxIterationsGT"]] <- maxIterationsGT
+    if (is.null(finalIterationsGT)) {
+      algorithm[["finalIterationsGT"]] <- 3 * algorithm[["iterationsGT"]]
+    } else {
+      algorithm[["finalIterationsGT"]] <- finalIterationsGT
     }
 
     class(algorithm) <- "algorithm.monan"
@@ -345,6 +378,12 @@ createEffectsObject <-
       name = unlist(effectNames)
     )
     class(effectslist) <- "effectsList.monan"
+
+    # checks of the data that effects refer to (see checkEffectInputs)
+    if (!is.null(checkProcessState)) {
+      checkEffectInputs(effectslist, checkProcessState)
+    }
+
     effectslist
   }
 
@@ -746,10 +785,11 @@ createWeightedCache <-
 #' the outcome in the form of an edgelist, the nodesets, and covariates.
 #' @param effects An object of class "effectsList.monan" that specifies the model.
 #' @param algorithm An object of class "algorithm.monan" which specifies the algorithm used in the estimation.
-#' @param initialParameters Starting values for the parameters. Using starting
-#' values, e.g., from a multinomial logit model (see [getMultinomialStatistics()])
-#' increases the chances of model convergence in the first run of the estimation
-#' considerably.
+#' @param initialParameters Starting values for the parameters. If neither
+#' initialParameters nor prevAns are specified, maximum pseudo-likelihood
+#' estimates are used, i.e., the estimates of the multinomial logit model for
+#' which [getMultinomialStatistics()] provides the data. If these do not exist
+#' (e.g., because of separation), the estimation starts from zero.
 #' @param prevAns If a previous estimation did not yield satisfactory convergence,
 #' the outcome object of that estimation should be specified here to provide new
 #' starting values for the estimation.
@@ -820,6 +860,7 @@ estimateMobilityNetwork <-
     
     dep.var <- state$dep.var
     cache <- state$cache
+    checkEffectInputs(effects, state)
     
     # extract parameters from algorithm object
     
@@ -856,12 +897,31 @@ estimateMobilityNetwork <-
       }
     }
 
-    # decide whether to run phase 1 based on whether a prevAns object is specified
+    # starting values: if neither prevAns nor initialParameters are given,
+    # use the maximum pseudo-likelihood estimate
+    useGT <- identical(algorithm$phase2Method, "GT")
+    if (is.null(prevAns) && all(initialParameters == 0)) {
+      if (verbose) {
+        cat("Calculating maximum pseudo-likelihood estimates as starting values\n")
+      }
+      mple <- getMPLE(dep.var, state, cache, effects, allowLoops)
+      if (is.null(mple)) {
+        cat("Maximum pseudo-likelihood estimates not available; starting from zero\n")
+      } else {
+        initialParameters <- mple
+      }
+    }
+
+    # decide whether to run phase 1: it is skipped with prevAns, and with
+    # Geyer-Thompson estimation if there are starting values. With starting
+    # values, phase 1 only determines the sensitivity vector for Robbins-Monro.
     if (!is.null(prevAns)) {
       # skip phase 1 as all information is already there
       cat("skipping phase 1 and taking values from prevAns\n")
       initialParameters <- prevAns$estimates
       sensitivityVector <- 1 / diag(solve(prevAns$covarianceMatrix))
+    } else if (useGT && any(initialParameters != 0)) {
+      # Geyer-Thompson does not need a sensitivity vector
     } else {
       # run phase 1 to get initial estimates and a sensitivity vector
       if (verbose) {
@@ -892,24 +952,46 @@ estimateMobilityNetwork <-
     if (verbose) {
       cat("Starting phase 2\n")
     }
-    resPhase2 <- runPhase2(
-      dep.var,
-      state,
-      cache,
-      effects,
-      initialParameters,
-      sensitivityVector,
-      burnInN2,
-      nsubN2,
-      initGain,
-      thinningN2,
-      initialIterationsN2,
-      parallel = parallel,
-      cpus = cpus,
-      multinomialProposal,
-      allowLoops,
-      verbose = verbose
-    )
+    # algorithm objects created before phase2Method existed use Robbins-Monro
+    if (identical(algorithm$phase2Method, "GT")) {
+      resPhase2 <- runPhase2GT(
+        dep.var,
+        state,
+        cache,
+        effects,
+        initialParameters,
+        observedStatistics,
+        burnIn = burnInN2,
+        thinning = thinningN2,
+        iterationsGT = algorithm$iterationsGT,
+        maxIterationsGT = algorithm$maxIterationsGT,
+        finalIterationsGT = algorithm$finalIterationsGT,
+        parallel = parallel,
+        cpus = cpus,
+        multinomialProposal = multinomialProposal,
+        allowLoops = allowLoops,
+        verbose = verbose
+      )
+    } else {
+      resPhase2 <- runPhase2(
+        dep.var,
+        state,
+        cache,
+        effects,
+        initialParameters,
+        sensitivityVector,
+        burnInN2,
+        nsubN2,
+        initGain,
+        thinningN2,
+        initialIterationsN2,
+        parallel = parallel,
+        cpus = cpus,
+        multinomialProposal,
+        allowLoops,
+        verbose = verbose
+      )
+    }
 
     # run phase 3 to get final covariance matrix and convergence check
     if (verbose) {
@@ -1022,7 +1104,7 @@ monanEstimate <- estimateMobilityNetwork
 #' mySimDN <- simulateMobilityNetworks(
 #'   myState,
 #'   myEffects,
-#'   parameters = c(2, 1, 1.5, 0.1, -1, -0.5),
+#'   parameters = c(2, 1, 1.5, 0.5, 0.1, -1, -0.5),
 #'   allowLoops = TRUE,
 #'   burnin = 450,
 #'   thinning = 150,
@@ -1052,6 +1134,11 @@ simulateMobilityNetworks <-
     
     dep.var <- state$dep.var
     cache <- state$cache
+    checkEffectInputs(effects, state)
+    if (length(parameters) != length(effects$name)) {
+      stop(paste("parameters must have one value per effect:", length(effects$name),
+                 "effects, but", length(parameters), "parameters"))
+    }
     
     # generate a state and cache after burnin with parameters
     r <-
@@ -1079,13 +1166,14 @@ simulateMobilityNetworks <-
           simState,
           simCache,
           effects,
-          allowLoops = FALSE,
+          allowLoops = allowLoops,
           n = thinning,
           parameters = parameters
         )
       simState <- r$state
       simCache <- r$cache
-      simulatedList[[i]] <- list(state = simState, cache = simCache)
+      simulatedList[[i]] <- list(state = toListState(simState, dep.var),
+                                 cache = toListCache(simCache))
       int <- i %% 11
       s <- "_,.-'``'-.,"
       cat(substr(s, int + 1, int + 1))

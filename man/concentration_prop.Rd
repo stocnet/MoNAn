@@ -15,23 +15,6 @@ concentration_prop(
   getTargetContribution = FALSE
 )
 }
-\arguments{
-\item{dep.var}{}
-
-\item{state}{}
-
-\item{cache}{}
-
-\item{i}{}
-
-\item{j}{}
-
-\item{edge}{}
-
-\item{update}{}
-
-\item{getTargetContribution}{}
-}
 \value{
 Returns the change statistic or target statistic of the effect for
 internal use by the estimation algorithm.
@@ -41,5 +24,7 @@ Is there a bandwagon effect in mobility, i.e. do mobile individuals move to loca
 that are the destination of many others from their origin? The functional form of this
 statistic assumes that individuals consider the proportions of individuals (coming from
 the same origin) going to a certain destination, instead of the total number.
+This specification uses the idea that each individual has a contribution equal to
+the proportion of individuals from its origin going on the same tie as him/her.
 }
 \keyword{internal}

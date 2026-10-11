@@ -21,7 +21,11 @@ createAlgorithm(
   burnInN3 = NULL,
   thinningN3 = NULL,
   iterationsN3 = 500,
-  allowLoops = NULL
+  allowLoops = NULL,
+  phase2Method = c("RM", "GT"),
+  iterationsGT = NULL,
+  maxIterationsGT = 10,
+  finalIterationsGT = NULL
 )
 
 monanAlgorithmCreate(
@@ -40,7 +44,11 @@ monanAlgorithmCreate(
   burnInN3 = NULL,
   thinningN3 = NULL,
   iterationsN3 = 500,
-  allowLoops = NULL
+  allowLoops = NULL,
+  phase2Method = c("RM", "GT"),
+  iterationsGT = NULL,
+  maxIterationsGT = 10,
+  finalIterationsGT = NULL
 )
 }
 \arguments{
@@ -68,7 +76,9 @@ A recommended value is at least 4 * n_effects which is set as default.
 If the value is too low, there will be an error in Phase 1.}
 
 \item{gainN1}{The size of the updating step after Phase 1. A conservative
-value is 0, values higher than 0.25 are courageous. Defaults to 0.1.}
+value is 0, values higher than 0.25 are courageous. Defaults to 0.1.
+Only used if the estimation starts from zero, i.e., if no starting values
+are given and maximum pseudo-likelihood estimates are not available.}
 
 \item{burnInN2}{The number of simulation steps before the first draw in Phase 1.
 A recommended value is at least n_Individuals * n_locations if
@@ -111,6 +121,24 @@ In case this value is too low, the outcome might erroneously indicate a lack
 of convergence.}
 
 \item{allowLoops}{Logical: can individuals/resources stay in their origin?}
+
+\item{phase2Method}{How the parameters are estimated in Phase 2:
+"RM" (default) uses the Robbins-Monro stochastic approximation
+algorithm; "GT" uses Geyer-Thompson MCMC maximum likelihood estimation,
+as used for exponential random graph models. With "GT", the arguments
+nsubN2, initGain and initialIterationsN2 are not used.}
+
+\item{iterationsGT}{With phase2Method = "GT": the number of draws in each
+Geyer-Thompson iteration. Defaults to 10 * n_effects, but at least 100.}
+
+\item{maxIterationsGT}{With phase2Method = "GT": the maximum number of
+Geyer-Thompson iterations before the final step. Iterations stop earlier
+once the observed statistics lie within the range of the simulated ones.
+Defaults to 10.}
+
+\item{finalIterationsGT}{With phase2Method = "GT": the number of draws for
+the final Geyer-Thompson step, which determines the estimates.
+Defaults to 3 * iterationsGT.}
 }
 \value{
 An object of class "algorithm.monan".

@@ -16,25 +16,6 @@ in_weights_GW(
   alpha = 2
 )
 }
-\arguments{
-\item{dep.var}{}
-
-\item{state}{}
-
-\item{cache}{}
-
-\item{i}{}
-
-\item{j}{}
-
-\item{edge}{}
-
-\item{update}{}
-
-\item{getTargetContribution}{}
-
-\item{alpha}{}
-}
 \value{
 Returns the change statistic or target statistic of the effect for
 internal use by the estimation algorithm.

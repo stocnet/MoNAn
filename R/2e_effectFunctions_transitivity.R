@@ -31,36 +31,27 @@ transitivity_basic <-
     if (i == j) {
       return(0)
     }
-    
-    net <- cache[[dep.var]]$valuedNetwork
-    diag(net) <- 0
-    
-    if (getTargetContribution) {
-      twoPaths <- apply(cbind(net[i, ], net[, j]), 1, prod)
-      triadValues <- mapply(prod, net[i, j], twoPaths)
-      return(sum(triadValues))
-    }
-    
-    ### change contribution in three parts
-    
-    # part 1: i,j closes two-path
-    
-    twoPaths <- apply(cbind(net[i, ], net[, j]), 1, prod)
-    ind_cont <- update * sum(twoPaths)
-    
-    # part 2: i,j closes instar
-    
-    inStars <- apply(cbind(net[i, ], net[j, ]), 1, prod)
-    ind_cont <- ind_cont + update * sum(inStars)
-    
-    # part 3: i,j closes outstar
-    
-    outStars <- apply(cbind(net[, i], net[, j]), 1, prod)
-    ind_cont <- ind_cont + update * sum(outStars)
-    
-    return(ind_cont)
-}
 
+    # rows and columns of the network without loops
+    net <- cache[[dep.var]]$valuedNetwork
+    ri <- net[i, ]
+    ri[i] <- 0
+    rj <- net[j, ]
+    rj[j] <- 0
+    ci <- net[, i]
+    ci[i] <- 0
+    cj <- net[, j]
+    cj[j] <- 0
+
+    if (getTargetContribution) {
+      return(net[i, j] * sum(ri * cj))
+    }
+
+    # two-paths, in-stars and out-stars closed by the i-j tie
+    ind_cont <- update * (sum(ri * cj) + sum(ri * rj) + sum(ci * cj))
+
+    return(ind_cont)
+  }
 
 #' transitivity_min
 #' 
@@ -93,22 +84,25 @@ transitivity_min <-
     if (i == j) {
       return(0)
     }
-    
+
     m.min <- cache[[dep.var]]$minNetwork
-    diag(m.min) <- 0
-    
+    # row i and column j of the min network without loops
+    mi <- m.min[i, ]
+    mi[i] <- 0
+    mj <- m.min[, j]
+    mj[j] <- 0
+
     if (getTargetContribution) {
-      twoPaths <- apply(cbind(m.min[i, ], m.min[, j]), 1, min)
-      triadValues <- mapply(min, m.min[i, j], twoPaths)
-      v <- sum(triadValues) / 6
+      twoPaths <- pmin(mi, mj)
+      v <- sum(pmin(m.min[i, j], twoPaths)) / 6
       return(v)
     }
-    
+
     # cases without contributions
     if (update == 0) {
       return(0)
     }
-    
+
     # change contributions are only possible if the minimum tie in the dyad is changed
     if (update > 0 &&
         cache[[dep.var]]$netFlowsNetwork[i, j] >= 0) {
@@ -118,10 +112,10 @@ transitivity_min <-
         cache[[dep.var]]$netFlowsNetwork[i, j] > 0) {
       return(0)
     }
-    
+
     # (+/-)1 change contributions only for those triads where the current tie is the weakest / unique weakest for negative / positive updates
     dyadValue <- m.min[i, j]
-    twoPathValues <- apply(cbind(m.min[i, ], m.min[, j]), 1, min)
+    twoPathValues <- pmin(mi, mj)
     if (update > 0) {
       v <- sum(dyadValue < twoPathValues)
     }
@@ -130,7 +124,6 @@ transitivity_min <-
     }
     return(v)
   }
-
 
 #' transitivity_netflow
 #' 
@@ -163,78 +156,51 @@ transitivity_netflow <-
     if (i == j) {
       return(0)
     }
-    
+
+    nf <- cache[[dep.var]]$netFlowsNetwork
+
+    # weight of the paths via each k: the smaller absolute net flow, unless
+    # both net flows are negative
     getPathWeights <- function(ik, kj) {
-      if (ik < 0 && kj < 0) {
-        return(0)
-      }
-      return(min(abs(ik), abs(kj)))
+      w <- pmin(abs(ik), abs(kj))
+      w[ik < 0 & kj < 0] <- 0
+      w
     }
-    
+
     if (getTargetContribution) {
-      if (cache[[dep.var]]$netFlowsNetwork[i, j] <= 0) {
+      if (nf[i, j] <= 0) {
         return(0)
       }
-      pathWeights <-
-        mapply(
-          getPathWeights,
-          cache[[dep.var]]$netFlowsNetwork[i, ],
-          cache[[dep.var]]$netFlowsNetwork[, j]
-        )
-      v <-
-        sum(mapply(min, pathWeights, cache[[dep.var]]$netFlowsNetwork[i, j]))
+      pathWeights <- getPathWeights(nf[i, ], nf[, j])
+      v <- sum(pmin(pathWeights, nf[i, j]))
       return(v / 3)
     }
-    
+
     # calculate contribution before change and relevant path weights (those relating to transitive structures)
-    if (cache[[dep.var]]$netFlowsNetwork[i, j] > 0) {
-      pathWeights <-
-        mapply(
-          getPathWeights,
-          cache[[dep.var]]$netFlowsNetwork[i, ],
-          cache[[dep.var]]$netFlowsNetwork[, j]
-        )
-      contributionBefore <-
-        sum(mapply(min, pathWeights, cache[[dep.var]]$netFlowsNetwork[i, j]))
+    if (nf[i, j] > 0) {
+      pathWeights <- getPathWeights(nf[i, ], nf[, j])
+      contributionBefore <- sum(pmin(pathWeights, nf[i, j]))
     }
-    if (cache[[dep.var]]$netFlowsNetwork[i, j] < 0) {
-      pathWeights <-
-        mapply(
-          getPathWeights,
-          cache[[dep.var]]$netFlowsNetwork[j, ],
-          cache[[dep.var]]$netFlowsNetwork[, i]
-        )
-      contributionBefore <-
-        sum(mapply(min, pathWeights, cache[[dep.var]]$netFlowsNetwork[j, i]))
+    if (nf[i, j] < 0) {
+      pathWeights <- getPathWeights(nf[j, ], nf[, i])
+      contributionBefore <- sum(pmin(pathWeights, nf[j, i]))
     }
-    if (cache[[dep.var]]$netFlowsNetwork[i, j] == 0) {
+    if (nf[i, j] == 0) {
       contributionBefore <- 0
       if (update > 0) {
-        pathWeights <-
-          mapply(
-            getPathWeights,
-            cache[[dep.var]]$netFlowsNetwork[i, ],
-            cache[[dep.var]]$netFlowsNetwork[, j]
-          )
+        pathWeights <- getPathWeights(nf[i, ], nf[, j])
       }
       if (update < 0) {
-        pathWeights <-
-          mapply(
-            getPathWeights,
-            cache[[dep.var]]$netFlowsNetwork[j, ],
-            cache[[dep.var]]$netFlowsNetwork[, i]
-          )
+        pathWeights <- getPathWeights(nf[j, ], nf[, i])
       }
     }
-    
+
     # calculate contribution after the tie change
-    tieWeightAfter <- cache[[dep.var]]$netFlowsNetwork[i, j] + update
-    contributionAfter <-
-      sum(mapply(min, pathWeights, abs(tieWeightAfter)))
-    
+    tieWeightAfter <- nf[i, j] + update
+    contributionAfter <- sum(pmin(pathWeights, abs(tieWeightAfter)))
+
     return(contributionAfter - contributionBefore)
   }
-
 
 #' transitivity_AC
 #'
@@ -265,57 +231,65 @@ transitivity_AC <-
            update,
            getTargetContribution = FALSE,
            alpha = 1.1) {
-    
+
     if (i == j) {
       return(0)
     }
-    
-    g_mar <- function(y, a){
-      contr <- 0
-      if(y>0) {
-        contr <-  (1 - (1-1/a)^(y)) 
-      } else {
-        contr <- 0
-      }
-      return(contr)
+
+    # vectorised; for y = 0 the contribution is 0
+    g_mar <- function(y, a) {
+      1 - (1 - 1 / a)^y
     }
-    
+
+    # rows and columns of the network without loops; the network itself is
+    # not copied
     net <- cache[[dep.var]]$valuedNetwork
-    diag(net) <- 0
-    
+    loopValues <- diag(net)
+    ri <- net[i, ]
+    ri[i] <- 0
+    rj <- net[j, ]
+    rj[j] <- 0
+    ci <- net[, i]
+    ci[i] <- 0
+    cj <- net[, j]
+    cj[j] <- 0
+
     if (getTargetContribution) {
-      twoPaths <- sum(apply(cbind(net[i, ], net[, j]), 1, prod))
-      return(net[i,j] * g_mar(twoPaths, alpha))
+      twoPaths <- sum(ri * cj)
+      return(ri[j] * g_mar(twoPaths, alpha))
     }
-    
+
     ### change contribution in three parts
-    
+
     # part 1: i,j closes two-path
-    
-    twoPaths <- sum(apply(cbind(net[i, ], net[, j]), 1, prod))
+
+    twoPaths <- sum(ri * cj)
     ind_cont <- update * g_mar(twoPaths, alpha)
-    
+
     # part 2: i,j closes instar
-    net_u <- net
-    net_u[i,j] <- net_u[i,j] + update
-    
-    nTP_before <- (net[i,] %*% net)
-    con_be <- sum(net[i,] * unlist(lapply(nTP_before, g_mar, alpha))) - (net[i,j] * g_mar(nTP_before[j], alpha))
-    nTP_after <- (net_u[i,] %*% net_u)
-    con_af <- sum(net_u[i,] * unlist(lapply(nTP_after, g_mar, alpha))) - (net_u[i,j] * g_mar(nTP_after[j], alpha))
+    # two-paths from i to every k (without loops); adding update to the i-j
+    # tie adds update * (j's row) to them
+    ri_u <- ri
+    ri_u[j] <- ri_u[j] + update
+
+    nTP_before <- as.vector(ri %*% net) - ri * loopValues
+    con_be <- sum(ri * g_mar(nTP_before, alpha)) - (ri[j] * g_mar(nTP_before[j], alpha))
+    nTP_after <- nTP_before + update * rj
+    con_af <- sum(ri_u * g_mar(nTP_after, alpha)) - (ri_u[j] * g_mar(nTP_after[j], alpha))
     ind_cont <- ind_cont + (con_af - con_be)
-    
+
     # part 3: i,j closes outstar
-    
-    nTP_before <- (net %*% net[,j])
-    con_be <- sum(net[,j] * unlist(lapply(nTP_before, g_mar, alpha)))
-    nTP_after <- (net_u %*% net_u[,j])
-    con_af <- sum(net[,j] * unlist(lapply(nTP_after, g_mar, alpha)))
+    # two-paths from every k to j (without loops); adding update to the i-j
+    # tie adds update * (i's column) to them
+
+    nTP_before <- as.vector(net %*% cj) - loopValues * cj
+    con_be <- sum(cj * g_mar(nTP_before, alpha))
+    nTP_after <- nTP_before + update * ci
+    con_af <- sum(cj * g_mar(nTP_after, alpha))
     ind_cont <- ind_cont + (con_af - con_be)
-    
+
     return(ind_cont)
   }
-
 
 #' transitivity_GW
 #'
@@ -346,55 +320,68 @@ transitivity_GW <-
            update,
            getTargetContribution = FALSE,
            alpha = 1.1) {
-    
+
     if (i == j) {
       return(0)
     }
-    
-    g_mar <- function(y, a){
-      contr <- 0
-      for(k in 0:y){
-        contr <- contr + exp(-log(a)*k)
+
+    # sum_{k = 1}^{y} a^-k, vectorised
+    g_mar <- function(y, a) {
+      if (a == 1) {
+        return(y)
       }
-      contr - 1
+      (1 - a^(-y)) / (a - 1)
     }
-    
+
+    # rows and columns of the network without loops; the network itself is
+    # not copied
     net <- cache[[dep.var]]$valuedNetwork
-    diag(net) <- 0
-    
+    loopValues <- diag(net)
+    ri <- net[i, ]
+    ri[i] <- 0
+    rj <- net[j, ]
+    rj[j] <- 0
+    ci <- net[, i]
+    ci[i] <- 0
+    cj <- net[, j]
+    cj[j] <- 0
+
     if (getTargetContribution) {
-      twoPaths <- sum(apply(cbind(net[i, ], net[, j]), 1, prod))
-      return(net[i,j] * g_mar(twoPaths, alpha))
+      twoPaths <- sum(ri * cj)
+      return(ri[j] * g_mar(twoPaths, alpha))
     }
-    
+
     ### change contribution in three parts
-    
+
     # part 1: i,j closes two-path
-    
-    twoPaths <- sum(apply(cbind(net[i, ], net[, j]), 1, prod))
+
+    twoPaths <- sum(ri * cj)
     ind_cont <- update * g_mar(twoPaths, alpha)
-    
+
     # part 2: i,j closes instar
-    net_u <- net
-    net_u[i,j] <- net_u[i,j] + update
-    
-    nTP_before <- (net[i,] %*% net)
-    con_be <- sum(net[i,] * unlist(lapply(nTP_before, g_mar, alpha))) - (net[i,j] * g_mar(nTP_before[j], alpha))
-    nTP_after <- (net_u[i,] %*% net_u)
-    con_af <- sum(net_u[i,] * unlist(lapply(nTP_after, g_mar, alpha))) - (net_u[i,j] * g_mar(nTP_after[j], alpha))
+    # two-paths from i to every k (without loops); adding update to the i-j
+    # tie adds update * (j's row) to them
+    ri_u <- ri
+    ri_u[j] <- ri_u[j] + update
+
+    nTP_before <- as.vector(ri %*% net) - ri * loopValues
+    con_be <- sum(ri * g_mar(nTP_before, alpha)) - (ri[j] * g_mar(nTP_before[j], alpha))
+    nTP_after <- nTP_before + update * rj
+    con_af <- sum(ri_u * g_mar(nTP_after, alpha)) - (ri_u[j] * g_mar(nTP_after[j], alpha))
     ind_cont <- ind_cont + (con_af - con_be)
-    
+
     # part 3: i,j closes outstar
-    
-    nTP_before <- (net %*% net[,j])
-    con_be <- sum(net[,j] * unlist(lapply(nTP_before, g_mar, alpha)))
-    nTP_after <- (net_u %*% net_u[,j])
-    con_af <- sum(net[,j] * unlist(lapply(nTP_after, g_mar, alpha)))
+    # two-paths from every k to j (without loops); adding update to the i-j
+    # tie adds update * (i's column) to them
+
+    nTP_before <- as.vector(net %*% cj) - loopValues * cj
+    con_be <- sum(cj * g_mar(nTP_before, alpha))
+    nTP_after <- nTP_before + update * ci
+    con_af <- sum(cj * g_mar(nTP_after, alpha))
     ind_cont <- ind_cont + (con_af - con_be)
-    
+
     return(ind_cont)
   }
-
 
 #' triad120D
 #' 
@@ -421,36 +408,38 @@ triad120D <- function(dep.var = 1,
                       edge,
                       update,
                       getTargetContribution = FALSE){
-  
   if (i == j) {
     return(0)
   }
-  
-  # the target contribution is calculated for the i-j pair that is reciprocated
+
+  # rows and columns of the network without loops
   net <- cache[[dep.var]]$valuedNetwork
-  diag(net) <- 0
-  
+  ri <- net[i, ]
+  ri[i] <- 0
+  rj <- net[j, ]
+  rj[j] <- 0
+  ci <- net[, i]
+  ci[i] <- 0
+  cj <- net[, j]
+  cj[j] <- 0
+
+  # the target contribution is calculated for the i-j pair that is reciprocated
   if (getTargetContribution) {
-    n_down_stars <- apply(cbind(net[, i], net[, j]), 1, prod)
-    triadValues <- mapply(prod, (net[i, j] * net[j, i]), n_down_stars)
-    return(sum(triadValues) / 2)
+    n_down_stars <- sum(ci * cj)
+    return(net[i, j] * net[j, i] * n_down_stars / 2)
   }
-  
+
   # for the change stat, four contributions are needed, one for each tie var,
   # but two are isomorphic
-  
+
   # tie on the reciprocated dyad
-  n_down_stars <- apply(cbind(net[, i], net[, j]), 1, prod)
-  ind_cont <- update * sum(n_down_stars) * net[j,i]
-  
-  # tie on the down star
-  recip_net <- net * t(net)
-  n_recip_in_stars <- apply(cbind(net[i, ], recip_net[, j]), 1, prod)
-  ind_cont <- ind_cont + update * sum(n_recip_in_stars)
-  
+  ind_cont <- update * sum(ci * cj) * net[j, i]
+
+  # tie on the down star (reciprocated ties of j: cj * rj)
+  ind_cont <- ind_cont + update * sum(ri * cj * rj)
+
   return(ind_cont)
 }
-
 
 #' triad120U
 #' 
@@ -477,36 +466,38 @@ triad120U <- function(dep.var = 1,
                       edge,
                       update,
                       getTargetContribution = FALSE){
-  
   if (i == j) {
     return(0)
   }
-  
-  # the target contribution is calculated for the i-j pair that is reciprocated
+
+  # rows and columns of the network without loops
   net <- cache[[dep.var]]$valuedNetwork
-  diag(net) <- 0
-  
+  ri <- net[i, ]
+  ri[i] <- 0
+  rj <- net[j, ]
+  rj[j] <- 0
+  ci <- net[, i]
+  ci[i] <- 0
+  cj <- net[, j]
+  cj[j] <- 0
+
+  # the target contribution is calculated for the i-j pair that is reciprocated
   if (getTargetContribution) {
-    n_up_stars <- apply(cbind(net[i, ], net[j, ]), 1, prod)
-    triadValues <- mapply(prod, (net[i, j] * net[j, i]), n_up_stars)
-    return(sum(triadValues) / 2)
+    n_up_stars <- sum(ri * rj)
+    return(net[i, j] * net[j, i] * n_up_stars / 2)
   }
-  
+
   # for the change stat, four contributions are needed, one for each tie var,
   # but two are isomorphic
-  
+
   # tie on the reciprocated dyad
-  n_up_stars <- apply(cbind(net[i, ], net[j, ]), 1, prod)
-  ind_cont <- update * sum(n_up_stars) * net[j,i]
-  
-  # tie on the down star
-  recip_net <- net * t(net)
-  n_recip1_two_paths <- apply(cbind(net[, j], recip_net[i, ]), 1, prod)
-  ind_cont <- ind_cont + update * sum(n_recip1_two_paths)
-  
+  ind_cont <- update * sum(ri * rj) * net[j, i]
+
+  # tie on the up star (reciprocated ties of i: ri * ci)
+  ind_cont <- ind_cont + update * sum(cj * ri * ci)
+
   return(ind_cont)
 }
-
 
 #' triad120C
 #' 
@@ -533,41 +524,40 @@ triad120C <- function(dep.var = 1,
                       edge,
                       update,
                       getTargetContribution = FALSE){
-  
   if (i == j) {
     return(0)
   }
-  
-  # the target contribution is calculated for the i-j pair that is reciprocated
+
+  # rows and columns of the network without loops
   net <- cache[[dep.var]]$valuedNetwork
-  diag(net) <- 0
-  
+  ri <- net[i, ]
+  ri[i] <- 0
+  rj <- net[j, ]
+  rj[j] <- 0
+  ci <- net[, i]
+  ci[i] <- 0
+  cj <- net[, j]
+  cj[j] <- 0
+
+  # the target contribution is calculated for the i-j pair that is reciprocated
   if (getTargetContribution) {
-    n_two_paths <- apply(cbind(net[i, ], net[, j]), 1, prod)
-    triadValues <- mapply(prod, (net[i, j] * net[j, i]), n_two_paths)
-    return(sum(triadValues))
+    n_two_paths <- sum(ri * cj)
+    return(net[i, j] * net[j, i] * n_two_paths)
   }
-  
+
   # for the change stat, four contributions are needed, one for each tie var
 
   # tie on the reciprocated dyad; transitive closure
-  n_two_paths <- apply(cbind(net[i, ], net[, j]), 1, prod)
-  ind_cont <- update * sum(n_two_paths) * net[j,i]
+  ind_cont <- update * sum(ri * cj) * net[j, i]
 
   # tie on the reciprocated dyad; cyclic closure
-  n_rev_two_paths <- apply(cbind(net[, i], net[j, ]), 1, prod)
-  ind_cont <- ind_cont + update * sum(n_rev_two_paths) * net[j,i]
-  
-  # tie on the first part of two-path
-  recip_net <- net * t(net)
-  n_recip1_two_paths <- apply(cbind(net[j, ], recip_net[i, ]), 1, prod)
-  ind_cont <- ind_cont + update * sum(n_recip1_two_paths)
-  
-  # tie on the second part of two-path
-  n_recip2_two_paths <- apply(cbind(net[, i], recip_net[, j]), 1, prod)
-  ind_cont <- ind_cont + update * sum(n_recip2_two_paths)
-  
+  ind_cont <- ind_cont + update * sum(ci * rj) * net[j, i]
+
+  # tie on the first part of two-path (reciprocated ties of i: ri * ci)
+  ind_cont <- ind_cont + update * sum(rj * ri * ci)
+
+  # tie on the second part of two-path (reciprocated ties of j: cj * rj)
+  ind_cont <- ind_cont + update * sum(ci * cj * rj)
+
   return(ind_cont)
 }
-
-

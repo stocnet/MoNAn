@@ -16,25 +16,6 @@ joining_similar_avoiding_dissimilar_covar_cont(
   getTargetContribution = FALSE
 )
 }
-\arguments{
-\item{dep.var}{}
-
-\item{resource.attribute.index}{}
-
-\item{state}{}
-
-\item{cache}{}
-
-\item{i}{}
-
-\item{j}{}
-
-\item{edge}{}
-
-\item{update}{}
-
-\item{getTargetContribution}{}
-}
 \value{
 Returns the change statistic or target statistic of the effect for
 internal use by the estimation algorithm.

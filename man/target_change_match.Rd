@@ -6,15 +6,6 @@
 \usage{
 target_change_match(edge, j_new, effectName, ...)
 }
-\arguments{
-\item{edge}{}
-
-\item{j_new}{}
-
-\item{effectName}{}
-
-\item{...}{}
-}
 \value{
 a vector containing (the change stat),(the target stat before change)
 (the target stat after change),(whether this matches exactly),

@@ -12,21 +12,23 @@ This must include exactly one edgelist (dependent variable) and the
 two nodesets associated with the edgelist.
 Further allowed elements are (monadic or dyadic) covariates of locations and people}
 
-\item{fixedEffectsDummies}{Add dummy variable for each location (minus the first)
+\item{fixedEffectDummies}{Add dummy variable for each location (minus the first)
 in the process state (data object), so that fixed effects to control the
-indegree of every location can be modelled directly.}
+indegree of every location can be modelled directly. The dummies are named
+"dummy2", "dummy3", etc., and can be added to the model with
+\code{\link[=addDummyEffects]{addDummyEffects()}} (or its alias \code{\link[=addFixedEffects]{addFixedEffects()}}).}
 }
 \value{
 An object of class "processState.monan".
 }
 \description{
-A function to create a moman process state, i.e.,
+A function to create a monan process state, i.e.,
 a MoNAn object that stores all information
 about the data that will be used in the estimation. This includes the
 outcome variable (edgelist), the nodesets, and all covariates.
 }
 \examples{
-#' # create objects (which are later combined to the process state)
+# create objects (which are later combined to the process state)
 transfers <- createEdgelist(mobilityEdgelist,
   nodeSet = c("organisations", "organisations", "people")
 )

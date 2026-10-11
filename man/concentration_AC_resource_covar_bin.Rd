@@ -17,33 +17,12 @@ concentration_AC_resource_covar_bin(
   alpha = 2
 )
 }
-\arguments{
-\item{dep.var}{}
-
-\item{state}{}
-
-\item{resource.attribute.index}{}
-
-\item{cache}{}
-
-\item{i}{}
-
-\item{j}{}
-
-\item{edge}{}
-
-\item{update}{}
-
-\item{getTargetContribution}{}
-
-\item{alpha}{}
-}
 \value{
 Returns the change statistic or target statistic of the effect for
 internal use by the estimation algorithm.
 }
 \description{
-Is there a bandwaggon effect in mobility, akin to the concentration_AC
+Is there a bandwagon effect in mobility, akin to the concentration_AC
 effect, but where people of group 1 only consider others of group 1
 in their decision to move?
 }

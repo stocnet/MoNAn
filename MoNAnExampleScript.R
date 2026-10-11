@@ -82,30 +82,6 @@ myEffects_fe <- createEffects(myState) |>
 
 myEffects_fe
 
-##### get multinomial statistics to estimate initial parameters using pseudo-likelihood estimation #####
-
-# create statistics object, to be used, e.g., with the mlogit package
-myStatisticsFrame <- getMultinomialStatistics(myState, myEffects)
-
-### additional script to get pseudo-likelihood estimates
-# library(dfidx)
-# library(mlogit)
-# my.mlogit.dataframe <- dfidx(myStatisticsFrame,
-#                           shape = "long",
-#                           choice = "choice")
-# 
-# colnames(my.mlogit.dataframe) <- gsub(" ", "_", colnames(my.mlogit.dataframe))
-# 
-# IVs <- (colnames(my.mlogit.dataframe)[2:(ncol(myStatisticsFrame)-2)])
-# 
-# form <- as.formula(paste("choice ~ 1 + ", paste(IVs, collapse = " + "), "| 0"))
-# 
-# my.mlogit.results <- mlogit(formula = eval(form), data = my.mlogit.dataframe, heterosc = FALSE)
-# 
-# summary(my.mlogit.results)
-# 
-# initEst <- my.mlogit.results$coefficients[1:length(IVs)]
-
 
 ##### create algorithm object #####
 
@@ -119,9 +95,6 @@ myAlg <- monanAlgorithmCreate(myState, myEffects, nsubN2 = 3,
 # mobility network model 
 myResDN <- monanEstimate(
   myState, myEffects, myAlg,
-  initialParameters = NULL,
-  # in case a pseudo-likelihood estimation was run, replace with
-  # initialParameters = initEst,
   parallel = TRUE, cpus = 4,
   verbose = TRUE,
   returnDeps = TRUE,

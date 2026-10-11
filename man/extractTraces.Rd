@@ -26,7 +26,7 @@ The function \code{extractTraces} returns a list that includes
 It is recommended to use the plotting function to inspect the traces.
 
 The function \code{plot.traces.monan} shows a scatter plot of the
-statistics of simulated networks from phase three of the esimtation.
+statistics of simulated networks from phase three of the estimation.
 }
 \description{
 This function shows the values of simulated statistics in Phase 3 for subsequent draws from the chain.

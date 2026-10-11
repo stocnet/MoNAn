@@ -1,9 +1,10 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# MoNAn <img src="https://raw.githubusercontent.com/stocnet/MoNAn/main/MoNAn_logo.png" align="right" width="150"/>
+# MoNAn <img src="MoNAn_logo.png" align="right" width="150"/>
 
 <!-- badges: start -->
+
 <!-- badges: end -->
 
 MoNAn is the software implementation of the statistical model outlined
@@ -13,11 +14,22 @@ Block, P., Stadtfeld, C., & Robins, G. (2022). A statistical model for
 the analysis of mobility tables as weighted networks with an application
 to faculty hiring networks. Social Networks, 68, 264-278.
 
+AND
+
+Hoffman, M., & Block, P. (2026). Models for emergent structures in
+mobility: specification and individual-level interpretation. Journal of
+the Royal Statistical Society Series A: Statistics in Society, qnag057.
+
 [Link to the study in Social
 Networks](https://doi.org/10.1016/j.socnet.2021.08.003).
 
 [Pre-print with minor differences to the journal
 version](https://osf.io/preprints/socarxiv/n86rx/).
+
+[Link to the study in JRSSA](https://doi.org/10.1093/jrsssa/qnag057).
+
+[Pre-print with minor differences to the journal
+version](https://doi.org/10.31235/osf.io/8nkfj_v1).
 
 The model allows for the analysis of emergent structures (known from
 network analysis) in mobility tables, alongside exogenous predictors. It
@@ -30,56 +42,42 @@ Announcements about workshops etc. can be found
 [here](https://www.suz.uzh.ch/de/institut/professuren/block/monan_software.html).
 
 The **MoNAn Manual** is available here on github in the manual folder or
-on [SocArXiv](https://osf.io/preprints/socarxiv/8q2xu/)
+on [SocArXiv](https://osf.io/preprints/socarxiv/8q2xu/). Note that this
+is the manual for version 1 of MoNAn, which still works but shall be
+replaced soon by a manual for version 2.
 
 ## Note from the developers
 
-This is version 1.1.0 of MoNAn (Sep 2024). The update to version 1.0.0
-(March 2024) included many changes, including some that mean code
-written for older versions will not work anymore!
+This is version 2.0.0 of MoNAn. Compared to version 1, the simulation
+runs in C++ (estimating the example below takes less than a minute
+instead of several minutes), several effects have been corrected, and
+estimation can also use Geyer-Thompson maximum likelihood; see NEWS.md
+for all changes. Code written for MoNAn 1.0.0 or later works with
+version 2, except for a few removed effects (see NEWS.md), but results
+of models with corrected effects have minimal change.
 
-Code use for version 1.0.0 has been simplified; the most important
-changes are:
-
-- the cache is now hidden from the user and does not need to be create
-  or specified in functions anymore
-
-- there is a new way to specify the model with createEffects and
-  addEffect
-
-- in gofMobilityNetwork there is no need to specify “simulations”
-  anymore
-
-- new way to generate the process state using monanDataCreate
-
-As of 30 Aug 2023, we have a CRAN release of the package. Nevertheless,
-we cannot guarantee that the package and the documentation is free of
+We cannot guarantee that the package and the documentation is free of
 bugs or errors; further, you might not be able to do what you want. In
 that case, or if you are unsure please write the package maintainer
 under his institutional email address.
 
-We are currently (Sep 2024) on version 1.1.0 on github. Version 1.1.0
-will be released to CRAN in Sep 2024.
-
 # Installation
 
-You can install MoNAn either from CRAN or from GitHub.
+You can install MoNAn from CRAN:
 
-The advantage of installing from github is that you will always stay
-up-to-date with the latest developments, in particular, new
-functionality and effects. You can install the current version of MoNAn
-from GitHub using:
+``` r
+install.packages("MoNAn")
+```
+
+The development version can be installed from GitHub:
 
 ``` r
 # install.packages("remotes")
 remotes::install_github("stocnet/MoNAn")
 ```
 
-However, you can also get the (often slightly older) CRAN version with:
-
-``` r
-install.packages("MoNAn")
-```
+MoNAn contains C++ code, so installing it from GitHub requires a C++
+compiler (on Windows Rtools, on macOS the Xcode Command Line Tools).
 
 # Example
 
@@ -240,40 +238,6 @@ myEffects
 #>  loops_resource_covar                 -              sex          -
 ```
 
-### Optional: Pre-estimation
-
-We can run a pseudo-likelihood estimation that gives a (biased) guess of
-the model results. We use this to get improved initial estimates, which
-increases the chances of model convergence in the first run of the
-estimation considerably. To get pseudo-likelihood estimates, we need to
-use functions from other libraries to estimate a multinomial logit model
-(e.g., “dfidx” and “mlogit”)
-
-``` r
-# create multinomial statistics object pseudo-likelihood estimation
-myStatisticsFrame <- getMultinomialStatistics(myState, myEffects)
-
-### additional script to get pseudo-likelihood estimates, requires the dfidx and mlogit package
-# library(dfidx)
-# library(mlogit)
-# my.mlogit.dataframe <- dfidx(myStatisticsFrame,
-#                           shape = "long", 
-#                           choice = "choice")
-# 
-# colnames(my.mlogit.dataframe) <- gsub(" ", "_", colnames(my.mlogit.dataframe))
-# 
-# IVs <- (colnames(my.mlogit.dataframe)[2:(ncol(myStatisticsFrame)-2)])
-# 
-# form <- as.formula(paste("choice ~ 1 + ", paste(IVs, collapse = " + "), "| 0"))
-# 
-# my.mlogit.results <- mlogit(formula = eval(form), data = my.mlogit.dataframe, 
-#                             heterosc = FALSE)
-# 
-# summary(my.mlogit.results)
-#
-# initEst <- my.mlogit.results$coefficients[1:length(IVs)]
-```
-
 ### Specifying the estimation algorithm
 
 The estimation algorithm requires multiple parameters that guide the
@@ -294,8 +258,7 @@ be used. The remaining lines define whether parallel computing should be
 used, how much console output is desired during the estimation, and
 whether the simulations from phase 3 should be stored.
 
-Running the model takes a while (up to 10 minutes for this data with
-parallel computing).
+Running the model takes less than a minute for this data.
 
 ``` r
 myResDN <- monanEstimate(
@@ -412,7 +375,7 @@ par(mfrow = c(1,2))
 plot(traces)
 ```
 
-<img src="man/figures/README-unnamed-chunk-18-1.png" width="100%" /><img src="man/figures/README-unnamed-chunk-18-2.png" width="100%" /><img src="man/figures/README-unnamed-chunk-18-3.png" width="100%" /><img src="man/figures/README-unnamed-chunk-18-4.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-17-1.png" alt="" width="100%" /><img src="man/figures/README-unnamed-chunk-17-2.png" alt="" width="100%" /><img src="man/figures/README-unnamed-chunk-17-3.png" alt="" width="100%" /><img src="man/figures/README-unnamed-chunk-17-4.png" alt="" width="100%" />
 
 ## Score-tests to check model specification
 
@@ -449,7 +412,7 @@ myGofIndegree <- monanGOF(ans = myResDN, gofFunction = getIndegree, lvls = 1:70)
 plot(myGofIndegree, lvls = 20:70)
 ```
 
-<img src="man/figures/README-unnamed-chunk-20-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-19-1.png" alt="" width="100%" />
 
 ``` r
 
@@ -457,7 +420,7 @@ myGofTieWeight <- monanGOF(ans = myResDN, gofFunction = getTieWeights, lvls = 1:
 plot(myGofTieWeight, lvls = 1:20)
 ```
 
-<img src="man/figures/README-unnamed-chunk-20-2.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-19-2.png" alt="" width="100%" />
 
 ## Simulation
 

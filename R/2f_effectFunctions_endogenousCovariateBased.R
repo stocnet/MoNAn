@@ -34,9 +34,6 @@ crowding_out_prop_covar_bin <-
            update,
            getTargetContribution = FALSE) {
     # proportion needs binary coding with only 0 and 1
-    if (!all(state[[resource.attribute.index]]$data %in% c(0, 1))) {
-      stop("effect crowding_out_prop_covar_bin only defined for binary covariates coded 0 1")
-    }
     
     # get the target contribution
     if (getTargetContribution) {
@@ -142,9 +139,6 @@ staying_by_prop_bin_inflow <-
            update,
            getTargetContribution = FALSE) {
     # proportion needs binary coding with only 0 and 1
-    if (!all(state[[resource.attribute.index]]$data %in% c(0, 1))) {
-      stop("effect staying_by_prop_bin_inflow only defined for binary covariates coded 0 1")
-    }
     
     # get the target contribution
     if (getTargetContribution) {
@@ -337,7 +331,7 @@ joining_similar_avoiding_dissimilar_covar_cont <- function(dep.var = 1,
   if(getTargetContribution){
     
     if(nResources < 2) return(0)
-    allResources <- state$transfers$data[,1] == i & state$transfers$data[,2] == j
+    allResources <- state[[dep.var]]$data[,1] == i & state[[dep.var]]$data[,2] == j
     attributesResources <- state[[resource.attribute.index]]$data[allResources]
     attributeRange <- diff(range(state[[resource.attribute.index]]$data))
     origin_size <- sum(cache[[dep.var]]$valuedNetwork[i, ])
@@ -355,8 +349,8 @@ joining_similar_avoiding_dissimilar_covar_cont <- function(dep.var = 1,
   if(update == -1){
     
     if(nResources < 2) return(0)
-    otherResources <- state$transfers$data[,1] == i & state$transfers$data[,2] == j &
-      (1:state$transfers$size[1]) != edge
+    otherResources <- state[[dep.var]]$data[,1] == i & state[[dep.var]]$data[,2] == j &
+      (1:state[[dep.var]]$size[1]) != edge
     attributesResources <- state[[resource.attribute.index]]$data[otherResources]
     attributeRange <- diff(range(state[[resource.attribute.index]]$data))
     origin_size <- sum(cache[[dep.var]]$valuedNetwork[i, ])
@@ -369,8 +363,8 @@ joining_similar_avoiding_dissimilar_covar_cont <- function(dep.var = 1,
   if(update == 1){
     
     if(nResources < 1) return(0)
-    otherResources <- state$transfers$data[,1] == i & state$transfers$data[,2] == j &
-        (1:state$transfers$size[1]) != edge
+    otherResources <- state[[dep.var]]$data[,1] == i & state[[dep.var]]$data[,2] == j &
+        (1:state[[dep.var]]$size[1]) != edge
     attributesResources <- state[[resource.attribute.index]]$data[otherResources]
     attributeRange <- diff(range(state[[resource.attribute.index]]$data))
     origin_size <- sum(cache[[dep.var]]$valuedNetwork[i, ]) + 1
@@ -499,7 +493,7 @@ avoiding_dissimilar_covar_cont <- function(dep.var = 1,
   if(getTargetContribution){
     
     if(nResources < 2) return(0)
-    allResources <- state$transfers$data[,1] == i & state$transfers$data[,2] == j
+    allResources <- state[[dep.var]]$data[,1] == i & state[[dep.var]]$data[,2] == j
     attributesResources <- state[[resource.attribute.index]]$data[allResources]
     attributeRange <- diff(range(state[[resource.attribute.index]]$data))
     origin_size <- sum(cache[[dep.var]]$valuedNetwork[i, ])
@@ -517,8 +511,8 @@ avoiding_dissimilar_covar_cont <- function(dep.var = 1,
   if(update == -1){
     
     if(nResources < 2) return(0)
-    otherResources <- state$transfers$data[,1] == i & state$transfers$data[,2] == j &
-      (1:state$transfers$size[1]) != edge
+    otherResources <- state[[dep.var]]$data[,1] == i & state[[dep.var]]$data[,2] == j &
+      (1:state[[dep.var]]$size[1]) != edge
     attributesResources <- state[[resource.attribute.index]]$data[otherResources]
     attributeRange <- diff(range(state[[resource.attribute.index]]$data))
     origin_size <- sum(cache[[dep.var]]$valuedNetwork[i, ])
@@ -531,8 +525,8 @@ avoiding_dissimilar_covar_cont <- function(dep.var = 1,
   if(update == 1){
     
     if(nResources < 1) return(0)
-    otherResources <- state$transfers$data[,1] == i & state$transfers$data[,2] == j &
-      (1:state$transfers$size[1]) != edge
+    otherResources <- state[[dep.var]]$data[,1] == i & state[[dep.var]]$data[,2] == j &
+      (1:state[[dep.var]]$size[1]) != edge
     attributesResources <- state[[resource.attribute.index]]$data[otherResources]
     attributeRange <- diff(range(state[[resource.attribute.index]]$data))
     origin_size <- sum(cache[[dep.var]]$valuedNetwork[i, ]) + 1

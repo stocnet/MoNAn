@@ -42,7 +42,7 @@ addFixedEffects <- addDummyEffects
 
 #' addEffect
 #' 
-#' A function to add additional effects to a moman effects object
+#' A function to add additional effects to a monan effects object
 #'
 #' @param effectsObject The monan Effects object to which another
 #' effect should be added.
@@ -115,7 +115,7 @@ createEffects <- function(state){
 
 #' monanDataCreate
 #'
-#' A function to create a moman process state, i.e., 
+#' A function to create a monan process state, i.e., 
 #' a MoNAn object that stores all information
 #' about the data that will be used in the estimation. This includes the
 #' outcome variable (edgelist), the nodesets, and all covariates.
@@ -124,15 +124,17 @@ createEffects <- function(state){
 #' This must include exactly one edgelist (dependent variable) and the
 #' two nodesets associated with the edgelist.
 #' Further allowed elements are (monadic or dyadic) covariates of locations and people
-#' @param fixedEffectsDummies Add dummy variable for each location (minus the first)
+#' @param fixedEffectDummies Add dummy variable for each location (minus the first)
 #' in the process state (data object), so that fixed effects to control the
-#' indegree of every location can be modelled directly.
+#' indegree of every location can be modelled directly. The dummies are named
+#' "dummy2", "dummy3", etc., and can be added to the model with
+#' [addDummyEffects()] (or its alias [addFixedEffects()]).
 #' 
 #' @return An object of class "processState.monan".
 #' @export
 #'
 #' @examples
-#' #' # create objects (which are later combined to the process state)
+#' # create objects (which are later combined to the process state)
 #' transfers <- createEdgelist(mobilityEdgelist,
 #'   nodeSet = c("organisations", "organisations", "people")
 #' )

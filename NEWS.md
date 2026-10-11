@@ -32,6 +32,9 @@
 
 ## Performance
 
+- `extractTraces` uses the statistics stored by estimations with
+  `returnDeps = TRUE` instead of recalculating them from the simulations.
+
 - The maximum pseudo-likelihood estimates used as starting values are
   calculated in C++ if all effects have a C++ version (about 4-5 times faster
   for larger data, e.g. 2.4 instead of 10.9 seconds with 100 locations and

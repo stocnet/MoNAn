@@ -12,7 +12,10 @@ extractTraces(ans, effects)
 \arguments{
 \item{ans}{An object of class "result.monan" resulting from an estimation with the function \code{\link[=estimateMobilityNetwork]{estimateMobilityNetwork()}}.}
 
-\item{effects}{An object of class "effectsList.monan" used in the estimation.}
+\item{effects}{An object of class "effectsList.monan" used in the estimation.
+If the estimation stored the statistics of the model's effects
+(returnDeps = TRUE), they are used; otherwise the statistics are calculated
+from the simulations stored in ans.}
 
 \item{x}{An object of class "traces.monan".}
 

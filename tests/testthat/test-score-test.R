@@ -70,3 +70,20 @@ test_that("scoreTest requires stored simulations", {
   noDeps$deps <- NULL
   expect_error(scoreTest(noDeps, candidates), "returnDeps = TRUE")
 })
+
+test_that("extractTraces uses the stored statistics and gives the same traces", {
+  stored <- extractTraces(myResDN, myEffects)
+  old <- myResDN
+  old$simulatedStatistics <- NULL
+  old$observedStatistics <- NULL
+  recomputed <- extractTraces(old, myEffects)
+  expect_equal(unname(stored$observedStats), unname(recomputed$observedStats))
+  expect_equal(unname(stored$simulatedStats), unname(recomputed$simulatedStats))
+  expect_identical(stored$effectNames, recomputed$effectNames)
+  # other effects than those of the model are calculated from the simulations
+  other <- extractTraces(myResDN, createEffects(myState) |> addEffect(loops))
+  expect_length(other$observedStats, 1)
+  pdf(NULL)
+  on.exit(dev.off(), add = TRUE)
+  expect_no_error(plot(stored))
+})

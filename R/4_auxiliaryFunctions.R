@@ -44,6 +44,9 @@ autoCorrelationTest <- function(ans) {
 #' 
 #' @param ans An object of class "result.monan" resulting from an estimation with the function [estimateMobilityNetwork()].
 #' @param effects An object of class "effectsList.monan" used in the estimation.
+#' If the estimation stored the statistics of the model's effects
+#' (returnDeps = TRUE), they are used; otherwise the statistics are calculated
+#' from the simulations stored in ans.
 #'
 #' @return The function `extractTraces` returns a list that includes 
 #' (1) the observed statistics for all effects, 
@@ -66,15 +69,23 @@ extractTraces <- function(ans, effects) {
     stop("ans object does not have simulated states stored; use returnDeps = TRUE in estimation")
   }
   
-  # get statistics of the observed network using state and cache from ans object
-  obsStats <-
-    getNetworkStatistics(dep.var, ans$state, ans$cache, effects)
-  
-  # get a matrix of statistics from the simulated data in the ans object
-  simStatsMatrix <-
-    Reduce("rbind", lapply(ans$deps, function(x) {
-      getNetStatsFromDeps(dep.var, x, ans, effects)
-    }))
+  # estimations with returnDeps = TRUE store the statistics of the model's
+  # effects; they are used if effects are the effects of the estimated model
+  if (!is.null(ans$simulatedStatistics) && !is.null(ans$observedStatistics) &&
+      identical(as.character(effects$name), names(ans$estimates))) {
+    obsStats <- ans$observedStatistics
+    simStatsMatrix <- ans$simulatedStatistics
+  } else {
+    # get statistics of the observed network using state and cache from ans object
+    obsStats <-
+      getNetworkStatistics(dep.var, ans$state, ans$cache, effects)
+
+    # get a matrix of statistics from the simulated data in the ans object
+    simStatsMatrix <-
+      Reduce("rbind", lapply(ans$deps, function(x) {
+        getNetStatsFromDeps(dep.var, x, ans, effects)
+      }))
+  }
   
   results <- list(
     observedStats = obsStats,

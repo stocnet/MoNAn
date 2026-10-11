@@ -215,7 +215,12 @@ getMultinomialStatistics <-
 #' with the function [estimateMobilityNetwork()] using the option deps = TRUE.
 #' @param gofFunction A gof function that specifies which auxiliary outcome should be used, 
 #' e.g., "getIndegree" or "getTieWeights".
-#' @param lvls The values for which the gofFunction should be calculated/plotted.
+#' @param lvls The levels for which the gofFunction should be calculated. For
+#' [getIndegree()] and [getTieWeights()], level k refers to the value k - 1
+#' (e.g., level 1 counts the locations with indegree 0 or the empty dyads). If NULL,
+#' all levels up to the largest value in the observed or simulated networks are used.
+#' In `plot`, the levels to plot, as positions in the vector of values returned
+#' by `gofMobilityNetwork`; if NULL, all are plotted.
 #' @param simulations outdated parameter, no need to specify
 #'
 #' @return The function `gofMobilityNetwork` returns a list containing 
@@ -282,6 +287,12 @@ gofMobilityNetwork <-
           lvls = lvls
         )
       })
+    # without lvls, the gof functions return as many levels as each network
+    # needs; pad with zeros so that all networks have the same levels
+    nLevels <- lengths(gofStats)
+    if (is.null(lvls) && length(unique(nLevels)) > 1) {
+      gofStats <- lapply(gofStats, function(v) c(v, rep(0, max(nLevels) - length(v))))
+    }
     simStats <- gofStats
     simStats[[1]] <- NULL
     gofRes <- list(observed = gofStats[[1]], simulated = simStats)
@@ -305,7 +316,6 @@ monanGOF <- gofMobilityNetwork
 #'
 #' @rdname gofMobilityNetwork
 #' @param x An object of class "gof.stats.monan".
-#' @param lvls The values for which the gofFunction should be calculated/plotted.
 #' @param ... Additional plotting parameters, use discouraged.
 #'
 #' @return The function `plot.gof.stats.monan` returns violin plots of the 
@@ -317,7 +327,7 @@ monanGOF <- gofMobilityNetwork
 #' plot(myGofIndegree,  lvls = 20:70)
 #' plot(myGofTieWeight, lvls = 1:15)
 #' }
-plot.gof.stats.monan <- function(x, lvls, ...) {
+plot.gof.stats.monan <- function(x, lvls = NULL, ...) {
   if (is.null(lvls)) {
     lvls <- 1:length(x$observed)
   }

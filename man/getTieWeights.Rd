@@ -11,7 +11,9 @@ getTieWeights(cache, dep.var, lvls, ...)
 
 \item{dep.var}{Dependent Variable.}
 
-\item{lvls}{Levels for which the function calculates values.}
+\item{lvls}{Levels for which the function calculates values. Level k is the
+number of ties with weight k - 1, i.e., level 1 counts the empty dyads.
+If NULL, all levels from 1 to the maximum tie weight + 1 are used.}
 
 \item{...}{Additional parameters.}
 }

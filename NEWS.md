@@ -30,6 +30,16 @@
   of resources of the origin minus one, which is zero for origins with only one
   resource.
 
+## Bug fixes
+
+- `getIndegree` and `getTieWeights` failed or put counts in the wrong places
+  when the levels in `gofMobilityNetwork(..., lvls = )` did not start at 1.
+  Without `lvls`, `getIndegree` failed and `getTieWeights` returned
+  distributions of different lengths for different networks, which `plot`
+  misaligned; now all networks get the same levels, up to the largest value.
+  `plot` of goodness of fit results now also works without `lvls`. Results for
+  levels starting at 1 (e.g. `lvls = 1:100`) are unchanged.
+
 ## Performance
 
 - `extractTraces` uses the statistics stored by estimations with

@@ -13,7 +13,7 @@ gofDistributionNetwork(ans, gofFunction, lvls = NULL, simulations = NULL)
 
 monanGOF(ans, gofFunction, lvls = NULL, simulations = NULL)
 
-\method{plot}{gof.stats.monan}(x, lvls, ...)
+\method{plot}{gof.stats.monan}(x, lvls = NULL, ...)
 }
 \arguments{
 \item{ans}{An object of class "result.monan" resulting from an estimation
@@ -22,7 +22,12 @@ with the function \code{\link[=estimateMobilityNetwork]{estimateMobilityNetwork(
 \item{gofFunction}{A gof function that specifies which auxiliary outcome should be used,
 e.g., "getIndegree" or "getTieWeights".}
 
-\item{lvls}{The values for which the gofFunction should be calculated/plotted.}
+\item{lvls}{The levels for which the gofFunction should be calculated. For
+\code{\link[=getIndegree]{getIndegree()}} and \code{\link[=getTieWeights]{getTieWeights()}}, level k refers to the value k - 1
+(e.g., level 1 counts the locations with indegree 0 or the empty dyads). If NULL,
+all levels up to the largest value in the observed or simulated networks are used.
+In \code{plot}, the levels to plot, as positions in the vector of values returned
+by \code{gofMobilityNetwork}; if NULL, all are plotted.}
 
 \item{simulations}{outdated parameter, no need to specify}
 

@@ -11,7 +11,10 @@ getIndegree(cache, dep.var, lvls, ...)
 
 \item{dep.var}{Dependent Variable.}
 
-\item{lvls}{Levels for which the function calculates values.}
+\item{lvls}{Levels for which the function calculates values. Level k is the
+number of locations with a weighted indegree of k - 1, i.e., level 1 counts
+locations with indegree 0. If NULL, all levels from 1 to the maximum
+indegree + 1 are used.}
 
 \item{...}{Additional parameters.}
 }

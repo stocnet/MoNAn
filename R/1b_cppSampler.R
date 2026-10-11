@@ -22,6 +22,9 @@ cppEffects <- c("loops", "concentration_AC", "reciprocity_AC", "dyadic_covariate
                 "triad120C", "triad120D", "triad120U",
                 "concentration_basic", "concentration_basic_cube",
                 "concentration_prop", "concentration_prop_AC", "concentration_max",
+                "concentration_basic_squared", "concentration_norm",
+                "concentration_norm_squared", "concentration_prop_orig_cov",
+                "concentration_rankGW",
                 "reciprocity_basic", "reciprocity_min",
                 "reciprocity_min_dyad_covar", "reciprocity_min_resource_covar",
                 "same_covariate", "sim_covariate", "dyadic_covariate_resource_attribute",
@@ -47,6 +50,9 @@ cppEffectSpec <- function(effects, state) {
     spec <- list(name = effectName)
     if (!is.null(args$alpha)) {
       spec$alpha <- as.numeric(args$alpha)
+    }
+    if (!is.null(args$lambda)) {
+      spec$lambda <- as.numeric(args$lambda)
     }
     if (!is.null(args$loop.contribution)) {
       spec$loopContribution <- as.logical(args$loop.contribution)

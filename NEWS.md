@@ -1,5 +1,15 @@
 # MoNAn (development version)
 
+## New features
+
+- The concentration effects `concentration_basic_squared`,
+  `concentration_norm`, `concentration_norm_squared`,
+  `concentration_prop_orig_cov` and `concentration_rankGW`, removed in 2.0.0,
+  are available again, unchanged from version 1.1.0, now also in C++.
+  `concentration_norm` and `concentration_norm_squared` divide by the number
+  of resources of the origin minus one, which is zero for origins with only one
+  resource.
+
 ## Performance
 
 - The maximum pseudo-likelihood estimates used as starting values are

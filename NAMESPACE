@@ -48,10 +48,11 @@ export(
   concentration_prop, concentration_prop_AC,
   concentration_max,
   #concentration_goodbad, concentration_goodbad_orig_cov, 
-  #concentration_rankGW,
-  #concentration_basic_squared,
-  #concentration_norm, 
-  #concentration_norm_squared,
+  concentration_rankGW,
+  concentration_basic_squared,
+  concentration_norm,
+  concentration_norm_squared,
+  concentration_prop_orig_cov,
 
   # effect functions: reciprocity
   reciprocity_basic,

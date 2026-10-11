@@ -1,13 +1,13 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# monan2 <img src="monan2_logo.png" align="right" width="150"/>
+# MoNAn <img src="MoNAn_logo.png" align="right" width="150"/>
 
 <!-- badges: start -->
 
 <!-- badges: end -->
 
-monan2 is the software implementation of the statistical model outlined
+MoNAn is the software implementation of the statistical model outlined
 in:
 
 Block, P., Stadtfeld, C., & Robins, G. (2022). A statistical model for
@@ -42,52 +42,50 @@ Announcements about workshops etc. can be found
 [here](https://www.suz.uzh.ch/de/institut/professuren/block/monan_software.html).
 
 The **MoNAn Manual** is available here on github in the manual folder or
-on [SocArXiv](https://osf.io/preprints/socarxiv/8q2xu/). Note this still
-is the old MoNAn manual, which still works but shall be replaced soon by
-a dedicated monan2 manual.
+on [SocArXiv](https://osf.io/preprints/socarxiv/8q2xu/). Note that this
+is the manual for version 1 of MoNAn, which still works but shall be
+replaced soon by a manual for version 2.
 
 ## Note from the developers
 
-monan2 is the successor of the MoNAn package. Compared to MoNAn 1.1.1,
-the simulation runs in C++ (estimating the example below takes less than
-a minute instead of several minutes), several effects have been
-corrected, and estimation can also use Geyer-Thompson maximum
-likelihood; see NEWS.md for all changes. Code written for MoNAn 1.0.0 or
-later works with monan2 after replacing `library(MoNAn)` by
-`library(monan2)`, but results of models with corrected effects have
-minimal change.
+This is version 2.0.0 of MoNAn. Compared to version 1, the simulation
+runs in C++ (estimating the example below takes less than a minute
+instead of several minutes), several effects have been corrected, and
+estimation can also use Geyer-Thompson maximum likelihood; see NEWS.md
+for all changes. Code written for MoNAn 1.0.0 or later works with
+version 2, except for a few removed effects (see NEWS.md), but results
+of models with corrected effects have minimal change.
 
-monan2 is not yet on CRAN; the original MoNAn package is. We cannot
-guarantee that the package and the documentation is free of bugs or
-errors; further, you might not be able to do what you want. In that
-case, or if you are unsure please write the package maintainer under his
-institutional email address.
+We cannot guarantee that the package and the documentation is free of
+bugs or errors; further, you might not be able to do what you want. In
+that case, or if you are unsure please write the package maintainer
+under his institutional email address.
 
 # Installation
 
-You can install monan2 from GitHub using:
-
-``` r
-# install.packages("remotes")
-remotes::install_github("perblock/monan2")
-```
-
-monan2 contains C++ code, so installing it from GitHub requires a C++
-compiler (on Windows Rtools, on macOS the Xcode Command Line Tools).
-
-The original MoNAn package is available on CRAN:
+You can install MoNAn from CRAN:
 
 ``` r
 install.packages("MoNAn")
 ```
 
+The development version can be installed from GitHub:
+
+``` r
+# install.packages("remotes")
+remotes::install_github("stocnet/MoNAn")
+```
+
+MoNAn contains C++ code, so installing it from GitHub requires a C++
+compiler (on Windows Rtools, on macOS the Xcode Command Line Tools).
+
 # Example
 
 In this section, we outline a simple example with synthetic data stored
-in the monan2 package.
+in the MoNAn package.
 
 ``` r
-library(monan2)
+library(MoNAn)
 ```
 
 ## The Data
@@ -139,7 +137,7 @@ orgSize
 
 ### Preparing the data
 
-First, we create monan2 data objects from the introduced data files. A
+First, we create MoNAn data objects from the introduced data files. A
 necessary part is that we define and name the nodesets, i.e., we name
 who (“people”) is mobile between what (“organisations”).
 
@@ -164,10 +162,10 @@ size <- monadicCovar(orgSize, nodeSet = "organisations")
 sex <- monadicCovar(indSex, nodeSet = "people", addSame = F, addSim = F)
 ```
 
-We combine the data objects into the process state, i.e., a monan2
-object that stores all information about the data that will be used in
-the estimation later. We must include one outcome variable (transfers)
-and two nodeSets (people, organisations).
+We combine the data objects into the process state, i.e., a MoNAn object
+that stores all information about the data that will be used in the
+estimation later. We must include one outcome variable (transfers) and
+two nodeSets (people, organisations).
 
 ``` r
 myState <- monanDataCreate(transfers,

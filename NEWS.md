@@ -1,15 +1,14 @@
 # MoNAn 2.1.0
 
-## Breaking changes
+## Breaking changes / changes so that previous code produces different results
 
 - `scoreTest` now performs a score test that is conditional on the statistics
   of the effects in the model: the deviation of a tested effect's statistic is
   adjusted for the remaining deviations of the model's statistics and divided
   by its standard deviation given the model's statistics. The previous
-  parametric p-values ignored this correlation and were far too large (in a
-  calibration study with 160 simulated data sets they never fell below 0.05,
-  also for effects that are significant when estimated); the new p-values are
-  well calibrated. The result reports `tStatistics`, `pValues` and `R2` (the
+  parametric p-values ignored this correlation and were far too conservative; 
+  the new p-values seem better calibrated in simple simulations.
+  The result reports `tStatistics`, `pValues` and `R2` (the
   share of the tested statistic's variance explained by the model's
   statistics); the previous non-parametric value is available with
   `nonParametric = TRUE`.
@@ -25,10 +24,9 @@
 - Parallel estimation (`parallel = TRUE`) uses the package 'parallel' (part of
   R) instead of 'snowfall', which is no longer a dependency. One cluster is
   started per estimation instead of one per phase. Each chain gets its own
-  random number stream (L'Ecuyer-CMRG) derived from the random numbers of the
+  random number stream derived from the random numbers of the
   R session, so parallel estimations are now reproducible with `set.seed()`
-  and the chains are independent. Results therefore differ from earlier
-  versions; serial estimations are unchanged.
+  and the chains are independent.
 
 - The concentration effects `concentration_basic_squared`,
   `concentration_norm`, `concentration_norm_squared`,
@@ -59,8 +57,7 @@
 
 - The maximum pseudo-likelihood estimates used as starting values are
   calculated in C++ if all effects have a C++ version (about 4-5 times faster
-  for larger data, e.g. 2.4 instead of 10.9 seconds with 100 locations and
-  10,000 resources), without storing the change statistics of all resources and
+  for larger data), without storing the change statistics of all resources and
   destinations, so memory use does not grow with the data. The estimates are
   the same as with the R version, which is used otherwise.
 
@@ -72,7 +69,7 @@ corrects several effects. Some changes are not backward compatible (see
 "Breaking changes"), and results of models with corrected effects differ from
 version 1.
 
-## Breaking changes
+## Breaking changes / changes so that previous code produces different results
 
 - Removed effects:
   - `in_weights_exponent`: its change and target statistics did not match
@@ -114,6 +111,8 @@ version 1.
   with the new arguments `iterationsGT`, `maxIterationsGT` and
   `finalIterationsGT`. Robbins-Monro remains the default, and algorithm
   objects created with earlier versions use it.
+  Note that Geyer-Thompson still uses a "normal" Phase 3 that calculates standard 
+  errors and checks convergence.
 - Maximum pseudo-likelihood estimates (the multinomial logit model for which
   `getMultinomialStatistics` provides the data) are used as starting values if
   neither `initialParameters` nor `prevAns` are given, for both Robbins-Monro

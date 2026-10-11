@@ -48,7 +48,7 @@ replaced soon by a manual for version 2.
 
 ## Note from the developers
 
-This is version 2.0.0 of MoNAn. Compared to version 1, the simulation
+This is version 2.1.0 of MoNAn. Compared to version 1, the simulation
 runs in C++ (estimating the example below takes less than a minute
 instead of several minutes), several effects have been corrected, and
 estimation can also use Geyer-Thompson maximum likelihood; see NEWS.md
@@ -71,13 +71,13 @@ implementation.
 
 # Installation
 
-You can install MoNAn from CRAN:
+You can install MoNAn 2.0.0 from CRAN:
 
 ``` r
 install.packages("MoNAn")
 ```
 
-The development version can be installed from GitHub:
+The most recent version (2.1.0) can be installed from GitHub:
 
 ``` r
 # install.packages("remotes")

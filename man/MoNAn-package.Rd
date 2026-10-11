@@ -6,13 +6,13 @@
 \alias{MoNAn-package}
 \title{MoNAn: Mobility Network Analysis}
 \description{
-Implements the method to analyse weighted mobility networks or distribution networks as outlined in: Block, P., Stadtfeld, C., & Robins, G. (2022) \doi{10.1016/j.socnet.2021.08.003}. The purpose of the model is to analyse the structure of mobility, incorporating exogenous predictors pertaining to individuals and locations known from classical mobility analyses, as well as modelling emergent mobility patterns akin to structural patterns known from the statistical analysis of social networks. It is the successor of the 'MoNAn' package: simulations run in C++ (using 'Rcpp'), and parameters can be estimated with stochastic approximation (Robbins-Monro) or with Geyer-Thompson MCMC maximum likelihood estimation.
+Implements the method to analyse weighted mobility networks or distribution networks as outlined in: Block, P., Stadtfeld, C., & Robins, G. (2022) \doi{10.1016/j.socnet.2021.08.003}. The purpose of the model is to analyse the structure of mobility, incorporating exogenous predictors pertaining to individuals and locations known from classical mobility analyses, as well as modelling emergent mobility patterns akin to structural patterns known from the statistical analysis of social networks. Version 2 runs the simulations in 'C++' (using 'Rcpp') and, besides stochastic approximation (Robbins-Monro), can estimate parameters with Geyer-Thompson MCMC maximum likelihood estimation.
 }
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://github.com/perblock/monan2}
-  \item Report bugs at \url{https://github.com/perblock/monan2/issues}
+  \item \url{https://github.com/stocnet/MoNAn}
+  \item Report bugs at \url{https://github.com/stocnet/MoNAn/issues}
 }
 
 }

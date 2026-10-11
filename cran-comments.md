@@ -1,13 +1,15 @@
 ## Test environments
 
 * local: macOS (aarch64), R 4.6.0 — `R CMD check --as-cran --run-donttest`
-* win-builder: R-devel, R-release, R-oldrelease — pending
+* win-builder: R-devel, R-release, R-oldrelease
 * R-hub: linux, windows, macos, macos-arm64 (R-devel), clang-asan, clang-ubsan,
-  gcc-asan, valgrind, gcc16 — pending
+  gcc-asan, valgrind, gcc16 — all OK; no sanitizer or valgrind errors
 
 ## R CMD check results
 
-0 errors | 0 warnings | 0 notes
+0 errors | 0 warnings | 1 note
+
+* Possibly misspelled words in DESCRIPTION: Geyer, Monro (see below).
 
 ## Comments
 

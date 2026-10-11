@@ -1,5 +1,9 @@
 # Adding an effect to MoNAn
 
+Note: This guide was written by Claude Code, which produced the code for the majority
+of the C++ implementation of the MCMC. The C++ implementation is checked in all
+steps and effects that it exactly reproduces the human-coded R-based implementation.
+
 This guide is for developers of MoNAn. It explains how to add a new effect so
 that it works with both samplers:
 

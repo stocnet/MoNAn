@@ -61,6 +61,14 @@ bugs or errors; further, you might not be able to do what you want. In
 that case, or if you are unsure please write the package maintainer
 under his institutional email address.
 
+Finally: Programming Version 2 of MoNAn extensively used Claude Code,
+which produced the code for the majority of the C++ implementation of
+the MCMC. The C++ implementation is checked in all steps and effects
+that it exactly reproduces the human-coded R-based implementation.
+Additionally, Claude Code was used for optimization; similarly, output
+from the machine was checked against previous human-coded
+implementation.
+
 # Installation
 
 You can install MoNAn from CRAN:

@@ -76,10 +76,10 @@ cppEffectSpec <- function(effects, state) {
 }
 
 # useCppSampler
-# whether the C++ sampler is used for these effects; options(monan2.useCpp =
+# whether the C++ sampler is used for these effects; options(MoNAn.useCpp =
 # FALSE) switches to the R sampler
 useCppSampler <- function(effects, state) {
-  isTRUE(getOption("monan2.useCpp", TRUE)) && !is.null(cppEffectSpec(effects, state))
+  isTRUE(getOption("MoNAn.useCpp", TRUE)) && !is.null(cppEffectSpec(effects, state))
 }
 
 # cppChainInputs

@@ -5,13 +5,13 @@
 compare_chains <- function(effects, parameters, n = 5000, allowLoops = TRUE,
                            multinomial = FALSE, state = myState, seed = 42) {
   dv <- state$dep.var
-  oldOptions <- options(monan2.useCpp = FALSE)
+  oldOptions <- options(MoNAn.useCpp = FALSE)
   on.exit(options(oldOptions), add = TRUE)
   set.seed(seed)
   r <- simulateNSteps(dv, state, state$cache, effects, parameters,
                       allowLoops = allowLoops, multinomialProposal = multinomial, n = n)
   rNext <- runif(1)
-  options(monan2.useCpp = TRUE)
+  options(MoNAn.useCpp = TRUE)
   set.seed(seed)
   cpp <- simulateChain(dv, state, state$cache, effects, parameters,
                        burnIn = n, iterations = 0, thinning = 0,
@@ -59,7 +59,7 @@ expect_cpp_matches_r <- function(effects, state = myState, n = 100, seed = 3) {
     }
   }
   # whole target statistics, which some C++ effects calculate differently
-  old <- options(monan2.useCpp = FALSE)
+  old <- options(MoNAn.useCpp = FALSE)
   rStatistics <- getNetworkStatistics(dv, state, state$cache, effects)
   options(old)
   expect_identical(cppNetworkStatistics(dv, state, state$cache, effects), rStatistics)

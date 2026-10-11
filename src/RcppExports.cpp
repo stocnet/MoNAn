@@ -12,7 +12,7 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 
 // simulateChainCpp
 Rcpp::List simulateChainCpp(Rcpp::IntegerMatrix edgelist, Rcpp::List cache, Rcpp::List resourceCovariates, Rcpp::IntegerVector resourceSet, Rcpp::IntegerVector nodeSet, Rcpp::List effectSpecs, Rcpp::NumericVector parameters, int burnIn, int iterations, int thinning, bool allowLoops, bool multinomialProposal, bool returnDraws);
-RcppExport SEXP _monan2_simulateChainCpp(SEXP edgelistSEXP, SEXP cacheSEXP, SEXP resourceCovariatesSEXP, SEXP resourceSetSEXP, SEXP nodeSetSEXP, SEXP effectSpecsSEXP, SEXP parametersSEXP, SEXP burnInSEXP, SEXP iterationsSEXP, SEXP thinningSEXP, SEXP allowLoopsSEXP, SEXP multinomialProposalSEXP, SEXP returnDrawsSEXP) {
+RcppExport SEXP _MoNAn_simulateChainCpp(SEXP edgelistSEXP, SEXP cacheSEXP, SEXP resourceCovariatesSEXP, SEXP resourceSetSEXP, SEXP nodeSetSEXP, SEXP effectSpecsSEXP, SEXP parametersSEXP, SEXP burnInSEXP, SEXP iterationsSEXP, SEXP thinningSEXP, SEXP allowLoopsSEXP, SEXP multinomialProposalSEXP, SEXP returnDrawsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -35,7 +35,7 @@ END_RCPP
 }
 // networkStatisticsCpp
 Rcpp::NumericVector networkStatisticsCpp(Rcpp::IntegerMatrix edgelist, Rcpp::List cache, Rcpp::List resourceCovariates, Rcpp::List effectSpecs);
-RcppExport SEXP _monan2_networkStatisticsCpp(SEXP edgelistSEXP, SEXP cacheSEXP, SEXP resourceCovariatesSEXP, SEXP effectSpecsSEXP) {
+RcppExport SEXP _MoNAn_networkStatisticsCpp(SEXP edgelistSEXP, SEXP cacheSEXP, SEXP resourceCovariatesSEXP, SEXP effectSpecsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -49,7 +49,7 @@ END_RCPP
 }
 // effectValuesCpp
 Rcpp::NumericVector effectValuesCpp(Rcpp::IntegerMatrix edgelist, Rcpp::List cache, Rcpp::List resourceCovariates, Rcpp::List effectSpec, int i, int j, int edge, int update);
-RcppExport SEXP _monan2_effectValuesCpp(SEXP edgelistSEXP, SEXP cacheSEXP, SEXP resourceCovariatesSEXP, SEXP effectSpecSEXP, SEXP iSEXP, SEXP jSEXP, SEXP edgeSEXP, SEXP updateSEXP) {
+RcppExport SEXP _MoNAn_effectValuesCpp(SEXP edgelistSEXP, SEXP cacheSEXP, SEXP resourceCovariatesSEXP, SEXP effectSpecSEXP, SEXP iSEXP, SEXP jSEXP, SEXP edgeSEXP, SEXP updateSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -67,13 +67,13 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_monan2_simulateChainCpp", (DL_FUNC) &_monan2_simulateChainCpp, 13},
-    {"_monan2_networkStatisticsCpp", (DL_FUNC) &_monan2_networkStatisticsCpp, 4},
-    {"_monan2_effectValuesCpp", (DL_FUNC) &_monan2_effectValuesCpp, 8},
+    {"_MoNAn_simulateChainCpp", (DL_FUNC) &_MoNAn_simulateChainCpp, 13},
+    {"_MoNAn_networkStatisticsCpp", (DL_FUNC) &_MoNAn_networkStatisticsCpp, 4},
+    {"_MoNAn_effectValuesCpp", (DL_FUNC) &_MoNAn_effectValuesCpp, 8},
     {NULL, NULL, 0}
 };
 
-RcppExport void R_init_monan2(DllInfo *dll) {
+RcppExport void R_init_MoNAn(DllInfo *dll) {
     R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
     R_useDynamicSymbols(dll, FALSE);
 }

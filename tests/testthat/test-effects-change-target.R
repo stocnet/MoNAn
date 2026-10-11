@@ -136,7 +136,7 @@ test_that("additional-origin loop effects handle moves into a loop", {
 })
 
 test_that("every exported effect has a change/target test", {
-  ns <- asNamespace("monan2")
+  ns <- asNamespace("MoNAn")
   is_effect <- vapply(getNamespaceExports(ns), function(name) {
     f <- get(name, envir = ns)
     is.function(f) && all(c("state", "cache", "getTargetContribution") %in% names(formals(f)))

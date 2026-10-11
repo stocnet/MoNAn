@@ -13,13 +13,13 @@ test_that("C++ and R chains are identical with the loops effect", {
 test_that("C++ statistics equal the R statistics of each draw", {
   effects <- createEffects(myState) |> addEffect(loops)
   dv <- myState$dep.var
-  old <- options(monan2.useCpp = FALSE)
+  old <- options(MoNAn.useCpp = FALSE)
   on.exit(options(old), add = TRUE)
   set.seed(5)
   r <- simulateStatisticVectors(dv, myState, myState$cache, effects, 1,
                                 burnIn = 200, iterations = 20, thinning = 200,
                                 allowLoops = TRUE)
-  options(monan2.useCpp = TRUE)
+  options(MoNAn.useCpp = TRUE)
   set.seed(5)
   cpp <- simulateChain(dv, myState, myState$cache, effects, 1,
                        burnIn = 200, iterations = 20, thinning = 200, allowLoops = TRUE)
@@ -108,7 +108,7 @@ test_that("estimation gives the same results with the C++ and the R sampler", {
                          initialIterationsN2 = 15, burnInN3 = 300, thinningN3 = 100,
                          iterationsN3 = 30)
   run <- function(useCpp) {
-    old <- options(monan2.useCpp = useCpp)
+    old <- options(MoNAn.useCpp = useCpp)
     on.exit(options(old))
     set.seed(8)
     estimateMobilityNetwork(myState, myEffects, alg)

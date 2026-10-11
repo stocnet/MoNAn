@@ -9,9 +9,13 @@ nets <- c(list(myResDN$cache[[dv]]$valuedNetwork),
           }))
 ansSmall <- myResDN
 ansSmall$deps <- myResDN$deps[1:20]
-# level k counts the value k - 1
-countIndegree <- function(m, lvls) sapply(lvls, function(k) sum(colSums(m) == k - 1))
-countTieWeights <- function(m, lvls) sapply(lvls, function(k) sum(m == k - 1))
+# level k counts the value k - 1; the counts are named by the values
+countIndegree <- function(m, lvls) {
+  setNames(sapply(lvls, function(k) sum(colSums(m) == k - 1)), lvls - 1)
+}
+countTieWeights <- function(m, lvls) {
+  setNames(sapply(lvls, function(k) sum(m == k - 1)), lvls - 1)
+}
 
 test_that("gof functions count the values of the observed and simulated networks", {
   for (lvls in list(1:100, 20:70, c(3, 1, 5))) {
@@ -36,10 +40,17 @@ test_that("without lvls, all networks get the same levels", {
   }
 })
 
-test_that("gof results can be plotted with and without lvls", {
-  g <- gofMobilityNetwork(ansSmall, getTieWeights)
+test_that("gof results can be plotted with and without lvls, labelled by value", {
+  g <- gofMobilityNetwork(ansSmall, getIndegree, lvls = 20:70)
   pdf(NULL)
   on.exit(dev.off(), add = TRUE)
-  expect_no_error(plot(g))
-  expect_no_error(plot(g, lvls = 1:5))
+  p <- plot(g, lvls = 1:5)
+  expect_equal(p$names, as.character(19:23))
+  expect_no_error(plot(gofMobilityNetwork(ansSmall, getTieWeights)))
+  expect_no_error(plot(g, xlab = "indegree", main = "Indegree distribution"))
+  # results of earlier versions (unnamed) are plotted by position
+  unnamed <- g
+  unnamed$observed <- unname(g$observed)
+  unnamed$simulated <- lapply(g$simulated, unname)
+  expect_equal(plot(unnamed, lvls = 1:3)$names, c("1", "2", "3"))
 })

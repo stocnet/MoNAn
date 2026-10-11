@@ -15,7 +15,8 @@
 #' indegree + 1 are used.
 #' @param ... Additional parameters.
 #'
-#' @return The degree distribution of simulated networks.
+#' @return The degree distribution of simulated networks, named by the indegree
+#' each count refers to.
 #' @export
 #' 
 #' @seealso [gofMobilityNetwork()]
@@ -27,7 +28,7 @@ getIndegree <- function(cache, dep.var, lvls, ...) {
     lvls <- 1:(max(indegrees) + 1)
   }
   counts <- tabulate(indegrees + 1, nbins = max(c(lvls, indegrees + 1)))
-  counts[lvls]
+  setNames(counts[lvls], lvls - 1)
 }
 
 
@@ -42,7 +43,8 @@ getIndegree <- function(cache, dep.var, lvls, ...) {
 #' If NULL, all levels from 1 to the maximum tie weight + 1 are used.
 #' @param ... Additional parameters.
 #'
-#' @return The tie weight distribution of simulated networks.
+#' @return The tie weight distribution of simulated networks, named by the
+#' tie weight each count refers to.
 #' @export
 #' 
 #' @seealso [gofMobilityNetwork()]
@@ -54,5 +56,5 @@ getTieWeights <- function(cache, dep.var, lvls, ...) {
     lvls <- 1:(max(weights) + 1)
   }
   counts <- tabulate(weights + 1, nbins = max(c(lvls, weights + 1)))
-  counts[lvls]
+  setNames(counts[lvls], lvls - 1)
 }

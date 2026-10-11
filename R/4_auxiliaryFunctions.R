@@ -288,10 +288,16 @@ gofMobilityNetwork <-
         )
       })
     # without lvls, the gof functions return as many levels as each network
-    # needs; pad with zeros so that all networks have the same levels
+    # needs; pad with zeros so that all networks have the same levels (and
+    # the names of the longest)
     nLevels <- lengths(gofStats)
     if (is.null(lvls) && length(unique(nLevels)) > 1) {
-      gofStats <- lapply(gofStats, function(v) c(v, rep(0, max(nLevels) - length(v))))
+      allLevels <- gofStats[[which.max(nLevels)]]
+      gofStats <- lapply(gofStats, function(v) {
+        padded <- allLevels * 0
+        padded[seq_along(v)] <- v
+        padded
+      })
     }
     simStats <- gofStats
     simStats[[1]] <- NULL
@@ -316,10 +322,16 @@ monanGOF <- gofMobilityNetwork
 #'
 #' @rdname gofMobilityNetwork
 #' @param x An object of class "gof.stats.monan".
-#' @param ... Additional plotting parameters, use discouraged.
+#' @param xlab Label of the x-axis. By default "value" if the statistics are
+#' named by the values they refer to (as for [getIndegree()] and
+#' [getTieWeights()]), otherwise none.
+#' @param ... Additional plotting parameters passed to [graphics::boxplot()].
 #'
-#' @return The function `plot.gof.stats.monan` returns violin plots of the 
-#' gof tests with observed values superimposed in red.
+#' @return The function `plot.gof.stats.monan` draws box plots of the 
+#' gof tests with observed values superimposed in red, and invisibly returns
+#' the result of [graphics::boxplot()]. The x-axis shows the
+#' values the statistics refer to (e.g., the indegree), if the gof function
+#' names its results.
 #' @export
 #'
 #' @examples
@@ -327,13 +339,17 @@ monanGOF <- gofMobilityNetwork
 #' plot(myGofIndegree,  lvls = 20:70)
 #' plot(myGofTieWeight, lvls = 1:15)
 #' }
-plot.gof.stats.monan <- function(x, lvls = NULL, ...) {
+plot.gof.stats.monan <- function(x, lvls = NULL, xlab = NULL, ...) {
   if (is.null(lvls)) {
     lvls <- 1:length(x$observed)
   }
-  simStats <- Reduce(rbind, x$simulated)
-  boxplot(simStats[, lvls])
+  simStats <- do.call(rbind, x$simulated)
+  if (is.null(xlab) && !is.null(colnames(simStats))) {
+    xlab <- "value"
+  }
+  plotted <- boxplot(simStats[, lvls, drop = FALSE], xlab = xlab, ...)
   lines(x$observed[lvls], col = "red")
+  invisible(plotted)
 }
 
 

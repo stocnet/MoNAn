@@ -19,7 +19,8 @@ indegree + 1 are used.}
 \item{...}{Additional parameters.}
 }
 \value{
-The degree distribution of simulated networks.
+The degree distribution of simulated networks, named by the indegree
+each count refers to.
 }
 \description{
 Calculates the weighted indegree distribution of all locations in the

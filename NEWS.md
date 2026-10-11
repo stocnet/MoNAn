@@ -47,6 +47,10 @@
   misaligned; now all networks get the same levels, up to the largest value.
   `plot` of goodness of fit results now also works without `lvls`. Results for
   levels starting at 1 (e.g. `lvls = 1:100`) are unchanged.
+- Plots of goodness of fit results label the x-axis with the values the
+  counts refer to (e.g., indegree 0, 1, 2, ...) instead of positions:
+  `getIndegree` and `getTieWeights` now name their results by these values.
+  `plot` passes further arguments (e.g. `main`, `xlab`) to `boxplot`.
 
 ## Performance
 

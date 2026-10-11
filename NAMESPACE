@@ -85,7 +85,7 @@ export(
 )
 
 importFrom("graphics", "boxplot", "lines")
-importFrom("stats", "as.formula", "ecdf", "pnorm", "runif", "sd", "dist", "cov", "quantile")
+importFrom("stats", "as.formula", "ecdf", "pnorm", "runif", "sd", "dist", "cov", "quantile", "setNames")
 importFrom("methods", "is")
 importFrom("parallel", "makePSOCKcluster", "clusterCall", "clusterMap", "stopCluster", "nextRNGStream")
 importFrom("Rcpp", "evalCpp")

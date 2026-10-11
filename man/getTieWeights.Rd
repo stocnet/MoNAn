@@ -18,7 +18,8 @@ If NULL, all levels from 1 to the maximum tie weight + 1 are used.}
 \item{...}{Additional parameters.}
 }
 \value{
-The tie weight distribution of simulated networks.
+The tie weight distribution of simulated networks, named by the
+tie weight each count refers to.
 }
 \description{
 Extracts the distribution of tie weights in the mobility network.

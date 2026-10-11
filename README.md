@@ -48,7 +48,7 @@ replaced soon by a manual for version 2.
 
 ## Note from the developers
 
-This is version 2.0.0 of MoNAn. Compared to version 1, the simulation
+This is version 2.1.0 of MoNAn. Compared to version 1, the simulation
 runs in C++ (estimating the example below takes less than a minute
 instead of several minutes), several effects have been corrected, and
 estimation can also use Geyer-Thompson maximum likelihood; see NEWS.md
@@ -61,15 +61,23 @@ bugs or errors; further, you might not be able to do what you want. In
 that case, or if you are unsure please write the package maintainer
 under his institutional email address.
 
+Finally: Programming Version 2 of MoNAn extensively used Claude Code,
+which produced the code for the majority of the C++ implementation of
+the MCMC. The C++ implementation is checked in all steps and effects
+that it exactly reproduces the human-coded R-based implementation.
+Additionally, Claude Code was used for optimization; similarly, output
+from the machine was checked against previous human-coded
+implementation.
+
 # Installation
 
-You can install MoNAn from CRAN:
+You can install MoNAn 2.0.0 from CRAN:
 
 ``` r
 install.packages("MoNAn")
 ```
 
-The development version can be installed from GitHub:
+The most recent version (2.1.0) can be installed from GitHub:
 
 ``` r
 # install.packages("remotes")
@@ -292,7 +300,7 @@ estimates), another run is necessary.
 
 ``` r
 max(abs(myResDN$convergenceStatistics))
-#> [1] 0.06074141
+#> [1] 0.076954
 ```
 
 If convergence is too high, update algorithm, re-run estimation with
@@ -319,7 +327,7 @@ myResDN <- monan07(
 ``` r
 # check convergence
 max(abs(myResDN$convergenceStatistics))
-#> [1] 0.06074141
+#> [1] 0.076954
 ```
 
 In case convergence is still poor, updating the algorithm might be
@@ -332,21 +340,21 @@ convergence ratio. All values in the final column should be below 0.1
 myResDN
 #> Results
 #>                                   Effects   Estimates StandardErrors
-#> 1                                   loops  2.93847918     0.16752184
-#> 2                      concentration_AC 4  1.39905831     0.20998661
-#> 3                        reciprocity_AC 4  0.99264953     0.17453719
-#> 4             dyadic_covariate sameRegion  0.53396969     0.10329601
-#> 5                    alter_covariate size  0.01579074     0.01849084
-#> 6 resource_covar_to_node_covar region sex -0.63996642     0.15384288
-#> 7                loops_resource_covar sex -0.35367248     0.21448765
+#> 1                                   loops  2.94634644     0.16919809
+#> 2                      concentration_AC 4  1.40425495     0.20763966
+#> 3                        reciprocity_AC 4  0.98362353     0.17304975
+#> 4             dyadic_covariate sameRegion  0.54538799     0.10733080
+#> 5                    alter_covariate size  0.01433735     0.01807817
+#> 6 resource_covar_to_node_covar region sex -0.64685593     0.15982754
+#> 7                loops_resource_covar sex -0.37458067     0.21207675
 #>   Convergence
-#> 1  0.02771634
-#> 2 -0.04310385
-#> 3 -0.02941513
-#> 4 -0.02808840
-#> 5  0.01195872
-#> 6 -0.06074141
-#> 7  0.04756056
+#> 1  0.01310609
+#> 2  0.01702124
+#> 3  0.03168851
+#> 4  0.06918573
+#> 5 -0.07695400
+#> 6  0.01815871
+#> 7 -0.03263542
 ```
 
 ## Diagnostics of the estimated model
@@ -360,7 +368,7 @@ problematic and indicate that a higher thinning is needed.
 
 ``` r
 autoCorrelationTest(myResDN)
-#> [1] 0.09948763
+#> [1] 0.09969808
 ```
 
 The output of extractTraces indicates the correlation of statistics
@@ -382,25 +390,31 @@ plot(traces)
 Based on an estimated model, a score-type test is available that shows
 whether statistics representing non-included effects are well
 represented. If this is not the case, it is likely that including them
-will result in significant estimates.
+will result in significant estimates. The test is conditional on the
+statistics of the effects in the model; it requires an estimation with
+`returnDeps = TRUE`.
 
 ``` r
 myEffects2 <- createEffects(myState) |>
-  addEffect(transitivity_min)
+  addEffect(transitivity_AC, alpha = 8)
 
 test_ME.2 <- scoreTest(myResDN, myEffects2)
 test_ME.2
 #> Results
-#>            Effects pValuesParametric pValuesNonParametric
-#> 1 transitivity_min         0.1865437                0.898
+#>             Effects tStatistic pValue    R2
+#> 1 transitivity_AC 8       1.49 0.1362 0.979
 #> 
-#>  Parametric p-values: small = more significant 
-#>  Non-parametric p-values: further away from 0.5 = more significant
+#>  Score test conditional on the model's effects; small p-values: including the effect 
+#>  is likely to result in a significant estimate. 
+#>  R2: share of the variance of the effect's statistic explained by the model's effects.
 ```
 
-The interpretation is that there appears to be some transitive
-clustering in the data that the model does not account for in its
-current form.
+The p-value is above 0.05, so the test gives no clear evidence that
+transitive clustering is missing from the model, although the positive
+t-statistic points in that direction. R2 shows that the transitivity
+statistic is largely explained by the effects already in the model (in
+particular concentration and reciprocity), which makes its parameter
+harder to estimate.
 
 ## GOF testing
 

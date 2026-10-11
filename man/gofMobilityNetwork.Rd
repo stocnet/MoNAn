@@ -13,7 +13,7 @@ gofDistributionNetwork(ans, gofFunction, lvls = NULL, simulations = NULL)
 
 monanGOF(ans, gofFunction, lvls = NULL, simulations = NULL)
 
-\method{plot}{gof.stats.monan}(x, lvls, ...)
+\method{plot}{gof.stats.monan}(x, lvls = NULL, xlab = NULL, ...)
 }
 \arguments{
 \item{ans}{An object of class "result.monan" resulting from an estimation
@@ -22,21 +22,33 @@ with the function \code{\link[=estimateMobilityNetwork]{estimateMobilityNetwork(
 \item{gofFunction}{A gof function that specifies which auxiliary outcome should be used,
 e.g., "getIndegree" or "getTieWeights".}
 
-\item{lvls}{The values for which the gofFunction should be calculated/plotted.}
+\item{lvls}{The levels for which the gofFunction should be calculated. For
+\code{\link[=getIndegree]{getIndegree()}} and \code{\link[=getTieWeights]{getTieWeights()}}, level k refers to the value k - 1
+(e.g., level 1 counts the locations with indegree 0 or the empty dyads). If NULL,
+all levels up to the largest value in the observed or simulated networks are used.
+In \code{plot}, the levels to plot, as positions in the vector of values returned
+by \code{gofMobilityNetwork}; if NULL, all are plotted.}
 
 \item{simulations}{outdated parameter, no need to specify}
 
 \item{x}{An object of class "gof.stats.monan".}
 
-\item{...}{Additional plotting parameters, use discouraged.}
+\item{xlab}{Label of the x-axis. By default "value" if the statistics are
+named by the values they refer to (as for \code{\link[=getIndegree]{getIndegree()}} and
+\code{\link[=getTieWeights]{getTieWeights()}}), otherwise none.}
+
+\item{...}{Additional plotting parameters passed to \code{\link[graphics:boxplot]{graphics::boxplot()}}.}
 }
 \value{
 The function \code{gofMobilityNetwork} returns a list containing
 (1) the observed values of the auxiliary statistics and
 (2) a list of the simulated values of the auxiliary statistics.
 
-The function \code{plot.gof.stats.monan} returns violin plots of the
-gof tests with observed values superimposed in red.
+The function \code{plot.gof.stats.monan} draws box plots of the
+gof tests with observed values superimposed in red, and invisibly returns
+the result of \code{\link[graphics:boxplot]{graphics::boxplot()}}. The x-axis shows the
+values the statistics refer to (e.g., the indegree), if the gof function
+names its results.
 }
 \description{
 Akin to ERGMs, goodness of fit testing is available to see whether auxiliary

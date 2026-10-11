@@ -88,7 +88,12 @@ which \code{\link[=getMultinomialStatistics]{getMultinomialStatistics()}} provid
 the outcome object of that estimation should be specified here to provide new
 starting values for the estimation.}
 
-\item{parallel}{Logical: computation on multiple cores?}
+\item{parallel}{Logical: computation on multiple cores? If TRUE, the
+simulations run in \code{cpus} independent chains on a socket cluster (package
+'parallel'). Each chain gets its own random number stream derived from the
+random numbers of the R session, so results are reproducible with
+\code{\link[=set.seed]{set.seed()}}; they differ from those of a serial estimation with the same
+seed. The workers use the installed version of MoNAn.}
 
 \item{cpus}{Number of cores for computation in case parallel = TRUE.}
 
@@ -115,7 +120,9 @@ results object. Defaults to FALSE.}
 The function \code{estimateMobilityNetwork} returns an object of class "result.monan" that contains the estimates, standard errors,
 and convergence statistics. Furthermore, the covariance matrix used to calculate
 the standard errors is included, which also shows collinearity between effects.
-In case returnDeps = TRUE, the simulations of Phase 3 are included, too.
+In case returnDeps = TRUE, the simulations of Phase 3 are included, too,
+together with the statistics of the model's effects in the observed and the
+simulated networks (used by \code{\link[=scoreTest]{scoreTest()}}).
 
 The function \code{print.result.monan} prints the results from a monan
 estimation with three columns indicating the estimate, the standard error,
@@ -136,7 +143,7 @@ myResDN <- estimateMobilityNetwork(myState, myEffects, myAlg_short,
                                    initialParameters = NULL,
                                    # in case a pseudo-likelihood estimation was run, replace with
                                    # initialParameters = initEst,
-                                   parallel = TRUE, cpus = 4,
+                                   parallel = TRUE, cpus = 2,
                                    verbose = TRUE,
                                    returnDeps = TRUE,
                                    fish = FALSE

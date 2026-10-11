@@ -1,3 +1,66 @@
+# MoNAn 2.1.0
+
+## Breaking changes / changes so that previous code produces different results
+
+- `scoreTest` now performs a score test that is conditional on the statistics
+  of the effects in the model: the deviation of a tested effect's statistic is
+  adjusted for the remaining deviations of the model's statistics and divided
+  by its standard deviation given the model's statistics. The previous
+  parametric p-values ignored this correlation and were far too conservative; 
+  the new p-values seem better calibrated in simple simulations.
+  The result reports `tStatistics`, `pValues` and `R2` (the
+  share of the tested statistic's variance explained by the model's
+  statistics); the previous non-parametric value is available with
+  `nonParametric = TRUE`.
+- `estimateMobilityNetwork(..., returnDeps = TRUE)` stores the statistics of
+  the model's effects in the observed and simulated networks
+  (`observedStatistics`, `simulatedStatistics`), which `scoreTest` uses. For
+  results estimated with earlier versions, specify the effects of the
+  estimated model with `scoreTest(..., modelEffects = )`.
+- The example results `myResDN` were re-estimated with these statistics.
+
+## New features
+
+- Parallel estimation (`parallel = TRUE`) uses the package 'parallel' (part of
+  R) instead of 'snowfall', which is no longer a dependency. One cluster is
+  started per estimation instead of one per phase. Each chain gets its own
+  random number stream derived from the random numbers of the
+  R session, so parallel estimations are now reproducible with `set.seed()`
+  and the chains are independent.
+
+- The concentration effects `concentration_basic_squared`,
+  `concentration_norm`, `concentration_norm_squared`,
+  `concentration_prop_orig_cov` and `concentration_rankGW`, removed in 2.0.0,
+  are available again, unchanged from version 1.1.0, now also in C++.
+  `concentration_norm` and `concentration_norm_squared` divide by the number
+  of resources of the origin minus one, which is zero for origins with only one
+  resource.
+
+## Bug fixes
+
+- `getIndegree` and `getTieWeights` failed or put counts in the wrong places
+  when the levels in `gofMobilityNetwork(..., lvls = )` did not start at 1.
+  Without `lvls`, `getIndegree` failed and `getTieWeights` returned
+  distributions of different lengths for different networks, which `plot`
+  misaligned; now all networks get the same levels, up to the largest value.
+  `plot` of goodness of fit results now also works without `lvls`. Results for
+  levels starting at 1 (e.g. `lvls = 1:100`) are unchanged.
+- Plots of goodness of fit results label the x-axis with the values the
+  counts refer to (e.g., indegree 0, 1, 2, ...) instead of positions:
+  `getIndegree` and `getTieWeights` now name their results by these values.
+  `plot` passes further arguments (e.g. `main`, `xlab`) to `boxplot`.
+
+## Performance
+
+- `extractTraces` uses the statistics stored by estimations with
+  `returnDeps = TRUE` instead of recalculating them from the simulations.
+
+- The maximum pseudo-likelihood estimates used as starting values are
+  calculated in C++ if all effects have a C++ version (about 4-5 times faster
+  for larger data), without storing the change statistics of all resources and
+  destinations, so memory use does not grow with the data. The estimates are
+  the same as with the R version, which is used otherwise.
+
 # MoNAn 2.0.0
 
 Version 2 runs the simulations in C++, which makes estimation typically 20-50
@@ -6,7 +69,7 @@ corrects several effects. Some changes are not backward compatible (see
 "Breaking changes"), and results of models with corrected effects differ from
 version 1.
 
-## Breaking changes
+## Breaking changes / changes so that previous code produces different results
 
 - Removed effects:
   - `in_weights_exponent`: its change and target statistics did not match
@@ -48,6 +111,8 @@ version 1.
   with the new arguments `iterationsGT`, `maxIterationsGT` and
   `finalIterationsGT`. Robbins-Monro remains the default, and algorithm
   objects created with earlier versions use it.
+  Note that Geyer-Thompson still uses a "normal" Phase 3 that calculates standard 
+  errors and checks convergence.
 - Maximum pseudo-likelihood estimates (the multinomial logit model for which
   `getMultinomialStatistics` provides the data) are used as starting values if
   neither `initialParameters` nor `prevAns` are given, for both Robbins-Monro

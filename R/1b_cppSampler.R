@@ -22,6 +22,9 @@ cppEffects <- c("loops", "concentration_AC", "reciprocity_AC", "dyadic_covariate
                 "triad120C", "triad120D", "triad120U",
                 "concentration_basic", "concentration_basic_cube",
                 "concentration_prop", "concentration_prop_AC", "concentration_max",
+                "concentration_basic_squared", "concentration_norm",
+                "concentration_norm_squared", "concentration_prop_orig_cov",
+                "concentration_rankGW",
                 "reciprocity_basic", "reciprocity_min",
                 "reciprocity_min_dyad_covar", "reciprocity_min_resource_covar",
                 "same_covariate", "sim_covariate", "dyadic_covariate_resource_attribute",
@@ -47,6 +50,9 @@ cppEffectSpec <- function(effects, state) {
     spec <- list(name = effectName)
     if (!is.null(args$alpha)) {
       spec$alpha <- as.numeric(args$alpha)
+    }
+    if (!is.null(args$lambda)) {
+      spec$lambda <- as.numeric(args$lambda)
     }
     if (!is.null(args$loop.contribution)) {
       spec$loopContribution <- as.logical(args$loop.contribution)
@@ -154,6 +160,19 @@ cppNetworkStatistics <- function(dep.var, state, cache, effects) {
                                      cppEffectSpec(effects, inputs$state))
   names(statistics) <- effects$name
   statistics
+}
+
+# mpleObjectiveCpp
+# as mpleObjectiveR, but calculated in C++ (mpleNewtonCpp in src/sampler.cpp),
+# which recomputes the change statistics in each call instead of storing them
+mpleObjectiveCpp <- function(dep.var, state, cache, effects, allowLoops) {
+  inputs <- cppChainInputs(dep.var, state, cache)
+  specs <- cppEffectSpec(effects, inputs$state)
+  function(theta, derivatives = TRUE) {
+    mpleNewtonCpp(inputs$edgelist, inputs$cache, inputs$resourceCovariates,
+                  inputs$resourceSet, inputs$nodeSet, specs,
+                  as.numeric(theta), allowLoops, derivatives)
+  }
 }
 
 # cppEffectValues

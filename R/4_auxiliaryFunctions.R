@@ -44,6 +44,9 @@ autoCorrelationTest <- function(ans) {
 #' 
 #' @param ans An object of class "result.monan" resulting from an estimation with the function [estimateMobilityNetwork()].
 #' @param effects An object of class "effectsList.monan" used in the estimation.
+#' If the estimation stored the statistics of the model's effects
+#' (returnDeps = TRUE), they are used; otherwise the statistics are calculated
+#' from the simulations stored in ans.
 #'
 #' @return The function `extractTraces` returns a list that includes 
 #' (1) the observed statistics for all effects, 
@@ -66,15 +69,23 @@ extractTraces <- function(ans, effects) {
     stop("ans object does not have simulated states stored; use returnDeps = TRUE in estimation")
   }
   
-  # get statistics of the observed network using state and cache from ans object
-  obsStats <-
-    getNetworkStatistics(dep.var, ans$state, ans$cache, effects)
-  
-  # get a matrix of statistics from the simulated data in the ans object
-  simStatsMatrix <-
-    Reduce("rbind", lapply(ans$deps, function(x) {
-      getNetStatsFromDeps(dep.var, x, ans, effects)
-    }))
+  # estimations with returnDeps = TRUE store the statistics of the model's
+  # effects; they are used if effects are the effects of the estimated model
+  if (!is.null(ans$simulatedStatistics) && !is.null(ans$observedStatistics) &&
+      identical(as.character(effects$name), names(ans$estimates))) {
+    obsStats <- ans$observedStatistics
+    simStatsMatrix <- ans$simulatedStatistics
+  } else {
+    # get statistics of the observed network using state and cache from ans object
+    obsStats <-
+      getNetworkStatistics(dep.var, ans$state, ans$cache, effects)
+
+    # get a matrix of statistics from the simulated data in the ans object
+    simStatsMatrix <-
+      Reduce("rbind", lapply(ans$deps, function(x) {
+        getNetStatsFromDeps(dep.var, x, ans, effects)
+      }))
+  }
   
   results <- list(
     observedStats = obsStats,
@@ -204,7 +215,12 @@ getMultinomialStatistics <-
 #' with the function [estimateMobilityNetwork()] using the option deps = TRUE.
 #' @param gofFunction A gof function that specifies which auxiliary outcome should be used, 
 #' e.g., "getIndegree" or "getTieWeights".
-#' @param lvls The values for which the gofFunction should be calculated/plotted.
+#' @param lvls The levels for which the gofFunction should be calculated. For
+#' [getIndegree()] and [getTieWeights()], level k refers to the value k - 1
+#' (e.g., level 1 counts the locations with indegree 0 or the empty dyads). If NULL,
+#' all levels up to the largest value in the observed or simulated networks are used.
+#' In `plot`, the levels to plot, as positions in the vector of values returned
+#' by `gofMobilityNetwork`; if NULL, all are plotted.
 #' @param simulations outdated parameter, no need to specify
 #'
 #' @return The function `gofMobilityNetwork` returns a list containing 
@@ -271,6 +287,18 @@ gofMobilityNetwork <-
           lvls = lvls
         )
       })
+    # without lvls, the gof functions return as many levels as each network
+    # needs; pad with zeros so that all networks have the same levels (and
+    # the names of the longest)
+    nLevels <- lengths(gofStats)
+    if (is.null(lvls) && length(unique(nLevels)) > 1) {
+      allLevels <- gofStats[[which.max(nLevels)]]
+      gofStats <- lapply(gofStats, function(v) {
+        padded <- allLevels * 0
+        padded[seq_along(v)] <- v
+        padded
+      })
+    }
     simStats <- gofStats
     simStats[[1]] <- NULL
     gofRes <- list(observed = gofStats[[1]], simulated = simStats)
@@ -294,11 +322,16 @@ monanGOF <- gofMobilityNetwork
 #'
 #' @rdname gofMobilityNetwork
 #' @param x An object of class "gof.stats.monan".
-#' @param lvls The values for which the gofFunction should be calculated/plotted.
-#' @param ... Additional plotting parameters, use discouraged.
+#' @param xlab Label of the x-axis. By default "value" if the statistics are
+#' named by the values they refer to (as for [getIndegree()] and
+#' [getTieWeights()]), otherwise none.
+#' @param ... Additional plotting parameters passed to [graphics::boxplot()].
 #'
-#' @return The function `plot.gof.stats.monan` returns violin plots of the 
-#' gof tests with observed values superimposed in red.
+#' @return The function `plot.gof.stats.monan` draws box plots of the 
+#' gof tests with observed values superimposed in red, and invisibly returns
+#' the result of [graphics::boxplot()]. The x-axis shows the
+#' values the statistics refer to (e.g., the indegree), if the gof function
+#' names its results.
 #' @export
 #'
 #' @examples
@@ -306,13 +339,17 @@ monanGOF <- gofMobilityNetwork
 #' plot(myGofIndegree,  lvls = 20:70)
 #' plot(myGofTieWeight, lvls = 1:15)
 #' }
-plot.gof.stats.monan <- function(x, lvls, ...) {
+plot.gof.stats.monan <- function(x, lvls = NULL, xlab = NULL, ...) {
   if (is.null(lvls)) {
     lvls <- 1:length(x$observed)
   }
-  simStats <- Reduce(rbind, x$simulated)
-  boxplot(simStats[, lvls])
+  simStats <- do.call(rbind, x$simulated)
+  if (is.null(xlab) && !is.null(colnames(simStats))) {
+    xlab <- "value"
+  }
+  plotted <- boxplot(simStats[, lvls, drop = FALSE], xlab = xlab, ...)
   lines(x$observed[lvls], col = "red")
+  invisible(plotted)
 }
 
 
@@ -586,35 +623,83 @@ print.result.monan <- function(x, covMat = FALSE, ...) {
 
 #' scoreTest
 #'
-#' Based on an estimated model, a score-type test is available that shows whether 
-#' statistics representing non-included effects are well represented. If this is 
-#' not the case, it is likely that including them will result in significant estimates.
+#' Based on an estimated model, a score-type test shows whether effects that are
+#' not included in the model are likely to be significant if they were included.
 #'
-#' @param ans An object of class "result.monan" resulting from an estimation with the function [estimateMobilityNetwork()].
-#' @param effects An object of class "effectsList.monan" in which the non included effects that should
-#' be tested are specified.
+#' For each tested effect, the statistic of the effect in the observed network is
+#' compared with its distribution in the networks simulated in Phase 3 of the
+#' estimation. Because the statistics of tested effects are usually correlated
+#' with the statistics of the effects in the model, the test is conditional on
+#' the model's statistics: the deviation of the observed statistic from the
+#' simulated mean is adjusted for the remaining deviations of the model's
+#' statistics, and divided by the standard deviation of the tested statistic
+#' given the model's statistics (a generalised score test). The resulting
+#' t-statistic is approximately standard normal if the effect's parameter is 0.
 #'
-#' @return The function `scoreTest` returns basic values to calculate
-#' parametric and non-parametric p-values
-#' for each tested effect.
+#' R2 is the share of the variance of the tested statistic that is explained by
+#' the model's statistics. Values close to 1 indicate that the effect is nearly
+#' redundant given the model, so that its parameter is hard to estimate.
+#'
+#' The test needs the statistics of the model's effects in the simulated
+#' networks. Estimations with returnDeps = TRUE store them. For results of
+#' earlier versions of MoNAn, which do not contain them, the effects of the
+#' estimated model must be specified with modelEffects.
+#'
+#' @param ans An object of class "result.monan" resulting from an estimation with
+#' the function [estimateMobilityNetwork()] using the option returnDeps = TRUE.
+#' @param effects An object of class "effectsList.monan" in which the non included
+#' effects that should be tested are specified.
+#' @param modelEffects The effects object of the estimated model. Only needed for
+#' results estimated with earlier versions of MoNAn, which do not contain the
+#' statistics of the model's effects.
+#' @param nonParametric Logical: should the non-parametric value of earlier
+#' versions be reported, too? It is the share of simulated statistics that are
+#' smaller than or equal to the observed one (further away from 0.5 = more
+#' significant). It is not corrected for the correlation with the model's
+#' effects and therefore rarely extreme; it is not recommended for testing.
+#'
+#' @return The function `scoreTest` returns an object of class "scoretest.monan"
+#' with, for each tested effect, the t-statistic (`tStatistics`), the two-sided
+#' p-value (`pValues`) and R2 (`R2`), the observed and simulated statistics, and
+#' with nonParametric = TRUE the non-parametric values (`pValuesNonParametric`).
 #' @export
 #'
-#' @seealso [createEffectsObject()]
+#' @seealso [createEffectsObject()], [estimateMobilityNetwork()]
 #'
 #' @examples
 #' \donttest{
 #' # test whether other effects should be included
 #' myEffects2 <- createEffects(myState) |>
-#'   addEffect(transitivity_min)
-#' 
+#'   addEffect(transitivity_AC, alpha = 8)
+#'
 #' test_ME.2 <- scoreTest(myResDN, myEffects2)
 #' }
-scoreTest <- function(ans, effects) {
+scoreTest <- function(ans, effects, modelEffects = NULL, nonParametric = FALSE) {
   dep.var <- ans$state$dep.var
   # give error if no deps in ans
   if (is.null(ans$deps)) {
     stop("ans object does not have simulated states stored; use returnDeps = TRUE in estimation")
   }
+
+  # statistics of the model's effects in the observed and simulated networks
+  if (!is.null(ans$simulatedStatistics) && !is.null(ans$observedStatistics)) {
+    modelObs <- ans$observedStatistics
+    modelSim <- ans$simulatedStatistics
+  } else if (!is.null(modelEffects)) {
+    if (length(modelEffects$name) != length(ans$estimates)) {
+      stop("modelEffects must be the effects of the estimated model")
+    }
+    modelObs <- getNetworkStatistics(dep.var, ans$state, ans$cache, modelEffects)
+    modelSim <- Reduce("rbind", lapply(ans$deps, function(x) {
+      getNetStatsFromDeps(dep.var, x, ans, modelEffects)
+    }))
+  } else {
+    stop(paste("ans does not contain the statistics of the model's effects",
+               "(it was estimated with an earlier version of MoNAn). Re-estimate",
+               "the model with returnDeps = TRUE, or specify the effects of the",
+               "estimated model with modelEffects."))
+  }
+  modelSim <- matrix(modelSim, nrow = length(ans$deps))
 
   # get statistics of the observed network using state and cache from ans object
   obsStats <-
@@ -625,26 +710,45 @@ scoreTest <- function(ans, effects) {
     Reduce("rbind", lapply(ans$deps, function(x) {
       getNetStatsFromDeps(dep.var, x, ans, effects)
     }))
-  
-  # get parametric p-values using mean and sd
-  p.vals.par <-
-    2 * pnorm(-abs(((obsStats - colMeans(simStatsMatrix)) / apply(simStatsMatrix, 2, sd)
-    )))
+  simStatsMatrix <- matrix(simStatsMatrix, nrow = length(ans$deps))
+  colnames(simStatsMatrix) <- effects$name
 
-  # get non-parametric p-values using ecdf
-  p.vals.np <-
-    (apply(rbind(obsStats, simStatsMatrix), 2, function(x) {
-      ecdf(x[2:length(x)])(x[1])
-    }))
+  # score test conditional on the model's statistics
+  deviationModel <- modelObs - colMeans(modelSim)
+  covModelInv <- solve(stats::cov(modelSim))
+  test <- t(vapply(seq_along(obsStats), function(k) {
+    x <- simStatsMatrix[, k]
+    covWithModel <- as.numeric(stats::cov(x, modelSim))
+    weights <- as.numeric(covWithModel %*% covModelInv)
+    varConditional <- stats::var(x) - sum(weights * covWithModel)
+    deviation <- (obsStats[k] - mean(x)) - sum(weights * deviationModel)
+    if (!is.finite(varConditional) || varConditional <= 0) {
+      return(c(t = NA_real_, R2 = 1))
+    }
+    c(t = deviation / sqrt(varConditional), R2 = 1 - varConditional / stats::var(x))
+  }, c(t = 0, R2 = 0)))
+  if (anyNA(test[, "t"])) {
+    warning(paste("The statistics of some tested effects are fully explained by",
+                  "the model's statistics; no test is possible for them."))
+  }
 
   # return results
   result.score <- list(
     effects = effects,
-    observedStatstics = obsStats,
+    observedStatistics = obsStats,
     simulatedStatistics = simStatsMatrix,
-    pValuesParametric = p.vals.par,
-    pValuesNonParametric = p.vals.np
+    tStatistics = test[, "t"],
+    pValues = 2 * stats::pnorm(-abs(test[, "t"])),
+    R2 = test[, "R2"]
   )
+
+  # non-parametric values of earlier versions (not corrected for the model's effects)
+  if (nonParametric) {
+    result.score$pValuesNonParametric <-
+      (apply(rbind(obsStats, simStatsMatrix), 2, function(x) {
+        ecdf(x[2:length(x)])(x[1])
+      }))
+  }
 
   class(result.score) <- "scoretest.monan"
 
@@ -660,8 +764,8 @@ scoreTest <- function(ans, effects) {
 #'
 #' @export
 #'
-#' @return The function `print.scoretest.monan` shows parametric and non-parametric p-values
-#' for each tested effect.
+#' @return The function `print.scoretest.monan` shows the t-statistics, p-values
+#' and R2 for each tested effect.
 #' @examples
 #' \donttest{
 #' test_ME.2
@@ -670,15 +774,25 @@ print.scoretest.monan <- function(x, ...) {
   reslt <-
     data.frame(
       Effects = x$effects$name,
-      pValuesParametric = as.numeric(x$pValuesParametric),
-      pValuesNonParametric = as.numeric(x$pValuesNonParametric)
+      tStatistic = round(as.numeric(x$tStatistics), 3),
+      pValue = round(as.numeric(x$pValues), 4),
+      R2 = round(as.numeric(x$R2), 3)
     )
-  
+  if (!is.null(x$pValuesNonParametric)) {
+    reslt$nonParametric <- round(as.numeric(x$pValuesNonParametric), 3)
+  }
+
   cat("Results\n")
-  
+
   print(reslt)
   cat("\n")
   cat(
-    " Parametric p-values: small = more significant \n Non-parametric p-values: further away from 0.5 = more significant"
+    " Score test conditional on the model's effects; small p-values: including the effect",
+    "\n is likely to result in a significant estimate.",
+    "\n R2: share of the variance of the effect's statistic explained by the model's effects."
   )
+  if (!is.null(x$pValuesNonParametric)) {
+    cat("\n nonParametric: not corrected for the model's effects; further away from 0.5 = more significant.")
+  }
+  cat("\n")
 }

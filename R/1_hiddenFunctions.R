@@ -206,6 +206,61 @@ getNetworkStatistics <- function(dep.var, state, cache, effects) {
 }
 
 
+# parallel computing
+# One socket cluster per estimation (startCluster); the workers load the
+# installed MoNAn. Each call of applyChains runs one task per worker (chain)
+# and gives every task its own L'Ecuyer-CMRG random number stream. The streams
+# are derived from the random numbers of the master process, so results are
+# reproducible with set.seed() and the chains are independent.
+startCluster <- function(cpus) {
+  cl <- makePSOCKcluster(cpus)
+  tryCatch(clusterCall(cl, loadNamespace, "MoNAn"), error = function(e) {
+    stopCluster(cl)
+    stop("MoNAn could not be loaded on the parallel workers: ", conditionMessage(e))
+  })
+  cl
+}
+
+# n independent L'Ecuyer-CMRG streams, starting from a seed drawn with the
+# random numbers of the master process (whose RNG kind is not changed)
+chainSeeds <- function(n) {
+  start <- sample.int(.Machine$integer.max, 1)
+  oldSeed <- get(".Random.seed", envir = globalenv())
+  on.exit(assign(".Random.seed", oldSeed, envir = globalenv()))
+  RNGkind("L'Ecuyer-CMRG")
+  set.seed(start)
+  seeds <- list(get(".Random.seed", envir = globalenv()))
+  for (k in seq_len(n - 1)) {
+    seeds[[k + 1]] <- nextRNGStream(seeds[[k]])
+  }
+  seeds
+}
+
+runWithSeed <- function(.seed, .f, ...) {
+  assign(".Random.seed", .seed, envir = globalenv())
+  .f(...)
+}
+
+# run .f once per chain on the cluster cl; arguments in ... have one element
+# per chain, arguments in MoreArgs are the same for all chains. The results
+# are in the order of the chains.
+applyChains <- function(cl, .f, ..., MoreArgs = list()) {
+  clusterMap(cl, runWithSeed, .seed = chainSeeds(length(cl)), ...,
+             MoreArgs = c(list(.f = .f), MoreArgs),
+             SIMPLIFY = FALSE, USE.NAMES = FALSE)
+}
+
+# iterations split as evenly as possible over n chains
+splitIterations <- function(iterations, n) {
+  perChain <- rep(iterations %/% n, n)
+  rest <- iterations %% n
+  if (rest > 0) {
+    perChain[1:rest] <- perChain[1:rest] + 1
+  }
+  perChain
+}
+
+
 # runPhase1
 runPhase1 <- function(dep.var,
                       state,
@@ -219,38 +274,24 @@ runPhase1 <- function(dep.var,
                       multinomialProposal = FALSE,
                       allowLoops,
                       verbose = FALSE,
-                      parallel,
-                      cpus) {
-  # simulate statistic matrix
-  
-  # initialize parallel computing
-  if (parallel && cpus > 1) {
-    sfInit(parallel = TRUE, cpus = cpus)
-    # TODO. Replace this long command with sfLibrary("NetDist") once the package is packaged
-    sfLibrary("MoNAn", character.only=TRUE)
-  } else {
-    parallel <- FALSE
-  }
-  
-  if(parallel){
-    cat(paste("Phase 1: \n burn-in", burnInN1, "steps\n", 
-              iterationsN1, " iterations\n thinning", 
-              thinningN1, "\n", cpus, "cpus\n"))
-    
-    statisticsMatrix <- sfLapply(1:cpus, simulateStatisticVectors, 
-                                 dep.var = dep.var, 
-                                 state = state, 
-                                 cache = cache, 
-                                 effects = effects, 
-                                 initialParameters = initialParameters, 
-                                 burnIn = burnInN1, 
-                                 iterations = round(iterationsN1 / cpus), 
-                                 thinning = thinningN1, 
-                                 multinomialProposal = multinomialProposal, 
-                                 allowLoops = allowLoops, 
-                                 verbose = verbose)
+                      cl = NULL) {
+  # simulate statistic matrix, with one chain per worker if cl is a cluster
+  if (!is.null(cl)) {
+    if (verbose) {
+      cat(paste("Phase 1: \n burn-in", burnInN1, "steps\n", 
+                iterationsN1, " iterations\n thinning", 
+                thinningN1, "\n", length(cl), "cpus\n"))
+    }
+    statisticsMatrix <- applyChains(
+      cl, simulateStatisticVectors,
+      iterations = splitIterations(iterationsN1, length(cl)),
+      MoreArgs = list(dep.var = dep.var, state = state, cache = cache,
+                      effects = effects, initialParameters = initialParameters,
+                      burnIn = burnInN1, thinning = thinningN1,
+                      multinomialProposal = multinomialProposal,
+                      allowLoops = allowLoops)
+    )
     statisticsMatrix <- Reduce("rbind", statisticsMatrix)
-    sfStop()
   } else {
   statisticsMatrix <-
     simulateStatisticVectors(
@@ -305,8 +346,7 @@ runPhase2 <- function(dep.var,
                       initGain,
                       thinningN2,
                       initialIterationsN2,
-                      parallel,
-                      cpus,
+                      cl = NULL,
                       multinomialProposal = FALSE,
                       allowLoops,
                       verbose = FALSE) {
@@ -314,31 +354,21 @@ runPhase2 <- function(dep.var,
   observedStatistics <-
     getNetworkStatistics(dep.var, state, cache, effects)
 
-  # initialize parallel computing
-  if (parallel && cpus > 1) {
-    sfInit(parallel = TRUE, cpus = cpus)
-    # TODO. Replace this long command with sfLibrary("NetDist") once the package is packaged
-    sfLibrary("MoNAn", character.only=TRUE)
-  } else {
-    parallel <- FALSE
-  }
+  # with a cluster cl, one chain per worker; the parameters are averaged over
+  # the chains after each sub phase
+  parallel <- !is.null(cl)
+  cpus <- if (parallel) length(cl) else 1
 
-  # TODO PARALLEL: n burn-ins with n states
   # burn in
   if (parallel) {
-    res <-
-      sfLapply(
-        1:cpus,
-        simulateNSteps,
-        dep.var = dep.var,
-        state = state,
-        cache = cache,
-        effects = effects,
-        parameters = initialParameters,
-        allowLoops = allowLoops,
-        multinomialProposal = multinomialProposal,
-        n = burnInN2
-      )
+    res <- applyChains(
+      cl, simulateNSteps,
+      n = rep(burnInN2, cpus),
+      MoreArgs = list(dep.var = dep.var, state = state, cache = cache,
+                      effects = effects, parameters = initialParameters,
+                      allowLoops = allowLoops,
+                      multinomialProposal = multinomialProposal)
+    )
   } else {
     res <-
       simulateNSteps(
@@ -367,40 +397,21 @@ runPhase2 <- function(dep.var,
                 thinningN2, "\n ", cpus, " cpus\n"))
     }
 
-    # TODO PARALLEL: sample n chains and pass averaged parameters 
-    # (but real states, caches) to next sub phase simulations
+    # with several chains, each chain continues from its own state and the
+    # averaged parameters are passed to the next sub phase
     if (parallel) {
-      sfExport(
-        list = c(
-          "iterations",
-          "thinningN2",
-          "dep.var",
-          "allowLoops",
-          "effects",
-          "parameters",
-          "gain",
-          "sensitivityVector",
-          "multinomialProposal",
-          "observedStatistics"
-        )
+      res <- applyChains(
+        cl, runSubphase2,
+        state = lapply(res, "[[", "state"),
+        cache = lapply(res, "[[", "cache"),
+        MoreArgs = list(dep.var = dep.var, effects = effects,
+                        initialParameters = parameters,
+                        sensitivityVector = sensitivityVector,
+                        observedStatistics = observedStatistics, gain = gain,
+                        thinningN2 = thinningN2, iterations = iterations,
+                        multinomialProposal = multinomialProposal,
+                        allowLoops = allowLoops, verbose = FALSE)
       )
-      res <- sfLapply(res, function(r) {
-        runSubphase2(
-          dep.var,
-          state = r$state,
-          cache = r$cache,
-          effects,
-          parameters,
-          sensitivityVector,
-          observedStatistics,
-          gain,
-          thinningN2,
-          iterations,
-          multinomialProposal = multinomialProposal,
-          allowLoops = allowLoops,
-          verbose = FALSE
-        )
-      })
       parameterList <- lapply(res, "[[", "parameters")
       parameters <- colMeans(Reduce(rbind, parameterList))
       names(parameters) <- effects$name
@@ -440,10 +451,6 @@ runPhase2 <- function(dep.var,
     gain <- gain / 2
   }
 
-  if (parallel) {
-    sfStop()
-  }
-
   return(parameters)
 }
 
@@ -468,28 +475,12 @@ runPhase2GT <- function(dep.var,
                         maxIterationsGT,
                         finalIterationsGT = 3 * iterationsGT,
                         minESS = 0.5,
-                        parallel,
-                        cpus,
+                        cl = NULL,
                         multinomialProposal = FALSE,
                         allowLoops,
                         verbose = FALSE) {
-  if (parallel && cpus > 1) {
-    sfInit(parallel = TRUE, cpus = cpus)
-    sfLibrary("MoNAn", character.only = TRUE)
-    on.exit(sfStop(), add = TRUE)
-  } else {
-    parallel <- FALSE
-    cpus <- 1
-  }
-
-  splitDraws <- function(n) {
-    draws <- rep(n %/% cpus, cpus)
-    rest <- n %% cpus
-    if (rest > 0) {
-      draws[1:rest] <- draws[1:rest] + 1
-    }
-    draws
-  }
+  # with a cluster cl, one chain per worker
+  cpus <- if (is.null(cl)) 1 else length(cl)
 
   runChain <- function(chain, dep.var, effects, parameters, burnIn, thinning,
                        allowLoops, multinomialProposal) {
@@ -506,15 +497,19 @@ runPhase2GT <- function(dep.var,
   # from where the previous sample ended
   chains <- lapply(seq_len(cpus), function(k) list(state = state, cache = cache))
   simulateSample <- function(parameters, n) {
-    draws <- splitDraws(n)
+    draws <- splitIterations(n, cpus)
     for (k in seq_len(cpus)) {
       chains[[k]]$draws <<- draws[k]
     }
-    applyFun <- if (parallel) sfLapply else lapply
-    chains <<- applyFun(chains, runChain, dep.var = dep.var, effects = effects,
-                        parameters = parameters, burnIn = burnIn,
-                        thinning = thinning, allowLoops = allowLoops,
-                        multinomialProposal = multinomialProposal)
+    chainArgs <- list(dep.var = dep.var, effects = effects,
+                      parameters = parameters, burnIn = burnIn,
+                      thinning = thinning, allowLoops = allowLoops,
+                      multinomialProposal = multinomialProposal)
+    if (is.null(cl)) {
+      chains <<- lapply(chains, function(chain) do.call(runChain, c(list(chain), chainArgs)))
+    } else {
+      chains <<- applyChains(cl, runChain, chain = chains, MoreArgs = chainArgs)
+    }
     Reduce(rbind, lapply(chains, "[[", "statistics"))
   }
 
@@ -646,10 +641,54 @@ geyerThompsonStep <- function(statistics, observedStatistics, minESS = 0.5,
 # Maximum pseudo-likelihood estimate: a conditional logit of each resource's
 # observed destination against all possible destinations, given the
 # destinations of all other resources. Used as starting values for the
-# Geyer-Thompson estimation. Returns NULL if the estimate does not exist
-# (e.g. separation) or the optimisation fails.
+# estimation. Returns NULL if the estimate does not exist (e.g. separation) or
+# the optimisation fails. The pseudo-likelihood is calculated in C++ if all
+# effects have a C++ version (mpleObjectiveCpp), otherwise in R.
 getMPLE <- function(dep.var, state, cache, effects, allowLoops,
                     maxNewton = 50, tol = 1e-8) {
+  p <- length(effects$effectFormulas)
+  evaluate <- if (useCppSampler(effects, state)) {
+    mpleObjectiveCpp(dep.var, state, cache, effects, allowLoops)
+  } else {
+    mpleObjectiveR(dep.var, state, cache, effects, allowLoops)
+  }
+
+  theta <- rep(0, p)
+  for (k in 1:maxNewton) {
+    current <- evaluate(theta, derivatives = TRUE)
+    if (!is.finite(current$logPL)) {
+      return(NULL)
+    }
+    step <- tryCatch(-solve(current$hessian, current$gradient), error = function(e) NULL)
+    if (is.null(step) || any(!is.finite(step))) {
+      return(NULL)
+    }
+    # step halving to keep the pseudo-likelihood increasing
+    a <- 1
+    repeat {
+      candidate <- evaluate(theta + a * step, derivatives = FALSE)$logPL
+      if ((is.finite(candidate) && candidate >= current$logPL - 1e-10) || a <= 1e-6) {
+        break
+      }
+      a <- a / 2
+    }
+    theta <- theta + a * step
+    if (max(abs(a * step)) < tol) {
+      break
+    }
+  }
+  if (any(!is.finite(theta)) || max(abs(theta)) > 1e3) {
+    return(NULL)
+  }
+  names(theta) <- effects$name
+  theta
+}
+
+# mpleObjectiveR
+# returns a function of the parameters that gives the log pseudo-likelihood
+# and, with derivatives = TRUE, its gradient and Hessian, using the R effect
+# functions (see getMPLE); the change statistics are calculated once and stored
+mpleObjectiveR <- function(dep.var, state, cache, effects, allowLoops) {
   state <- toMutableState(state, dep.var)
   cache <- toMutableCache(cache)
   edgelist <- state[[dep.var]]
@@ -682,14 +721,14 @@ getMPLE <- function(dep.var, state, cache, effects, allowLoops,
     list(X = matrix(X, ncol = p), observed = match(j, destinations))
   })
 
-  theta <- rep(0, p)
-  logPL <- function(theta) {
-    sum(vapply(choiceSets, function(cs) {
+  function(theta, derivatives = TRUE) {
+    logPL <- sum(vapply(choiceSets, function(cs) {
       eta <- as.vector(cs$X %*% theta)
       eta[cs$observed] - max(eta) - log(sum(exp(eta - max(eta))))
     }, numeric(1)))
-  }
-  for (k in 1:maxNewton) {
+    if (!derivatives || !is.finite(logPL)) {
+      return(list(logPL = logPL))
+    }
     gradient <- rep(0, p)
     hessian <- matrix(0, p, p)
     for (cs in choiceSets) {
@@ -700,26 +739,8 @@ getMPLE <- function(dep.var, state, cache, effects, allowLoops,
       gradient <- gradient + cs$X[cs$observed, ] - expected
       hessian <- hessian - (crossprod(cs$X * sqrt(prob)) - tcrossprod(expected))
     }
-    step <- tryCatch(-solve(hessian, gradient), error = function(e) NULL)
-    if (is.null(step) || any(!is.finite(step))) {
-      return(NULL)
-    }
-    # step halving to keep the pseudo-likelihood increasing
-    a <- 1
-    current <- logPL(theta)
-    while (logPL(theta + a * step) < current - 1e-10 && a > 1e-6) {
-      a <- a / 2
-    }
-    theta <- theta + a * step
-    if (max(abs(a * step)) < tol) {
-      break
-    }
+    list(logPL = logPL, gradient = gradient, hessian = hessian)
   }
-  if (any(!is.finite(theta)) || max(abs(theta)) > 1e3) {
-    return(NULL)
-  }
-  names(theta) <- effects$name
-  theta
 }
 
 
@@ -733,44 +754,26 @@ runPhase3 <- function(dep.var,
                       iterationsN3,
                       burnInN3,
                       thinningN3,
-                      parallel,
-                      cpus,
+                      cl = NULL,
                       allowLoops,
                       verbose = FALSE,
                       returnDeps = FALSE,
                       multinomialProposal = FALSE,
                       fish = fish) {
   # simulate statistic matrix
-  # if parallel computing, initialize several simulation chains and rbind the results at the end
-  if (parallel) {
-    iterationsPerCPU <- rep(iterationsN3 %/% cpus, cpus)
-    rest <- iterationsN3 %% cpus
-    if (rest > 0) {
-      iterationsPerCPU[1:rest] <- iterationsPerCPU[1:rest] + 1
-    }
-
-    sfInit(parallel = TRUE, cpus = cpus)
-    # TODO. Replace this long command with sfLibrary("NetDist") once the package is packaged
-    sfLibrary("MoNAn", character.only=TRUE)
-
-    statsA <-
-      sfLapply(iterationsPerCPU, function(nIt) {
-        simulateStatisticVectors(
-          dep.var,
-          state,
-          cache,
-          effects,
-          parameters,
-          burnIn = burnInN3,
-          iterations = nIt,
-          thinning = thinningN3,
-          allowLoops,
-          verbose = verbose,
-          returnDeps = returnDeps,
-          multinomialProposal = multinomialProposal,
-          fish = FALSE
-        )
-      })
+  # with a cluster cl, one chain per worker; the results are combined in the
+  # order of the chains
+  if (!is.null(cl)) {
+    statsA <- applyChains(
+      cl, simulateStatisticVectors,
+      iterations = splitIterations(iterationsN3, length(cl)),
+      MoreArgs = list(dep.var = dep.var, state = state, cache = cache,
+                      effects = effects, initialParameters = parameters,
+                      burnIn = burnInN3, thinning = thinningN3,
+                      allowLoops = allowLoops, verbose = verbose,
+                      returnDeps = returnDeps,
+                      multinomialProposal = multinomialProposal, fish = FALSE)
+    )
 
 
     if (returnDeps) {
@@ -787,8 +790,6 @@ runPhase3 <- function(dep.var,
       stats <- statsA
       statisticsMatrix <- Reduce("rbind", stats)
     }
-
-    sfStop()
   } else {
     stats <- simulateStatisticVectors(
       dep.var,
@@ -834,12 +835,14 @@ runPhase3 <- function(dep.var,
     })
   }
 
-  # returns covariance matrix and convergence statistics
+  # returns covariance matrix and convergence statistics, and the statistics of
+  # the simulated networks (in the order of deps)
   return(
     list(
       covarianceMatrix = covarianceMatrixParameters,
       convergenceStatistics = convergenceStatistic,
-      deps = deps
+      deps = deps,
+      statistics = statisticsMatrix
     )
   )
 }

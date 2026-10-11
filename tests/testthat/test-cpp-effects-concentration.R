@@ -37,3 +37,22 @@ test_that("C++ and R chains are identical with the basic and proportional concen
   compare_chains(otherConcentrationEffects, parameters, n = 5000)
   compare_chains(otherConcentrationEffects, parameters, n = 500, multinomial = TRUE)
 })
+
+restoredConcentrationEffects <- createEffects(cppTestState) |>
+  addEffect(concentration_basic_squared) |>
+  addEffect(concentration_norm) |>
+  addEffect(concentration_norm_squared) |>
+  addEffect(concentration_prop_orig_cov, node.attribute = "size") |>
+  addEffect(concentration_rankGW) |>
+  addEffect(concentration_rankGW, lambda = 1.5)
+
+test_that("C++ versions of the concentration effects restored from 1.1.0 give the same values as R", {
+  expect_cpp_matches_r(restoredConcentrationEffects, state = cppTestState)
+})
+
+test_that("C++ and R chains are identical with the restored concentration effects", {
+  parameters <- c(-0.00001, 0.02, 0.0005, 0.01, 0.2, 0.1)
+  compare_chains(restoredConcentrationEffects, parameters, n = 5000, state = cppTestState)
+  compare_chains(restoredConcentrationEffects, parameters, n = 500, state = cppTestState,
+                 multinomial = TRUE)
+})

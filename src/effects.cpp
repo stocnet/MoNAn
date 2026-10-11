@@ -1,6 +1,8 @@
 // C++ versions of the effects, translated line by line from the R effect
 // functions (R/2*_effectFunctions*.R). Indices are 0-based.
 #include "monan.h"
+#include <algorithm>
+#include <functional>
 
 namespace {
 
@@ -678,6 +680,154 @@ class ConcentrationMax : public Effect {
   }
 };
 
+// ---- concentration effects restored from MoNAn 1.1.0
+
+// row i of the valued network
+inline std::vector<double> rowOf(const Chain& ch, int i) {
+  std::vector<double> row(ch.n);
+  for (int k = 0; k < ch.n; ++k) row[k] = ch.v(i, k);
+  return row;
+}
+
+// R: sum(x^2) (long double accumulation)
+inline double sumSquares(const std::vector<double>& x, double divisor = 1) {
+  long double total = 0;
+  for (double v : x) total += divisor == 1 ? rpow(v, 2) : rpow(v, 2) / divisor;
+  return (double)total;
+}
+
+// concentration_basic_squared
+class ConcentrationBasicSquared : public Effect {
+ public:
+  double change(const Chain& ch, int i, int j, int edge, int update) const override {
+    std::vector<double> previous = rowOf(ch, i);
+    std::vector<double> next = previous;
+    next[j] = next[j] + update;
+    return rpow(sumSquares(next), 2) - rpow(sumSquares(previous), 2);
+  }
+  double target(const Chain& ch, int i, int j) const override {
+    double vij2 = rpow(ch.v(i, j), 2);
+    long double total = 0;
+    for (int k = 0; k < ch.n; ++k) total += vij2 * rpow(ch.v(i, k), 2);
+    return (double)total;
+  }
+};
+
+// concentration_norm, concentration_norm_squared
+class ConcentrationNorm : public Effect {
+  bool squared;
+ public:
+  explicit ConcentrationNorm(bool sq) : squared(sq) {}
+  double change(const Chain& ch, int i, int j, int edge, int update) const override {
+    std::vector<double> previous = rowOf(ch, i);
+    long double s = 0;
+    for (double v : previous) s += v;
+    double total = (double)s;
+    double vij = ch.v(i, j);
+    if (!squared) {
+      if (update == -1) return (rpow(vij - 1, 2) - rpow(vij, 2)) / (total - 1);
+      if (update == 1) return (rpow(vij + 1, 2) - rpow(vij, 2)) / total;
+      Rcpp::stop("updates other than -1 and 1 are not supported");
+    }
+    std::vector<double> next = previous;
+    if (update == -1) {
+      next[j] = next[j] - 1;
+      return rpow(sumSquares(next, total - 1), 2) - rpow(sumSquares(previous, total - 1), 2);
+    }
+    if (update == 1) {
+      next[j] = next[j] + 1;
+      return rpow(sumSquares(next, total), 2) - rpow(sumSquares(previous, total), 2);
+    }
+    Rcpp::stop("updates other than -1 and 1 are not supported");
+  }
+  double target(const Chain& ch, int i, int j) const override {
+    long double s = 0;
+    for (int k = 0; k < ch.n; ++k) s += ch.v(i, k);
+    double total = (double)s;
+    double vij2 = rpow(ch.v(i, j), 2);
+    if (!squared) return vij2 / (total - 1);
+    double denominator = rpow(total - 1, 2);
+    long double sum = 0;
+    for (int k = 0; k < ch.n; ++k) sum += vij2 * rpow(ch.v(i, k), 2) / denominator;
+    return (double)sum;
+  }
+};
+
+// concentration_prop_orig_cov (the proportion statistic of MoNAn 1.1.0,
+// weighted by an attribute of the origin)
+class ConcentrationPropOrigCov : public Effect {
+  std::vector<double> attribute;
+  static double rowSumOf(const Chain& ch, int i) {
+    long double s = 0;
+    for (int k = 0; k < ch.n; ++k) s += ch.v(i, k);
+    return (double)s;
+  }
+ public:
+  explicit ConcentrationPropOrigCov(std::vector<double> a) : attribute(std::move(a)) {}
+  double change(const Chain& ch, int i, int j, int edge, int update) const override {
+    double v = ch.v(i, j), total = rowSumOf(ch, i), cont;
+    if (update == -1) {
+      cont = 2 * (-2 * v + 1 + total) / (total - 1);
+    } else if (update == 1) {
+      cont = 2 * (2 * v - total) / total;
+    } else {
+      Rcpp::stop("updates other than -1 and 1 are not supported");
+    }
+    return attribute[i] * cont;
+  }
+  double target(const Chain& ch, int i, int j) const override {
+    double v = ch.v(i, j), total = rowSumOf(ch, i);
+    double numerator = 2 * rpow(v, 2) - v * total - v;
+    double denominator = total - 1;
+    if (denominator <= 0) {
+      numerator = 0;
+      denominator = 1;
+    }
+    return attribute[i] * numerator / denominator;
+  }
+};
+
+// concentration_rankGW: weights of the ties from an origin by their rank
+// (R: rank(-row), ties get their average rank)
+class ConcentrationRankGW : public Effect {
+  double logWeight;  // log(1 / lambda)
+  // average ranks of all values in decreasing order (rank 1 = largest)
+  static std::vector<double> ranks(const std::vector<double>& row) {
+    std::vector<double> sorted = row;
+    std::sort(sorted.begin(), sorted.end(), std::greater<double>());
+    std::vector<double> r(row.size());
+    for (size_t k = 0; k < row.size(); ++k) {
+      // number of values larger than row[k], and equal to it
+      size_t larger = std::lower_bound(sorted.begin(), sorted.end(), row[k],
+                                       std::greater<double>()) - sorted.begin();
+      size_t equal = std::upper_bound(sorted.begin(), sorted.end(), row[k],
+                                      std::greater<double>()) - sorted.begin() - larger;
+      r[k] = larger + (equal + 1) / 2.0;
+    }
+    return r;
+  }
+  double w(double rank) const { return std::exp(rank * logWeight); }
+ public:
+  explicit ConcentrationRankGW(double lambda) : logWeight(std::log(1 / lambda)) {}
+  double change(const Chain& ch, int i, int j, int edge, int update) const override {
+    std::vector<double> previous = rowOf(ch, i);
+    std::vector<double> next = previous;
+    next[j] = next[j] + update;
+    std::vector<double> r1 = ranks(previous), r2 = ranks(next);
+    if (r1[j] == r2[j]) return next[j] * w(r2[j]) - previous[j] * w(r1[j]);
+    double v = 0;
+    for (int k = 0; k < ch.n; ++k) {
+      if ((r1[k] - r2[k]) != 0) v = v + next[k] * w(r2[k]) - previous[k] * w(r1[k]);
+    }
+    return v;
+  }
+  double target(const Chain& ch, int i, int j) const override {
+    double n = ch.v(i, j);
+    if (n == 0) return 0;
+    return n * w(ranks(rowOf(ch, i))[j]);
+  }
+};
+
 // ---- remaining reciprocity effects (R/2d_effectFunctions_reciprocity.R)
 
 // reciprocity_basic
@@ -1058,6 +1208,20 @@ std::unique_ptr<Effect> makeEffect(const Rcpp::List& spec, const Chain& chain) {
   if (name == "concentration_basic") return E(new ConcentrationBasic(2));
   if (name == "concentration_basic_cube") return E(new ConcentrationBasic(3));
   if (name == "concentration_max") return E(new ConcentrationMax());
+  if (name == "concentration_basic_squared") return E(new ConcentrationBasicSquared());
+  if (name == "concentration_norm") return E(new ConcentrationNorm(false));
+  if (name == "concentration_norm_squared") return E(new ConcentrationNorm(true));
+  if (name == "concentration_prop_orig_cov") {
+    if (Rcpp::as<bool>(spec["attributeIsMatrix"])) {
+      Rcpp::stop("attribute in concentration_prop_orig_cov must be monadic");
+    }
+    return E(new ConcentrationPropOrigCov(attributeOf(spec)));
+  }
+  if (name == "concentration_rankGW") {
+    double lambda = Rcpp::as<double>(spec["lambda"]);
+    if (lambda <= 0) Rcpp::stop("lambda parameter in concentration_rankGW function must be positive");
+    return E(new ConcentrationRankGW(lambda));
+  }
   if (name == "concentration_prop") return E(new ConcentrationProp(false, 0));
   if (name == "concentration_prop_AC") {
     return E(new ConcentrationProp(true, alphaOf(spec, "concentration_prop_AC")));

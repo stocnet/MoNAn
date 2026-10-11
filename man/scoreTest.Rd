@@ -5,38 +5,69 @@
 \alias{print.scoretest.monan}
 \title{scoreTest}
 \usage{
-scoreTest(ans, effects)
+scoreTest(ans, effects, modelEffects = NULL, nonParametric = FALSE)
 
 \method{print}{scoretest.monan}(x, ...)
 }
 \arguments{
-\item{ans}{An object of class "result.monan" resulting from an estimation with the function \code{\link[=estimateMobilityNetwork]{estimateMobilityNetwork()}}.}
+\item{ans}{An object of class "result.monan" resulting from an estimation with
+the function \code{\link[=estimateMobilityNetwork]{estimateMobilityNetwork()}} using the option returnDeps = TRUE.}
 
-\item{effects}{An object of class "effectsList.monan" in which the non included effects that should
-be tested are specified.}
+\item{effects}{An object of class "effectsList.monan" in which the non included
+effects that should be tested are specified.}
+
+\item{modelEffects}{The effects object of the estimated model. Only needed for
+results estimated with earlier versions of MoNAn, which do not contain the
+statistics of the model's effects.}
+
+\item{nonParametric}{Logical: should the non-parametric value of earlier
+versions be reported, too? It is the share of simulated statistics that are
+smaller than or equal to the observed one (further away from 0.5 = more
+significant). It is not corrected for the correlation with the model's
+effects and therefore rarely extreme; it is not recommended for testing.}
 
 \item{x}{An object of class "scoretest.monan".}
 
 \item{...}{For internal use only.}
 }
 \value{
-The function \code{scoreTest} returns basic values to calculate
-parametric and non-parametric p-values
-for each tested effect.
+The function \code{scoreTest} returns an object of class "scoretest.monan"
+with, for each tested effect, the t-statistic (\code{tStatistics}), the two-sided
+p-value (\code{pValues}) and R2 (\code{R2}), the observed and simulated statistics, and
+with nonParametric = TRUE the non-parametric values (\code{pValuesNonParametric}).
 
-The function \code{print.scoretest.monan} shows parametric and non-parametric p-values
-for each tested effect.
+The function \code{print.scoretest.monan} shows the t-statistics, p-values
+and R2 for each tested effect.
 }
 \description{
-Based on an estimated model, a score-type test is available that shows whether
-statistics representing non-included effects are well represented. If this is
-not the case, it is likely that including them will result in significant estimates.
+Based on an estimated model, a score-type test shows whether effects that are
+not included in the model are likely to be significant if they were included.
+}
+\details{
+For each tested effect, the statistic of the effect in the observed network is
+compared with its distribution in the networks simulated in Phase 3 of the
+estimation. Because the statistics of tested effects are usually correlated
+with the statistics of the effects in the model, the test is conditional on
+the model's statistics: the deviation of the observed statistic from the
+simulated mean is adjusted for the remaining deviations of the model's
+statistics, and divided by the standard deviation of the tested statistic
+given the model's statistics (a generalised score test). The resulting
+t-statistic is approximately standard normal if the effect's parameter is 0.
+
+R2 is the share of the variance of the tested statistic that is explained by
+the model's statistics. Values close to 1 indicate that the effect is nearly
+redundant given the model, so that its parameter is hard to estimate.
+
+The test needs the statistics of the model's effects in the simulated
+networks. Estimations with returnDeps = TRUE store them. For results of
+earlier versions of MoNAn, which do not contain them, the effects of the
+estimated model must be specified with modelEffects.
 }
 \examples{
 \donttest{
 # test whether other effects should be included
 myEffects2 <- createEffects(myState) |>
-  addEffect(transitivity_min)
+  addEffect(transitivity_AC, alpha = 8)
 
 test_ME.2 <- scoreTest(myResDN, myEffects2)
 }
@@ -45,5 +76,5 @@ test_ME.2
 }
 }
 \seealso{
-\code{\link[=createEffectsObject]{createEffectsObject()}}
+\code{\link[=createEffectsObject]{createEffectsObject()}}, \code{\link[=estimateMobilityNetwork]{estimateMobilityNetwork()}}
 }

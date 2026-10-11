@@ -17,3 +17,7 @@ tieSumsCpp <- function(tie, values, nCells) {
     .Call(`_MoNAn_tieSumsCpp`, tie, values, nCells)
 }
 
+mpleNewtonCpp <- function(edgelist, cache, resourceCovariates, resourceSet, nodeSet, effectSpecs, theta, allowLoops, derivatives) {
+    .Call(`_MoNAn_mpleNewtonCpp`, edgelist, cache, resourceCovariates, resourceSet, nodeSet, effectSpecs, theta, allowLoops, derivatives)
+}
+

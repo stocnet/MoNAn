@@ -156,6 +156,19 @@ cppNetworkStatistics <- function(dep.var, state, cache, effects) {
   statistics
 }
 
+# mpleObjectiveCpp
+# as mpleObjectiveR, but calculated in C++ (mpleNewtonCpp in src/sampler.cpp),
+# which recomputes the change statistics in each call instead of storing them
+mpleObjectiveCpp <- function(dep.var, state, cache, effects, allowLoops) {
+  inputs <- cppChainInputs(dep.var, state, cache)
+  specs <- cppEffectSpec(effects, inputs$state)
+  function(theta, derivatives = TRUE) {
+    mpleNewtonCpp(inputs$edgelist, inputs$cache, inputs$resourceCovariates,
+                  inputs$resourceSet, inputs$nodeSet, specs,
+                  as.numeric(theta), allowLoops, derivatives)
+  }
+}
+
 # cppEffectValues
 # change statistic and target contribution of one C++ effect, for tests
 cppEffectValues <- function(effects, k, state, cache, i, j, edge, update) {

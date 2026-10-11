@@ -1,3 +1,14 @@
+# MoNAn (development version)
+
+## Performance
+
+- The maximum pseudo-likelihood estimates used as starting values are
+  calculated in C++ if all effects have a C++ version (about 4-5 times faster
+  for larger data, e.g. 2.4 instead of 10.9 seconds with 100 locations and
+  10,000 resources), without storing the change statistics of all resources and
+  destinations, so memory use does not grow with the data. The estimates are
+  the same as with the R version, which is used otherwise.
+
 # MoNAn 2.0.0
 
 Version 2 runs the simulations in C++, which makes estimation typically 20-50

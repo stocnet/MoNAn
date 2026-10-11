@@ -646,10 +646,54 @@ geyerThompsonStep <- function(statistics, observedStatistics, minESS = 0.5,
 # Maximum pseudo-likelihood estimate: a conditional logit of each resource's
 # observed destination against all possible destinations, given the
 # destinations of all other resources. Used as starting values for the
-# Geyer-Thompson estimation. Returns NULL if the estimate does not exist
-# (e.g. separation) or the optimisation fails.
+# estimation. Returns NULL if the estimate does not exist (e.g. separation) or
+# the optimisation fails. The pseudo-likelihood is calculated in C++ if all
+# effects have a C++ version (mpleObjectiveCpp), otherwise in R.
 getMPLE <- function(dep.var, state, cache, effects, allowLoops,
                     maxNewton = 50, tol = 1e-8) {
+  p <- length(effects$effectFormulas)
+  evaluate <- if (useCppSampler(effects, state)) {
+    mpleObjectiveCpp(dep.var, state, cache, effects, allowLoops)
+  } else {
+    mpleObjectiveR(dep.var, state, cache, effects, allowLoops)
+  }
+
+  theta <- rep(0, p)
+  for (k in 1:maxNewton) {
+    current <- evaluate(theta, derivatives = TRUE)
+    if (!is.finite(current$logPL)) {
+      return(NULL)
+    }
+    step <- tryCatch(-solve(current$hessian, current$gradient), error = function(e) NULL)
+    if (is.null(step) || any(!is.finite(step))) {
+      return(NULL)
+    }
+    # step halving to keep the pseudo-likelihood increasing
+    a <- 1
+    repeat {
+      candidate <- evaluate(theta + a * step, derivatives = FALSE)$logPL
+      if ((is.finite(candidate) && candidate >= current$logPL - 1e-10) || a <= 1e-6) {
+        break
+      }
+      a <- a / 2
+    }
+    theta <- theta + a * step
+    if (max(abs(a * step)) < tol) {
+      break
+    }
+  }
+  if (any(!is.finite(theta)) || max(abs(theta)) > 1e3) {
+    return(NULL)
+  }
+  names(theta) <- effects$name
+  theta
+}
+
+# mpleObjectiveR
+# returns a function of the parameters that gives the log pseudo-likelihood
+# and, with derivatives = TRUE, its gradient and Hessian, using the R effect
+# functions (see getMPLE); the change statistics are calculated once and stored
+mpleObjectiveR <- function(dep.var, state, cache, effects, allowLoops) {
   state <- toMutableState(state, dep.var)
   cache <- toMutableCache(cache)
   edgelist <- state[[dep.var]]
@@ -682,14 +726,14 @@ getMPLE <- function(dep.var, state, cache, effects, allowLoops,
     list(X = matrix(X, ncol = p), observed = match(j, destinations))
   })
 
-  theta <- rep(0, p)
-  logPL <- function(theta) {
-    sum(vapply(choiceSets, function(cs) {
+  function(theta, derivatives = TRUE) {
+    logPL <- sum(vapply(choiceSets, function(cs) {
       eta <- as.vector(cs$X %*% theta)
       eta[cs$observed] - max(eta) - log(sum(exp(eta - max(eta))))
     }, numeric(1)))
-  }
-  for (k in 1:maxNewton) {
+    if (!derivatives || !is.finite(logPL)) {
+      return(list(logPL = logPL))
+    }
     gradient <- rep(0, p)
     hessian <- matrix(0, p, p)
     for (cs in choiceSets) {
@@ -700,26 +744,8 @@ getMPLE <- function(dep.var, state, cache, effects, allowLoops,
       gradient <- gradient + cs$X[cs$observed, ] - expected
       hessian <- hessian - (crossprod(cs$X * sqrt(prob)) - tcrossprod(expected))
     }
-    step <- tryCatch(-solve(hessian, gradient), error = function(e) NULL)
-    if (is.null(step) || any(!is.finite(step))) {
-      return(NULL)
-    }
-    # step halving to keep the pseudo-likelihood increasing
-    a <- 1
-    current <- logPL(theta)
-    while (logPL(theta + a * step) < current - 1e-10 && a > 1e-6) {
-      a <- a / 2
-    }
-    theta <- theta + a * step
-    if (max(abs(a * step)) < tol) {
-      break
-    }
+    list(logPL = logPL, gradient = gradient, hessian = hessian)
   }
-  if (any(!is.finite(theta)) || max(abs(theta)) > 1e3) {
-    return(NULL)
-  }
-  names(theta) <- effects$name
-  theta
 }
 
 

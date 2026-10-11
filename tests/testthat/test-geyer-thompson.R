@@ -74,3 +74,59 @@ test_that("algorithm objects without phase2Method use Robbins-Monro", {
   expect_null(myAlg$phase2Method)
   expect_error(createAlgorithm(myState, myEffects, phase2Method = "XY"))
 })
+
+test_that("the C++ pseudo-likelihood equals the R pseudo-likelihood", {
+  resourceEffects <- createEffects(cppTestState) |>
+    addEffect(loops) |>
+    addEffect(concentration_GW, alpha = 2) |>
+    addEffect(reciprocity_min_resource_covar, edge.attribute = "second_or") |>
+    addEffect(loops_resource_covar, edge.attribute = "sex") |>
+    addEffect(transitivity_AC)
+  for (effects in list(myEffects, resourceEffects)) {
+    dv <- cppTestState$dep.var
+    fR <- mpleObjectiveR(dv, cppTestState, cppTestState$cache, effects, TRUE)
+    fC <- mpleObjectiveCpp(dv, cppTestState, cppTestState$cache, effects, TRUE)
+    set.seed(1)
+    for (theta in list(rep(0, length(effects$name)), runif(length(effects$name), -0.5, 0.5))) {
+      r <- fR(theta)
+      cc <- fC(theta)
+      expect_equal(cc$logPL, r$logPL, tolerance = 1e-10)
+      expect_equal(cc$gradient, r$gradient, tolerance = 1e-10)
+      expect_equal(cc$hessian, r$hessian, tolerance = 1e-10)
+      expect_equal(fC(theta, derivatives = FALSE)$logPL, r$logPL, tolerance = 1e-10)
+    }
+  }
+})
+
+test_that("MPLE is the same with the C++ and the R pseudo-likelihood", {
+  dv <- myState$dep.var
+  old <- options(MoNAn.useCpp = FALSE)
+  mpleR <- getMPLE(dv, myState, myState$cache, myEffects, allowLoops = TRUE)
+  options(old)
+  mpleCpp <- getMPLE(dv, myState, myState$cache, myEffects, allowLoops = TRUE)
+  expect_equal(mpleCpp, mpleR, tolerance = 1e-8)
+
+  mpleNoLoops <- getMPLE(dv, myState, myState$cache,
+                         createEffects(myState) |> addEffect(concentration_AC, alpha = 2),
+                         allowLoops = FALSE)
+  # the observed data contain loops, which are impossible without loops
+  expect_null(mpleNoLoops)
+})
+
+test_that("MPLE uses the R pseudo-likelihood for effects written only in R", {
+  assign("myLoopsMPLE", function(dep.var = 1, state, cache, i, j, edge, update,
+                                 getTargetContribution = FALSE) {
+    if (getTargetContribution) return(cache[[dep.var]]$valuedNetwork[i, j] * (i == j))
+    if (i == j) return(update)
+    0
+  }, envir = globalenv())
+  on.exit(rm("myLoopsMPLE", envir = globalenv()), add = TRUE)
+  effects <- createEffects(myState) |> addEffect(myLoopsMPLE)
+  expect_false(useCppSampler(effects, myState))
+  mple <- getMPLE(myState$dep.var, myState, myState$cache, effects, allowLoops = TRUE)
+  # same model as the loops effect alone
+  expect_equal(unname(mple),
+               unname(getMPLE(myState$dep.var, myState, myState$cache,
+                              createEffects(myState) |> addEffect(loops), allowLoops = TRUE)),
+               tolerance = 1e-8)
+})

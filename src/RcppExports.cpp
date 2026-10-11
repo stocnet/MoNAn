@@ -78,12 +78,32 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// mpleNewtonCpp
+Rcpp::List mpleNewtonCpp(Rcpp::IntegerMatrix edgelist, Rcpp::List cache, Rcpp::List resourceCovariates, Rcpp::IntegerVector resourceSet, Rcpp::IntegerVector nodeSet, Rcpp::List effectSpecs, Rcpp::NumericVector theta, bool allowLoops, bool derivatives);
+RcppExport SEXP _MoNAn_mpleNewtonCpp(SEXP edgelistSEXP, SEXP cacheSEXP, SEXP resourceCovariatesSEXP, SEXP resourceSetSEXP, SEXP nodeSetSEXP, SEXP effectSpecsSEXP, SEXP thetaSEXP, SEXP allowLoopsSEXP, SEXP derivativesSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::IntegerMatrix >::type edgelist(edgelistSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type cache(cacheSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type resourceCovariates(resourceCovariatesSEXP);
+    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type resourceSet(resourceSetSEXP);
+    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type nodeSet(nodeSetSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type effectSpecs(effectSpecsSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type theta(thetaSEXP);
+    Rcpp::traits::input_parameter< bool >::type allowLoops(allowLoopsSEXP);
+    Rcpp::traits::input_parameter< bool >::type derivatives(derivativesSEXP);
+    rcpp_result_gen = Rcpp::wrap(mpleNewtonCpp(edgelist, cache, resourceCovariates, resourceSet, nodeSet, effectSpecs, theta, allowLoops, derivatives));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_MoNAn_simulateChainCpp", (DL_FUNC) &_MoNAn_simulateChainCpp, 13},
     {"_MoNAn_networkStatisticsCpp", (DL_FUNC) &_MoNAn_networkStatisticsCpp, 4},
     {"_MoNAn_effectValuesCpp", (DL_FUNC) &_MoNAn_effectValuesCpp, 8},
     {"_MoNAn_tieSumsCpp", (DL_FUNC) &_MoNAn_tieSumsCpp, 3},
+    {"_MoNAn_mpleNewtonCpp", (DL_FUNC) &_MoNAn_mpleNewtonCpp, 9},
     {NULL, NULL, 0}
 };
 

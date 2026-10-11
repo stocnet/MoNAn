@@ -651,6 +651,33 @@ class ConcentrationProp : public Effect {
   }
 };
 
+// concentration_max: the largest number of resources on a tie from each origin
+class ConcentrationMax : public Effect {
+ public:
+  double change(const Chain& ch, int i, int j, int edge, int update) const override {
+    double v = ch.v(i, j);
+    // largest and second-largest value of row i (R: sort(row, decreasing = T)[2])
+    double first = R_NegInf, second = R_NegInf;
+    for (int k = 0; k < ch.n; ++k) {
+      double x = ch.v(i, k);
+      if (x > first) {
+        second = first;
+        first = x;
+      } else if (x > second) {
+        second = x;
+      }
+    }
+    if (update == 1 && first == v) return update;
+    if (update == -1 && v > second) return update;
+    return 0;
+  }
+  double target(const Chain& ch, int i, int j) const override {
+    double rowMax = R_NegInf;
+    for (int k = 0; k < ch.n; ++k) rowMax = std::max(rowMax, ch.v(i, k));
+    return rowMax / ch.n;
+  }
+};
+
 // ---- remaining reciprocity effects (R/2d_effectFunctions_reciprocity.R)
 
 // reciprocity_basic
@@ -1030,6 +1057,7 @@ std::unique_ptr<Effect> makeEffect(const Rcpp::List& spec, const Chain& chain) {
   if (name == "triad120U") return E(new Triad120(Triad120::U));
   if (name == "concentration_basic") return E(new ConcentrationBasic(2));
   if (name == "concentration_basic_cube") return E(new ConcentrationBasic(3));
+  if (name == "concentration_max") return E(new ConcentrationMax());
   if (name == "concentration_prop") return E(new ConcentrationProp(false, 0));
   if (name == "concentration_prop_AC") {
     return E(new ConcentrationProp(true, alphaOf(spec, "concentration_prop_AC")));

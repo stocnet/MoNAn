@@ -21,7 +21,7 @@ cppEffects <- c("loops", "concentration_AC", "reciprocity_AC", "dyadic_covariate
                 "transitivity_AC", "transitivity_GW",
                 "triad120C", "triad120D", "triad120U",
                 "concentration_basic", "concentration_basic_cube",
-                "concentration_prop", "concentration_prop_AC",
+                "concentration_prop", "concentration_prop_AC", "concentration_max",
                 "reciprocity_basic", "reciprocity_min",
                 "reciprocity_min_dyad_covar", "reciprocity_min_resource_covar",
                 "same_covariate", "sim_covariate", "dyadic_covariate_resource_attribute",

@@ -48,6 +48,7 @@ effect_specs <- list(
   concentration_GW_resource_covar_bin = list(resource.attribute.index = "sex", alpha = 2),
   concentration_basic = list(),
   concentration_basic_cube = list(),
+  concentration_max = list(),
   concentration_prop = list(),
   concentration_prop_AC = list(alpha = 2),
   concentration_prop_AC_alpha4 = list(.effect = "concentration_prop_AC", alpha = 4),

@@ -8,3 +8,5 @@
 ^CRAN-SUBMISSION$
 ^.github$
 ^MoNAn_logo\.png$
+^\.positai$
+^\.claude$

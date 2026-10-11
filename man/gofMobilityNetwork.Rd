@@ -61,7 +61,7 @@ plot(myGofTieWeight, lvls = 1:15)
 }
 \references{
 Hunter, D. R., Goodreau, S. M., & Handcock, M. S. (2008). Goodness of fit of social network models.
-\emph{Journal of the american statistical association}, 103(481), 248-258.
+\emph{Journal of the American Statistical Association}, 103(481), 248-258.
 
 Lospinoso, J., & Snijders, T. A. (2019).
 Goodness of fit for stochastic actor-oriented models. \emph{Methodological Innovations}, 12(3).

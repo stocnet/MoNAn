@@ -95,28 +95,24 @@ createInternalCache <-
       }
       if (is(processState[[name]], "edgelist.monan")) {
         # create valued network from edge list
-        m <- matrix(0, nActors1, nActors2)
-        
-        # create weighted resource networks
+        nResources <- processState[[name]]$size[1]
+        senders <- processState[[name]]$data[seq_len(nResources), 1]
+        receivers <- processState[[name]]$data[seq_len(nResources), 2]
+        tie <- senders + (receivers - 1) * nActors1
+        m <- matrix(as.numeric(tabulate(tie, nbins = nActors1 * nActors2)),
+                    nActors1, nActors2)
+
+        # create weighted resource networks; the values on each tie are summed
+        # in the order of the edge list, starting from 0, i.e. exactly as when
+        # adding the resources one by one
         m.resource <-
-          lapply(resourceCovariates, function(v) {
-            matrix(0, nrow = nActors1, ncol = nActors2)
+          lapply(resourceCovariates, function(ressCovar) {
+            values <- as.numeric(processState[[ressCovar]]$data[seq_len(nResources)])
+            matrix(tieSumsCpp(as.integer(tie), values, nActors1 * nActors2),
+                   nrow = nActors1, ncol = nActors2)
           })
         names(m.resource) <- resourceCovariates
-        
-        for (i in 1:processState[[name]]$size[1]) {
-          sender <- processState[[name]]$data[i, 1]
-          receiver <- processState[[name]]$data[i, 2]
-          v <- m[sender, receiver]
-          m[sender, receiver] <- v + 1
-          
-          # cache network * resource covariate matrices
-          for (ressCovar in resourceCovariates) {
-            v <- m.resource[[ressCovar]][sender, receiver]
-            m.resource[[ressCovar]][sender, receiver] <- v +
-              processState[[ressCovar]]$data[i]
-          }
-        }
+
         cache[[name]]$valuedNetwork <- m
         cache[[name]]$resourceNetworks <- m.resource
         

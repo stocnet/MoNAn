@@ -22,7 +22,7 @@ internal use by the estimation algorithm.
 }
 \description{
 Do individuals move to destinations that send more individuals to ego’s origin?
-This is weighted by a dydic covariate.
+This is weighted by a dyadic covariate.
 This version of the effect is the minimum of the moves in either direction,
 thereby guarding against degeneracy and guaranteeing sample size consistency.
 It counts the ‘raw’ number of reciprocated transitions in the mobility network.

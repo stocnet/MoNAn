@@ -215,7 +215,7 @@ getMultinomialStatistics <-
 #' @seealso [getIndegree()], [getTieWeights()]
 #'
 #' @references Hunter, D. R., Goodreau, S. M., & Handcock, M. S. (2008). Goodness of fit of social network models. 
-#' \emph{Journal of the american statistical association}, 103(481), 248-258.
+#' \emph{Journal of the American Statistical Association}, 103(481), 248-258.
 #' 
 #' Lospinoso, J., & Snijders, T. A. (2019). 
 #' Goodness of fit for stochastic actor-oriented models. \emph{Methodological Innovations}, 12(3).
@@ -323,7 +323,7 @@ plot.gof.stats.monan <- function(x, lvls, ...) {
 #' @param ... Additional plotting parameters, use not recommended.
 #'
 #' @return The function `plot.traces.monan` shows a scatter plot of the
-#' statistics of simulated networks from phase three of the esimtation.
+#' statistics of simulated networks from phase three of the estimation.
 #' @export
 #'
 #' @examples

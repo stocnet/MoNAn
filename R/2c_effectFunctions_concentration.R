@@ -239,7 +239,7 @@ concentration_GW <- function(dep.var = 1, state, cache, i, j, edge, update,
 
 #' concentration_AC_resource_covar_bin
 #' 
-#' Is there a bandwaggon effect in mobility, akin to the concentration_AC
+#' Is there a bandwagon effect in mobility, akin to the concentration_AC
 #' effect, but where people of group 1 only consider others of group 1
 #' in their decision to move?
 #' 
@@ -328,7 +328,7 @@ concentration_AC_resource_covar_bin <- function(dep.var = 1,
 
 #' concentration_GW_resource_covar_bin
 #' 
-#' Is there a bandwaggon effect in mobility, akin to the concentration_GW
+#' Is there a bandwagon effect in mobility, akin to the concentration_GW
 #' effect, but where people of group 1 only consider others of group 1
 #' in their decision to move?
 #' 

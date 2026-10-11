@@ -257,3 +257,12 @@ Rcpp::NumericVector effectValuesCpp(Rcpp::IntegerMatrix edgelist,
     Rcpp::Named("change") = s.effects[0]->change(s.ch, i - 1, j - 1, edge - 1, update),
     Rcpp::Named("target") = s.effects[0]->target(s.ch, i - 1, j - 1));
 }
+
+// sums of a resource covariate per tie, adding the values in the order of
+// the edge list starting from 0 (as createInternalCache did in R)
+// [[Rcpp::export]]
+Rcpp::NumericVector tieSumsCpp(Rcpp::IntegerVector tie, Rcpp::NumericVector values, int nCells) {
+  Rcpp::NumericVector sums(nCells);
+  for (R_xlen_t e = 0; e < tie.size(); ++e) sums[tie[e] - 1] += values[e];
+  return sums;
+}

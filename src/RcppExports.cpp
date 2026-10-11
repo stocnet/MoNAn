@@ -65,11 +65,25 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// tieSumsCpp
+Rcpp::NumericVector tieSumsCpp(Rcpp::IntegerVector tie, Rcpp::NumericVector values, int nCells);
+RcppExport SEXP _MoNAn_tieSumsCpp(SEXP tieSEXP, SEXP valuesSEXP, SEXP nCellsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type tie(tieSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type values(valuesSEXP);
+    Rcpp::traits::input_parameter< int >::type nCells(nCellsSEXP);
+    rcpp_result_gen = Rcpp::wrap(tieSumsCpp(tie, values, nCells));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_MoNAn_simulateChainCpp", (DL_FUNC) &_MoNAn_simulateChainCpp, 13},
     {"_MoNAn_networkStatisticsCpp", (DL_FUNC) &_MoNAn_networkStatisticsCpp, 4},
     {"_MoNAn_effectValuesCpp", (DL_FUNC) &_MoNAn_effectValuesCpp, 8},
+    {"_MoNAn_tieSumsCpp", (DL_FUNC) &_MoNAn_tieSumsCpp, 3},
     {NULL, NULL, 0}
 };
 

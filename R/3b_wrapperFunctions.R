@@ -42,7 +42,7 @@ addFixedEffects <- addDummyEffects
 
 #' addEffect
 #' 
-#' A function to add additional effects to a moman effects object
+#' A function to add additional effects to a monan effects object
 #'
 #' @param effectsObject The monan Effects object to which another
 #' effect should be added.

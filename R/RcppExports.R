@@ -13,3 +13,7 @@ effectValuesCpp <- function(edgelist, cache, resourceCovariates, effectSpec, i, 
     .Call(`_MoNAn_effectValuesCpp`, edgelist, cache, resourceCovariates, effectSpec, i, j, edge, update)
 }
 
+tieSumsCpp <- function(tie, values, nCells) {
+    .Call(`_MoNAn_tieSumsCpp`, tie, values, nCells)
+}
+

@@ -22,6 +22,14 @@
 
 ## New features
 
+- Parallel estimation (`parallel = TRUE`) uses the package 'parallel' (part of
+  R) instead of 'snowfall', which is no longer a dependency. One cluster is
+  started per estimation instead of one per phase. Each chain gets its own
+  random number stream (L'Ecuyer-CMRG) derived from the random numbers of the
+  R session, so parallel estimations are now reproducible with `set.seed()`
+  and the chains are independent. Results therefore differ from earlier
+  versions; serial estimations are unchanged.
+
 - The concentration effects `concentration_basic_squared`,
   `concentration_norm`, `concentration_norm_squared`,
   `concentration_prop_orig_cov` and `concentration_rankGW`, removed in 2.0.0,

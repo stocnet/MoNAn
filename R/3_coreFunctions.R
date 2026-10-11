@@ -793,7 +793,12 @@ createWeightedCache <-
 #' @param prevAns If a previous estimation did not yield satisfactory convergence,
 #' the outcome object of that estimation should be specified here to provide new
 #' starting values for the estimation.
-#' @param parallel Logical: computation on multiple cores?
+#' @param parallel Logical: computation on multiple cores? If TRUE, the
+#' simulations run in `cpus` independent chains on a socket cluster (package
+#' 'parallel'). Each chain gets its own random number stream derived from the
+#' random numbers of the R session, so results are reproducible with
+#' [set.seed()]; they differ from those of a serial estimation with the same
+#' seed. The workers use the installed version of MoNAn.
 #' @param cpus Number of cores for computation in case parallel = TRUE.
 #' @param verbose Logical: display information about estimation progress in the console?
 #' @param returnDeps Logical: should the simulated values of Phase 3 be stored and returned?
@@ -825,7 +830,7 @@ createWeightedCache <-
 #'                                    initialParameters = NULL,
 #'                                    # in case a pseudo-likelihood estimation was run, replace with
 #'                                    # initialParameters = initEst,
-#'                                    parallel = TRUE, cpus = 4,
+#'                                    parallel = TRUE, cpus = 2,
 #'                                    verbose = TRUE,
 #'                                    returnDeps = TRUE,
 #'                                    fish = FALSE
@@ -914,6 +919,13 @@ estimateMobilityNetwork <-
       }
     }
 
+    # one cluster for all phases of a parallel estimation
+    cl <- NULL
+    if (parallel && cpus > 1) {
+      cl <- startCluster(cpus)
+      on.exit(stopCluster(cl), add = TRUE)
+    }
+
     # decide whether to run phase 1: it is skipped with prevAns, and with
     # Geyer-Thompson estimation if there are starting values. With starting
     # values, phase 1 only determines the sensitivity vector for Robbins-Monro.
@@ -943,8 +955,7 @@ estimateMobilityNetwork <-
           multinomialProposal,
           allowLoops,
           verbose,
-          parallel,
-          cpus
+          cl = cl
         )
       initialParameters <- resPhase1$estimates
       sensitivityVector <- resPhase1$sensitivityVector
@@ -968,8 +979,7 @@ estimateMobilityNetwork <-
         iterationsGT = algorithm$iterationsGT,
         maxIterationsGT = algorithm$maxIterationsGT,
         finalIterationsGT = algorithm$finalIterationsGT,
-        parallel = parallel,
-        cpus = cpus,
+        cl = cl,
         multinomialProposal = multinomialProposal,
         allowLoops = allowLoops,
         verbose = verbose
@@ -987,8 +997,7 @@ estimateMobilityNetwork <-
         initGain,
         thinningN2,
         initialIterationsN2,
-        parallel = parallel,
-        cpus = cpus,
+        cl = cl,
         multinomialProposal,
         allowLoops,
         verbose = verbose
@@ -1012,8 +1021,7 @@ estimateMobilityNetwork <-
       algorithm$iterationsN3,
       algorithm$burnInN3,
       algorithm$thinningN3,
-      parallel = parallel,
-      cpus = cpus,
+      cl = cl,
       algorithm$allowLoops,
       verbose = verbose,
       returnDeps = returnDeps,

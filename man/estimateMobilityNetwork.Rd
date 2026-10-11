@@ -115,7 +115,9 @@ results object. Defaults to FALSE.}
 The function \code{estimateMobilityNetwork} returns an object of class "result.monan" that contains the estimates, standard errors,
 and convergence statistics. Furthermore, the covariance matrix used to calculate
 the standard errors is included, which also shows collinearity between effects.
-In case returnDeps = TRUE, the simulations of Phase 3 are included, too.
+In case returnDeps = TRUE, the simulations of Phase 3 are included, too,
+together with the statistics of the model's effects in the observed and the
+simulated networks (used by \code{\link[=scoreTest]{scoreTest()}}).
 
 The function \code{print.result.monan} prints the results from a monan
 estimation with three columns indicating the estimate, the standard error,

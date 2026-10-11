@@ -289,17 +289,17 @@ plot(traces)
 
 ## Score-tests to check model specification
 
-Based on an estimated model, a score-type test is available that shows whether statistics representing non-included effects are well represented. If this is not the case, it is likely that including them will result in significant estimates.
+Based on an estimated model, a score-type test is available that shows whether statistics representing non-included effects are well represented. If this is not the case, it is likely that including them will result in significant estimates. The test is conditional on the statistics of the effects in the model; it requires an estimation with `returnDeps = TRUE`.
 
 ```{r}
 myEffects2 <- createEffects(myState) |>
-  addEffect(transitivity_min)
+  addEffect(transitivity_AC, alpha = 8)
 
 test_ME.2 <- scoreTest(myResDN, myEffects2)
 test_ME.2
 ```
 
-The interpretation is that there appears to be some transitive clustering in the data that the model does not account for in its current form.
+The p-value is above 0.05, so the test gives no clear evidence that transitive clustering is missing from the model, although the positive t-statistic points in that direction. R2 shows that the transitivity statistic is largely explained by the effects already in the model (in particular concentration and reciprocity), which makes its parameter harder to estimate.
 
 
 ## GOF testing

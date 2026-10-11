@@ -1,5 +1,25 @@
 # MoNAn 2.1.0
 
+## Breaking changes
+
+- `scoreTest` now performs a score test that is conditional on the statistics
+  of the effects in the model: the deviation of a tested effect's statistic is
+  adjusted for the remaining deviations of the model's statistics and divided
+  by its standard deviation given the model's statistics. The previous
+  parametric p-values ignored this correlation and were far too large (in a
+  calibration study with 160 simulated data sets they never fell below 0.05,
+  also for effects that are significant when estimated); the new p-values are
+  well calibrated. The result reports `tStatistics`, `pValues` and `R2` (the
+  share of the tested statistic's variance explained by the model's
+  statistics); the previous non-parametric value is available with
+  `nonParametric = TRUE`.
+- `estimateMobilityNetwork(..., returnDeps = TRUE)` stores the statistics of
+  the model's effects in the observed and simulated networks
+  (`observedStatistics`, `simulatedStatistics`), which `scoreTest` uses. For
+  results estimated with earlier versions, specify the effects of the
+  estimated model with `scoreTest(..., modelEffects = )`.
+- The example results `myResDN` were re-estimated with these statistics.
+
 ## New features
 
 - The concentration effects `concentration_basic_squared`,

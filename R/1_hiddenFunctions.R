@@ -860,12 +860,14 @@ runPhase3 <- function(dep.var,
     })
   }
 
-  # returns covariance matrix and convergence statistics
+  # returns covariance matrix and convergence statistics, and the statistics of
+  # the simulated networks (in the order of deps)
   return(
     list(
       covarianceMatrix = covarianceMatrixParameters,
       convergenceStatistics = convergenceStatistic,
-      deps = deps
+      deps = deps,
+      statistics = statisticsMatrix
     )
   )
 }

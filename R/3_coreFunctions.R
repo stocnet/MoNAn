@@ -807,7 +807,9 @@ createWeightedCache <-
 #' @return The function `estimateMobilityNetwork` returns an object of class "result.monan" that contains the estimates, standard errors,
 #' and convergence statistics. Furthermore, the covariance matrix used to calculate
 #' the standard errors is included, which also shows collinearity between effects.
-#' In case returnDeps = TRUE, the simulations of Phase 3 are included, too.
+#' In case returnDeps = TRUE, the simulations of Phase 3 are included, too,
+#' together with the statistics of the model's effects in the observed and the
+#' simulated networks (used by [scoreTest()]).
 #' @export
 #'
 #' @seealso [createProcessState()], [createEffectsObject()], [createAlgorithm()]
@@ -1038,7 +1040,11 @@ estimateMobilityNetwork <-
         convergenceStatistics = resPhase3$convergenceStatistics,
         state = state,
         cache = cache,
-        deps = resPhase3$deps
+        deps = resPhase3$deps,
+        # statistics of the model's effects in the observed and simulated
+        # networks, used by scoreTest
+        observedStatistics = observedStatistics,
+        simulatedStatistics = `rownames<-`(resPhase3$statistics, NULL)
       )
     }
     

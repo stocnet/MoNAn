@@ -11,3 +11,6 @@ src/*.dll
 temp1.RData
 inst/doc
 MoNAn.Rproj
+
+# kept locally for CRAN submissions only
+cran-comments.md

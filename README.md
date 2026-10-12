@@ -43,8 +43,9 @@ Announcements about workshops etc. can be found
 
 The **MoNAn Manual** is available here on github in the manual folder or
 on [SocArXiv](https://osf.io/preprints/socarxiv/8q2xu/). Note that this
-is the manual for version 1 of MoNAn, which still works but shall be
-replaced soon by a manual for version 2.
+is the manual for version 1 of MoNAn. This version still represnts the
+functionality and use of the user-side of MoNAn, but shall be replaced
+soon by a manual for version 2.
 
 ## Note from the developers
 
@@ -71,7 +72,8 @@ implementation.
 
 # Installation
 
-You can install MoNAn 2.0.0 from CRAN:
+From mid Oct, you can install MoNAn v2.1.1 from CRAN (earlier version
+2.0.0):
 
 ``` r
 install.packages("MoNAn")

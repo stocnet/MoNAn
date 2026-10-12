@@ -23,7 +23,7 @@ test_that("C++ statistics equal the R statistics of each draw", {
   set.seed(5)
   cpp <- simulateChain(dv, myState, myState$cache, effects, 1,
                        burnIn = 200, iterations = 20, thinning = 200, allowLoops = TRUE)
-  expect_identical(unname(cpp$statistics), unname(r))
+  expect_same(unname(cpp$statistics), unname(r))
 })
 
 test_that("models with effects written only in R use the R sampler", {
@@ -80,7 +80,7 @@ test_that("C++ effects give the same values as the R effects", {
                    i = el[E[m], 1], j = J[m], edge = E[m], update = U[m],
                    getTargetContribution = TRUE)
       )
-      expect_identical(
+      expect_same(
         cppEffectValues(effects, k, myState, myState$cache, el[E[m], 1], J[m], E[m], U[m]),
         expected,
         label = paste(effects$name[k], "edge", E[m], "to", J[m])

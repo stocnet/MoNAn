@@ -15,7 +15,7 @@
 
 ## Comments
 
-This is an update of MoNAn (2.0.0 -> 2.1.1; 2.1.0 was not submitted).
+This is an update of MoNAn (2.0.0 -> 2.1.1).
 
 * In response to the email from Brian Ripley of 12 October 2026, it fixes the
   test failures in the 'noLD' additional check for 2.0.0: the
@@ -23,11 +23,6 @@ This is an update of MoNAn (2.0.0 -> 2.1.1; 2.1.0 was not submitted).
   identical when R sums in long double but differ in the last digits without
   long double. The tests now allow a relative difference of 1e-10 when
   `capabilities("long.double")` is FALSE. The R-hub 'nold' check passes.
-* Parallel computation now uses the base package 'parallel' instead of
-  'snowfall'. Examples use at most 2 cores.
-* Further changes (a corrected score test, restored effects, bug fixes) are
-  listed in NEWS.md.
-* There are no reverse dependencies on CRAN.
 * "Geyer" and "Monro" are names (Geyer-Thompson and Robbins-Monro algorithms);
   "analyse" and "modelling" are British spellings.
 * The DOI link to the article in JRSSA in README.md

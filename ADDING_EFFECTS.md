@@ -258,7 +258,10 @@ test_that("C++ and R chains are identical with alter_covariate_squared", {
 
 - `expect_cpp_matches_r()` compares the change statistic and target
   contribution of every effect with its R version for random moves, including
-  moves into and out of loops, and the whole target statistics.
+  moves into and out of loops, and the whole target statistics. On R
+  built without `long double` (CRAN's "noLD" check), R sums in `double` while
+  the C++ code still uses `long double`, so the comparison allows a relative
+  difference of 1e-10 there (`expect_same()`); everywhere else it is exact.
 - `compare_chains()` runs the R and the C++ sampler with the same seed and
   checks that the edgelist, the cache and the random number state are identical
   afterwards.

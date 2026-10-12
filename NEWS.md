@@ -1,3 +1,11 @@
+# MoNAn 2.1.1
+
+## Bug fixes
+
+- The tests comparing C++ and R effects allow rounding differences on R built
+  without `long double` (CRAN's "noLD" check), where R sums in double
+  precision; elsewhere they still require identical values.
+
 # MoNAn 2.1.0
 
 ## Breaking changes / changes so that previous code produces different results

@@ -1,5 +1,17 @@
 # Helpers for testing the C++ sampler and effects against their R versions
 
+# The C++ code sums in long double, as R's sum(), colSums() and cumsum() do, so
+# C++ and R values are identical. R built without long double (e.g. CRAN's
+# 'noLD' check) sums in double, which changes the last digits of R's values;
+# there, the values are compared with a small tolerance instead.
+expect_same <- function(object, expected, ...) {
+  if (capabilities("long.double")) {
+    expect_identical(object, expected, ...)
+  } else {
+    expect_equal(object, expected, tolerance = 1e-10, ...)
+  }
+}
+
 # the C++ and R samplers give the same chain for the same seed: same edgelist,
 # cache and random number state afterwards
 compare_chains <- function(effects, parameters, n = 5000, allowLoops = TRUE,
@@ -24,7 +36,7 @@ compare_chains <- function(effects, parameters, n = 5000, allowLoops = TRUE,
 }
 
 # every effect of `effects` gives exactly the same change statistic and target
-# contribution in C++ as in R, for random moves including moves into and out
+# contribution in C++ as in R (up to rounding without long double, see above), for random moves including moves into and out
 # of loops
 expect_cpp_matches_r <- function(effects, state = myState, n = 100, seed = 3) {
   dv <- state$dep.var
@@ -51,7 +63,7 @@ expect_cpp_matches_r <- function(effects, state = myState, n = 100, seed = 3) {
                    i = el[E[m], 1], j = J[m], edge = E[m], update = U[m],
                    getTargetContribution = TRUE)
       )
-      expect_identical(
+      expect_same(
         cppEffectValues(effects, k, state, state$cache, el[E[m], 1], J[m], E[m], U[m]),
         expected,
         label = paste(effects$name[k], "edge", E[m], "to", J[m], "update", U[m])
@@ -62,7 +74,7 @@ expect_cpp_matches_r <- function(effects, state = myState, n = 100, seed = 3) {
   old <- options(MoNAn.useCpp = FALSE)
   rStatistics <- getNetworkStatistics(dv, state, state$cache, effects)
   options(old)
-  expect_identical(cppNetworkStatistics(dv, state, state$cache, effects), rStatistics)
+  expect_same(cppNetworkStatistics(dv, state, state$cache, effects), rStatistics)
 }
 
 # the example state with a continuous dyadic covariate (similarity of

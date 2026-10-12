@@ -41,12 +41,12 @@ The model allows for the analysis of emergent structures (known from network ana
 
 Announcements about workshops etc. can be found [here](https://www.suz.uzh.ch/de/institut/professuren/block/monan_software.html).
 
-The **MoNAn Manual** is available here on github in the manual folder or on [SocArXiv](https://osf.io/preprints/socarxiv/8q2xu/). Note that this is the manual for version 1 of MoNAn, which still works but shall be replaced soon by a manual for version 2.
+The **MoNAn Manual** is available here on github in the manual folder or on [SocArXiv](https://osf.io/preprints/socarxiv/8q2xu/). Note that this is the manual for version 1 of MoNAn. This version still represents the functionality and use of the user-side of MoNAn, but shall be replaced soon by a manual for version 2.
 
 
 ## Note from the developers
 
-This is version 2.1.0 of MoNAn. Compared to version 1, the
+This is version 2.1.1 of MoNAn. Compared to version 1, the
 simulation runs in C++ (estimating the example below takes less than a minute
 instead of several minutes), several effects have been corrected, and
 estimation can also use Geyer-Thompson maximum likelihood; see NEWS.md for all
@@ -69,13 +69,13 @@ the machine was checked against previous human-coded implementation.
 
 # Installation
 
-You can install MoNAn 2.0.0 from CRAN:
+From mid Oct, you can install MoNAn v2.1.1 from CRAN (earlier version 2.0.0):
 
 ``` r
 install.packages("MoNAn")
 ```
 
-The most recent version (2.1.0) can be installed from GitHub:
+The most recent version (2.1.1) can be installed from GitHub:
 
 ``` r
 # install.packages("remotes")

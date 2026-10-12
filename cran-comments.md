@@ -10,13 +10,15 @@
 0 errors | 0 warnings | 1 note
 
 * Days since last update: 1. This update fixes the test failures of 2.0.0 in
-  the 'noLD' additional check (see below), so it follows 2.0.0 quickly.
+  the 'noLD' additional check, as requested in the email from Brian Ripley of
+  12 October 2026 (see below), so it follows 2.0.0 quickly.
 
 ## Comments
 
 This is an update of MoNAn (2.0.0 -> 2.1.1; 2.1.0 was not submitted).
 
-* It fixes the test failures in the 'noLD' additional check for 2.0.0: the
+* In response to the email from Brian Ripley of 12 October 2026, it fixes the
+  test failures in the 'noLD' additional check for 2.0.0: the
   tests compare the C++ and R versions of the model's effects, which are
   identical when R sums in long double but differ in the last digits without
   long double. The tests now allow a relative difference of 1e-10 when

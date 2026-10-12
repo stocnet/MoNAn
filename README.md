@@ -43,7 +43,7 @@ Announcements about workshops etc. can be found
 
 The **MoNAn Manual** is available here on github in the manual folder or
 on [SocArXiv](https://osf.io/preprints/socarxiv/8q2xu/). Note that this
-is the manual for version 1 of MoNAn. This version still represnts the
+is the manual for version 1 of MoNAn. This version still represents the
 functionality and use of the user-side of MoNAn, but shall be replaced
 soon by a manual for version 2.
 

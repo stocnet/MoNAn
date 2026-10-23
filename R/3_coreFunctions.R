@@ -789,7 +789,13 @@ createWeightedCache <-
 #' initialParameters nor prevAns are specified, maximum pseudo-likelihood
 #' estimates are used, i.e., the estimates of the multinomial logit model for
 #' which [getMultinomialStatistics()] provides the data. If these do not exist
-#' (e.g., because of separation), the estimation starts from zero.
+#' (e.g., because of separation), the estimation starts from zero. For their
+#' calculation, the change statistics of all possible destinations are stored,
+#' once for each group of resources with the same origin, destination and
+#' values of the resource covariates used by the effects. If this needs more
+#' than `getOption("MoNAn.mpleMemoryLimit")` bytes (default 1e9, i.e., 1 GB),
+#' they are recalculated in each step instead, which is slower but needs little
+#' memory.
 #' @param prevAns If a previous estimation did not yield satisfactory convergence,
 #' the outcome object of that estimation should be specified here to provide new
 #' starting values for the estimation.

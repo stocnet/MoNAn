@@ -21,3 +21,11 @@ mpleNewtonCpp <- function(edgelist, cache, resourceCovariates, resourceSet, node
     .Call(`_MoNAn_mpleNewtonCpp`, edgelist, cache, resourceCovariates, resourceSet, nodeSet, effectSpecs, theta, allowLoops, derivatives)
 }
 
+mpleChoiceSetsCpp <- function(edgelist, cache, resourceCovariates, resourceSet, nodeSet, effectSpecs, keyCovariates, allowLoops, maxBytes) {
+    .Call(`_MoNAn_mpleChoiceSetsCpp`, edgelist, cache, resourceCovariates, resourceSet, nodeSet, effectSpecs, keyCovariates, allowLoops, maxBytes)
+}
+
+mpleEvaluateCpp <- function(X, start, observed, weight, theta, derivatives) {
+    .Call(`_MoNAn_mpleEvaluateCpp`, X, start, observed, weight, theta, derivatives)
+}
+

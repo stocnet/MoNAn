@@ -4,6 +4,9 @@
 // chain equals the R chain.
 #include "monan.h"
 
+#include <algorithm>
+#include <map>
+
 namespace {
 
 // R's sample(x, 1): a single number x >= 1 means sample(1:x, 1)
@@ -349,6 +352,183 @@ Rcpp::List mpleNewtonCpp(Rcpp::IntegerMatrix edgelist,
     }
   }
 
+  Rcpp::NumericMatrix H(K, K);
+  for (size_t a = 0; a < K; ++a) {
+    for (size_t b = 0; b < K; ++b) H(a, b) = hessian[a * K + b];
+  }
+  return Rcpp::List::create(
+    Rcpp::Named("logPL") = (double)logPL,
+    Rcpp::Named("gradient") = Rcpp::NumericVector(gradient.begin(), gradient.end()),
+    Rcpp::Named("hessian") = H);
+}
+
+// Choice sets of the conditional logit model of the MPLE (as mpleNewtonCpp),
+// computed once and stored, each distinct choice set only once. Resources with
+// the same origin, the same observed destination and the same values of the
+// resource covariates in `keyCovariates` (those used by the model's effects)
+// have the same change statistics, so one of them represents the group, with
+// the group's size as weight. Returns possible = FALSE if an observed
+// destination is not a possible destination (as match() giving NA in R), and
+// tooLarge = TRUE, without computing the change statistics, if they would need
+// more than maxBytes.
+// [[Rcpp::export]]
+Rcpp::List mpleChoiceSetsCpp(Rcpp::IntegerMatrix edgelist,
+                             Rcpp::List cache,
+                             Rcpp::List resourceCovariates,
+                             Rcpp::IntegerVector resourceSet,
+                             Rcpp::IntegerVector nodeSet,
+                             Rcpp::List effectSpecs,
+                             Rcpp::CharacterVector keyCovariates,
+                             bool allowLoops,
+                             double maxBytes) {
+  Sampler s;
+  setupSampler(s, edgelist, cache, resourceCovariates, effectSpecs);
+  size_t K = s.effects.size();
+  std::vector<int> keyIndex;
+  for (R_xlen_t k = 0; k < keyCovariates.size(); ++k) {
+    keyIndex.push_back(s.ch.resourceIndex(Rcpp::as<std::string>(keyCovariates[k])));
+  }
+
+  // group the resources, in the order of resourceSet
+  std::map<std::vector<double>, size_t> groupOf;
+  std::vector<int> representative;
+  std::vector<double> weight;
+  for (int r : resourceSet) {
+    int edge = r - 1;
+    int i = s.ch.sender[edge], j = s.ch.receiver[edge];
+    bool possible = (allowLoops || i != j) &&
+      std::find(nodeSet.begin(), nodeSet.end(), j + 1) != nodeSet.end();
+    if (!possible) {
+      return Rcpp::List::create(Rcpp::Named("possible") = false);
+    }
+    std::vector<double> key = {(double)i, (double)j};
+    bool missing = false;
+    for (int k : keyIndex) {
+      double value = s.ch.resourceValues[k][edge];
+      if (ISNAN(value)) missing = true;
+      key.push_back(value);
+    }
+    if (!missing) {
+      auto found = groupOf.find(key);
+      if (found != groupOf.end()) {
+        weight[found->second] += 1;
+        continue;
+      }
+      groupOf[key] = representative.size();
+    }
+    // a new group (resources with missing values are not grouped)
+    representative.push_back(edge);
+    weight.push_back(1);
+  }
+
+  size_t G = representative.size();
+  std::vector<size_t> nDestinations(G);
+  double rows = 0;
+  for (size_t g = 0; g < G; ++g) {
+    int i = s.ch.sender[representative[g]];
+    size_t D = 0;
+    for (int k : nodeSet) if (allowLoops || k != i + 1) ++D;
+    nDestinations[g] = D;
+    rows += D;
+  }
+  if (rows * K * sizeof(double) > maxBytes) {
+    return Rcpp::List::create(Rcpp::Named("possible") = true,
+                              Rcpp::Named("tooLarge") = true);
+  }
+
+  // change statistics of adding each representative to each destination,
+  // after removing it; one column per destination (effects in rows)
+  Rcpp::NumericMatrix X((int)K, (int)rows);
+  Rcpp::IntegerVector start((int)G + 1), observed((int)G);
+  int row = 0;
+  for (size_t g = 0; g < G; ++g) {
+    int edge = representative[g];
+    int i = s.ch.sender[edge], j = s.ch.receiver[edge];
+    start[g] = row;
+    Chain::Cells old = s.ch.getCells(i, j);
+    s.ch.update(i, j, edge, -1);
+    s.ch.sender[edge] = s.ch.receiver[edge] = -1;
+    for (int k : nodeSet) {
+      int destination = k - 1;
+      if (!allowLoops && destination == i) continue;
+      if (destination == j) observed[g] = row;
+      for (size_t e = 0; e < K; ++e) {
+        X(e, row) = s.effects[e]->change(s.ch, i, destination, edge, 1);
+      }
+      ++row;
+    }
+    s.ch.restoreCells(i, j, old);
+    s.ch.sender[edge] = i;
+    s.ch.receiver[edge] = j;
+  }
+  start[G] = row;
+
+  return Rcpp::List::create(
+    Rcpp::Named("possible") = true,
+    Rcpp::Named("tooLarge") = false,
+    Rcpp::Named("X") = X,
+    Rcpp::Named("start") = start,
+    Rcpp::Named("observed") = observed,
+    Rcpp::Named("weight") = Rcpp::NumericVector(weight.begin(), weight.end()));
+}
+
+// Log pseudo-likelihood, and optionally gradient and Hessian, from the stored
+// choice sets of mpleChoiceSetsCpp: as mpleNewtonCpp, with each choice set's
+// contribution multiplied by its weight.
+// [[Rcpp::export]]
+Rcpp::List mpleEvaluateCpp(Rcpp::NumericMatrix X,
+                           Rcpp::IntegerVector start,
+                           Rcpp::IntegerVector observed,
+                           Rcpp::NumericVector weight,
+                           Rcpp::NumericVector theta,
+                           bool derivatives) {
+  size_t K = X.nrow();
+  if ((size_t)theta.size() != K) Rcpp::stop("number of parameters and effects differ");
+  const double* x = X.begin();
+  long double logPL = 0;
+  std::vector<double> gradient(K, 0.0), hessian(K * K, 0.0);
+  std::vector<double> eta, prob, expected(K);
+
+  for (R_xlen_t g = 0; g < weight.size(); ++g) {
+    int first = start[g], D = start[g + 1] - start[g];
+    int obs = observed[g] - first;
+    double w = weight[g];
+    const double* xg = x + (size_t)first * K;
+
+    // conditional logit contributions (softmax with the maximum subtracted)
+    eta.assign(D, 0.0);
+    double maxEta = R_NegInf;
+    for (int d = 0; d < D; ++d) {
+      for (size_t k = 0; k < K; ++k) eta[d] += xg[d * K + k] * theta[k];
+      maxEta = std::max(maxEta, eta[d]);
+    }
+    double total = 0;
+    prob.assign(D, 0.0);
+    for (int d = 0; d < D; ++d) {
+      prob[d] = std::exp(eta[d] - maxEta);
+      total += prob[d];
+    }
+    logPL += w * (eta[obs] - maxEta - std::log(total));
+    if (!derivatives) continue;
+
+    for (int d = 0; d < D; ++d) prob[d] /= total;
+    std::fill(expected.begin(), expected.end(), 0.0);
+    for (int d = 0; d < D; ++d) {
+      for (size_t k = 0; k < K; ++k) expected[k] += prob[d] * xg[d * K + k];
+    }
+    for (size_t k = 0; k < K; ++k) gradient[k] += w * (xg[obs * K + k] - expected[k]);
+    for (size_t a = 0; a < K; ++a) {
+      for (size_t b = 0; b < K; ++b) {
+        double second = 0;
+        for (int d = 0; d < D; ++d) second += prob[d] * xg[d * K + a] * xg[d * K + b];
+        hessian[a * K + b] -= w * (second - expected[a] * expected[b]);
+      }
+    }
+  }
+
+  if (!derivatives) {
+    return Rcpp::List::create(Rcpp::Named("logPL") = (double)logPL);
+  }
   Rcpp::NumericMatrix H(K, K);
   for (size_t a = 0; a < K; ++a) {
     for (size_t b = 0; b < K; ++b) H(a, b) = hessian[a * K + b];

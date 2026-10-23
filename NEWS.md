@@ -1,3 +1,15 @@
+# MoNAn (development version)
+
+## Performance
+
+- The maximum pseudo-likelihood estimates (starting values) compute the change
+  statistics once instead of in each Newton step, and store them only once for
+  resources with the same origin, destination and values of the resource
+  covariates used by the effects (about 5 times faster for the example data).
+  If this would need more than `getOption("MoNAn.mpleMemoryLimit")` bytes
+  (default 1 GB), the change statistics are recalculated in each step as
+  before.
+
 # MoNAn 2.1.1
 
 ## Bug fixes

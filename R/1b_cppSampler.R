@@ -163,11 +163,33 @@ cppNetworkStatistics <- function(dep.var, state, cache, effects) {
 }
 
 # mpleObjectiveCpp
-# as mpleObjectiveR, but calculated in C++ (mpleNewtonCpp in src/sampler.cpp),
-# which recomputes the change statistics in each call instead of storing them
-mpleObjectiveCpp <- function(dep.var, state, cache, effects, allowLoops) {
+# as mpleObjectiveR, but calculated in C++. The change statistics are computed
+# once (mpleChoiceSetsCpp in src/sampler.cpp), storing each distinct choice set
+# only once: resources with the same origin, destination and values of the
+# resource covariates used by the effects have the same change statistics.
+# If they would need more memory than getOption("MoNAn.mpleMemoryLimit")
+# bytes (default 1 GB), they are recomputed in each call instead
+# (mpleNewtonCpp), which needs memory for one resource at a time.
+mpleObjectiveCpp <- function(dep.var, state, cache, effects, allowLoops,
+                             memoryLimit = getOption("MoNAn.mpleMemoryLimit", 1e9)) {
   inputs <- cppChainInputs(dep.var, state, cache)
   specs <- cppEffectSpec(effects, inputs$state)
+  keyCovariates <- unique(as.character(unlist(lapply(specs, function(spec) {
+    spec[["resourceAttribute"]]
+  }))))
+  sets <- mpleChoiceSetsCpp(inputs$edgelist, inputs$cache, inputs$resourceCovariates,
+                            inputs$resourceSet, inputs$nodeSet, specs, keyCovariates,
+                            allowLoops, as.numeric(memoryLimit))
+  if (!sets$possible) {
+    # an observed destination is not possible (e.g. loops without allowLoops)
+    return(function(theta, derivatives = TRUE) list(logPL = NA_real_))
+  }
+  if (!sets$tooLarge) {
+    return(function(theta, derivatives = TRUE) {
+      mpleEvaluateCpp(sets$X, sets$start, sets$observed, sets$weight,
+                      as.numeric(theta), derivatives)
+    })
+  }
   function(theta, derivatives = TRUE) {
     mpleNewtonCpp(inputs$edgelist, inputs$cache, inputs$resourceCovariates,
                   inputs$resourceSet, inputs$nodeSet, specs,

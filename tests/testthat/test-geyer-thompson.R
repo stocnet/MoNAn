@@ -113,6 +113,71 @@ test_that("MPLE is the same with the C++ and the R pseudo-likelihood", {
   expect_null(mpleNoLoops)
 })
 
+test_that("the MPLE stores each distinct choice set once, weighted by its size", {
+  dv <- myState$dep.var
+  inputs <- cppChainInputs(dv, myState, myState$cache)
+  sets <- mpleChoiceSetsCpp(inputs$edgelist, inputs$cache, inputs$resourceCovariates,
+                            inputs$resourceSet, inputs$nodeSet,
+                            cppEffectSpec(myEffects, inputs$state), "sex", TRUE, 1e9)
+  el <- myState[[dv]]$data
+  # myEffects use the resource covariate sex only
+  expect_length(sets$weight, nrow(unique(cbind(el, myState$sex$data))))
+  expect_equal(sum(sets$weight), nrow(el))
+  expect_equal(diff(sets$start), rep(length(myState$organisations$ids), length(sets$weight)))
+  # too little memory: nothing is computed
+  small <- mpleChoiceSetsCpp(inputs$edgelist, inputs$cache, inputs$resourceCovariates,
+                             inputs$resourceSet, inputs$nodeSet,
+                             cppEffectSpec(myEffects, inputs$state), "sex", TRUE, 1000)
+  expect_true(small$tooLarge)
+  expect_null(small$X)
+})
+
+test_that("grouped choice sets give the same pseudo-likelihood as recomputing them", {
+  # effects with resource covariates, including a continuous one, and effects
+  # that look at the individual resources of a cell
+  groupEffects <- createEffects(cppTestState) |>
+    addEffect(loops_additional_origin, edge.attribute = "second_or") |>
+    addEffect(joining_similar_avoiding_dissimilar_covar_cont, edge.attribute = "second_or") |>
+    addEffect(concentration_AC_resource_covar_bin, edge.attribute = "sex", alpha = 2) |>
+    addEffect(transitivity_AC, alpha = 4)
+  dv <- cppTestState$dep.var
+  for (effects in list(myEffects, groupEffects)) {
+    for (allowLoops in c(TRUE, FALSE)) {
+      state <- cppTestState
+      if (!allowLoops) {
+        # without loops, the observed destinations must not be loops
+        el <- state[[dv]]$data
+        el[el[, 1] == el[, 2], 2] <- el[el[, 1] == el[, 2], 2] %% 17 + 1
+        state[[dv]] <- createEdgelist(el, nodeSet = state[[dv]]$nodeSet)
+        state$cache <- createInternalCache(state, resourceCovariates = names(state$cache[[dv]]$resourceNetworks))
+      }
+      grouped <- mpleObjectiveCpp(dv, state, state$cache, effects, allowLoops)
+      recomputed <- mpleObjectiveCpp(dv, state, state$cache, effects, allowLoops, memoryLimit = 0)
+      set.seed(2)
+      for (theta in list(rep(0, length(effects$name)), runif(length(effects$name), -0.5, 0.5))) {
+        g <- grouped(theta)
+        r <- recomputed(theta)
+        expect_equal(g$logPL, r$logPL, tolerance = 1e-10)
+        expect_equal(g$gradient, r$gradient, tolerance = 1e-10)
+        expect_equal(g$hessian, r$hessian, tolerance = 1e-10)
+        expect_equal(grouped(theta, derivatives = FALSE)$logPL, r$logPL, tolerance = 1e-10)
+      }
+    }
+  }
+})
+
+test_that("the MPLE is the same with grouped and recomputed choice sets", {
+  dv <- myState$dep.var
+  grouped <- getMPLE(dv, myState, myState$cache, myEffects, allowLoops = TRUE)
+  old <- options(MoNAn.mpleMemoryLimit = 0)
+  on.exit(options(old), add = TRUE)
+  recomputed <- getMPLE(dv, myState, myState$cache, myEffects, allowLoops = TRUE)
+  expect_equal(grouped, recomputed, tolerance = 1e-10)
+  expect_null(getMPLE(dv, myState, myState$cache,
+                      createEffects(myState) |> addEffect(concentration_AC, alpha = 2),
+                      allowLoops = FALSE))
+})
+
 test_that("MPLE uses the R pseudo-likelihood for effects written only in R", {
   assign("myLoopsMPLE", function(dep.var = 1, state, cache, i, j, edge, update,
                                  getTargetContribution = FALSE) {

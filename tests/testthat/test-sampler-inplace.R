@@ -141,7 +141,7 @@ test_that("the two-path network stays exact in R and C++ chains", {
 test_that("caches without the two-path network (earlier versions) give the same results", {
   state <- myState
   dv <- state$dep.var
-  # (the example data were saved by an earlier version)
+  # old: a cache as saved by versions before 2.2
   full <- old <- state$cache
   old[[dv]]$twoPathNetwork <- NULL
   full[[dv]]$twoPathNetwork <- getTwoPathNetwork(old[[dv]])

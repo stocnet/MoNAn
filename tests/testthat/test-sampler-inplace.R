@@ -106,3 +106,56 @@ test_that("draws returned by simulateStatisticVectors are independent lists", {
   }
   expect_false(identical(deps[[1]]$state[[dv]]$data, deps[[3]]$state[[dv]]$data))
 })
+
+test_that("the two-path network stays exact in R and C++ chains", {
+  state <- myState
+  dv <- state$dep.var
+  effects <- createEffects(myState) |>
+    addEffect(loops) |>
+    addEffect(transitivity_AC, alpha = 4)
+  twoPathsOf <- function(cache) {
+    w <- cache[[dv]]$valuedNetwork
+    diag(w) <- 0
+    w %*% w
+  }
+  expect_identical(createInternalCache(state)[[dv]]$twoPathNetwork,
+                   twoPathsOf(state$cache))
+
+  oldOptions <- options(MoNAn.useCpp = FALSE)
+  on.exit(options(oldOptions), add = TRUE)
+  for (multinomial in c(FALSE, TRUE)) {
+    set.seed(3)
+    res <- simulateNSteps(dv, state, state$cache, effects, c(1, 0.4),
+                          allowLoops = TRUE, multinomialProposal = multinomial,
+                          n = if (multinomial) 300 else 3000)
+    simCache <- toListCache(res$cache)
+    expect_identical(simCache[[dv]]$twoPathNetwork, twoPathsOf(simCache))
+    cpp <- simulateChain(dv, state, state$cache, effects, c(1, 0.4),
+                         burnIn = if (multinomial) 1000 else 20000, iterations = 0,
+                         thinning = 0, allowLoops = TRUE,
+                         multinomialProposal = multinomial)
+    expect_identical(cpp$cache[[dv]]$twoPathNetwork, twoPathsOf(cpp$cache))
+  }
+})
+
+test_that("caches without the two-path network (earlier versions) give the same results", {
+  state <- myState
+  dv <- state$dep.var
+  # (the example data were saved by an earlier version)
+  full <- old <- state$cache
+  old[[dv]]$twoPathNetwork <- NULL
+  full[[dv]]$twoPathNetwork <- getTwoPathNetwork(old[[dv]])
+  effects <- createEffects(myState) |>
+    addEffect(transitivity_AC, alpha = 4) |>
+    addEffect(transitivity_GW, alpha = 2)
+
+  expect_identical(getNetworkStatistics(dv, state, old, effects),
+                   getNetworkStatistics(dv, state, full, effects))
+  expect_identical(cppNetworkStatistics(dv, state, old, effects),
+                   cppNetworkStatistics(dv, state, full, effects))
+  expect_identical(toListCache(toMutableCache(old)), full)
+  i <- state[[dv]]$data[1, 1]
+  j <- state[[dv]]$data[1, 2]
+  expect_null(updateWeightedCache(old[[dv]], i, j, resourceID = 1, state = state,
+                                  dep.var = dv, update = -1)$twoPathNetwork)
+})

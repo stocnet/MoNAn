@@ -130,11 +130,35 @@ createInternalCache <-
             nActors2
           )
         diag(cache[[name]]$minNetwork) <- 0
+        # two-paths between all pairs of locations, used by the transitivity
+        # effects (see getTwoPathNetwork)
+        cache[[name]]$twoPathNetwork <- getTwoPathNetwork(cache[[name]])
       }
     } # end for loop
-    
+
     cache
   }
+
+
+# getTwoPathNetwork
+# The two-path network of the cache of one dependent variable: entry [a, b] is
+# the number of two-paths a -> m -> b through a third location m, i.e. the sum
+# over m != a, b of valuedNetwork[a, m] * valuedNetwork[m, b]. This is W %*% W,
+# where W is the valued network without loops (diagonal set to 0); its
+# diagonal [a, a] counts the reciprocated two-paths a -> m -> a.
+# The values are sums of products of counts, so they are exact in floating
+# point whatever the order of summation, and the matrix can be updated
+# incrementally without rounding differences (see twoPathIncrements).
+# Caches created by MoNAn versions before 2.2 do not store the two-path
+# network; it is then computed from the valued network.
+getTwoPathNetwork <- function(cacheDepVar) {
+  if (!is.null(cacheDepVar$twoPathNetwork)) {
+    return(cacheDepVar$twoPathNetwork)
+  }
+  w <- cacheDepVar$valuedNetwork
+  diag(w) <- 0
+  w %*% w
+}
 
 
 # getCovarianceMatrix
@@ -1313,6 +1337,14 @@ updateWeightedCache <- function(cache,
   cache$minNetwork[receiver, sender] <-
     cache$minNetwork[sender, receiver]
 
+  # two-path network (see twoPathIncrements); not stored in caches of
+  # versions before 2.2
+  if (!is.null(cache$twoPathNetwork) && sender != receiver) {
+    inc <- twoPathIncrements(cache$valuedNetwork, sender, receiver)
+    cache$twoPathNetwork[sender, ] <- cache$twoPathNetwork[sender, ] + update * inc$row
+    cache$twoPathNetwork[, receiver] <- cache$twoPathNetwork[, receiver] + update * inc$col
+  }
+
   # weighted updates
   cache$valuedNetwork[sender, receiver] <-
     cache$valuedNetwork[sender, receiver] + update
@@ -1322,6 +1354,26 @@ updateWeightedCache <- function(cache,
     cache$netFlowsNetwork[receiver, sender] - update
 
   cache
+}
+
+
+# twoPathIncrements
+# How the two-path network (see getTwoPathNetwork) changes when the
+# sender-receiver tie changes by one, for sender != receiver: row sender gains
+# the receiver's row and column receiver gains the sender's column, both of the
+# network without loops. Changing the tie by `update` adds update times these
+# increments. (In matrix terms, with W the network without loops and E the
+# matrix with a single 1 at [sender, receiver]: (W + u E)^2 = W^2 + u E W +
+# u W E, since E E = 0 for sender != receiver.)
+# The increments do not contain the sender-receiver tie itself, so they are the
+# same before and after the tie is updated. Loops (sender == receiver) are not
+# part of any two-path and do not change the two-path network.
+twoPathIncrements <- function(valuedNetwork, sender, receiver) {
+  row <- valuedNetwork[receiver, ]
+  row[receiver] <- 0
+  col <- valuedNetwork[, sender]
+  col[sender] <- 0
+  list(row = row, col = col)
 }
 
 
@@ -1373,15 +1425,25 @@ toMutableCache <- function(cache) {
     if (is.environment(x)) {
       return(x)
     }
+    # caches created by versions before 2.2 have no two-path network: add it,
+    # so that chains keep it up to date (only one-mode networks have it, as
+    # the net flow network)
+    if (is.null(x$twoPathNetwork) && !is.null(x$netFlowsNetwork)) {
+      x$twoPathNetwork <- getTwoPathNetwork(x)
+    }
     e <- list2env(x, envir = new.env(parent = baseenv()))
     e$.names <- names(x)
     if (is.null(x$resourceNetworks)) {
       e$resourceNetworks <- NULL
     }
+    if (is.null(x$twoPathNetwork)) {
+      e$twoPathNetwork <- NULL
+    }
 
     # placeholders for the variables the functions below update in e (their
     # environment is set to e below)
-    valuedNetwork <- netFlowsNetwork <- minNetwork <- resourceNetworks <- NULL
+    valuedNetwork <- netFlowsNetwork <- minNetwork <- resourceNetworks <-
+      twoPathNetwork <- NULL
 
     # same logic as updateWeightedCache
     e$.update <- function(sender, receiver, resourceID, state, update) {
@@ -1405,6 +1467,19 @@ toMutableCache <- function(cache) {
       }
       minNetwork[receiver, sender] <<- minNetwork[sender, receiver]
 
+      # two-path network: row sender gains update times the receiver's row and
+      # column receiver gains update times the sender's column, both without
+      # loops (as twoPathIncrements, which is not visible from this
+      # environment; written out to update the matrix in place)
+      if (!is.null(twoPathNetwork) && sender != receiver) {
+        incRow <- valuedNetwork[receiver, ]
+        incRow[receiver] <- 0
+        incCol <- valuedNetwork[, sender]
+        incCol[sender] <- 0
+        twoPathNetwork[sender, ] <<- twoPathNetwork[sender, ] + update * incRow
+        twoPathNetwork[, receiver] <<- twoPathNetwork[, receiver] + update * incCol
+      }
+
       # weighted updates
       valuedNetwork[sender, receiver] <<- valuedNetwork[sender, receiver] + update
       netFlowsNetwork[sender, receiver] <<- netFlowsNetwork[sender, receiver] + update
@@ -1419,7 +1494,11 @@ toMutableCache <- function(cache) {
         valued = valuedNetwork[sender, receiver],
         netFlows = c(netFlowsNetwork[sender, receiver], netFlowsNetwork[receiver, sender]),
         min = c(minNetwork[sender, receiver], minNetwork[receiver, sender]),
-        resource = lapply(resourceNetworks, function(m) m[sender, receiver])
+        resource = lapply(resourceNetworks, function(m) m[sender, receiver]),
+        # the row and column of the two-path network that the update changes
+        # (both taken before it, so the cell they share is restored correctly)
+        twoPathRow = if (!is.null(twoPathNetwork)) twoPathNetwork[sender, ],
+        twoPathCol = if (!is.null(twoPathNetwork)) twoPathNetwork[, receiver]
       )
     }
 
@@ -1432,6 +1511,10 @@ toMutableCache <- function(cache) {
       netFlowsNetwork[receiver, sender] <<- cells$netFlows[2]
       minNetwork[sender, receiver] <<- cells$min[1]
       minNetwork[receiver, sender] <<- cells$min[2]
+      if (!is.null(twoPathNetwork)) {
+        twoPathNetwork[sender, ] <<- cells$twoPathRow
+        twoPathNetwork[, receiver] <<- cells$twoPathCol
+      }
     }
 
     environment(e$.update) <- e

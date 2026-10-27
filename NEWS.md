@@ -9,6 +9,13 @@
   If this would need more than `getOption("MoNAn.mpleMemoryLimit")` bytes
   (default 1 GB), the change statistics are recalculated in each step as
   before.
+- The effects `transitivity_AC` and `transitivity_GW` are much faster (about 7
+  times in C++ with 100 locations, more with more locations): the cache now
+  keeps the number of two-paths between all pairs of locations
+  (`twoPathNetwork`) up to date, so that a change statistic no longer
+  multiplies the network with its rows and columns. The results are
+  identical. Caches created by earlier versions, e.g. in saved results, still
+  work; the two-path network is then computed from the valued network.
 
 # MoNAn 2.1.1
 

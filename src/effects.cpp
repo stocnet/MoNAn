@@ -504,15 +504,25 @@ class TransitivityNetflow : public Effect {
 class TransitivityACGW : public Effect {
   bool gw;
   double alpha;
+  // g(0), g(1), ...: computed when first needed
+  mutable std::vector<double> gTable;
   double g(double y) const {
     if (!gw) return 1 - rpow(1 - 1 / alpha, y);
     if (alpha == 1) return y;
     return (1 - rpow(alpha, -y)) / (alpha - 1);
   }
+  // g(y) of a two-path count, from the table (the same value as g(y); the
+  // power function is the slow part of this effect)
+  double gCount(double y) const {
+    if (!(y >= 0 && y <= 1e6 && y == std::floor(y))) return g(y);
+    size_t k = (size_t)y;
+    while (gTable.size() <= k) gTable.push_back(g((double)gTable.size()));
+    return gTable[k];
+  }
   // R's sum(w * g_mar(y))
   double sumWeighted(const std::vector<double>& w, const std::vector<double>& y) const {
     long double total = 0;
-    for (size_t k = 0; k < w.size(); ++k) total += w[k] * g(y[k]);
+    for (size_t k = 0; k < w.size(); ++k) total += w[k] * gCount(y[k]);
     return (double)total;
   }
  public:
@@ -523,27 +533,23 @@ class TransitivityACGW : public Effect {
     int N = ch.n;
 
     // part 1: i,j closes two-path
-    double cont = update * g(sumProd(n.ri, n.cj));
+    double cont = update * gCount(ch.tp(i, j));
 
     // part 2: i,j closes instar
     std::vector<double> riU = n.ri;
     riU[j] = riU[j] + update;
     std::vector<double> before(N), after(N);
     for (int k = 0; k < N; ++k) {
-      double product = 0;
-      for (int m = 0; m < N; ++m) product += n.ri[m] * ch.v(m, k);
-      before[k] = product - n.ri[k] * ch.v(k, k);
+      before[k] = ch.tp(i, k);
       after[k] = before[k] + update * n.rj[k];
     }
-    double conBe = sumWeighted(n.ri, before) - (n.ri[j] * g(before[j]));
-    double conAf = sumWeighted(riU, after) - (riU[j] * g(after[j]));
+    double conBe = sumWeighted(n.ri, before) - (n.ri[j] * gCount(before[j]));
+    double conAf = sumWeighted(riU, after) - (riU[j] * gCount(after[j]));
     cont = cont + (conAf - conBe);
 
     // part 3: i,j closes outstar
     for (int k = 0; k < N; ++k) {
-      double product = 0;
-      for (int m = 0; m < N; ++m) product += ch.v(k, m) * n.cj[m];
-      before[k] = product - ch.v(k, k) * n.cj[k];
+      before[k] = ch.tp(k, j);
       after[k] = before[k] + update * n.ci[k];
     }
     conBe = sumWeighted(n.cj, before);
@@ -553,8 +559,7 @@ class TransitivityACGW : public Effect {
   }
   double target(const Chain& ch, int i, int j) const override {
     if (i == j) return 0;
-    RowsCols n(ch, ch.valued, i, j);
-    return n.ri[j] * g(sumProd(n.ri, n.cj));
+    return ch.v(i, j) * gCount(ch.tp(i, j));
   }
 };
 

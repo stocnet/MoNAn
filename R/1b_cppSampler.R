@@ -93,6 +93,11 @@ useCppSampler <- function(effects, state) {
 cppChainInputs <- function(dep.var, state, cache) {
   state <- toListState(state, dep.var)
   cache <- toListCache(cache)
+  # caches created by versions before 2.2 have no two-path network, which the
+  # C++ chain needs (as toMutableCache for the R sampler)
+  if (is.null(cache[[dep.var]]$twoPathNetwork) && !is.null(cache[[dep.var]]$netFlowsNetwork)) {
+    cache[[dep.var]]$twoPathNetwork <- getTwoPathNetwork(cache[[dep.var]])
+  }
   edgelist <- state[[dep.var]]
   nodeName <- edgelist$nodeSet[1]
   resourceName <- edgelist$nodeSet[3]

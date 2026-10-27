@@ -244,7 +244,11 @@ transitivity_AC <-
     # rows and columns of the network without loops; the network itself is
     # not copied
     net <- cache[[dep.var]]$valuedNetwork
-    loopValues <- diag(net)
+    # two-paths between all pairs of locations, kept up to date in the cache
+    # (see getTwoPathNetwork); they replace the products of the network with
+    # its rows and columns, ri %*% net and net %*% cj, which gave the same
+    # (exact, integer) values
+    twoPaths <- getTwoPathNetwork(cache[[dep.var]])
     ri <- net[i, ]
     ri[i] <- 0
     rj <- net[j, ]
@@ -255,34 +259,33 @@ transitivity_AC <-
     cj[j] <- 0
 
     if (getTargetContribution) {
-      twoPaths <- sum(ri * cj)
-      return(ri[j] * g_mar(twoPaths, alpha))
+      # two-paths from i to j: sum(ri * cj)
+      return(ri[j] * g_mar(twoPaths[i, j], alpha))
     }
 
     ### change contribution in three parts
 
     # part 1: i,j closes two-path
 
-    twoPaths <- sum(ri * cj)
-    ind_cont <- update * g_mar(twoPaths, alpha)
+    ind_cont <- update * g_mar(twoPaths[i, j], alpha)
 
     # part 2: i,j closes instar
-    # two-paths from i to every k (without loops); adding update to the i-j
-    # tie adds update * (j's row) to them
+    # two-paths from i to every k (without loops; row i of the two-path
+    # network); adding update to the i-j tie adds update * (j's row) to them
     ri_u <- ri
     ri_u[j] <- ri_u[j] + update
 
-    nTP_before <- as.vector(ri %*% net) - ri * loopValues
+    nTP_before <- twoPaths[i, ]
     con_be <- sum(ri * g_mar(nTP_before, alpha)) - (ri[j] * g_mar(nTP_before[j], alpha))
     nTP_after <- nTP_before + update * rj
     con_af <- sum(ri_u * g_mar(nTP_after, alpha)) - (ri_u[j] * g_mar(nTP_after[j], alpha))
     ind_cont <- ind_cont + (con_af - con_be)
 
     # part 3: i,j closes outstar
-    # two-paths from every k to j (without loops); adding update to the i-j
-    # tie adds update * (i's column) to them
+    # two-paths from every k to j (without loops; column j of the two-path
+    # network); adding update to the i-j tie adds update * (i's column) to them
 
-    nTP_before <- as.vector(net %*% cj) - loopValues * cj
+    nTP_before <- twoPaths[, j]
     con_be <- sum(cj * g_mar(nTP_before, alpha))
     nTP_after <- nTP_before + update * ci
     con_af <- sum(cj * g_mar(nTP_after, alpha))
@@ -336,7 +339,11 @@ transitivity_GW <-
     # rows and columns of the network without loops; the network itself is
     # not copied
     net <- cache[[dep.var]]$valuedNetwork
-    loopValues <- diag(net)
+    # two-paths between all pairs of locations, kept up to date in the cache
+    # (see getTwoPathNetwork); they replace the products of the network with
+    # its rows and columns, ri %*% net and net %*% cj, which gave the same
+    # (exact, integer) values
+    twoPaths <- getTwoPathNetwork(cache[[dep.var]])
     ri <- net[i, ]
     ri[i] <- 0
     rj <- net[j, ]
@@ -347,34 +354,33 @@ transitivity_GW <-
     cj[j] <- 0
 
     if (getTargetContribution) {
-      twoPaths <- sum(ri * cj)
-      return(ri[j] * g_mar(twoPaths, alpha))
+      # two-paths from i to j: sum(ri * cj)
+      return(ri[j] * g_mar(twoPaths[i, j], alpha))
     }
 
     ### change contribution in three parts
 
     # part 1: i,j closes two-path
 
-    twoPaths <- sum(ri * cj)
-    ind_cont <- update * g_mar(twoPaths, alpha)
+    ind_cont <- update * g_mar(twoPaths[i, j], alpha)
 
     # part 2: i,j closes instar
-    # two-paths from i to every k (without loops); adding update to the i-j
-    # tie adds update * (j's row) to them
+    # two-paths from i to every k (without loops; row i of the two-path
+    # network); adding update to the i-j tie adds update * (j's row) to them
     ri_u <- ri
     ri_u[j] <- ri_u[j] + update
 
-    nTP_before <- as.vector(ri %*% net) - ri * loopValues
+    nTP_before <- twoPaths[i, ]
     con_be <- sum(ri * g_mar(nTP_before, alpha)) - (ri[j] * g_mar(nTP_before[j], alpha))
     nTP_after <- nTP_before + update * rj
     con_af <- sum(ri_u * g_mar(nTP_after, alpha)) - (ri_u[j] * g_mar(nTP_after[j], alpha))
     ind_cont <- ind_cont + (con_af - con_be)
 
     # part 3: i,j closes outstar
-    # two-paths from every k to j (without loops); adding update to the i-j
-    # tie adds update * (i's column) to them
+    # two-paths from every k to j (without loops; column j of the two-path
+    # network); adding update to the i-j tie adds update * (i's column) to them
 
-    nTP_before <- as.vector(net %*% cj) - loopValues * cj
+    nTP_before <- twoPaths[, j]
     con_be <- sum(cj * g_mar(nTP_before, alpha))
     nTP_after <- nTP_before + update * ci
     con_af <- sum(cj * g_mar(nTP_after, alpha))

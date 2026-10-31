@@ -42,6 +42,25 @@ std::vector<double> attributeOf(const Rcpp::List& spec) {
   return std::vector<double>(a.begin(), a.end());
 }
 
+// the covariate of an effect with the length the effect reads: one value per
+// location (monadic) or per pair of locations (dyadic). checkEffectInputs()
+// checks this in R; this check keeps a wrong covariate from reading outside
+// the vector.
+std::vector<double> monadicOf(const Rcpp::List& spec, const Chain& chain, const std::string& name) {
+  std::vector<double> a = attributeOf(spec);
+  if (a.size() != (size_t)chain.n) {
+    Rcpp::stop("attribute.index in %s must be a covariate with one value per location", name);
+  }
+  return a;
+}
+std::vector<double> dyadicOf(const Rcpp::List& spec, const Chain& chain, const std::string& name) {
+  std::vector<double> a = attributeOf(spec);
+  if (a.size() != (size_t)chain.n * chain.n) {
+    Rcpp::stop("attribute.index in %s must be a square matrix of the locations", name);
+  }
+  return a;
+}
+
 bool loopContributionOf(const Rcpp::List& spec) {
   return Rcpp::as<bool>(spec["loopContribution"]);
 }
@@ -1123,14 +1142,14 @@ std::unique_ptr<Effect> makeEffect(const Rcpp::List& spec, const Chain& chain) {
   if (name == "reciprocity_AC") {
     return E(new ReciprocityAC(alphaOf(spec, "reciprocity_AC")));
   }
-  if (name == "dyadic_covariate") return E(new DyadicCovariate(attributeOf(spec)));
+  if (name == "dyadic_covariate") return E(new DyadicCovariate(dyadicOf(spec, chain, name)));
   if (name == "alter_covariate") {
-    return E(new AlterCovariate(attributeOf(spec), loopContributionOf(spec)));
+    return E(new AlterCovariate(monadicOf(spec, chain, name), loopContributionOf(spec)));
   }
   if (name == "resource_covar_to_node_covar") {
     return E(new ResourceCovarToNodeCovar(
       chain.resourceIndex(Rcpp::as<std::string>(spec["resourceAttribute"])),
-      attributeOf(spec), loopContributionOf(spec)));
+      monadicOf(spec, chain, name), loopContributionOf(spec)));
   }
   if (name == "loops_resource_covar") {
     return E(new LoopsResourceCovar(
@@ -1147,11 +1166,11 @@ std::unique_ptr<Effect> makeEffect(const Rcpp::List& spec, const Chain& chain) {
       chain.resourceIndex(Rcpp::as<std::string>(spec["resourceAttribute"])),
       name == "loops_x_loops_additional_origin"));
   }
-  if (name == "loops_node_covar") return E(new LoopsNodeCovar(attributeOf(spec)));
+  if (name == "loops_node_covar") return E(new LoopsNodeCovar(monadicOf(spec, chain, name)));
   if (name == "loops_resource_covar_node_covar") {
     return E(new LoopsResourceCovarNodeCovar(
       chain.resourceIndex(Rcpp::as<std::string>(spec["resourceAttribute"])),
-      attributeOf(spec)));
+      monadicOf(spec, chain, name)));
   }
   if (name == "concentration_GW" || name == "concentration_AC_dyad_covar" ||
       name == "concentration_GW_dyad_covar" ||
@@ -1220,7 +1239,7 @@ std::unique_ptr<Effect> makeEffect(const Rcpp::List& spec, const Chain& chain) {
     if (Rcpp::as<bool>(spec["attributeIsMatrix"])) {
       Rcpp::stop("attribute in concentration_prop_orig_cov must be monadic");
     }
-    return E(new ConcentrationPropOrigCov(attributeOf(spec)));
+    return E(new ConcentrationPropOrigCov(monadicOf(spec, chain, name)));
   }
   if (name == "concentration_rankGW") {
     double lambda = Rcpp::as<double>(spec["lambda"]);
@@ -1245,11 +1264,11 @@ std::unique_ptr<Effect> makeEffect(const Rcpp::List& spec, const Chain& chain) {
       chain.resourceIndex(Rcpp::as<std::string>(spec["resourceAttribute"]))));
   }
   if (name == "same_covariate" || name == "sim_covariate") {
-    return E(new DyadicCovariate(attributeOf(spec)));
+    return E(new DyadicCovariate(dyadicOf(spec, chain, name)));
   }
   if (name == "dyadic_covariate_resource_attribute") {
     return E(new DyadicCovariateResourceAttribute(
-      attributeOf(spec), chain.resourceIndex(Rcpp::as<std::string>(spec["resourceAttribute"]))));
+      dyadicOf(spec, chain, name), chain.resourceIndex(Rcpp::as<std::string>(spec["resourceAttribute"]))));
   }
   if (name == "in_ties_loops") return E(new InTiesLoops());
   if (name == "present_relations") return E(new PresentRelations());

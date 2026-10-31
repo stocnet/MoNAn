@@ -17,6 +17,18 @@
   identical. Caches created by earlier versions, e.g. in saved results, still
   work; the two-path network is then computed from the valued network.
 
+## Bug fixes
+
+- Effects check that their covariates are covariates of the state of the kind
+  they read, when they are added and when estimation or simulation starts:
+  `node.attribute` a covariate of the locations (`createNodeVariable()`) or a
+  dyadic covariate (`createNetwork()`), as the effect requires, and
+  `edge.attribute` a covariate of the resources. Before, a nodeset given as
+  `node.attribute` crashed R in the C++ sampler, and a covariate of the wrong
+  kind (or the dependent variable) gave wrong statistics without a message.
+  The C++ effects also check the size of their covariates.
+- The elements of a process state must have unique names.
+
 # MoNAn 2.1.1
 
 ## Bug fixes

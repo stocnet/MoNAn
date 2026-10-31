@@ -44,12 +44,91 @@ effectInputChecks <- local({
   )
 })
 
+# the kind of covariate the effects take as attribute.index (node.attribute
+# in addEffect()): a monadic covariate of the locations (createNodeVariable())
+# or a dyadic covariate between the locations (createNetwork())
+attributeKinds <- c(
+  alter_covariate = "monadic",
+  resource_covar_to_node_covar = "monadic",
+  same_covariate = "monadic",
+  sim_covariate = "monadic",
+  loops_node_covar = "monadic",
+  loops_resource_covar_node_covar = "monadic",
+  concentration_prop_orig_cov = "monadic",
+  dyadic_covariate = "dyadic",
+  dyadic_covariate_resource_attribute = "dyadic",
+  concentration_AC_dyad_covar = "dyadic",
+  concentration_GW_dyad_covar = "dyadic",
+  reciprocity_min_dyad_covar = "dyadic",
+  reciprocity_AC_dyad_covar = "dyadic",
+  reciprocity_GW_dyad_covar = "dyadic",
+  reciprocity_AC_dyad_covar_bin = "dyadic",
+  reciprocity_GW_dyad_covar_bin = "dyadic"
+)
+
+# checkEffectCovariates
+# checks that the covariates of an effect are covariates of the state of the
+# kind the effect reads: effects index their data directly (data[j],
+# data[i, j], data[edge]), so a nodeset, the dependent variable or a covariate
+# of the wrong kind or size would give wrong statistics, or read outside the
+# data in C++
+checkEffectCovariates <- function(effectName, args, state) {
+  dep.var <- state$dep.var
+  locations <- state[[dep.var]]$nodeSet[1]
+  resources <- state[[dep.var]]$nodeSet[3]
+  nLocations <- length(state[[locations]]$ids)
+  nResources <- length(state[[resources]]$ids)
+  notCovariates <- c(dep.var, state[[dep.var]]$nodeSet, "dep.var", "cache")
+  isCovariate <- function(name) {
+    !(name %in% notCovariates) && name %in% names(state) &&
+      (inherits(state[[name]], "nodeVar.monan") || inherits(state[[name]], "network.monan"))
+  }
+  fail <- function(argument, name, needed) {
+    stop(paste0("Effect ", effectName, ": ", argument, " must be ", needed,
+                ". Input that caused the error: '", name, "'"), call. = FALSE)
+  }
+
+  name <- args$attribute.index
+  if (is.character(name)) {
+    covar <- state[[name]]
+    kind <- unname(attributeKinds[effectName])
+    if (identical(kind, "monadic")) {
+      if (!(isCovariate(name) && inherits(covar, "nodeVar.monan") &&
+            covar$nodeSet[1] == locations && length(covar$data) == nLocations)) {
+        fail("node.attribute", name,
+             paste0("a covariate that applies to the nodeset '", locations, "'"))
+      }
+    } else if (identical(kind, "dyadic")) {
+      if (!(isCovariate(name) && inherits(covar, "network.monan") &&
+            identical(as.integer(dim(covar$data)), as.integer(c(nLocations, nLocations))))) {
+        fail("node.attribute", name,
+             paste0("a dyadic covariate that applies to the nodesets '", locations,
+                    "' x '", locations, "'"))
+      }
+    } else if (!isCovariate(name)) {
+      fail("node.attribute", name, "a covariate")
+    }
+  }
+
+  name <- args$resource.attribute.index
+  if (is.character(name)) {
+    if (!isCovariate(name) || !inherits(state[[name]], "nodeVar.monan") ||
+        state[[name]]$nodeSet[1] != resources || length(state[[name]]$data) != nResources) {
+      fail("edge.attribute", name,
+           paste0("a covariate that applies to the nodeset '", resources, "'"))
+    }
+  }
+  invisible(NULL)
+}
+
 # checkEffectInputs
 checkEffectInputs <- function(effects, state) {
   for (k in seq_along(effects$effectFormulas)) {
     effectName <- strsplit(effects$name[k], " ")[[1]][1]
+    args <- as.list(formals(effects$effectFormulas[[k]]))
+    checkEffectCovariates(effectName, args, state)
     for (check in effectInputChecks[[effectName]]) {
-      check(state, as.list(formals(effects$effectFormulas[[k]])))
+      check(state, args)
     }
   }
   invisible(NULL)
